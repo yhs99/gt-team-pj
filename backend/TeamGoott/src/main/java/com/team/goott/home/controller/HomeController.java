@@ -21,7 +21,7 @@ public class HomeController {
 	
 	
 	@GetMapping("/test")
-    public ResponseEntity<Object> apiTest(@RequestParam(defaultValue = "뭔데") String param) {
+    public ResponseEntity<Object> apiTest(@RequestParam(defaultValue = "테스트API") String param) {
 		log.info("apiTest 호출!");
 		Map<String, String> map = new HashMap<String, String>();
 		Map<String, Object> returnMap = new HashMap<String, Object>();

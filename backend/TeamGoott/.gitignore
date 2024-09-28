@@ -1,3 +1,6 @@
+# Created by https://www.toptal.com/developers/gitignore/api/java,eclipse
+# Edit at https://www.toptal.com/developers/gitignore?templates=java,eclipse
+
 ### Eclipse ###
 .metadata
 bin/
@@ -10,7 +13,7 @@ local.properties
 .settings/
 .loadpath
 .recommenders
-
+.classpath
 # External tool builders
 .externalToolBuilders/
 
@@ -58,7 +61,7 @@ local.properties
 
 # Uncomment this line if you wish to ignore the project description file.
 # Typically, this file would be tracked if it contains build/dependency configurations:
-#.project
+TeamGoot/.project
 
 ### Eclipse Patch ###
 # Spring Boot Tooling

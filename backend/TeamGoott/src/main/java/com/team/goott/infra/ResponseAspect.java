@@ -9,9 +9,8 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class ResponseAspect {
-	@Around("execution(* com.team.goott.*.controller..*(..))")
+	@Around("execution(* com.team.goott.*.controller(..))")
     public Object wrapResponse(ProceedingJoinPoint joinPoint) throws Throwable {
-		System.out.println("aspect 작동");
 		Object result = joinPoint.proceed();
 
         // ResponseEntity인 경우 처리

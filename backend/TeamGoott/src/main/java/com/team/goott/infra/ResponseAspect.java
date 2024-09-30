@@ -3,15 +3,17 @@ package com.team.goott.infra;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.context.annotation.Description;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
 public class ResponseAspect {
-	@Around("execution(* com.team.goott.*.controller..*(..))")
+	
+	@Description("이 AOP는 REST API의 일관된 형식을 제공하기 위해 제작한 AOP입니다.")
+	@Around("execution(* com.team.goott.*.controller(..))")
     public Object wrapResponse(ProceedingJoinPoint joinPoint) throws Throwable {
-		System.out.println("aspect 작동");
 		Object result = joinPoint.proceed();
 
         // ResponseEntity인 경우 처리

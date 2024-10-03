@@ -9,14 +9,13 @@ tmp/
 *.bak
 *.swp
 *~.nib
-local.properties
+**/connection.properties
 .settings/
 .loadpath
 .recommenders
 .classpath
 # External tool builders
 .externalToolBuilders/
-
 # Locally stored "Eclipse launch configurations"
 *.launch
 

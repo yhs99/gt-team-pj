@@ -21,8 +21,8 @@ public class HomeController {
 	
 	
 	@GetMapping("/test")
-    public ResponseEntity<Object> apiTest(@RequestParam(defaultValue = "Å×½ºÆ®API") String param) {
-		log.info("apiTest È£Ãâ!");
+    public ResponseEntity<Object> apiTest(@RequestParam(defaultValue = "í…ŒìŠ¤íŠ¸API") String param) {
+		log.info("apiTest í˜¸ì¶œ!");
 		Map<String, String> map = new HashMap<String, String>();
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		map.put("key2", "value2");
@@ -38,8 +38,8 @@ public class HomeController {
 
     @GetMapping("/error")
     public ResponseEntity<Object> errorTest() {
-    	log.info("¿¡·¯ Å×½ºÆ® È£Ãâ!");
-        return ResponseEntity.badRequest().body("¿¡·¯¹ß»ı");
+    	log.info("ì—ëŸ¬ í…ŒìŠ¤íŠ¸ í˜¸ì¶œ!");
+        return ResponseEntity.badRequest().body("ì—ëŸ¬ë°œìƒ");
     }
 	
 }

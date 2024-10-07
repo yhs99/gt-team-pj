@@ -29,7 +29,11 @@ jobs:
           cd backend
           cd TeamGoott
           mvn clean package
-
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          
       - name: Create SSH Key
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" >> ~/ec2.pem

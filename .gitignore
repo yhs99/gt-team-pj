@@ -1,0 +1,9 @@
+SECURITY.*
+nginx.*
+CONTRIBUTING.*
+CODE_OF_CONDUCT.*
+temp
+logs
+docs
+contrib
+conf

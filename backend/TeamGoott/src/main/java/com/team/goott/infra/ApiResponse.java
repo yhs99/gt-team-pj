@@ -16,19 +16,19 @@ public class ApiResponse<T> {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime requestTime;
 
-    // ±âº» »ı¼ºÀÚ
+	// ê¸°ë³¸ ìƒì„±ì
     public ApiResponse() {
         this.requestTime = LocalDateTime.now();
     }
 
-    // Á¤»ó ÀÀ´ä¿ë »ı¼ºÀÚ
+    // ì •ìƒ ì‘ë‹µìš© ìƒì„±ì
     public ApiResponse(String status, T data) {
         this.status = status;
         this.data = data;
         this.requestTime = LocalDateTime.now();
     }
 
-    // ºñÁ¤»ó ÀÀ´ä¿ë »ı¼ºÀÚ
+    // ë¹„ì •ìƒ ì‘ë‹µìš© ìƒì„±ì
     public ApiResponse(String status, String message) {
         this.status = status;
         this.message = message;

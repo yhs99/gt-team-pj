@@ -11,25 +11,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class ResponseAspect {
 	
-	@Description("ÀÌ AOP´Â REST APIÀÇ ÀÏ°üµÈ Çü½ÄÀ» Á¦°øÇÏ±â À§ÇØ Á¦ÀÛÇÑ AOPÀÔ´Ï´Ù.")
+	@Description("ì´ AOPëŠ” REST APIì˜ ì¼ê´€ëœ í˜•ì‹ì„ ì œê³µí•˜ê¸° ìœ„í•´ ì œì‘í•œ AOPì…ë‹ˆë‹¤.")
 	@Around("execution(* com.team.goott.*.controller(..))")
     public Object wrapResponse(ProceedingJoinPoint joinPoint) throws Throwable {
 		Object result = joinPoint.proceed();
 
-        // ResponseEntityÀÎ °æ¿ì Ã³¸®
+        // ResponseEntityì¸ ê²½ìš° ì²˜ë¦¬
         if (result instanceof ResponseEntity) {
             ResponseEntity<?> responseEntity = (ResponseEntity<?>) result;
             Object body = responseEntity.getBody();
             int statusCode = responseEntity.getStatusCodeValue();
 
             if (statusCode >= 200 && statusCode < 300) {
-                // Á¤»ó ÀÀ´ä¿ë ¸ÅÇÎ
+                // ì •ìƒ ì‘ë‹µìš© ë§¤í•‘
                 ApiResponse<Object> apiResponse = new ApiResponse<>("success", body);
                 return ResponseEntity.status(responseEntity.getStatusCode())
                                      .headers(responseEntity.getHeaders())
                                      .body(apiResponse);
             } else {
-                // ºñÁ¤»ó ÀÀ´ä¿ë ¸ÅÇÎ
+                // ë¹„ì •ìƒ ì‘ë‹µìš© ë§¤í•‘
                 String errorMessage = (body != null) ? body.toString() : "An error occurred";
                 ApiResponse<Object> apiResponse = new ApiResponse<>("fail", errorMessage);
                 return ResponseEntity.status(responseEntity.getStatusCode())
@@ -38,7 +38,7 @@ public class ResponseAspect {
             }
         }
 
-        // ResponseEntity°¡ ¾Æ´Ñ °æ¿ì Á¤»ó ÀÀ´äÀ¸·Î ·¡ÇÎ
+        // ResponseEntityê°€ ì•„ë‹Œ ê²½ìš° ì •ìƒ ì‘ë‹µìœ¼ë¡œ ë˜í•‘
         ApiResponse<Object> apiResponse = new ApiResponse<>("success", result);
         return apiResponse;
     }

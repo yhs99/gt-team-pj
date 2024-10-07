@@ -22,20 +22,20 @@ public class ApiLoggingAspect {
 	
 	@Around("execution(* com.team.goott..*(..))")
 	public Object apiLogging(ProceedingJoinPoint joinPoint) throws Throwable{
-		 // ¿äÃ» ½ÃÀÛ ½Ã°£ ±â·Ï
+		 // ìš”ì²­ ì‹œì‘ ì‹œê°„ ê¸°ë¡
         long startTime = System.currentTimeMillis();
         HttpServletRequest request = hsr;
 		Object result;
 		try {
-            // ½ÇÁ¦ ¸Ş¼­µå È£Ãâ
+            // ì‹¤ì œ ë©”ì„œë“œ í˜¸ì¶œ
             result = joinPoint.proceed();
         } finally {
-            // ¿äÃ» Á¾·á ½Ã°£ ¹× ÀÀ´ä ½Ã°£ °è»ê
+            // ìš”ì²­ ì¢…ë£Œ ì‹œê°„ ë° ì‘ë‹µ ì‹œê°„ ê³„ì‚°
             long elapsedTime = System.currentTimeMillis() - startTime;
             //String params = Arrays.toString(joinPoint.getArgs());
 
-            // ·Î±× ¸Ş½ÃÁö »ı¼º
-            log.info("API CALLED :: [" + LocalDateTime.now() +"] "+ request.getMethod() + " - " + request.getRequestURI() + ", Ã³¸®½Ã°£ :: " + elapsedTime + "ms");
+            // ë¡œê·¸ ë©”ì‹œì§€ ìƒì„±
+            log.info("API CALLED :: [" + LocalDateTime.now() +"] "+ request.getMethod() + " - " + request.getRequestURI() + ", ì²˜ë¦¬ì‹œê°„ :: " + elapsedTime + "ms");
         }
 		
 		return result;

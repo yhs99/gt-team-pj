@@ -35,7 +35,7 @@ public class ApiLoggingAspect {
             //String params = Arrays.toString(joinPoint.getArgs());
 
             // 로그 메시지 생성
-            log.info("API CALLED :: [" + LocalDateTime.now() +"] "+ request.getMethod() + " - " + request.getRequestURI() + ", 처리시간 :: " + elapsedTime);
+            log.info("API CALLED :: [" + LocalDateTime.now() +"] "+ request.getMethod() + " - " + request.getRequestURI() + ", 처리시간 :: " + elapsedTime + "ms");
         }
 		
 		return result;

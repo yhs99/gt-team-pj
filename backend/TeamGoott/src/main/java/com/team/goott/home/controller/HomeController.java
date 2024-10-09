@@ -5,8 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,7 +24,7 @@ public class HomeController {
 	
 	
 	@GetMapping("/test")
-    public ResponseEntity<Object> apiTest(@RequestParam(defaultValue = "테스트API") String param) {
+    public ResponseEntity<Object> apiTest() {
 		log.info("apiTest 호출!");
 		Map<String, String> map = new HashMap<String, String>();
 		Map<String, Object> returnMap = new HashMap<String, Object>();
@@ -30,7 +33,6 @@ public class HomeController {
 		arr.add("1");
 		arr.add("2");
 		arr.add("3");
-		returnMap.put("Key", param);
 		returnMap.put("Key2", arr);
 		
         return ResponseEntity.ok(returnMap);

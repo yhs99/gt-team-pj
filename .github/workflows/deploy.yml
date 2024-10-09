@@ -102,3 +102,8 @@ jobs:
       - name: Copy Frontend Files to EC2
         run: |
           scp -o StrictHostKeyChecking=no -r frontend/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }}:/opt/frontend/
+
+      - name: Restart Nginx
+        run: |
+          ssh -i ~/ec2.pem -o UserKnownHostsFile=~/.ssh/known_hosts -tt ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} "sudo systemctl restart nginx"
+    

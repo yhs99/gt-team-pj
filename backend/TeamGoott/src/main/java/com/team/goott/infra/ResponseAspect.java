@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class ResponseAspect {
 	
 	@Description("이 AOP는 REST API의 일관된 형식을 제공하기 위해 제작한 AOP입니다.")
-	@Around("execution(* com.team.goott.*.controller(..))")
+	@Around("execution(* com.team.goott..controller..*(..))")
     public Object wrapResponse(ProceedingJoinPoint joinPoint) throws Throwable {
 		Object result = joinPoint.proceed();
 

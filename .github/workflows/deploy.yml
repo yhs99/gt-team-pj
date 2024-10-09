@@ -38,11 +38,19 @@ jobs:
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" >> ~/ec2.pem
           chmod 600 ~/ec2.pem
-      
+
+      - name: make dir .ssh
+        run: |
+          mkdir -p ~/.ssh
+
+      - name: Add known hosts
+        run: |
+          ssh-keyscan ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts
+          
       - name: Delete ROOT
         run: |
-          ssh -i ~/ec2.pem -o StrictHostKeyChecking=no -tt ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} "sudo rm -rf /opt/tomcat/apache-tomcat-9.0.95/webapps/ROOT.war"  # 기존 파일 삭제
-          ssh -i ~/ec2.pem -o StrictHostKeyChecking=no -tt ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} "sudo rm -rf /opt/tomcat/apache-tomcat-9.0.95/webapps/ROOT"  # 기존 파일 삭제
+          ssh -i ~/ec2.pem -o UserKnownHostsFile=~/.ssh/known_hosts -tt ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} "sudo rm -rf /opt/tomcat/apache-tomcat-9.0.95/webapps/ROOT.war"  # 기존 파일 삭제
+          ssh -i ~/ec2.pem -o UserKnownHostsFile=~/.ssh/known_hosts -tt ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} "sudo rm -rf /opt/tomcat/apache-tomcat-9.0.95/webapps/ROOT"  # 기존 파일 삭제
           
       - name: Deploy WAR to EC2
         run: |
@@ -77,7 +85,7 @@ jobs:
           
       - name: Delete ROOT
         run: |
-          ssh -i ~/ec2.pem -o StrictHostKeyChecking=no -tt ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} "sudo rm -rf /opt/frontend/*"  # 기존 파일 삭제
+          ssh -i ~/ec2.pem -o UserKnownHostsFile=~/.ssh/known_hosts -tt ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} "sudo rm -rf /opt/frontend/*"  # 기존 파일 삭제
 
       - name: Copy Frontend Files to EC2
         run: |

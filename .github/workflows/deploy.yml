@@ -12,6 +12,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        
+      - name: Create SSH Key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/ec2.pem
+          chmod 600 ~/ec2.pem
 
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.5.3
@@ -26,18 +31,12 @@ jobs:
 
       - name: Build with Maven
         run: |
-          cd backend
-          cd TeamGoott
+          cd backend/TeamGoott
           mvn clean package
         env:
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          
-      - name: Create SSH Key
-        run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" >> ~/ec2.pem
-          chmod 600 ~/ec2.pem
 
       - name: make dir .ssh
         run: |
@@ -45,7 +44,7 @@ jobs:
 
       - name: Add known hosts
         run: |
-          ssh-keyscan ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts
           
       - name: Delete ROOT
         run: |
@@ -68,20 +67,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
+      - name: Create SSH Key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" >> ~/ec2.pem
+          chmod 600 ~/ec2.pem
+          
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
 
+      - name: make dir .ssh
+        run: |
+          mkdir -p ~/.ssh
+
+      - name: Add known hosts
+        run: |
+          ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts
+          
       - name: Install NPM Packages
         run: |
           cd frontend
           npm install
-
-      - name: Create SSH Key
-        run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" >> ~/ec2.pem
-          chmod 600 ~/ec2.pem
           
       - name: Delete ROOT
         run: |

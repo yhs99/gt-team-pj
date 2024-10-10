@@ -28,11 +28,21 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '8'
+      - name: Create connection.properties
+        env:
+          DB_URL: ${{ secrets.DB_HOST }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: |
+          echo ="jdbc.driverClassName=com.mysql.cj.jdbc.Driver"
+          echo "jdbc.url=${DB_URL}" > backend/TeamGoott/src/main/resources/connection.properties
+          echo "jdbc.username=${DB_USERNAME}" >> backend/TeamGoott/src/main/resources/connection.properties
+          echo "jdbc.password=${DB_PASSWORD}" >> backend/TeamGoott/src/main/resources/connection.properties
 
       - name: Build with Maven
         run: |
           cd backend/TeamGoott
-          DB_URL=${{ secrets.DB_HOST }} DB_USERNAME=${{ secrets.DB_USERNAME }} DB_PASSWORD=${{ secrets.DB_PASSWORD }} mvn clean package
+          mvn clean package
 
       - name: make dir .ssh
         run: |

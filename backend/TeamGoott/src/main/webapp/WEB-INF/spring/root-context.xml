@@ -10,6 +10,19 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
     
     <context:property-placeholder location="classpath:connection.properties" />
+	<bean id="bucketName" class="java.lang.String">
+	    <constructor-arg value="${s3.bucketName}"/>
+	</bean>
+	<bean id="secretKey" class="java.lang.String">
+	    <constructor-arg value="${s3.secretKey}"/>
+	</bean>
+	<bean id="accessKey" class="java.lang.String">
+	    <constructor-arg value="${s3.accessKey}"/>
+	</bean>
+	<bean id="region" class="java.lang.String">
+	    <constructor-arg value="${s3.region}"/>
+	</bean>
+	<bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"/>
 	
 	<!-- jdbc 설정 -->
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -33,7 +46,6 @@
 
     <context:component-scan base-package="com.team.goott.**.domain" />
     <context:component-scan base-package="com.team.goott.**.persistence" />
-    <context:component-scan base-package="com.team.goott.**.service" />
     
 	<!-- transaction -->
 	<bean id="transactionManager"

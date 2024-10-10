@@ -33,11 +33,17 @@ jobs:
           DB_URL: ${{ secrets.DB_HOST }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          S3_ACCESSKEY: ${{ secrets.S3_ACCESSKEY }}
+          S3_SECRETKEY: ${{ secrets.S3_SECRETKEY }}
         run: |
           echo "jdbc.driverClassName=com.mysql.cj.jdbc.Driver" > backend/TeamGoott/src/main/resources/connection.properties
           echo "jdbc.url=${DB_URL}" >> backend/TeamGoott/src/main/resources/connection.properties
           echo "jdbc.username=${DB_USERNAME}" >> backend/TeamGoott/src/main/resources/connection.properties
           echo "jdbc.password=${DB_PASSWORD}" >> backend/TeamGoott/src/main/resources/connection.properties
+          echo "s3.accessKey=${S3_ACCESSKEY}" > backend/TeamGoott/src/main/resources/connection.properties
+          echo "s3.secretKey=${S3_SECRETKEY}" >> backend/TeamGoott/src/main/resources/connection.properties
+          echo "s3.region=ap-northeast-2" >> backend/TeamGoott/src/main/resources/connection.properties
+          echo "s3.bucketName=goott-bucket" >> backend/TeamGoott/src/main/resources/connection.properties
 
       - name: Build with Maven
         run: |

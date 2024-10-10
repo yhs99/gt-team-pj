@@ -32,11 +32,7 @@ jobs:
       - name: Build with Maven
         run: |
           cd backend/TeamGoott
-          mvn clean package
-        env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_URL=${{ secrets.DB_HOST }} DB_USERNAME=${{ DB_USERNAME }} DB_PASSWORD=${{ secrets.DB_PASSWORD }} mvn clean package
 
       - name: make dir .ssh
         run: |

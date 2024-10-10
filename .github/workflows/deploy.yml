@@ -34,7 +34,7 @@ jobs:
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          echo ="jdbc.driverClassName=com.mysql.cj.jdbc.Driver"
+          echo "jdbc.driverClassName=com.mysql.cj.jdbc.Driver"
           echo "jdbc.url=${DB_URL}" > backend/TeamGoott/src/main/resources/connection.properties
           echo "jdbc.username=${DB_USERNAME}" >> backend/TeamGoott/src/main/resources/connection.properties
           echo "jdbc.password=${DB_PASSWORD}" >> backend/TeamGoott/src/main/resources/connection.properties

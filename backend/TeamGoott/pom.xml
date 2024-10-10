@@ -176,6 +176,18 @@
 		    <artifactId>aspectjweaver</artifactId>
 		    <version>1.8.10</version>
 		</dependency>
+		<!-- aws S3 의존성 -->
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
+		<dependency>
+		    <groupId>com.amazonaws</groupId>
+		    <artifactId>aws-java-sdk-s3</artifactId>
+		    <version>1.12.773</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.4</version>
+		</dependency>
 	</dependencies>
     <build>
         <plugins>

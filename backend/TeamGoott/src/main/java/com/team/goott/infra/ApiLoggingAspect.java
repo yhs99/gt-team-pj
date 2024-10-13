@@ -1,6 +1,7 @@
 package com.team.goott.infra;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,6 +29,9 @@ public class ApiLoggingAspect {
         long startTime = System.currentTimeMillis();
         HttpServletRequest request = hsr;
 		Object result;
+		// 메서드의 파라미터 값 가져오기
+        Object[] args = joinPoint.getArgs();
+        String params = Arrays.toString(args);
 		try {
             // 실제 메서드 호출
             result = joinPoint.proceed();
@@ -36,7 +40,17 @@ public class ApiLoggingAspect {
             long elapsedTime = System.currentTimeMillis() - startTime;
 
             // 로그 메시지 생성
-            log.info("API CALLED :: [" + LocalDateTime.now() +"] "+ request.getMethod() + " - " + request.getRequestURI() + ", 처리시간 :: " + elapsedTime + "ms");
+            String logMessage = String.format(
+                    "API CALLED :: [%s] %s - %s, Params: %s, 처리시간 :: %dms",
+                    LocalDateTime.now(),
+                    request.getMethod(),
+                    request.getRequestURI(),
+                    params,
+                    elapsedTime
+                );
+
+            // 로그 출력
+            log.info(logMessage);
         }
 		
 		return result;

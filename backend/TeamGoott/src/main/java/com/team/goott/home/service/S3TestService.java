@@ -34,17 +34,18 @@ public class S3TestService {
 		return s3Client.getUrl(bucketName, filePath).toString();
 	}
 
-	public void deleteObject(String storedFileName) {
+	public String deleteObject(String storedFileName) {
 		try {
-			log.info(bucketName + "에서 " + storedFileName + " 을 삭제합니다");
-			log.info("존재 하는지 : "+s3Client.doesObjectExist(bucketName+"/", storedFileName));
-			s3Client.deleteObject(bucketName, storedFileName);
+			log.info("존재 하는지 : "+s3Client.doesObjectExist(bucketName, "/" + storedFileName));
+			// deleteObjct(bucket이름, /삭제할 파일명)
+			s3Client.deleteObject(bucketName, "/" + storedFileName);
 		}catch (AmazonServiceException ase) {
 			ase.printStackTrace();
-            System.out.println("Error Message:    " + ase.getMessage());
+            return ase.getMessage();
         } catch (AmazonClientException ace) {
         	ace.printStackTrace();
-            System.out.println("Error Message: " + ace.getMessage());
+            return ace.getMessage();
         }
+		return "deleted";
 	}
 }

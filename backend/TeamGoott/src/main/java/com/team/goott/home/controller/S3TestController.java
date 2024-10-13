@@ -39,9 +39,8 @@ public class S3TestController {
 
 	@DeleteMapping("/image")
 	public ResponseEntity<Object> deleteFile(@RequestParam("fileName") String fileName) {
-		log.info(fileName);
-		s3Service.deleteObject(fileName);
-		return ResponseEntity.ok("deleted");
+		log.info("DELETE :: " + fileName);
+		return ResponseEntity.ok(s3Service.deleteObject(fileName));
 	}
 	
 	private static String getUuidFileName(String originalFileName) {

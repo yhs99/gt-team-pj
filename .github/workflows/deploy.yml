@@ -40,7 +40,7 @@ jobs:
           echo "jdbc.url=${DB_URL}" >> backend/TeamGoott/src/main/resources/connection.properties
           echo "jdbc.username=${DB_USERNAME}" >> backend/TeamGoott/src/main/resources/connection.properties
           echo "jdbc.password=${DB_PASSWORD}" >> backend/TeamGoott/src/main/resources/connection.properties
-          echo "s3.accessKey=${S3_ACCESSKEY}" > backend/TeamGoott/src/main/resources/connection.properties
+          echo "s3.accessKey=${S3_ACCESSKEY}" >> backend/TeamGoott/src/main/resources/connection.properties
           echo "s3.secretKey=${S3_SECRETKEY}" >> backend/TeamGoott/src/main/resources/connection.properties
           echo "s3.region=ap-northeast-2" >> backend/TeamGoott/src/main/resources/connection.properties
           echo "s3.bucketName=goott-bucket" >> backend/TeamGoott/src/main/resources/connection.properties
@@ -107,13 +107,9 @@ jobs:
           cd frontend
           npm install
           
-      - name: Delete ROOT
-        run: |
-          ssh -i ~/ec2.pem -o UserKnownHostsFile=~/.ssh/known_hosts -tt ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} "sudo rm -rf /opt/frontend/*"  # 기존 파일 삭제
-
       - name: Copy Frontend Files to EC2
         run: |
-          scp -o StrictHostKeyChecking=no -r frontend/* ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }}:/opt/frontend/
+          rsync -avz --delete -e "ssh -i ~/ec2.pem -o StrictHostKeyChecking=no" frontend/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }}:/opt/frontend/
 
       - name: Restart Nginx
         run: |

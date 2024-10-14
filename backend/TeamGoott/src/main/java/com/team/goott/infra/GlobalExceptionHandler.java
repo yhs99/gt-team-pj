@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 	@ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<String>> handleAllExceptions(Exception ex) {
+		ex.printStackTrace();
         ApiResponse<String> response = new ApiResponse<>();
         response.setStatus("error");
         response.setData(ex.getMessage());

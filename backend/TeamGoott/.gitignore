@@ -5,7 +5,6 @@
 .metadata
 **/MANIFEST.MF
 **/pom.properties
-**/pom.xml
 bin/
 tmp/
 *.tmp

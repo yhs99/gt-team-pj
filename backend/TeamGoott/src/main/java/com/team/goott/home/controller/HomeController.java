@@ -34,6 +34,7 @@ public class HomeController {
 		arr.add("2");
 		arr.add("3");
 		arr.add("dddd");
+		arr.add("eeee");
 		returnMap.put("Key2", arr);
 		
         return ResponseEntity.ok(returnMap);

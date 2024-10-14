@@ -24,17 +24,16 @@ public class S3TestController {
 	// 파일 업로드 처리
 	@PostMapping("/image")
 	public ResponseEntity<Object> uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
-		log.info("image controller called");
 		String originalFileName = file.getOriginalFilename(); 
 		
 		// ========= 파일명 중복 방지 처리 ========= //
 		String uuidFileName = getUuidFileName(originalFileName);
-		
+		log.info(originalFileName);
+		log.info(uuidFileName);
 		// ========= 서버에 파일 저장 ========= // 
 		String res = s3Service.uploadObject(file, uuidFileName);
-		System.out.println(res);
 		
-		return ResponseEntity.ok(uuidFileName);
+		return ResponseEntity.ok(res);
 	}
 
 	@DeleteMapping("/image")

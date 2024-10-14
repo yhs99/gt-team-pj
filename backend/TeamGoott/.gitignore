@@ -3,6 +3,9 @@
 
 ### Eclipse ###
 .metadata
+**/MANIFEST.MF
+**/pom.properties
+**/pom.xml
 bin/
 tmp/
 *.tmp
@@ -18,7 +21,6 @@ tmp/
 .externalToolBuilders/
 # Locally stored "Eclipse launch configurations"
 *.launch
-
 # PyDev specific (Python IDE for Eclipse)
 *.pydevproject
 

@@ -4,7 +4,7 @@
 |팀장 [윤희성](https://github.com/yhs99) | [이현명](https://github.com/HyunmyoungLee) | [최범준](https://github.com/bumjun12)
 
 |<img src="https://avatars.githubusercontent.com/u/169752511?v=4" width="100" height="100">| <img src="https://avatars.githubusercontent.com/u/19566619?v=4" width="100" height="100">|<img src="https://avatars.githubusercontent.com/u/179418413?v=4" width="100" height="100">
-|---|---|---|---|
+|---|---|---|
 | [김민성](https://github.com/minsung12345) | [김다손](https://github.com/kimdason) | [이연화](https://github.com/peachea27) 
 
 ----------

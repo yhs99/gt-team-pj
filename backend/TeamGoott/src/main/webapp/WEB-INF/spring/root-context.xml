@@ -46,8 +46,8 @@
 
     <context:component-scan base-package="com.team.goott.**.domain" />
     <context:component-scan base-package="com.team.goott.**.persistence" />
-    <context:component-scan base-package="com.team.goott.**.controller" />
     <context:component-scan base-package="com.team.goott.**.service" />
+    <context:component-scan base-package="com.team.goott.infra" />
     
 	<!-- transaction -->
 	<bean id="transactionManager"

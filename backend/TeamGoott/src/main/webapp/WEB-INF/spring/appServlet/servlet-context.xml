@@ -28,9 +28,7 @@
 	<!-- 컴포넌트 스캔 설정: com.goott.team 패키지 내 모든 컴포넌트 스캔 -->
 	<mvc:annotation-driven />
     <context:component-scan base-package="com.team.goott.**.controller" />
-    <context:component-scan base-package="com.team.goott.**.service" />
-    <context:component-scan base-package="com.team.goott.**.persistence" />
-    <context:component-scan base-package="com.team.goott.infra" />
+
 
     <!-- AOP 설정 활성화 -->
     <aop:aspectj-autoproxy proxy-target-class="true" />

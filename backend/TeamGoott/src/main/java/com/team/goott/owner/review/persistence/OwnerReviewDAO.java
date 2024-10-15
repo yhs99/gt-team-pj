@@ -1,5 +1,10 @@
 package com.team.goott.owner.review.persistence;
 
-public interface OwnerReviewDAO {
+import java.util.List;
 
+import com.team.goott.owner.domain.ReviewVO;
+
+public interface OwnerReviewDAO {
+	List<ReviewVO> getAllReview();
+	
 }

@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
+import com.team.goott.owner.domain.ReviewInfoVO;
 import com.team.goott.owner.domain.ReviewVO;
 import com.team.goott.owner.review.persistence.OwnerReviewDAO;
 import com.team.goott.user.domain.ReviewDTO;
@@ -20,8 +21,31 @@ public class OwnerReviewServiceImpl implements OwnerReviewService {
 	OwnerReviewDAO reviewDAO;
 	
 	@Override
-	public List<ReviewVO> getAllReview() {
-		return reviewDAO.getAllReview();
+	public List<ReviewVO> getAllReview(int storeId,String sortMethod) {
+		return reviewDAO.getAllReview(storeId,sortMethod);
+	}
+
+	@Override
+	public int deleteReviewReq(int reviewId, boolean isDeleteReq) {
+		return  reviewDAO.deleteReviewReq(reviewId, isDeleteReq);
+	}
+
+	@Override
+	public ReviewVO getReview(int reviewId) {
+		return reviewDAO.getReview(reviewId);
+	}
+
+	@Override
+	public ReviewInfoVO getTotalReviewInfo() {
+		int totalReviewCount = reviewDAO.getTotalReviewCount();
+		int todayReview = reviewDAO.getTotalTodayReview();
+		float totalScore = reviewDAO.getTotalScore();
+		float totalTodayScore = reviewDAO.getTotalTodayScore();
+		
+		ReviewInfoVO reviewInfo = ReviewInfoVO.builder().totalReview(totalReviewCount).todayReview(todayReview).totalScore(totalScore).todayTotalScore(totalTodayScore).build();	
+		log.info(reviewInfo.toString());
+		
+		return reviewInfo;
 	}
 
 }

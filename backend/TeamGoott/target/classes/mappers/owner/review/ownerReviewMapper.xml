@@ -4,5 +4,48 @@
 
 	<select id="getAllReview" resultType="com.team.goott.owner.domain.ReviewVO">
 		select * from review
+			<if test="storeId != 0">
+				where storeId = #{storeId}
+			</if>		
+		<choose>
+			<when test="sortMethod == 'newest'">
+				order by createAt desc			
+			</when>
+			<when test="sortMethod == 'score'">
+				order by score desc
+			</when>
+		</choose>
 	</select>
+	
+	
+	<select id="getReview" resultType="com.team.goott.owner.domain.ReviewVO">
+		select * from review where reviewId = #{reviewId}
+	</select>
+	
+	<select id="getTotalReviewCount" resultType="int">
+		select count(*) from review
+	</select>
+	
+	<select id="getTotalTodayReview" resultType="int">
+		select count(*) from review where date_format(createAt, "%Y-%m-%d") = curdate()
+	</select>
+	
+	<select id="getTotalScore" resultType="float">
+		select sum(score) from review
+	</select>
+	
+	<select id="getTotalTodayScore" resultType="float">
+		select sum(score) from review where date_format(createAt, "%Y-%m-%d") = curdate()
+	</select>
+	
+	<update id="updateisDeleteReq">
+		<choose>
+			<when test="isDeleteReq == false">
+				update review set isDeleteReq = true where reviewId = #{reviewId}
+			</when>
+			<when test="isDeleteReq == true">
+				update review set isDeleteReq = false where reviewId = #{reviewId}
+			</when>
+		</choose>
+	</update>
 </mapper>

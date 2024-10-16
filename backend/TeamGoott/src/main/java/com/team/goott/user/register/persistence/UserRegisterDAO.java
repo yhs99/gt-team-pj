@@ -1,5 +1,7 @@
 package com.team.goott.user.register.persistence;
 
-public interface UserRegisterDAO {
+import com.team.goott.user.domain.UserDTO;
 
+public interface UserRegisterDAO {
+	public int userRegisterProcess(UserDTO user);
 }

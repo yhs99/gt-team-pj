@@ -11,7 +11,7 @@ new Vue({
 
     methods : {
         getAllReviews(){
-            axios.get("http://localhost/api/review")
+            axios.get("/api/review")
             .then((response =>{
                console.log(response); 
             }))
@@ -20,7 +20,7 @@ new Vue({
             })
         },
         getTotalReviewCount(){
-            axios.get("http://localhost/api/review/info")
+            axios.get("/api/review/info")
             .then((response) =>{
                 console.log(response)
                 this.totalReviewCount = response.data.data.totalReview;

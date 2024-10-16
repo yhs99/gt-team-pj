@@ -15,7 +15,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class CouponDTO {
+public class CouponVO {
+	private int couponId;
 	private String couponName;
 	private int storeId;
 	private LocalDateTime start;

@@ -1,5 +1,6 @@
 package com.team.goott.user.register.service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -35,6 +36,9 @@ public class UserRegisterServiceImpl implements UserRegisterService {
 	@Override
 	public int userRegister(UserRegisterDTO user) throws ValidationException, Exception {
 		String msg = new RegisterValidator().batchValidate(user);
+		Map<String, String> imageInfo = new HashMap<String, String>();
+		imageInfo.put("imageUrl", null);
+		imageInfo.put("imageFileName", null);
 		
 		// 유저 회원가입 유효성검사 일치하지 않을경우 ValidationException 발생
 		if(!msg.equals("success")) {
@@ -42,9 +46,11 @@ public class UserRegisterServiceImpl implements UserRegisterService {
 		}
 		
 		// 유저 프로필 이미지 업로드 처리
-		S3ImageManager imageManager = new S3ImageManager(user.getImageFile(), user.getEmail(), s3Client, bucketName);
-		Map<String, String> imageInfo = imageManager.uploadImage();
-		// 유저 데이터 업로드 객체 생성;
+		if(!user.getImageFile().getOriginalFilename().isEmpty()) {
+			S3ImageManager imageManager = new S3ImageManager(user.getImageFile(), s3Client, bucketName);
+			imageInfo = imageManager.uploadImage();
+		}
+		// 유저 데이터 업로드 객체 생성
 		return dao.userRegisterProcess(
 				UserDTO.builder()
 				.email(user.getEmail())
@@ -52,8 +58,8 @@ public class UserRegisterServiceImpl implements UserRegisterService {
 				.name(user.getName())
 				.mobile(user.getMobile())
 				.gender(user.getGender())
-				.profileImageUrl(imageInfo.get("profileImageUrl"))
-				.profileImageName(imageInfo.get("profileImageName"))
+				.profileImageUrl(imageInfo.get("imageUrl"))
+				.profileImageName(imageInfo.get("imageFileName"))
 				.build());
 	}
 

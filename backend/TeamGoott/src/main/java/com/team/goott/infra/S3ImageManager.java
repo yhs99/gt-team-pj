@@ -1,17 +1,14 @@
 package com.team.goott.infra;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import javax.inject.Inject;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.AmazonClientException;
@@ -33,33 +30,56 @@ public class S3ImageManager {
 	private ObjectMetadata metaData;
 	private MultipartFile multipartImageFile;
 	private String fileName;
-	
-	// 유저 이메일을 받아와 암호화하여 객체생성
-	public S3ImageManager(String userEmail, AmazonS3 s3Client, String bucketName) throws Exception {
-		this.fileName = "/"+encrypt(userEmail);
+
+	/**
+	 * @author yhs99
+	 * @param s3Client AmazonS3 타입객체
+	 * @param bucketName 버킷이름
+	 * @param deleteFileName 삭제할 이미지 파일 이름
+	 * S3 이미지 객체 삭제를 위한 생성자
+	 */
+	public S3ImageManager(AmazonS3 s3Client, String bucketName, String deleteFileName) {
 		this.s3Client = s3Client;
 		this.bucketName = bucketName;
+		this.fileName = deleteFileName;
 	}
 		
 	// 유저 이메일을 받아와 암호화하여 객체생성
-	public S3ImageManager(MultipartFile multipartImageFile, String userEmail, AmazonS3 s3Client, String bucketName) throws Exception {
+	/**
+	 * @author yhs99
+	 * @param multipartImageFile 업로드 할 이미지 파일
+	 * @param s3Client AmazonS3 타입객체
+	 * @param bucketName 버킷이름
+	 * @throws Exception
+	 * S3 이미지 객체 업로드를 위한 생성자입니다
+	 */
+	public S3ImageManager(MultipartFile multipartImageFile, AmazonS3 s3Client, String bucketName) throws Exception {
 		this.multipartImageFile = multipartImageFile;
 		String fileExt = "."+multipartImageFile.getOriginalFilename().split("\\.")[1];
-		this.fileName = "/"+encrypt(userEmail)+fileExt;
+		this.fileName = "/"+getUuidFileName(multipartImageFile.getOriginalFilename(), fileExt);
 		this.s3Client = s3Client;
 		this.bucketName = bucketName;
 		this.metaData = new ObjectMetadata();
 		this.metaData.setContentType(multipartImageFile.getContentType());
+		this.metaData.setContentLength(multipartImageFile.getSize());
 	}
 	
 	// 이미지업로드
+	/**
+	 * 
+	 * @return Map 형식으로 
+	 * imageUrl : imageUrl경로
+	 * imageFileName : image 저장된 파일명을 반환합니다.
+	 * @throws Exception
+	 * @throws IOException
+	 */
 	public Map<String, String> uploadImage() throws Exception, IOException {
 		if(this.multipartImageFile != null) {
 			try {
 				s3Client.putObject(new PutObjectRequest(bucketName, fileName, this.multipartImageFile.getInputStream() , this.metaData));
 				Map<String, String> returnObj = new HashMap<String, String>();
-				returnObj.put("profileImageUrl", s3Client.getUrl(bucketName, fileName)+"");
-				returnObj.put("profileImageName", this.fileName);
+				returnObj.put("imageUrl", s3Client.getUrl(bucketName, fileName)+"");
+				returnObj.put("imageFileName", this.fileName);
 				return returnObj;
 			} catch(AmazonServiceException ase) {
 				ase.printStackTrace();
@@ -86,7 +106,7 @@ public class S3ImageManager {
 		return true;
 	}
 	
-    public static String encrypt(String plainText) throws Exception {
+    public String encrypt(String plainText) throws Exception {
         SecretKeySpec keySpec = new SecretKeySpec(KEY.getBytes(), ALGORITHM);
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, keySpec);
@@ -94,12 +114,16 @@ public class S3ImageManager {
         return Base64.getEncoder().encodeToString(encryptedBytes);
     }
 
-    public static String decrypt(String encryptedText) throws Exception {
+    public String decrypt(String encryptedText) throws Exception {
         SecretKeySpec keySpec = new SecretKeySpec(KEY.getBytes(), ALGORITHM);
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, keySpec);
         byte[] decodedBytes = Base64.getDecoder().decode(encryptedText);
         byte[] decryptedBytes = cipher.doFinal(decodedBytes);
         return new String(decryptedBytes);
+    }
+    
+    public String getUuidFileName(String fileName, String fileExt) {
+		return UUID.randomUUID().toString()+"_"+fileName+fileExt;
     }
 }

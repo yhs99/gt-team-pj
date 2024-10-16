@@ -47,28 +47,31 @@ public class RegisterValidator {
     // 성별은 M 또는 W만 허용
     private String validateGender(String gender) {
         if (!"M".equals(gender) && !"W".equals(gender)) {
-            return "성별은 M 또는 W만 가능합니다.";
+            return "성별을 선택하세요.";
         }
         return SUCCESS;
     }
 
     // 이미지 파일 형식 검증 (PNG, JPG만 허용)
     private String validateImageFile(MultipartFile file) {
-        if (file == null || file.isEmpty()) {
-            return "이미지 파일이 제공되지 않았습니다.";
-        }
-        String fileName = file.getOriginalFilename();
-        if (fileName != null) {
-            String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
-            if (!"png".equals(fileExtension) && !"jpg".equals(fileExtension)) {
-                return "이미지 파일 형식은 PNG 또는 JPG만 가능합니다.";
-            }
+    	if(file.getOriginalFilename().length() <= 0) {
+    		System.out.println(file.getOriginalFilename().isEmpty());
+    		return SUCCESS;
+    	}
+        if (file != null && file.getOriginalFilename().length() > 0) {
+	        String fileName = file.getOriginalFilename();
+	        if (fileName != null) {
+	            String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+	            if (!"png".equals(fileExtension) && !"jpg".equals(fileExtension)) {
+	                return "이미지 파일 형식은 PNG 또는 JPG만 가능합니다.";
+	            }
+	        }
         }
         return SUCCESS;
     }
     
     public String batchValidate(UserRegisterDTO user) {
-    	String errorMsg;
+    	String errorMsg = "success";
     	
     	errorMsg = validateEmail(user.getEmail());
     	if(errorMsg != SUCCESS) return errorMsg;

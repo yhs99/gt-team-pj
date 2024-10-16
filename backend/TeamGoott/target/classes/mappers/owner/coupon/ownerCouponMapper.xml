@@ -5,16 +5,21 @@
 	<select id="selectCouponsByStoreId" resultType="com.team.goott.owner.domain.CouponVO">
 		select * from coupon where storeId = #{storeId}
 	</select>
-
+	
 
     <insert id="createCoupon">
        INSERT INTO coupon (couponName, storeId, start, end, discount, stock)
        VALUES (#{couponName}, #{storeId}, #{start}, #{end}, #{discount}, #{stock})
     </insert>
 
-    <delete id="deleteCoupon">
-        DELETE FROM coupon
-        WHERE couponId = #{couponId}
-    </delete>
+	<select id="selectCouponsByCouponId" resultType="com.team.goott.owner.domain.CouponVO">
+		select * from coupon where couponId = #{couponId}
+	</select>
+
+	<update id="deleteCoupon">
+	    UPDATE coupon
+	    SET isDeleted = 1
+	    WHERE couponId = #{couponId};
+	</update>
 
 </mapper>

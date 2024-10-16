@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.team.goott.owner.coupon.persistence.OwnerCouponDAO;
 import com.team.goott.owner.domain.CouponDTO;
@@ -36,19 +37,33 @@ public class OwnerCouponServiceImpl implements OwnerCouponService {
         return ownerCouponDAO.createCoupon(coupon);
     }
 
+	// 쿠폰을 삭제하는 메서드
 	@Override
-	public int deleteCoupon(int couponId) throws Exception {
-		// 트랜잭션
+	@Transactional(rollbackFor = Exception.class	)
+	public int deleteCoupon(int couponId, int storeId) throws Exception {
+//		log.info("서비스단 couponId :" + couponId + " storeId : " + storeId);
+	    // 1. 특정 쿠폰의 정보를 select 해온다
+	    CouponVO selectCoupon = ownerCouponDAO.selectCouponByCouponId(couponId);
+	    
+//	    log.info("서비스단 selectCoupon : " + selectCoupon);
+	    
+	    // 2. select 쿠폰의 storeId와 session 저장된 storeId 비교한다
+	    if (selectCoupon != null && selectCoupon.getStoreId() == storeId) {
+	        // 3. 일치하다면 coupon의 isDeleted의 상태를 UPDATE해준다.
+//	    	log.info("서비스단 쿠폰ID로 가져온 storeId :" + selectCoupon.getStoreId() + " storeId : " + storeId);
+	        int result = ownerCouponDAO.deleteCoupon(couponId); // 쿠폰 업데이트
 
-
-		// 1. 특정 쿠폰의 정보를 select 해온다
-		
-		// 2. select 쿠폰의 storeid와 session 저장된 storeid 비교한다
-		
-		// 3. 일치하다면 coupon의 isDeleted의 상태를 UPDATE해준다.
-		
-		// 4. 만약 일치하지 않다면 throw error 발생시킨
-		return ownerCouponDAO.deleteCoupon(couponId);
+	        if (result == 1) {
+	            // 삭제 성공 시 1 반환
+	            return 1;
+	        } else {
+	            // 삭제 실패 시 0 반환
+	            return 0;
+	        }
+	    } else {
+	        // 4. 만약 일치하지 않다면 throw error 발생시킨다
+	        throw new Exception("쿠폰 삭제 권한이 없습니다."); // 권한 없음 예외 처리
+	    }
 	}
 	
 	

@@ -23,4 +23,5 @@ public class CouponVO {
 	private LocalDateTime end;
 	private int discount;
 	private int stock;
+	private boolean isDeleted;
 }

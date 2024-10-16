@@ -33,10 +33,18 @@ public class OwnerCouponDAOImpl implements OwnerCouponDAO {
 		
 	}
 
+
+	@Override
+	public CouponVO selectCouponByCouponId(int couponId) throws Exception {
+		
+		return ses.selectOne(ns + "selectCouponsByCouponId", couponId); 
+	}
+
+
 	@Override
 	public int deleteCoupon(int couponId) throws Exception {
-		
-		return ses.delete(ns + "deleteCoupon", couponId);
+		return ses.update(ns + "deleteCoupon", couponId);
 	}
+
 
 }

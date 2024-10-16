@@ -13,6 +13,10 @@ public interface OwnerCouponDAO {
 	// 쿠폰 생성
 	int createCoupon(CouponDTO coupon) throws Exception;
 
+	// 쿠폰 삭제
+	CouponVO selectCouponByCouponId(int couponId) throws Exception;
+
 	int deleteCoupon(int couponId) throws Exception;
+
 
 }

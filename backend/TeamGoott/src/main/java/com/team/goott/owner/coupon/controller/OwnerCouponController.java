@@ -90,8 +90,12 @@ public class OwnerCouponController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다."); // 로그인 필요
         }
         
+        int storeId = storeSession.getStoreId();
+//        log.info("컨트롤러단" + "couponId : " + couponId + " storeId : " + storeId);
+        
         try {
-            int result = ownerCouponService.deleteCoupon(couponId); // 삭제 메서드 호출
+            int result = ownerCouponService.deleteCoupon(couponId, storeId); // 삭제 메서드 호출
+            
             if (result > 0) {
                 return ResponseEntity.ok("쿠폰 삭제 성공"); // 성공 응답
             } else {

@@ -13,8 +13,8 @@ public interface OwnerCouponService {
 	// 쿠폰 생성
 	int createCoupon(CouponDTO coupon) throws Exception;
 
-	int deleteCoupon(int couponId) throws Exception;
+	// 쿠폰 삭제
+	int deleteCoupon(int couponId, int storeId) throws Exception;
 	
-
 
 }

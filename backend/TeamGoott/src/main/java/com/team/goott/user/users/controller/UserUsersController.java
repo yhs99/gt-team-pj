@@ -40,16 +40,20 @@ public class UserUsersController {
         String password = loginData.get("upw");
 
         if ("0".equals(loginGroup)) {
+        	// 회원
             return handleUserLogin(email, password, session, response, loginResponse);
         } else if ("1".equals(loginGroup)) {
+        	// 점주
+        	System.out.println("test: 점주 로그인 요청");
             return handleOwnerLogin(email, password, session, response);
         } else if ("99".equals(loginGroup)) {
+        	// 관리자
             return ResponseEntity.ok("관리자 로그인 성공");
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 로그인 그룹입니다.");
         }
     }
-
+    // 회원 로그인
     private ResponseEntity<Object> handleUserLogin(String email, String password, HttpSession session, HttpServletResponse response, Map<String, String> loginResponse) {
         UserDTO loginInfo = usersService.login(email, password);
 
@@ -69,6 +73,7 @@ public class UserUsersController {
         }
     }
 
+    // 점주 로그인
     private ResponseEntity<Object> handleOwnerLogin(String email, String password, HttpSession session, HttpServletResponse response) {
         StoreDTO storeInfo = ownerService.login(email, password);
 

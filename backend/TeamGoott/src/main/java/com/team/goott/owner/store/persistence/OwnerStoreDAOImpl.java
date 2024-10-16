@@ -25,8 +25,8 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
 	public StoreDTO login(String id, String pw) {
 		// TODO Auto-generated method stub
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("email", id);
-		map.put("password", pw);
+		map.put("id", id);
+		map.put("pw", pw);
 		return ses.selectOne(NS+"ownerLoginInfo", map);
 	}
 

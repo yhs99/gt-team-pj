@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Repository
 @Slf4j
 public class UserUsersDAOImpl implements UserUsersDAO {
-	private final static String NS = "com.team.mappers.user.store.userStoreMapper.";
+	private final static String NS = "com.team.mappers.user.users.userUsersMapper.";
 
 	@Inject
 	private SqlSession ses;

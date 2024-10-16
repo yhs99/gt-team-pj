@@ -35,6 +35,23 @@ public class OwnerCouponServiceImpl implements OwnerCouponService {
         // DAO 호출하여 쿠폰 저장 로직 구현
         return ownerCouponDAO.createCoupon(coupon);
     }
+
+	@Override
+	public int deleteCoupon(int couponId) throws Exception {
+		// 트랜잭션
+
+
+		// 1. 특정 쿠폰의 정보를 select 해온다
+		
+		// 2. select 쿠폰의 storeid와 session 저장된 storeid 비교한다
+		
+		// 3. 일치하다면 coupon의 isDeleted의 상태를 UPDATE해준다.
+		
+		// 4. 만약 일치하지 않다면 throw error 발생시킨
+		return ownerCouponDAO.deleteCoupon(couponId);
+	}
+	
+	
 	
 	
 	
@@ -52,11 +69,5 @@ public class OwnerCouponServiceImpl implements OwnerCouponService {
 	        coupon.setEnd(null); // stock이 입력되었으면 end 값을 무제한으로 설정 (null)
 	    }
 	}
-
-	@Override
-	public int deleteCoupon(int couponId) throws Exception {
-		
-		return ownerCouponDAO.deleteCoupon(couponId);
-		
-	}
+	
 }

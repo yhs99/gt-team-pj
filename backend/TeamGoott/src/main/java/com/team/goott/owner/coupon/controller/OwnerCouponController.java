@@ -61,13 +61,13 @@ public class OwnerCouponController {
 	@PostMapping("")
 	public ResponseEntity<Object> createCoupon(HttpSession session, CouponDTO coupon) {
 
-//		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
-//		if (storeSession == null) { // return
-//			ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다."); // 로그인 필요
-//		}
-//		int storeId = storeSession.getStoreId();
+		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
+		if (storeSession == null) { // return
+			ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다."); // 로그인 필요
+		}
+		int storeId = storeSession.getStoreId();
 
-		coupon.setStoreId(3);
+		coupon.setStoreId(storeId);
 
 
 		try {
@@ -112,12 +112,11 @@ public class OwnerCouponController {
  // 쿠폰 수정
     @PutMapping("/{couponId}")
     public ResponseEntity<Object> updateCoupon(HttpSession session, @PathVariable int couponId, CouponDTO coupon) {
-//        StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
-//        if (storeSession == null) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다."); // 로그인 필요
-//        }
-//    	int storeId = storeSession.getStoreId();
-    	int storeId = 3;
+        StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
+        if (storeSession == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다."); // 로그인 필요
+        }
+    	int storeId = storeSession.getStoreId();
     	coupon.setStoreId(storeId);
     	log.info("컨트롤러단 넘어온 정보 : " + coupon.toString());
     	

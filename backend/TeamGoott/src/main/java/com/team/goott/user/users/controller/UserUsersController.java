@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+
+import com.team.goott.admin.domain.AdminDTO;
+import com.team.goott.admin.users.service.AdminUsersService;
 import com.team.goott.owner.domain.StoreDTO;
 import com.team.goott.owner.store.service.OwnerStoreService;
 import com.team.goott.user.domain.UserDTO;
@@ -33,9 +36,11 @@ public class UserUsersController {
 
 	@Inject
 	private OwnerStoreService ownerService;
+	
+	@Inject
+	private AdminUsersService adminService;
 
 	// 로그인 상태 체크
-	// 아직 미완성
 	@GetMapping("/status")
 	public ResponseEntity<Object> checkStatus(@CookieValue(value = "JSESSIONID", required = false) String sessionId,HttpServletRequest request) {
 
@@ -53,7 +58,7 @@ public class UserUsersController {
 		}
 
 	}
-
+	// 세션 체크 메서드
 	private boolean checkLoginStatus(String sessionId,HttpServletRequest request) {
 		HttpSession session = request.getSession(false);
 		log.info("서버에 있는 세션 아이디값 : {}", session.getId());
@@ -83,13 +88,14 @@ public class UserUsersController {
 			return handleOwnerLogin(email, password, session, response, loginResponse);
 		} else if ("99".equals(loginGroup)) {
 			// 관리자
-			return ResponseEntity.ok("관리자 로그인 성공");
+			return handleAdminLogin(email, password, session, response, loginResponse);
 		} else {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 로그인 그룹입니다.");
 		}
 	}
 
-	// 회원 로그인
+
+	// 회원 로그인 메서드
 	private ResponseEntity<Object> handleUserLogin(String email, String password, HttpSession session,
 			HttpServletResponse response, Map<String, String> loginResponse) {
 		UserDTO loginInfo = usersService.login(email, password);
@@ -97,7 +103,7 @@ public class UserUsersController {
 		if (loginInfo != null) {
 			loginResponse.put("loginSuccess", loginInfo.getName());
 			session.setAttribute("user", loginInfo);
-			log.info("로그인 성공 세션 생성 : {}", loginInfo);
+			log.info("로그인 성공 세션 생성 : {}", session.getAttribute("user"));
 			log.info("로그인 성공 세션 아이디 : {}", session.getId());
 
 			Cookie cookie = new Cookie("JSESSIONID", session.getId());
@@ -111,15 +117,43 @@ public class UserUsersController {
 		}
 	}
 
-	// 점주 로그인
+	// 점주 로그인 메서드
 	private ResponseEntity<Object> handleOwnerLogin(String email, String password, HttpSession session,
 			HttpServletResponse response, Map<String, String> loginResponse) {
 		StoreDTO storeInfo = ownerService.login(email, password);
-
+		
 		if (storeInfo != null) {
+			
 			loginResponse.put("loginSuccess", "" + storeInfo.getStoreId());
+			
 			session.setAttribute("store", storeInfo);
-			log.info("로그인 성공 세션 생성 : {}", storeInfo);
+			
+			log.info("로그인 성공 세션 생성 : {}", session.getAttribute("store"));
+			log.info("로그인 성공 세션 아이디 : {}", session.getId());
+
+			Cookie cookie = new Cookie("JSESSIONID", session.getId());
+			cookie.setMaxAge(1800); // 30분 = 1800초
+			cookie.setPath("/");
+			response.addCookie(cookie);
+
+			return ResponseEntity.ok(loginResponse);
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 아이디 또는 비밀번호입니다.");
+		}
+	}
+	
+	// 관리자 로그인 메서드
+	private ResponseEntity<Object> handleAdminLogin(String email, String password, HttpSession session,
+			HttpServletResponse response, Map<String, String> loginResponse) {
+		AdminDTO adminDTO = adminService.login(email, password);
+		
+		if (adminDTO != null) {
+			
+			loginResponse.put("loginSuccess", "" + adminDTO.getId());
+			
+			session.setAttribute("admin", adminDTO);
+			
+			log.info("로그인 성공 세션 생성 : {}", session.getAttribute("admin"));
 			log.info("로그인 성공 세션 아이디 : {}", session.getId());
 
 			Cookie cookie = new Cookie("JSESSIONID", session.getId());

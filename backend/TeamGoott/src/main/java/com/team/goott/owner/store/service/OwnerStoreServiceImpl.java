@@ -15,6 +15,7 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
 	@Inject
 	OwnerStoreDAO storeDAO;
 
+	// 트랙젝션 점주 가입 해줘야함
 	
 	@Override
 	public StoreDTO login(String id, String pw) {

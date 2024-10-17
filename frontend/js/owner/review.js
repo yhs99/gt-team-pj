@@ -42,29 +42,19 @@ new Vue({
             axios.get("/api/review")
             .then((response =>{
                console.log(response); 
+                this.totalReviewCount = response.data.data.totalReview;
+                this.totalTodayReview = response.data.data.todayReview;
+                this.totalAvgScore = this.totalReviewCount > 0 ? Math.round(((response.data.data.totalScore) / this.totalReviewCount) * 100) /100 : 0;
+                this.totalAvgTodayScore = this.totalTodayReview > 0 ? Math.round(((response.data.data.todayTotalScore) / this.totalTodayReview) * 100) /100 : 0 ;
             }))
             .catch((error)=>{
                 console.error(error);
             })
         },
-        getTotalReviewCount(){
-            axios.get("/api/review/info")
-            .then((response) =>{
-                console.log(response)
-                this.totalReviewCount = response.data.data.totalReview;
-                this.totalTodayReview = response.data.data.todayReview;
-                this.totalAvgScore = this.totalReviewCount > 0 ? Math.round(((response.data.data.totalScore) / this.totalReviewCount) * 100) /100 : 0;
-                this.totalAvgTodayScore = this.totalTodayReview > 0 ? Math.round(((response.data.data.todayTotalScore) / this.totalTodayReview) * 100) /100 : 0 ;
-            })
-            .catch((error) =>{
-                console.error(error);
-            })
-        }
     },
     mounted(){
         this.saveStoreDTO().then(() => {
             this.getAllReviews();
-            this.getTotalReviewCount();
         });
     }
 })

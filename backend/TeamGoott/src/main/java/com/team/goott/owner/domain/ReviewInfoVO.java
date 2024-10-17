@@ -1,6 +1,8 @@
 package com.team.goott.owner.domain;
 
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,4 +21,6 @@ public class ReviewInfoVO {
 	private int todayReview;
 	private float totalScore;
 	private float todayTotalScore;
+	
+	private List<ReviewVO> reviews;
 }

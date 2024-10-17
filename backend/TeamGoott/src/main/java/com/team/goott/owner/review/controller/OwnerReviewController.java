@@ -30,50 +30,21 @@ public class OwnerReviewController {
 	@Inject
 	OwnerReviewService service;
 	
-	//세션 임의 생성해서 테스트
-	@PostMapping("/review")
-	public ResponseEntity<Object> saveStoreDTO(@RequestBody StoreDTO storeDTO, HttpSession session) {
-		if(storeDTO == null) {
-			log.error("Received null StoreDTO");
-		}
-		session.setAttribute("store", storeDTO);
-		StoreDTO dto = (StoreDTO) session.getAttribute("store");
-		log.info("storeDTO : ", dto.toString());
-		return ResponseEntity.ok(dto);
-	}
-	
-	
-	// 전체 리뷰 목록 가져오기
+		
+	// 전체 리뷰 목록, 총 리뷰수, 총 평점, 당일 리뷰수, 당일 리뷰 총 평점 가져오기
 	@GetMapping("/review")
-	public ResponseEntity<Object> getAllReview(@RequestParam(value = "sortMethod", defaultValue = "score") String sortMethod,@RequestParam(value = "storeId", defaultValue = "0") int storeId, HttpSession session) {
+	public ResponseEntity<Object> getAllReview(@RequestParam(value = "sortMethod", defaultValue = "score") String sortMethod, HttpSession session) {
 		StoreDTO storeDTO = (StoreDTO) session.getAttribute("store");
-		List<ReviewVO> reviews =  null;
+		ReviewInfoVO reviews =  null;
 		if(storeDTO != null) {
-			reviews = service.getAllReview(storeDTO.getStoreId(),sortMethod);
+			reviews = service.getTotalReviewInfo(storeDTO.getStoreId(),sortMethod);
 		}else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
 		}
-		
-		reviews = service.getAllReview(storeId,sortMethod);
 		log.info("review : " + reviews.toString());
 		return ResponseEntity.ok(reviews);
 	}
 	
-	// 총 리뷰 갯수, 평점, 당일 날짜 리뷰 갯수, 평점 
-	@GetMapping("/review/info")
-	public ResponseEntity<Object> getTotalReviewCount(HttpSession session){
-		StoreDTO storeDTO = (StoreDTO) session.getAttribute("store");
-//		log.info("storeDTO : " +storeDTO);
-		ReviewInfoVO reviewInfo = null;
-		if(storeDTO != null) {
-			reviewInfo = service.getTotalReviewInfo(storeDTO.getStoreId());
-		}else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
-		}
-		log.info("info : " + reviewInfo);
-		return ResponseEntity.ok(reviewInfo);
-	}
-
 	// 삭제 요청
 	@DeleteMapping("/review/{reviewId}")
 	public ResponseEntity<Object> deleteReviewRequest(@PathVariable("reviewId") int reviewId){

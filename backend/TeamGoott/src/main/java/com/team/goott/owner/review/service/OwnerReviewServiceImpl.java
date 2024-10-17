@@ -20,10 +20,7 @@ public class OwnerReviewServiceImpl implements OwnerReviewService {
 	@Inject
 	OwnerReviewDAO reviewDAO;
 	
-	@Override
-	public List<ReviewVO> getAllReview(int storeId,String sortMethod) {
-		return reviewDAO.getAllReview(storeId,sortMethod);
-	}
+
 
 	@Override
 	public int deleteReviewReq(int reviewId, boolean isDeleteReq) {
@@ -36,13 +33,14 @@ public class OwnerReviewServiceImpl implements OwnerReviewService {
 	}
 
 	@Override
-	public ReviewInfoVO getTotalReviewInfo(int storeId) {
+	public ReviewInfoVO getTotalReviewInfo(int storeId,String sortMethod ) {
 		int totalReviewCount = reviewDAO.getTotalReviewCount(storeId);
 		int todayReview = reviewDAO.getTotalTodayReview(storeId);
 		float totalScore = reviewDAO.getTotalScore(storeId);
 		float totalTodayScore = reviewDAO.getTotalTodayScore(storeId);
+		List<ReviewVO> reviews = reviewDAO.getAllReview(storeId, sortMethod);
 		
-		ReviewInfoVO reviewInfo = ReviewInfoVO.builder().totalReview(totalReviewCount).todayReview(todayReview).totalScore(totalScore).todayTotalScore(totalTodayScore).build();	
+		ReviewInfoVO reviewInfo = ReviewInfoVO.builder().totalReview(totalReviewCount).todayReview(todayReview).totalScore(totalScore).todayTotalScore(totalTodayScore).reviews(reviews).build();	
 		log.info(reviewInfo.toString());
 		
 		return reviewInfo;

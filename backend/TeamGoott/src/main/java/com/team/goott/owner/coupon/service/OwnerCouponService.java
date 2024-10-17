@@ -15,6 +15,10 @@ public interface OwnerCouponService {
 
 	// 쿠폰 삭제
 	int deleteCoupon(int couponId, int storeId) throws Exception;
+
+	// 쿠폰 수정
+	int modifyCoupon(int couponId, int storeId, CouponDTO coupon) throws Exception;
+
 	
 
 }

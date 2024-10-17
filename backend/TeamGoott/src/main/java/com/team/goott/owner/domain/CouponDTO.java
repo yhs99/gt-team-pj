@@ -1,6 +1,11 @@
 package com.team.goott.owner.domain;
 
+
+
 import java.time.LocalDateTime;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,8 +23,12 @@ import lombok.ToString;
 public class CouponDTO {
 	private String couponName;
 	private int storeId;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime start;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime end;
 	private int discount;
 	private int stock;
+	
+
 }

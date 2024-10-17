@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -60,13 +61,13 @@ public class OwnerCouponController {
 	@PostMapping("")
 	public ResponseEntity<Object> createCoupon(HttpSession session, CouponDTO coupon) {
 
-		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
-		if (storeSession == null) { // return
-			ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다."); // 로그인 필요
-		}
-		int storeId = storeSession.getStoreId();
+//		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
+//		if (storeSession == null) { // return
+//			ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다."); // 로그인 필요
+//		}
+//		int storeId = storeSession.getStoreId();
 
-		coupon.setStoreId(storeId);
+		coupon.setStoreId(3);
 
 
 		try {
@@ -107,4 +108,32 @@ public class OwnerCouponController {
         }
     }
 	
+    
+ // 쿠폰 수정
+    @PutMapping("/{couponId}")
+    public ResponseEntity<Object> updateCoupon(HttpSession session, @PathVariable int couponId, CouponDTO coupon) {
+//        StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
+//        if (storeSession == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다."); // 로그인 필요
+//        }
+//    	int storeId = storeSession.getStoreId();
+    	int storeId = 3;
+    	coupon.setStoreId(storeId);
+    	log.info("컨트롤러단 넘어온 정보 : " + coupon.toString());
+    	
+
+        try {
+            int result = ownerCouponService.modifyCoupon(couponId, storeId, coupon);
+            log.info("컨트롤러단 (수정) : " + result);
+            if (result > 0) {
+                return ResponseEntity.ok("쿠폰 수정 성공"); // 성공 응답
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("쿠폰 수정 실패"); // 실패 응답
+            }
+        } catch (Exception e) {
+            log.error("서버 오류 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류 발생"); // 예외 발생 시 응답
+        }
+    }
+    
 }

@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.team.goott.user.cart.service.UserCartService;
 import com.team.goott.user.domain.CartDTO;
@@ -26,69 +28,72 @@ public class UserCartController {
 
 	private final UserCartService cartService;
 
-    @Autowired
-    public UserCartController(UserCartService cartService) {
-        this.cartService = cartService;
-    }
+	@Autowired
+	public UserCartController(UserCartService cartService) {
+		this.cartService = cartService;
+	}
 
-
-		//장바구니 조회
-		@GetMapping("/cart")
-		public ResponseEntity<Object> getUserCart(HttpSession session) {
+	// 장바구니 조회
+	@GetMapping("/cart")
+	public ResponseEntity<Object> getUserCart(HttpSession session) {
 		List<CartDTO> cart = null;
 		UserDTO userSession = (UserDTO) session.getAttribute("user");
-//		if(userSession == null) {
-//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
-//		}
-		
+		if (userSession == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
+		}
+
 		try {
-			cart = cartService.getUserCart(1);
-			  if (cart == null || cart.isEmpty()) {
-		            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("장바구니에 아이템이 없습니다.");
-		        }
+			cart = cartService.getUserCart(userSession.getUserId());
+			if (cart == null || cart.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("장바구니에 아이템이 없습니다.");
+			}
 		} catch (Exception e) {
-			log.error("Error retrieving cart for userId {}: {}", userSession.getUserId(), e.getMessage());
-            return ResponseEntity.status(500).build();
+			e.printStackTrace();
+			log.error("조회에 실패했습니다. {}: {}", userSession.getUserId(), e.getMessage());
+			return ResponseEntity.status(500).build();
 		}
 		return ResponseEntity.ok(cart);
 	}
-	
-	//장바구니에 담기
+
+	// 장바구니에 담기
 	@PostMapping("/cart")
-	public ResponseEntity<Object> addCart(@RequestBody CartDTO cartDTO ,HttpSession session){
+	public ResponseEntity<Object> addCart(@RequestBody CartDTO cartDTO, HttpSession session) {
 		UserDTO userSession = (UserDTO) session.getAttribute("user");
-		
-//		if(userSession == null) {
-//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
-//		}
+
+		if (userSession == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
+		}
 		try {
 			cartDTO.setUserId(userSession.getUserId());
+			cartDTO.setUserId(1);
 			cartService.addCart(cartDTO);
-			log.info("Item added to cart: {}", cartDTO);
-			return ResponseEntity.ok("Item added to cart successfully.");
+			log.info("메뉴가 추가됐습니다 : {}", cartDTO);
+			return ResponseEntity.ok("메뉴가 장바구니에 담겼습니다.");
 		} catch (Exception e) {
-			log.error("Error adding item to cart: {}", e.getMessage());
-            return ResponseEntity.status(500).body("Failed to add item to cart.");
+			e.printStackTrace();
+			log.error("메뉴 추가에 실패했습니다 : {}", e.getMessage());
+			return ResponseEntity.status(500).body("메뉴가 장바구니에 담기지 못했습니다.. 다시 한번 확인해주세요!");
 		}
 	}
-	
+
 	// 장바구니에 메뉴 삭제
 	@DeleteMapping("/cart/{cartId}")
-	public ResponseEntity<Object> deleteCartItem(@PathVariable int cartId, HttpSession session){		
+	public ResponseEntity<Object> deleteCartItem(@PathVariable int cartId, HttpSession session) {
 
-		 UserDTO userSession = (UserDTO) session.getAttribute("user");
-		    
-//		    if (userSession == null) {
-//		        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
-//		    }
-		    
+		UserDTO userSession = (UserDTO) session.getAttribute("user");
+
+		if (userSession == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
+		}
 		try {
 			cartService.deleteFromCart(cartId, userSession.getUserId());
-			log.info("Item deleted from cart with cartId: {} for userId: {}", cartId, userSession.getUserId());
-	        return ResponseEntity.ok("Item deleted from cart successfully.");
+
+			log.info("메뉴 삭제에 성공했습니다 : {} for userId: {}", cartId, userSession.getUserId());
+			return ResponseEntity.ok("삭제가 완료됐습니다. ");
 		} catch (Exception e) {
-			log.error("Error deleting item from cart: {}", e.getMessage());
-            return ResponseEntity.status(500).body("Failed to delete item from cart.");
+			e.printStackTrace();
+			log.error("메뉴 삭제에 실패했습니다 : {}", e.getMessage());
+			return ResponseEntity.status(500).body("삭제에 실패하였습니다.. 다시 한번 확인해주세요!");
 		}
 	}
 }

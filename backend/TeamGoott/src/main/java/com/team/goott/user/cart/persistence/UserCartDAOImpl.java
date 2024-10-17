@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
@@ -15,12 +17,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserCartDAOImpl implements UserCartDAO {
 	
+	@Inject
 	private SqlSession ses;
-	private static String ns = "com.team.mappers.admin.users.adminUsersMapper.";
+	private static String ns = "com.team.mappers.user.cart.userCartMapper.";
 	
 	@Override
 	public List<CartDTO> getUserCart(int userId) throws Exception {
-		return ses.selectList(ns+"getAllCart");
+		log.info(userId + " ");
+		return ses.selectList(ns+"getAllCart",userId);
 	}
 
 	@Override
@@ -34,7 +38,7 @@ public class UserCartDAOImpl implements UserCartDAO {
 				Map<String, Object> params = new HashMap<>();
 				params.put("cartId", cartId);
 				params.put("userId", userId);
-				return ses.selectOne(ns + "deleteFromCart", params);
+				return ses.delete(ns + "deleteFromCart", params);
 	}
 
 }

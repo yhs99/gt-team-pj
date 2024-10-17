@@ -2,6 +2,7 @@ package com.team.goott.user.cart.service;
 
 import java.util.List;
 
+import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
@@ -14,11 +15,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserCartServiceImpl implements UserCartService {
 	
+	@Inject
 	 private UserCartDAO cartDAO;
 	 
 	@Override
 	public List<CartDTO> getUserCart(int userId) throws Exception {
-	 return cartDAO.getUserCart(userId);
+		log.info(userId +"");
+		return cartDAO.getUserCart(userId);
 	}
 
 	@Override

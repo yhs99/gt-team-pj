@@ -41,4 +41,5 @@ public class UserCartDAOImpl implements UserCartDAO {
 				return ses.delete(ns + "deleteFromCart", params);
 	}
 
+
 }

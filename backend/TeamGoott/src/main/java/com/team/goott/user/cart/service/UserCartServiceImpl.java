@@ -37,6 +37,7 @@ public class UserCartServiceImpl implements UserCartService {
 	public void deleteFromCart(int cartId, int userId) throws Exception {
 		cartDAO.deleteFromCart(cartId, userId);
 	}
+
 	  
 	
    

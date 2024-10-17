@@ -9,4 +9,5 @@ public interface UserCartService {
 	void addCart(CartDTO cartDTO) throws Exception;
 
 	void deleteFromCart(int cartId, int userId) throws Exception;
+
 }

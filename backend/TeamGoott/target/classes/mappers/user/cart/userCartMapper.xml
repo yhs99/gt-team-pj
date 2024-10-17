@@ -14,4 +14,5 @@
 	<delete id="deleteFromCart">
 	delete from cart where cartId = #{cartId} AND userId = #{userId}
 	</delete>
+	
 </mapper>

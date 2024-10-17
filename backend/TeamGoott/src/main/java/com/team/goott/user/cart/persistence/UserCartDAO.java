@@ -12,4 +12,5 @@ public interface UserCartDAO {
 
 	int deleteFromCart(int cartId, int userId) throws Exception;
 
+
 }

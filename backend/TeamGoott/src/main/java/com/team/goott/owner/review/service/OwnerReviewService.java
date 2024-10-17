@@ -12,5 +12,5 @@ public interface OwnerReviewService {
 
 	ReviewVO getReview(int reviewId);
 
-	ReviewInfoVO getTotalReviewInfo();
+	ReviewInfoVO getTotalReviewInfo(int storeId);
 }

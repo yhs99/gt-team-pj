@@ -44,23 +44,23 @@ public class OwnerReviewDAOImpl implements OwnerReviewDAO {
 	}
 
 	@Override
-	public int getTotalReviewCount() {
-		return ses.selectOne(ns+"getTotalReviewCount");
+	public int getTotalReviewCount(int storeId) {
+		return ses.selectOne(ns+"getTotalReviewCount", storeId) != null ? ses.selectOne(ns+"getTotalReviewCount", storeId) : 0;
 	}
 
 	@Override
-	public int getTotalTodayReview() {
-		return ses.selectOne(ns+"getTotalTodayReview");
+	public int getTotalTodayReview(int storeId) {
+		return ses.selectOne(ns+"getTotalTodayReview", storeId) != null ? ses.selectOne(ns+"getTotalTodayReview", storeId) : 0 ;
 	}
 
 	@Override
-	public float getTotalScore() {
-		return ses.selectOne(ns+"getTotalScore");
+	public float getTotalScore(int storeId) {
+		return ses.selectOne(ns+"getTotalScore", storeId) != null ? ses.selectOne(ns+"getTotalScore", storeId) : 0 ;
 	}
 
 	@Override
-	public float getTotalTodayScore() {
-		return ses.selectOne(ns+"getTotalTodayScore");
+	public float getTotalTodayScore(int storeId) {
+		return ses.selectOne(ns+"getTotalTodayScore", storeId) != null ? ses.selectOne(ns+"getTotalTodayScore", storeId) : 0;
 	}
 
 }

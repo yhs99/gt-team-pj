@@ -15,15 +15,15 @@ public interface OwnerReviewDAO {
 	ReviewVO getReview(int reviewId);
 
 	//총 리뷰 수 
-	int getTotalReviewCount();
+	int getTotalReviewCount(int storeId);
 
 	// 총 오늘의 리뷰 수
-	int getTotalTodayReview();
+	int getTotalTodayReview(int storeId);
 
 	// 총 리뷰 평점
-	float getTotalScore();
+	float getTotalScore(int storeId);
 
 	// 총 오늘의 리뷰 평점
-	float getTotalTodayScore();
+	float getTotalTodayScore(int storeId);
 	
 }

@@ -36,11 +36,11 @@ public class OwnerReviewServiceImpl implements OwnerReviewService {
 	}
 
 	@Override
-	public ReviewInfoVO getTotalReviewInfo() {
-		int totalReviewCount = reviewDAO.getTotalReviewCount();
-		int todayReview = reviewDAO.getTotalTodayReview();
-		float totalScore = reviewDAO.getTotalScore();
-		float totalTodayScore = reviewDAO.getTotalTodayScore();
+	public ReviewInfoVO getTotalReviewInfo(int storeId) {
+		int totalReviewCount = reviewDAO.getTotalReviewCount(storeId);
+		int todayReview = reviewDAO.getTotalTodayReview(storeId);
+		float totalScore = reviewDAO.getTotalScore(storeId);
+		float totalTodayScore = reviewDAO.getTotalTodayScore(storeId);
 		
 		ReviewInfoVO reviewInfo = ReviewInfoVO.builder().totalReview(totalReviewCount).todayReview(todayReview).totalScore(totalScore).todayTotalScore(totalTodayScore).build();	
 		log.info(reviewInfo.toString());

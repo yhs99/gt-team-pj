@@ -23,19 +23,19 @@
 	</select>
 	
 	<select id="getTotalReviewCount" resultType="int">
-		select count(*) from review
+		select count(*) from review where storeId = #{storeId}
 	</select>
 	
 	<select id="getTotalTodayReview" resultType="int">
-		select count(*) from review where date_format(createAt, "%Y-%m-%d") = curdate()
+		select count(*) from review where date_format(createAt, "%Y-%m-%d") = curdate() and storeId = #{storeId}
 	</select>
 	
 	<select id="getTotalScore" resultType="float">
-		select sum(score) from review
+		select sum(score) from review where storeId = #{storeId}
 	</select>
 	
 	<select id="getTotalTodayScore" resultType="float">
-		select sum(score) from review where date_format(createAt, "%Y-%m-%d") = curdate()
+		select sum(score) from review where date_format(createAt, "%Y-%m-%d") = curdate() and storeId = #{storeId}
 	</select>
 	
 	<update id="updateisDeleteReq">

@@ -29,7 +29,7 @@ new Vue({
             // sessionStorage.setItem('store',JSON.stringify(storeDTO));
 
             // const storedStoreDTO = JSON.parse(sessionStorage.getItem('store'));
-           return  axios.post("/api/review", storeDTO)
+           return  axios.post("/api/owner/review", storeDTO)
             .then(response =>{
                 console.log('storeDTO saved successfully : ', response.data)
             })
@@ -39,7 +39,7 @@ new Vue({
         },
 
         getAllReviews(){
-            axios.get("/api/review")
+            axios.get("/api/owner/review")
             .then((response =>{
                console.log(response); 
                 this.totalReviewCount = response.data.data.totalReview;

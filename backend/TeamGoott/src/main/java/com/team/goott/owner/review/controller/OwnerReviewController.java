@@ -1,7 +1,5 @@
 package com.team.goott.owner.review.controller;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
@@ -10,8 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,6 +20,7 @@ import com.team.goott.owner.review.service.OwnerReviewService;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
+@RequestMapping("/owner")
 @Slf4j
 public class OwnerReviewController {
 
@@ -41,15 +39,24 @@ public class OwnerReviewController {
 		}else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
 		}
-		log.info("review : " + reviews.toString());
 		return ResponseEntity.ok(reviews);
 	}
 	
 	// 삭제 요청
 	@DeleteMapping("/review/{reviewId}")
-	public ResponseEntity<Object> deleteReviewRequest(@PathVariable("reviewId") int reviewId){
-		ReviewVO review = service.getReview(reviewId);
-		int result = service.deleteReviewReq(reviewId, review.isDeleteReq());
-		return ResponseEntity.ok(result);
+	public ResponseEntity<Object> deleteReviewRequest(HttpSession session, @PathVariable("reviewId") int reviewId){
+		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
+		int result;
+		if(storeSession != null) {
+			ReviewVO review = service.getReview(reviewId);
+			if(review.getStoreId() == storeSession.getStoreId()) {
+				result = service.deleteReviewReq(reviewId, review.isDeleteReq());
+			}else {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("해당 리뷰에 대한 권한이 없습니다.");
+			}
+		}else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
+		}
+		return ResponseEntity.ok(result == 1 ? "삭제 요청 성공" : "삭제 실패");
 	}
 }

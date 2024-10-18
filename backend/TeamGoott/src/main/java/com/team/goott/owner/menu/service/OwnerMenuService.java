@@ -12,4 +12,8 @@ public interface OwnerMenuService {
 
 	MenuDTO getMenu(int menuId);
 
+	int uploadMenu(MenuDTO uploadMenu);
+
+	int updateMenu(int menuId, MenuDTO menu);
+
 }

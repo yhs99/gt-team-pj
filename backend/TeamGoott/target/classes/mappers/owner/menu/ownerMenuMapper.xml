@@ -9,8 +9,17 @@
 		select * from menu where menuId = #{menuId}
 	</select>
 	
+	<insert id="uploadMenu">
+		insert into menu(storeId, menuName, price, menuImageUrl, menuImageName, description, isMain ) values(#{storeId}, #{menuName}, #{price}, #{menuImageUrl}, #{menuImageName}, #{description}, #{isMain})
+	</insert>
+	
 	<delete id="deleteMenu">
 		delete from menu where menuId = #{menuId}
 	</delete>
+	
+	<update id="updateMenu">
+		update menu set menuName = #{menuName}, price = #{price}, menuImageUrl = #{menuImageUrl} , menuImageName = #{menuImageName} , description = #{description}, isMain = #{isMain} where menuId = #{menuId};
+	</update>
+	
 
 </mapper>

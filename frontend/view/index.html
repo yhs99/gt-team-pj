@@ -37,6 +37,7 @@
     <script src="/node_modules/vue/dist/vue.min.js"></script>
     <script src="/node_modules/axios/dist/axios.min.js"></script>
     <script src="/js/user/lib/main.js"></script>
+    <script src="/js/user/lib/index.js"></script>
   </head>
 
   <body>
@@ -54,100 +55,27 @@
     </div>
     <!-- Navbar End -->
 
-    <!-- Hero Start -->
-    <div class="container-fluid bg-light py-6 my-6 mt-0">
-      <div class="container">
+   <!-- Hero Start -->
+   <div class="container-fluid bg-light py-6 my-6 mt-0">
+    <div class="container">
         <div class="row g-5 align-items-center">
-          <div class="col-lg-7 col-md-12">
-            <small
-              class="d-inline-block fw-bold text-dark text-uppercase bg-light border border-primary rounded-pill px-4 py-1 mb-4 animated bounceInDown"
-              >환영합니다</small
-            >
-            <h1 class="display-1 mb-4 animated bounceInDown">
-              예약을 <br /><span class="text-primary">더</span> 빠르고
-              <br /><span class="text-primary">더</span> 알뜰하게
-            </h1>
-            <a
-              href=""
-              class="btn btn-primary border-0 rounded-pill py-3 px-4 px-md-5 me-4 animated bounceInLeft"
-              >식당보러가자</a
-            >
-            <a
-              href="/view/user/userLogin.html"
-              class="btn btn-primary border-0 rounded-pill py-3 px-4 px-md-5 animated bounceInLeft"
-              >로그인 바로가기</a
-            >
-          </div>
-          <div class="col-lg-5 col-md-12">
-            <img
-              src="/assets/user/img/hero.png"
-              class="img-fluid rounded animated zoomIn"
-              alt=""
-            />
-          </div>
+            <div class="col-lg-7 col-md-12">
+                <small class="d-inline-block fw-bold text-dark text-uppercase bg-light border border-primary rounded-pill px-4 py-1 mb-4 animated bounceInDown">환영합니다</small>
+                <h1 class class="display-1 mb-4 animated bounceInDown">예약을 <br></class><span class="text-primary">더</span> 빠르고 </br><span class="text-primary">더 </span>알뜰하게</h1>
+                <a href="" class="btn btn-primary border-0 rounded-pill py-3 px-4 px-md-5 me-4 animated bounceInLeft">식당보러가자</a>
+                <a href="../view/user/userLogin.html" class="btn btn-primary border-0 rounded-pill py-3 px-4 px-md-5 animated bounceInLeft">로그인 바로가기</a>
+            </div>
+            <div class="col-lg-5 col-md-12">
+                <img src="/assets/user/img/hero.png" class="img-fluid rounded animated zoomIn" alt="">
+            </div>
         </div>
-      </div>
     </div>
-    <!-- Hero End -->
+</div>
+<!-- Hero End -->
     <!--
     로그인 이 안되어 있다면 index 페이지 뷰 
     로그인 이 되어 있다면 식당 페이지 리스트 전달   
 -->
-    <div id="app"></div>
-
-    <script>
-      new Vue({
-        el: "#app",
-        data: {
-          isLoggedIn: false,
-        },
-        methods: {
-          async checkLoginStatus() {
-            const sessionId = getCookie("JSESSIONID");
-            console.log("쿠키에 저장된 세션 id : " + sessionId);
-            if (sessionId) {
-              try {
-                const response = await axios.get("/api/status", {
-                  headers: { Cookie: `JSESSIONID=${sessionId}` },
-                });
-                if (response.status === 200) {
-                  this.isLoggedIn = true;
-                // window.location.href = "/view/user/list.html"; // 로그인 되어 있으면 list.html로 리디렉션
-                } else {
-                  // 로그인 안 되어 있으면 그대로 남아 있는다
-                  console.log("로그인 되어있지 않음");
-                }
-              } catch (error) {
-                console.error("로그인 상태 체크 중 오류가 발생했습니다.");
-              }
-            } else {
-              // 세션 ID가 없으면 현제 페이지에 그대로 남아 있는다.
-              console.log("쿠기가 없다.");
-            }
-          },
-        },
-        created() {
-          this.checkLoginStatus();
-        },
-      });
-      //쿠키 값 가져오는 함수
-      function getCookie(cookieName) {
-        // 현재 페이지의 모든 쿠키를 가져옵니다.
-        const cookies = document.cookie.split(";");
-        console.log(cookies);
-        // 각 쿠키를 확인하여 원하는 쿠키명이 있는지 검사합니다.
-        for (let i = 0; i < cookies.length; i++) {
-          let cookie = cookies[i].trim();
-          // 쿠키명이 주어진 쿠키명과 일치하는지 확인합니다.
-          if (cookie.startsWith(cookieName + "=")) {
-            // 쿠키 값만을 추출하여 반환합니다.
-            return cookie.substring(cookieName.length + 1);
-          }
-        }
-        // 해당 쿠키명이 없으면 null을 반환합니다.
-        return null;
-      }
-      console.log(getCookie("JSESSIONID"));
-    </script>
+    <div id="sessionTest"></div>
   </body>
 </html>

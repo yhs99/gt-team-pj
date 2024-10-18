@@ -43,4 +43,22 @@ public class OwnerMenuDAOImpl implements OwnerMenuDAO {
 		return ses.selectOne(ns+"getMenu", menuId);
 	}
 
+	@Override
+	public int uploadMenu(MenuDTO uploadMenu) {
+		return ses.insert(ns+"uploadMenu", uploadMenu);
+	}
+
+	@Override
+	public int updateMenu(int menuId, MenuDTO menu) {
+		Map<String, Object> args = new HashMap<String, Object>();
+		args.put("menuId", menuId);
+		args.put("menuName", menu.getMenuName());
+		args.put("price", menu.getPrice());
+		args.put("menuImageUrl", menu.getMenuImageUrl());
+		args.put("menuImageName", menu.getMenuImageName());
+		args.put("description", menu.getDescription());
+		args.put("isMain", menu.isMain());
+		return ses.update(ns+"updateMenu", args);
+	}
+
 }

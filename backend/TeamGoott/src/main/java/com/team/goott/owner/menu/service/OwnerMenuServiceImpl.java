@@ -34,4 +34,14 @@ public class OwnerMenuServiceImpl implements OwnerMenuService {
 		return menuDAO.getMenu(menuId);
 	}
 
+	@Override
+	public int uploadMenu(MenuDTO uploadMenu) {
+		return menuDAO.uploadMenu(uploadMenu);
+	}
+
+	@Override
+	public int updateMenu(int menuId, MenuDTO menu) {
+		return menuDAO.updateMenu(menuId, menu);
+	}
+
 }

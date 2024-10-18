@@ -5,8 +5,12 @@
 		select * from menu where storeId = #{storeId} and isMain = #{isMain}
 	</select>
 	
+	<select id="getMenu" resultType ="com.team.goott.owner.domain.MenuDTO">
+		select * from menu where menuId = #{menuId}
+	</select>
+	
 	<delete id="deleteMenu">
-		
+		delete from menu where menuId = #{menuId}
 	</delete>
 
 </mapper>

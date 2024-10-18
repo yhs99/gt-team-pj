@@ -10,4 +10,6 @@ public interface OwnerMenuService {
 
 	int deleteMenu(int menuId, int storeId);
 
+	MenuDTO getMenu(int menuId);
+
 }

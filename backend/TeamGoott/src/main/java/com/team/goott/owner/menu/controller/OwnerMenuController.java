@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,10 +61,21 @@ public class OwnerMenuController {
 	
 	
 	@DeleteMapping("/menu/{menuId}")
-	public ResponseEntity<Object> deleteMenu(@RequestParam("menuId") int menuId, HttpSession session){
-		int storeId = 3;
-		int result = service.deleteMenu(menuId,storeId);
-		return null;
+	public ResponseEntity<Object> deleteMenu(@PathVariable("menuId") int menuId, HttpSession session){
+		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
+		int storeId = storeSession.getStoreId();
+		int result = 0;
+		if(storeSession != null) {
+			MenuDTO menu = service.getMenu(menuId);
+			log.info(menu.toString());
+			if(menu.getStoreId() == storeId) {
+				result = service.deleteMenu(menuId,storeId);
+			}
+		}else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
+		}
+		
+		return ResponseEntity.ok(result == 1 ? "메뉴 삭제 성공" : "메뉴 삭제 실패");
 	}
 
 }

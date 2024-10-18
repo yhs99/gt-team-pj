@@ -38,4 +38,9 @@ public class OwnerMenuDAOImpl implements OwnerMenuDAO {
 		return ses.delete(ns+"deleteMenu", args);
 	}
 
+	@Override
+	public MenuDTO getMenu(int menuId) {
+		return ses.selectOne(ns+"getMenu", menuId);
+	}
+
 }

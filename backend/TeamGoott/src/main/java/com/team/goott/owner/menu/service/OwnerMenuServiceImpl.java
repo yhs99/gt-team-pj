@@ -29,4 +29,9 @@ public class OwnerMenuServiceImpl implements OwnerMenuService {
 		return menuDAO.deleteMenu(menuId, storeId);
 	}
 
+	@Override
+	public MenuDTO getMenu(int menuId) {
+		return menuDAO.getMenu(menuId);
+	}
+
 }

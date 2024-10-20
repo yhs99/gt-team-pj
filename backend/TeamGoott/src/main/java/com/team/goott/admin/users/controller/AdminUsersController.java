@@ -82,45 +82,6 @@ public class AdminUsersController {
 		return ResponseEntity.ok("수정 완료");
 	}
 	
-	/**
-	 * admin session 정보가 있다면 True, 없다면 False를 반환한다.
-	 * @param session
-	 * @return
-	 */
-	public boolean checkAdminSession(HttpSession session) {
-		AdminDTO adminSession = (AdminDTO) session.getAttribute("admin");
-		if(adminSession == null) {
-			return false;
-		}
-		return true;
-	}
-	
-	// 유저 정보 수정
-	@PatchMapping("/users/{userId}")
-	public ResponseEntity<Object> putUserInfo(HttpSession session
-											, @PathVariable int userId
-											, @RequestPart(name = "userUpdateData") UserRegisterDTO userUpdateData
-											, @RequestPart(name = "imageFile", required = false) MultipartFile multipartFile) {
-		if(!checkAdminSession(session)) {
-			try {
-				if(multipartFile != null && multipartFile.getOriginalFilename().length() > 0) {
-					userUpdateData.setImageFile(multipartFile);
-				}
-				ads.patchUserInfo(userUpdateData, userId);
-			}catch (UserNotFoundException e) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-			}catch (UserNotMatchException e) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-			}catch (Exception e) {
-				e.printStackTrace();
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-			}
-		}else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("권한이 없습니다.");
-		}
-		return ResponseEntity.ok("수정 완료");
-	}
-	
 	
 	public boolean checkAdminSession(HttpSession session) {
 		AdminDTO adminSession = (AdminDTO) session.getAttribute("admin");

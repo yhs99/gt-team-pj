@@ -1,4 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.admin.store.adminStoreMapper">
+
+<select id="getScheduleByDayCode" parameterType="int" resultType="com.team.goott.owner.domain.ScheduleDTO">
+    SELECT * 
+    FROM schedule
+    WHERE dayCodeId = #{dayCode}
+</select>
+
+<select id="getRotationCodeIdByStoreId" parameterType="int" resultType="int">
+    SELECT r.rotation
+    FROM store s
+    JOIN rotationCode r ON s.rotationId = r.rotationCodeId
+    WHERE s.storeId = #{storeId}
+</select>
+
+<select id="getExistingSlots" parameterType="java.time.LocalDate" resultType="com.team.goott.owner.domain.ReserveSlotsDTO">
+    SELECT * 
+    FROM reserveSlots
+    WHERE DATE(slotDatetime) = #{date}
+</select>
+
+<insert id="insertReserveSlot" parameterType="com.team.goott.owner.domain.ReserveSlotsDTO">
+    INSERT INTO reserveSlots (storeId, slotDatetime)
+    VALUES (#{storeId}, #{slotDatetime})
+</insert>
 </mapper>

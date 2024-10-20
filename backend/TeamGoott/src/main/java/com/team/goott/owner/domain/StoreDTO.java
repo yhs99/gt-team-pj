@@ -20,12 +20,14 @@ public class StoreDTO {
 	private int ownerId;
 	private int rotationId;
 	private int sidoCodeId;
+	private String storeName;
 	private String address;
 	private String tel;
 	private String description;
 	private String directionGuide;
 	private int maxPeople;
 	private int maxPeoplePerReserve;
+	private int isBlocked;	
 	private BigDecimal locationLatX;
 	private BigDecimal locationLonY;
 }

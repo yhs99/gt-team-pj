@@ -10,4 +10,29 @@
 		FROM user
 		WHERE userId = #{userId}
 	</select>
+	
+	<update id="userInfoUpdate" parameterType="map">
+		  UPDATE user
+		  <set>
+		    <if test="email != null and email != ''">
+		      email = #{email},
+		    </if>
+		    <if test="name != null and name != ''">
+		      name = #{name},
+		    </if>
+		    <if test="mobile != null and mobile != ''">
+		      mobile = #{mobile},
+		    </if>
+		    <if test="gender != null and gender != ''">
+		      gender = #{gender},
+		    </if>
+		    <if test="profileImageName != null and profileImageName != ''">
+		      profileImageName = #{profileImageName},
+		    </if>
+		    <if test="profileImageUrl != null and profileImageUrl != ''">
+		      profileImageUrl = #{profileImageUrl},
+		    </if>
+		  </set>
+		  WHERE userId = #{userId}
+	</update>
 </mapper>

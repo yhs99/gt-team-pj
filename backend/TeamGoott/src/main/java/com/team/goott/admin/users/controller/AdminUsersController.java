@@ -27,23 +27,72 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AdminUsersController {
 	
+	private final String UNAUTHORIZED_MESSAGE = "권한이 없습니다.";
+	
 	@Autowired
 	private AdminUsersService ads;
 	
 	// 전체 사용자 목록
 	@GetMapping("/users")
-	public ResponseEntity<Object> getUsers() {
-		return ResponseEntity.ok(ads.getAllUsers());
+	public ResponseEntity<Object> getUsers(HttpSession session) {
+		if(checkAdminSession(session)) {
+			return ResponseEntity.ok(ads.getAllUsers());
+		}else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED_MESSAGE);
+		}
 	}
 	
 	// 특정 사용자 정보
 	@GetMapping("/users/{userId}")
 	public ResponseEntity<Object> getUserByUserId(HttpSession session, @PathVariable int userId) {
-		UserDTO userInfo = ads.getUserInfo(userId);
-		if(userInfo == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 유저입니다.");
+		if(checkAdminSession(session)) {
+			UserDTO userInfo = ads.getUserInfo(userId);
+			if(userInfo == null) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 유저입니다.");
+			}
+			return ResponseEntity.ok(userInfo);
+		}else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED_MESSAGE);
 		}
-		return ResponseEntity.ok(userInfo);
+	}
+	
+	// 유저 정보 수정
+	@PatchMapping("/users/{userId}")
+	public ResponseEntity<Object> putUserInfo(HttpSession session
+											, @PathVariable int userId
+											, @RequestPart(name = "userUpdateData") UserRegisterDTO userUpdateData
+											, @RequestPart(name = "imageFile", required = false) MultipartFile multipartFile) {
+		if(checkAdminSession(session)) {
+			try {
+				if(multipartFile != null && multipartFile.getOriginalFilename().length() > 0) {
+					userUpdateData.setImageFile(multipartFile);
+				}
+				ads.patchUserInfo(userUpdateData, userId);
+			}catch (UserNotFoundException e) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+			}catch (UserNotMatchException e) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+			}catch (Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+			}
+		}else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED_MESSAGE);
+		}
+		return ResponseEntity.ok("수정 완료");
+	}
+	
+	/**
+	 * admin session 정보가 있다면 True, 없다면 False를 반환한다.
+	 * @param session
+	 * @return
+	 */
+	public boolean checkAdminSession(HttpSession session) {
+		AdminDTO adminSession = (AdminDTO) session.getAttribute("admin");
+		if(adminSession == null) {
+			return false;
+		}
+		return true;
 	}
 	
 	// 유저 정보 수정

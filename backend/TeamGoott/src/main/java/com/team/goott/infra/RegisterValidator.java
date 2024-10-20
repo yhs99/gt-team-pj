@@ -73,7 +73,7 @@ public class RegisterValidator {
     }
 
     // 이미지 파일 형식 검증 (PNG, JPG만 허용)
-    private String validateImageFile(MultipartFile file) {
+    public String validateImageFile(MultipartFile file) {
     	if(file.getOriginalFilename().length() <= 0 || file == null) {
     		return SUCCESS;
     	}

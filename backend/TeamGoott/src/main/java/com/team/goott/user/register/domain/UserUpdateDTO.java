@@ -15,7 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class UserRegisterDTO {
+public class UserUpdateDTO {
 	private String email;
 	private String password;
 	private String name;

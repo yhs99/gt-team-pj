@@ -57,65 +57,54 @@ public class OwnerMenuController {
 		return ResponseEntity.ok(menu);
 	}
 	
+	//다른 식당 메뉴 출력
+	@GetMapping("/menu/{storeId}")
+	public ResponseEntity<Object> getMenuByStoreId(@PathVariable("storeId") int storeId, HttpSession session){
+		Map<String, Object> menu = new HashMap<String, Object>();
+		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
+		if(storeSession != null) {
+			menu = service.getAllMenu(storeId);
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
+		}
+		return ResponseEntity.ok(menu);
+	}
+	
+	// 메뉴 등록
 	@PostMapping("/menu")
 	public ResponseEntity<Object> addMenu(@RequestPart("menu") MenuDTO menu, @RequestPart("file") MultipartFile file, HttpSession session){
-		MenuDTO uploadMenu = null;
 		int result = 0;
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
 		if(storeSession != null) {
-			try {
-				uploadMenu = menu;
-				S3ImageManager s3ImageManager = new S3ImageManager(file, s3Client, bucketName);
-				Map<String, String> uploadImageInfo = s3ImageManager.uploadImage();
-				uploadMenu.setMenuImageUrl(uploadImageInfo.get("imageUrl"));
-				uploadMenu.setMenuImageName(uploadImageInfo.get("imageFileName"));
-				System.out.println("uploadMenu : " + uploadMenu.toString());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			result = service.uploadMenu(uploadMenu);
+			result = service.uploadMenu(menu, file);
 		}else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
 		}
-		
 		return ResponseEntity.ok(result == 1 ? "메뉴 추가 완료" : "메뉴 추가 실패");
 	}
 	
+	//메뉴 수정
 	@PutMapping("/menu/{menuId}")
-	public ResponseEntity<Object> modifyMenu(@PathVariable("menuId") int menuId, @RequestPart("menu") MenuDTO menu, @RequestPart("file")MultipartFile file ,  HttpSession session){
-		MenuDTO modifyMenu = null;
+	public ResponseEntity<Object> modifyMenu(@PathVariable("menuId") int menuId, @RequestPart("menu") MenuDTO updateMenu, @RequestPart("file")MultipartFile file ,  HttpSession session){
 		int result = 0;
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
 		int storeId = storeSession.getStoreId();
 		
 		if(storeSession != null) {
-			MenuDTO getMenu = service.getMenu(menuId);
-			if(storeId == getMenu.getStoreId()) {
-				try {
-					modifyMenu = menu;
-					S3ImageManager s3ImageManager = new S3ImageManager(file, s3Client, bucketName);
-					Map<String, String> uploadImageInfo = s3ImageManager.uploadImage();
-					modifyMenu.setMenuImageUrl(uploadImageInfo.get("imageUrl"));
-					modifyMenu.setMenuImageName(uploadImageInfo.get("imageFileName"));
-					System.out.println("modifyMenu : " + modifyMenu.toString());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				result = service.updateMenu(menuId, modifyMenu);
+			MenuDTO originMenu = service.getMenu(menuId);
+			if(storeId == originMenu.getStoreId()) {
+				result = service.updateMenu(menuId, updateMenu, file, originMenu);
 			} else {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("해당 메뉴에 대한 권한이 없습니다");
 			}
-			
-		}else {
+		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
 		}
-		
-		
-		
 		return ResponseEntity.ok(result == 1 ? "메뉴 수정 완료" : "메뉴 수정 실패");
 	}
 	
 	
+	// 메뉴 삭제
 	@DeleteMapping("/menu/{menuId}")
 	public ResponseEntity<Object> deleteMenu(@PathVariable("menuId") int menuId, HttpSession session){
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");

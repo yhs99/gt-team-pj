@@ -1,4 +1,4 @@
-package com.team.goott.owner.domain;
+package com.team.goott.user.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class rotationCodeVO {
-	private int rotationCodeId;
-	private String rotation;
+public class LoginDTO {
+	String loginGroup;
+	String id;
+	String password;
 }

@@ -6,8 +6,12 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.team.goott.infra.S3ImageManager;
 import com.team.goott.owner.domain.MenuDTO;
 import com.team.goott.owner.menu.persistence.OwnerMenuDAO;
 
@@ -19,6 +23,11 @@ public class OwnerMenuServiceImpl implements OwnerMenuService {
 	
 	@Inject
 	OwnerMenuDAO menuDAO;
+	
+	@Autowired
+	private AmazonS3 s3Client;
+	
+	private final String bucketName = "goott-bucket";
 	
 	@Override
 	public Map<String, Object> getAllMenu(int storeId) {
@@ -55,13 +64,40 @@ public class OwnerMenuServiceImpl implements OwnerMenuService {
 	}
 
 	@Override
-	public int uploadMenu(MenuDTO uploadMenu) {
+	public int uploadMenu(MenuDTO menu, MultipartFile file) {
+		MenuDTO uploadMenu = menu;
+		try {
+			S3ImageManager s3ImageManager = new S3ImageManager(file, s3Client, bucketName);
+			Map<String, String> uploadImageInfo = s3ImageManager.uploadImage();
+			uploadMenu.setMenuImageUrl(uploadImageInfo.get("imageUrl"));
+			uploadMenu.setMenuImageName(uploadImageInfo.get("imageFileName"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		return menuDAO.uploadMenu(uploadMenu);
 	}
 
 	@Override
-	public int updateMenu(int menuId, MenuDTO menu) {
-		return menuDAO.updateMenu(menuId, menu);
+	public int updateMenu(int menuId, MenuDTO updateMenu, MultipartFile file, MenuDTO originMenu) {
+		MenuDTO modifyMenu = updateMenu;
+		try {
+			S3ImageManager uploadS3ImageManager = new S3ImageManager(file, s3Client, bucketName);
+			S3ImageManager deleteS3ImageManager = new S3ImageManager(s3Client, bucketName, originMenu.getMenuImageName());
+			
+			if(deleteS3ImageManager.deleteImage()) {
+				log.info("기존 이미지 삭제 완료");
+				Map<String, String> uploadImageInfo = uploadS3ImageManager.uploadImage();
+				modifyMenu.setMenuImageUrl(uploadImageInfo.get("imageUrl"));
+				modifyMenu.setMenuImageName(uploadImageInfo.get("imageFileName"));
+			} else {
+				log.info("이미지 삭제 실패");
+				return 0;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return menuDAO.updateMenu(menuId, modifyMenu);
 	}
 
 }

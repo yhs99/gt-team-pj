@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.owner.menu.ownerMenuMapper">
 	<select id="getAllMenu" resultType="com.team.goott.owner.domain.MenuDTO">
+<<<<<<< HEAD
 		select * from menu where storeId = #{storeId}
 	</select>
 	
@@ -11,6 +12,22 @@
 	
 	<insert id="uploadMenu">
 		insert into menu(storeId, menuName, price, menuImageUrl, menuImageName, description, isMain ) values(#{storeId}, #{menuName}, #{price}, #{menuImageUrl}, #{menuImageName}, #{description}, #{isMain})
+=======
+		select * from menu 
+		where storeId = #{storeId} and isMain = #{isMain}
+	</select>
+	
+	<select id="getMenu" resultType ="com.team.goott.owner.domain.MenuDTO">
+		select * from menu 
+		where menuId = #{menuId}
+	</select>
+	
+	<insert id="uploadMenu">
+		insert into 
+		menu(storeId, menuName, price, menuImageUrl, menuImageName, description, isMain ) 
+		values(#{storeId}, #{menuName}, #{price}, #{menuImageUrl}, 
+		#{menuImageName}, #{description}, #{isMain})
+>>>>>>> 0f721e0c14619a0219027ceaf9d5712dd54a3699
 	</insert>
 	
 	<delete id="deleteMenu">
@@ -18,7 +35,14 @@
 	</delete>
 	
 	<update id="updateMenu">
+<<<<<<< HEAD
 		update menu set menuName = #{menuName}, price = #{price}, menuImageUrl = #{menuImageUrl} , menuImageName = #{menuImageName} , description = #{description}, isMain = #{isMain} where menuId = #{menuId};
+=======
+		update menu 
+		set menuName = #{menuName}, price = #{price}, menuImageUrl = #{menuImageUrl} , 
+		menuImageName = #{menuImageName} , description = #{description}, 
+		isMain = #{isMain} where menuId = #{menuId};
+>>>>>>> 0f721e0c14619a0219027ceaf9d5712dd54a3699
 	</update>
 	
 

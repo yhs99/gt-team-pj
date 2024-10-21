@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.admin.users.adminUsersMapper">
+
 	<select id="getAllUsers" resultType="com.team.goott.user.domain.UserDTO">
 		SELECT *
 		FROM user
 	</select>
+	
 	<select id="getUserInfoByUserId" resultType="com.team.goott.user.domain.UserDTO">
 		SELECT *
 		FROM user
@@ -35,4 +37,9 @@
 		  </set>
 		  WHERE userId = #{userId}
 	</update>
+
+	<select id="adminLoginInfo" parameterType="map"
+		resultType="com.team.goott.admin.domain.AdminDTO">
+		SELECT * FROM admin WHERE id = #{id} AND password = SHA2(#{password}, 256)
+	</select>
 </mapper>

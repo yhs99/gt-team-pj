@@ -21,4 +21,8 @@
 	<select id="getTotalTodayReserve" resultType="int">
 		select count(*) from reserve where storeId = #{storeId} and date_format(reserveTime, "%Y-%m-%d") = curdate()
 	</select>
+	
+	<update id="updateStatus">
+		update reserve set statusCodeId = #{statusCodeId} where reserveId = #{reserveId}
+	</update>
 </mapper>

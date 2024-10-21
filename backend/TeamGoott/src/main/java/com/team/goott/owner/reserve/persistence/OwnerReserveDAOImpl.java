@@ -39,4 +39,12 @@ public class OwnerReserveDAOImpl implements OwnerReserveDAO {
 		return session.selectOne(ns+"getTotalTodayReserve", storeId);
 	}
 
+	@Override
+	public int updatestatus(int reserveId, int statusCode) {
+		Map<String, Integer> args = new HashMap<String,Integer>();
+		args.put("reserveId", reserveId);
+		args.put("statusCode", statusCode);
+		return session.update(ns+"updateStatus", args);
+	}
+
 }

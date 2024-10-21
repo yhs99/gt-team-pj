@@ -6,4 +6,6 @@ public interface OwnerReserveService {
 
 	ReserveInfoVO getAllReserveInfo(int storeId, String sortMethod);
 
+	int updateStatus(int reserveId, int statusCode);
+
 }

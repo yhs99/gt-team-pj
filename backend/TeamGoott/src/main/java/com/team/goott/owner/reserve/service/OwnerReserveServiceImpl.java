@@ -29,4 +29,11 @@ public class OwnerReserveServiceImpl implements OwnerReserveService {
 		 return ReserveInfoVO.builder().totalReserve(totalReserve).totalTodayReserve(totalTodayReserve).reservations(reserveList).build();
 	}
 
+
+	@Override
+	public int updateStatus(int reserveId, int statusCode) {
+		
+		return reserveDAO.updatestatus(reserveId, statusCode);
+	}
+
 }

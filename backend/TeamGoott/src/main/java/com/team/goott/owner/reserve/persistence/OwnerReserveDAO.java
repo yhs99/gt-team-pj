@@ -12,4 +12,6 @@ public interface OwnerReserveDAO {
 
 	int getTotalTodayReserve(int storeId);
 
+	int updatestatus(int reserveId, int statusCode);
+
 }

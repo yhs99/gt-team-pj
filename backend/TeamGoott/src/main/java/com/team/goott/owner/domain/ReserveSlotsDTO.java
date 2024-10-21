@@ -19,6 +19,6 @@ public class ReserveSlotsDTO {
 	private int reserveSlotId;
 	private int storeId;
 	private LocalDateTime slotDatetime;
-	private boolean isReserved;
+	private boolean reserved;
 	private int userId;
 }

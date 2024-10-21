@@ -1,5 +1,8 @@
 package com.team.goott.owner.domain;
 
+
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +16,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class rotationCodeVO {
-	private int rotationCodeId;
-	private String rotation;
+public class ReviewInfoVO {
+	private int totalReview;
+	private int todayReview;
+	private float totalScore;
+	private float todayTotalScore;
+	
+	private List<ReviewVO> reviews;
 }

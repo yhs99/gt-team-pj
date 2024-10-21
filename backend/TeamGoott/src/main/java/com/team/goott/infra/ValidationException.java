@@ -8,14 +8,14 @@ import lombok.Setter;
 public class ValidationException extends RuntimeException{
 	
 	private static final long serialVersionUID = 1L;
-	private String msg;
+	private String message;
 	
-	public ValidationException(String msg) {
+	public ValidationException(String message) {
 		super();
-		this.msg = msg;
+		this.message = message;
 	}
 	
 	public String toString() {
-		return this.msg;
+		return this.message;
 	}
 }

@@ -23,11 +23,8 @@ public class OwnerMenuDAOImpl implements OwnerMenuDAO {
 	private static String ns = "com.team.mappers.owner.menu.ownerMenuMapper.";
 	
 	@Override
-	public List<MenuDTO> getAllMenu(boolean isMain, int storeId) {
-		Map<String, Object>args = new HashMap<String, Object>();
-		args.put("isMain", isMain);
-		args.put("storeId", storeId);
-		return ses.selectList(ns+"getAllMenu", args);
+	public List<MenuDTO> getAllMenu(int storeId) {
+		return ses.selectList(ns+"getAllMenu", storeId);
 	}
 
 	@Override

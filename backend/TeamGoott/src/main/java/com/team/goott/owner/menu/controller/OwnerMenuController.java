@@ -1,10 +1,13 @@
 package com.team.goott.owner.menu.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.team.goott.infra.S3ImageManager;
 import com.team.goott.owner.domain.MenuDTO;
 import com.team.goott.owner.domain.StoreDTO;
 import com.team.goott.owner.menu.service.OwnerMenuService;
@@ -32,15 +37,20 @@ public class OwnerMenuController {
 	@Inject
 	OwnerMenuService service;
 	
+	@Autowired
+	private AmazonS3 s3Client;
+	
+	private final String bucketName = "goott-bucket";
+	
 	//주메뉴, 사이드 메뉴 출력
 	@GetMapping("/menu")
-	public ResponseEntity<Object> getMenu(@RequestParam(value="isMain", defaultValue="true") boolean isMain, HttpSession session ){
+	public ResponseEntity<Object> getMenu(HttpSession session ){
 		log.info("menuAPI 호출");
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
-		List<MenuDTO> menu = null;
+		Map<String, Object> menu = new HashMap<String, Object>();
 		if(storeSession != null) {
 			int storeId = storeSession.getStoreId();
-			menu = service.getAllMenu(isMain, storeId);
+			menu = service.getAllMenu(storeId);
 		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
 		}
@@ -49,11 +59,11 @@ public class OwnerMenuController {
 	
 	//다른 식당 메뉴 출력
 	@GetMapping("/menu/{storeId}")
-	public ResponseEntity<Object> getMenuByStoreId(@RequestParam(value="isMain", defaultValue = "true") boolean isMain,@PathVariable("storeId") int storeId, HttpSession session){
-		List<MenuDTO> menu = null;
+	public ResponseEntity<Object> getMenuByStoreId(@PathVariable("storeId") int storeId, HttpSession session){
+		Map<String, Object> menu = new HashMap<String, Object>();
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
 		if(storeSession != null) {
-			menu = service.getAllMenu(isMain, storeId);
+			menu = service.getAllMenu(storeId);
 		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
 		}

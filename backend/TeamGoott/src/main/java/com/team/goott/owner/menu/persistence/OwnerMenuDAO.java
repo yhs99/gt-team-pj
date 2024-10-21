@@ -6,7 +6,7 @@ import com.team.goott.owner.domain.MenuDTO;
 
 public interface OwnerMenuDAO {
 
-	List<MenuDTO> getAllMenu(boolean isMain, int storeId);
+	List<MenuDTO> getAllMenu(int storeId);
 
 	int deleteMenu(int menuId, int storeId);
 

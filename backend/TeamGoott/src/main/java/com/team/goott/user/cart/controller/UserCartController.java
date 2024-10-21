@@ -2,9 +2,9 @@ package com.team.goott.user.cart.controller;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,12 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserCartController {
 
-	private final UserCartService cartService;
 
-	@Autowired
-	public UserCartController(UserCartService cartService) {
-		this.cartService = cartService;
-	}
+	@Inject
+	UserCartService userCartService;
 
 	// 장바구니 조회
 	@GetMapping("/cart")
@@ -41,9 +38,9 @@ public class UserCartController {
 		}
 
 		try {
-			cart = cartService.getUserCart(userSession.getUserId());
+			cart = userCartService.getUserCart(userSession.getUserId());
 			if (cart == null || cart.isEmpty()) {
-				return ResponseEntity.status(HttpStatus.NO_CONTENT).body("장바구니에 아이템이 없습니다.");
+				return ResponseEntity.ok("");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -56,14 +53,14 @@ public class UserCartController {
 	// 장바구니에 담기
 	@PostMapping("/cart")
 	public ResponseEntity<Object> addCart(@RequestBody CartDTO cartDTO, HttpSession session) {
-		UserDTO userSession = (UserDTO) session.getAttribute("user");
+//		UserDTO userSession = (UserDTO) session.getAttribute("user");
 
-		if (userSession == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
-		}
+//		if (userSession == null) {
+//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
+//		}
 		try {
-			cartDTO.setUserId(userSession.getUserId());
-			cartService.addCart(cartDTO);
+			cartDTO.setUserId(1);
+			userCartService.addCart(cartDTO);
 			log.info("메뉴가 추가됐습니다 : {}", cartDTO);
 			return ResponseEntity.ok("메뉴가 장바구니에 담겼습니다.");
 		} catch (Exception e) {
@@ -85,7 +82,7 @@ public class UserCartController {
 		
 		
 		try {
-			List<CartDTO> cartList = cartService.getUserCart(userSession.getUserId());
+			List<CartDTO> cartList = userCartService.getUserCart(userSession.getUserId());
 			if(cartList == null || cartList.isEmpty()) {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 장바구니 항목을 찾을 수 없습니다.");
 			}
@@ -99,7 +96,7 @@ public class UserCartController {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("삭제 권한이 없습니다.");
 			}
 			
-			cartService.deleteFromCart(cartId, userSession.getUserId());
+			userCartService.deleteFromCart(cartId, userSession.getUserId());
 			
 
 			log.info("메뉴 삭제에 성공했습니다 : {} for userId: {}", cartId, userSession.getUserId());

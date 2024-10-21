@@ -15,4 +15,8 @@
 	delete from cart where cartId = #{cartId} AND userId = #{userId}
 	</delete>
 	
+	<select id="getMenuCart" resultType="com.team.goott.user.domain.MenuDTO">
+	select * from menu where menuId = #{menuId}
+	</select>
+	
 </mapper>

@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserCartController {
 
-
 	@Inject
 	UserCartService userCartService;
 
@@ -53,13 +52,13 @@ public class UserCartController {
 	// 장바구니에 담기
 	@PostMapping("/cart")
 	public ResponseEntity<Object> addCart(@RequestBody CartDTO cartDTO, HttpSession session) {
-//		UserDTO userSession = (UserDTO) session.getAttribute("user");
+		UserDTO userSession = (UserDTO) session.getAttribute("user");
 
-//		if (userSession == null) {
-//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
-//		}
+		if (userSession == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
+		}
 		try {
-			cartDTO.setUserId(1);
+			cartDTO.setUserId(userSession.getUserId());
 			userCartService.addCart(cartDTO);
 			log.info("메뉴가 추가됐습니다 : {}", cartDTO);
 			return ResponseEntity.ok("메뉴가 장바구니에 담겼습니다.");
@@ -70,7 +69,7 @@ public class UserCartController {
 		}
 	}
 
-	 // 장바구니에 메뉴 삭제
+	// 장바구니에 메뉴 삭제
 	@DeleteMapping("/cart/{cartId}")
 	public ResponseEntity<Object> deleteCartItem(@PathVariable int cartId, HttpSession session) {
 
@@ -79,25 +78,19 @@ public class UserCartController {
 		if (userSession == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
 		}
-		
-		
+
 		try {
 			List<CartDTO> cartList = userCartService.getUserCart(userSession.getUserId());
-			if(cartList == null || cartList.isEmpty()) {
+			if (cartList == null || cartList.isEmpty()) {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 장바구니 항목을 찾을 수 없습니다.");
 			}
-			CartDTO cartItem = cartList.stream()
-                    .filter(cart -> cart.getCartId() == cartId)
-                    .findFirst()
-                    .orElse(null);
-			
+			CartDTO cartItem = cartList.stream().filter(cart -> cart.getCartId() == cartId).findFirst().orElse(null);
 
-			if(cartItem.getUserId() != userSession.getUserId()) {
+			if (cartItem.getUserId() != userSession.getUserId()) {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("삭제 권한이 없습니다.");
 			}
-			
+
 			userCartService.deleteFromCart(cartId, userSession.getUserId());
-			
 
 			log.info("메뉴 삭제에 성공했습니다 : {} for userId: {}", cartId, userSession.getUserId());
 			return ResponseEntity.ok("삭제가 완료됐습니다. ");

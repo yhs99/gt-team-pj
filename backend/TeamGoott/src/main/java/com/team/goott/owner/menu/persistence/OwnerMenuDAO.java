@@ -10,4 +10,10 @@ public interface OwnerMenuDAO {
 
 	int deleteMenu(int menuId, int storeId);
 
+	MenuDTO getMenu(int menuId);
+
+	int uploadMenu(MenuDTO uploadMenu);
+
+	int updateMenu(int menuId, MenuDTO menu);
+
 }

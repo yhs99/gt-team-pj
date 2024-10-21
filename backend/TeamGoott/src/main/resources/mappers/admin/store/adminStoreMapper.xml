@@ -6,6 +6,7 @@
     SELECT * 
     FROM schedule
     WHERE dayCodeId = #{dayCode}
+    ORDER BY storeId
 </select>
 
 <select id="getRotationCodeIdByStoreId" parameterType="int" resultType="int">
@@ -15,14 +16,29 @@
     WHERE s.storeId = #{storeId}
 </select>
 
-<select id="getExistingSlots" parameterType="java.time.LocalDate" resultType="com.team.goott.owner.domain.ReserveSlotsDTO">
+<select id="getExistingSlots" parameterType="map" resultType="com.team.goott.owner.domain.ReserveSlotsDTO">
     SELECT * 
     FROM reserveSlots
     WHERE DATE(slotDatetime) = #{date}
+    AND storeId = #{storeId}
 </select>
 
 <insert id="insertReserveSlot" parameterType="com.team.goott.owner.domain.ReserveSlotsDTO">
-    INSERT INTO reserveSlots (storeId, slotDatetime)
+    INSERT IGNORE INTO reserveSlots (storeId, slotDatetime)
     VALUES (#{storeId}, #{slotDatetime})
+</insert>
+
+<select id="getAllStoreLists" resultType="com.team.goott.owner.domain.StoreDTO">
+	SELECT *
+	FROM STORE
+	WHERE isBlocked = 0
+</select>
+
+<insert id="batchInsertSlots" parameterType="java.util.List">
+    INSERT INTO reserveSlots (storeId, slotDatetime)
+    VALUES
+    <foreach collection="list" item="slot" separator=",">
+        (#{slot.storeId}, #{slot.slotDatetime})
+    </foreach>
 </insert>
 </mapper>

@@ -39,10 +39,11 @@
     <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
     <!-- Template Javascript -->
     <script type="module" src="/js/owner/main.js"></script>
+    <script type="module" src="/js/owner/review.js"></script>
   </head>
 
   <body>
-    <div class="container-xxl position-relative bg-white d-flex p-0">
+    <div id="vueApp" class="container-xxl position-relative bg-white d-flex p-0">
       <!-- Spinner Start -->
       <div
         id="spinner"
@@ -58,7 +59,7 @@
       <div class="sidebar pe-4 pb-3">
         <nav class="navbar bg-light navbar-light">
           <a href="index.html" class="navbar-brand mx-4 mb-3">
-            <h3 id="app" class="text-primary"><i class="fa fa-hashtag me-2"></i>{{name}}smart reserve</h3>
+            <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>smart reserve</h3>
           </a>
           <div class="d-flex align-items-center ms-4 mb-4">
             <div class="position-relative">
@@ -87,7 +88,7 @@
             <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>위젯</a>
             <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>폼</a>
             <a href="table.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>테이블</a>
-            <a href="/view/owner/review.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>리뷰</a>
+            <a href="/view/owner/chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>차트</a>
             <div class="nav-item dropdown">
               <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
                 ><i class="far fa-file-alt me-2"></i>페이지</a
@@ -197,41 +198,44 @@
         <!-- Navbar End -->
 
         <!-- Sale & Revenue Start -->
+         <div id="app">
+            {{name}}
+         </div>
         <div class="container-fluid pt-4 px-4">
           <div class="row g-4">
             <div class="col-sm-6 col-xl-3">
               <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-line fa-3x text-primary"></i>
+                <i class="fa fa-solid fa-pen fa-3x text-primary"></i>
                 <div class="ms-3">
-                  <p class="mb-2">오늘 판매 수익</p>
-                  <h6 class="mb-0">12,345원</h6>
+                  <p class="mb-2">총 리뷰 수</p>
+                  <h6 class="mb-0">{{totalReviewCount}}개</h6>
                 </div>
               </div>
             </div>
             <div class="col-sm-6 col-xl-3">
               <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                <i class="fa fa-regular fa-star fa-3x text-primary"></i>
                 <div class="ms-3">
-                  <p class="mb-2">총 판매 수익</p>
-                  <h6 class="mb-0">45,678원</h6>
+                  <p class="mb-2">총 평점</p>
+                  <h6 class="mb-0">{{totalAvgScore}}</h6>
                 </div>
               </div>
             </div>
             <div class="col-sm-6 col-xl-3">
               <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-area fa-3x text-primary"></i>
+                <i class="fa fa-solid fa-pen fa-3x text-primary"></i>
                 <div class="ms-3">
-                  <p class="mb-2">오늘 수익</p>
-                  <h6 class="mb-0">0원</h6>
+                  <p class="mb-2">오늘 리뷰 수</p>
+                  <h6 class="mb-0">{{totalTodayReview}}개</h6>
                 </div>
               </div>
             </div>
             <div class="col-sm-6 col-xl-3">
               <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-pie fa-3x text-primary"></i>
+                <i class="fa fa-solid fa-star fa-3x text-primary"></i>
                 <div class="ms-3">
-                  <p class="mb-2">총 수익</p>
-                  <h6 class="mb-0">0원</h6>
+                  <p class="mb-2">오늘 리뷰 총 평점</p>
+                  <h6 class="mb-0">{{totalAvgTodayScore}}</h6>
                 </div>
               </div>
             </div>
@@ -239,224 +243,38 @@
         </div>
         <!-- Sale & Revenue End -->
 
-        <!-- Sales Chart Start -->
-        <div class="container-fluid pt-4 px-4">
-          <div class="row g-4">
-            <div class="col-sm-12 col-xl-6">
-              <div class="bg-light text-center rounded p-4">
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                  <h6 class="mb-0">전 세계 판매 수익</h6>
-                  <a href="">전체 보기</a>
-                </div>
-                <canvas id="worldwide-sales"></canvas>
+        <div class="col-12">
+          <div class="bg-light rounded h-100 p-4">
+              <h6 class="mb-4">리뷰 목록</h6>
+              <div class="table-responsive">
+                  <table class="table">
+                      <thead>
+                          <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">고객명</th>
+                              <th scope="col">평점</th>
+                              <th scope="col">리뷰내용</th>
+                              <th scope="col">게시일</th>
+                              <th scope="col">Status</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                              <th scope="row">1</th>
+                              <td>John</td>
+                              <td>Doe</td>
+                              <td>jhon@email.com</td>
+                              <td>USA</td>
+                              <td>Member</td>
+                          </tr>
+                      </tbody>
+                  </table>
               </div>
-            </div>
-            <div class="col-sm-12 col-xl-6">
-              <div class="bg-light text-center rounded p-4">
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                  <h6 class="mb-0">판매 및 수익</h6>
-                  <a href="">전체 보기</a>
-                </div>
-                <canvas id="salse-revenue"></canvas>
-              </div>
-            </div>
           </div>
-        </div>
-        <!-- Sales Chart End -->
+      </div>
 
-        <!-- Recent Sales Start -->
-        <div class="container-fluid pt-4 px-4">
-          <div class="bg-light text-center rounded p-4">
-            <div class="d-flex align-items-center justify-content-between mb-4">
-              <h6 class="mb-0">최근 수익</h6>
-              <a href="">전체 보기</a>
-            </div>
-            <div class="table-responsive">
-              <table class="table text-start align-middle table-bordered table-hover mb-0">
-                <thead>
-                  <tr class="text-dark">
-                    <th scope="col"><input class="form-check-input" type="checkbox" /></th>
-                    <th scope="col">날짜</th>
-                    <th scope="col">청구서</th>
-                    <th scope="col">손님</th>
-                    <th scope="col">금액</th>
-                    <th scope="col">상태</th>
-                    <th scope="col">작업</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>24.10.14</td>
-                    <td>청구서</td>
-                    <td>abc@abc.com</td>
-                    <td>77,000원</td>
-                    <td>예약 상태</td>
-                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>24.10.07</td>
-                    <td>청구서</td>
-                    <td>bca@abc.com</td>
-                    <td>10,000원</td>
-                    <td>대기</td>
-                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>24.10.03</td>
-                    <td>청구서</td>
-                    <td>bcd@abc.com</td>
-                    <td>154,000원</td>
-                    <td>승인</td>
-                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>24.10.02</td>
-                    <td>청구서</td>
-                    <td>baca@abc.com</td>
-                    <td>100,000원</td>
-                    <td>취소</td>
-                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>24.10.01</td>
-                    <td>청구서</td>
-                    <td>bca12@abc.com</td>
-                    <td>8,000원</td>
-                    <td>완료</td>
-                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <!-- Recent Sales End -->
 
-        <!-- Widgets Start -->
-        <div class="container-fluid pt-4 px-4">
-          <div class="row g-4">
-            <div class="col-sm-12 col-md-6 col-xl-4">
-              <div class="h-100 bg-light rounded p-4">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                  <h6 class="mb-0">메세지</h6>
-                  <a href="">전체 보기</a>
-                </div>
-                <div class="d-flex align-items-center border-bottom py-3">
-                  <img class="rounded-circle flex-shrink-0" src="" alt="" style="width: 40px; height: 40px" />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 justify-content-between">
-                      <h6 class="mb-0">bca@abc.com</h6>
-                      <small>~ 분 전</small>
-                    </div>
-                    <span>홍길동 님이 ~분 전에 가게 예약을 요청하였습니다</span>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center border-bottom py-3">
-                  <img class="rounded-circle flex-shrink-0" src="" alt="" style="width: 40px; height: 40px" />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 justify-content-between">
-                      <h6 class="mb-0">bcd@abc.com</h6>
-                      <small>~분 전</small>
-                    </div>
-                    <span>홍길북 님의 가게 요청을 승인해주세요</span>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center border-bottom py-3">
-                  <img class="rounded-circle flex-shrink-0" src="" alt="" style="width: 40px; height: 40px" />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 justify-content-between">
-                      <h6 class="mb-0">baca@abc.com</h6>
-                      <small>~분 전</small>
-                    </div>
-                    <span>홍길순 님이 ~분 전에 가게 예약을 취소하였습니다</span>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center pt-3">
-                  <img class="rounded-circle flex-shrink-0" src="" alt="" style="width: 40px; height: 40px" />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 justify-content-between">
-                      <h6 class="mb-0">bca12@abc.com</h6>
-                      <small>~분 전</small>
-                    </div>
-                    <span>홍길남 님의 결제가 완료되었습니다</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-12 col-md-6 col-xl-4">
-              <div class="h-100 bg-light rounded p-4">
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                  <h6 class="mb-0">날짜</h6>
-                  <a href="">전체 보기</a>
-                </div>
-                <div id="calender"></div>
-              </div>
-            </div>
-            <div class="col-sm-12 col-md-6 col-xl-4">
-              <div class="h-100 bg-light rounded p-4">
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                  <h6 class="mb-0">할일</h6>
-                  <a href="">전체 보기</a>
-                </div>
-                <div class="d-flex mb-2">
-                  <input class="form-control bg-transparent" type="text" placeholder="검색어를 입력하세요" />
-                  <button type="button" class="btn btn-primary ms-2">search</button>
-                </div>
-                <div class="d-flex align-items-center border-bottom py-2">
-                  <input class="form-check-input m-0" type="checkbox" />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 align-items-center justify-content-between">
-                      <span>고래고래</span>
-                      <button class="btn btn-sm"><i class="fa fa-times"></i></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center border-bottom py-2">
-                  <input class="form-check-input m-0" type="checkbox" />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 align-items-center justify-content-between">
-                      <span>소리지르기</span>
-                      <button class="btn btn-sm"><i class="fa fa-times"></i></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center border-bottom py-2">
-                  <input class="form-check-input m-0" type="checkbox" checked />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 align-items-center justify-content-between">
-                      <span><del>고함지르기</del></span>
-                      <button class="btn btn-sm text-primary"><i class="fa fa-times"></i></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center border-bottom py-2">
-                  <input class="form-check-input m-0" type="checkbox" />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 align-items-center justify-content-between">
-                      <span>윽박지르기</span>
-                      <button class="btn btn-sm"><i class="fa fa-times"></i></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center pt-2">
-                  <input class="form-check-input m-0" type="checkbox" />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 align-items-center justify-content-between">
-                      <span>심호흡하기</span>
-                      <button class="btn btn-sm"><i class="fa fa-times"></i></button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Widgets End -->
+  
 
         <!-- Footer Start -->
         <div class="container-fluid pt-4 px-4">

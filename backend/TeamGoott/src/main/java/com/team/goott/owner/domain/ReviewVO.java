@@ -1,6 +1,7 @@
 package com.team.goott.owner.domain;
 
-import java.time.LocalDateTime;
+
+import java.sql.Timestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,14 +12,16 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
 @Builder
-public class ReserveSlotsDTO {
-	private int reserveSlotId;
+public class ReviewVO {
+	private int reviewId;
 	private int storeId;
-	private LocalDateTime slotDatetime;
-	private boolean reserved;
 	private int userId;
+	private int score;
+	private String content;
+	private Timestamp createAt;
+	private boolean isDeleteReq;
 }

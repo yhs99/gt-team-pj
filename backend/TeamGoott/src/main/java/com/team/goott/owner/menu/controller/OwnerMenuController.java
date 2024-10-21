@@ -1,5 +1,6 @@
 package com.team.goott.owner.menu.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,13 +44,13 @@ public class OwnerMenuController {
 	
 	//주메뉴, 사이드 메뉴 출력
 	@GetMapping("/menu")
-	public ResponseEntity<Object> getMenu(@RequestParam(value="isMain", defaultValue="true") boolean isMain, HttpSession session ){
+	public ResponseEntity<Object> getMenu(HttpSession session ){
 		log.info("menuAPI 호출");
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
-		List<MenuDTO> menu = null;
+		Map<String, Object> menu = new HashMap<String, Object>();
 		if(storeSession != null) {
 			int storeId = storeSession.getStoreId();
-			menu = service.getAllMenu(isMain, storeId);
+			menu = service.getAllMenu(storeId);
 		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
 		}

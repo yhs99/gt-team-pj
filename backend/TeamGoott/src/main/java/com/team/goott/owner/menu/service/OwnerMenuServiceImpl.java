@@ -1,6 +1,8 @@
 package com.team.goott.owner.menu.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -19,9 +21,27 @@ public class OwnerMenuServiceImpl implements OwnerMenuService {
 	OwnerMenuDAO menuDAO;
 	
 	@Override
-	public List<MenuDTO> getAllMenu(boolean isMain, int storeId) {
+	public Map<String, Object> getAllMenu(int storeId) {
+		Map<String, Object> allMenuInfo = new HashMap<String, Object>();
+		List<MenuDTO> dishes = menuDAO.getAllMenu(storeId);
+		int numOfMain = 0;
+		int numOfSide = 0;
+		for(MenuDTO dish : dishes) {
+			if(dish.isMain()) {
+				allMenuInfo.put("main", dish);
+				numOfMain++;
+			}else {
+				allMenuInfo.put("side", dish);
+				numOfSide++;
+			}
+		}
+		allMenuInfo.put("numOfAllMenu", dishes.size());
+		allMenuInfo.put("numOfMainMenu", numOfMain);
+		allMenuInfo.put("numOfSideMenu", numOfSide);
 		
-		return menuDAO.getAllMenu(isMain, storeId);
+		log.info("{}", allMenuInfo.toString());
+		
+		return allMenuInfo;
 	}
 
 	@Override

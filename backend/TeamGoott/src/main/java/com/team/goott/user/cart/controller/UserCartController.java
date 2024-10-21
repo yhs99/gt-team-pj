@@ -94,10 +94,6 @@ public class UserCartController {
                     .findFirst()
                     .orElse(null);
 			
-			if (cartList == null || cartList.isEmpty()) {
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 장바구니 항목을 찾을 수 없습니다.");
-	        }
-			
 
 			if(cartItem.getUserId() != userSession.getUserId()) {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("삭제 권한이 없습니다.");

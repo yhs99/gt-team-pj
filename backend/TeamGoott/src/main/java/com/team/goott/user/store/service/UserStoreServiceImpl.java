@@ -23,4 +23,14 @@ public class UserStoreServiceImpl implements UserStoreService {
 		return userStoreDAO.getAllStores();
 	}
 
+	@Override
+	public List<Object> getStoreById(int storeId) throws Exception {
+		return userStoreDAO.getStoreById(storeId);
+	}
+
+	@Override
+	public List<StoreDTO> getStoresByCategoriesAndSidos(List<String> categoryCodeIds, List<Integer> sidoCodeIds) throws Exception{
+		return userStoreDAO.getStoresByCategoriesAndSidos(categoryCodeIds, sidoCodeIds);
+	}
+
 }

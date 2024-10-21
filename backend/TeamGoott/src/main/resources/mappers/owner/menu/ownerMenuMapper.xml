@@ -4,5 +4,9 @@
 	<select id="getAllMenu" resultType="com.team.goott.owner.domain.MenuDTO">
 		select * from menu where storeId = #{storeId} and isMain = #{isMain}
 	</select>
+	
+	<delete id="deleteMenu">
+		
+	</delete>
 
 </mapper>

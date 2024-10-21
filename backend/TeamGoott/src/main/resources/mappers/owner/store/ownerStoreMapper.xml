@@ -2,12 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.owner.store.ownerStoreMapper">
 
-    <insert id="createStore">
+    <insert id="createStore" parameterType="com.team.goott.owner.domain.StoreDTO" useGeneratedKeys="true" keyProperty="storeId">
         INSERT INTO store 
         (ownerId, rotationId, sidoCodeId, storeName, address, tel, description, directionGuide, maxPeople, maxPeoplePerReserve, isBlocked, locationLatX, locationLonY)
         VALUES 
         (#{ownerId}, #{rotationId}, #{sidoCodeId}, #{storeName}, #{address}, #{tel}, #{description}, #{directionGuide}, #{maxPeople}, #{maxPeoplePerReserve}, #{isBlocked}, #{locationLatX}, #{locationLonY})
     </insert>
+    
+    <insert id="createSchedule" parameterType="com.team.goott.owner.domain.ScheduleDTO">
+    	INSERT INTO schedule
+    	(storeId, dayCodeId, open, close, closeDay)
+    	VALUES
+    	(#{storeId}, #{dayCodeId}, #{open}, #{close}, #{closeDay})
+    </insert>
+    
+    <insert id="createCategory" parameterType="com.team.goott.owner.domain.StoreCategoryDTO">
+    	INSERT INTO storeCategory
+    	(storeId, categoryCodeId, storeCategoryName)
+    	VALUES
+    	(#{storeId}, #{categoryCodeId}, #{storeCategoryName})
+    </insert>
+    
+    <insert id="createFacility" parameterType="com.team.goott.owner.domain.FacilityDTO">
+    	INSERT INTO facility
+    	(storeId, facilityCode)
+    	VALUES
+    	(#{storeId}, #{facilityCode})
+    </insert>
+
 
 
 </mapper>

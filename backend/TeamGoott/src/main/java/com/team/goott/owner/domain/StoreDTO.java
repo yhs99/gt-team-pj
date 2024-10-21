@@ -19,6 +19,7 @@ public class StoreDTO {
 	private int storeId;
 	private int ownerId;
 	private int rotationId;
+	private String sidoCode;
 	private int sidoCodeId;
 	private String storeName;
 	private String address;

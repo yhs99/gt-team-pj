@@ -1,4 +1,4 @@
-package com.team.goott.owner.domain;
+package com.team.goott.user.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class FacilityDTO {
+public class CartDTO {
+	private int cartId;
 	private int storeId;
-	private String facilityCode;
+	private int menuId;
+	private String menuName;
+	private int stock;
+	private double price;
+	private double totalPrice;
+	private int userId;
 }

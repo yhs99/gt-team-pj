@@ -13,7 +13,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class FacilityDTO {
-	private int storeId;
-	private String facilityCode;
+public class RotationCodeVO {
+	private int rotationCodeId;
+	private String rotation;
 }

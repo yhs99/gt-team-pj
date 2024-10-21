@@ -1,6 +1,7 @@
 package com.team.goott.admin.users.persistence;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -28,6 +29,11 @@ public class AdminUsersDAOImpl implements AdminUsersDAO {
 	@Override
 	public UserDTO getUserInfoByUserId(int userId) {
 		return ses.selectOne(NS+"getUserInfoByUserId", userId);
+	}
+
+	@Override
+	public int userInfoUpdate(Map<String, String> user) {
+		return ses.update(NS+"userInfoUpdate", user);
 	}
 
 }

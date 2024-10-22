@@ -1,5 +1,7 @@
 package com.team.goott.owner.store.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ import com.team.goott.owner.domain.ScheduleDTO;
 import com.team.goott.owner.domain.StoreCategoryDTO;
 import com.team.goott.owner.domain.StoreDTO;
 import com.team.goott.owner.domain.StoreImagesDTO;
+import com.team.goott.owner.domain.StoreVO;
 import com.team.goott.owner.store.persistence.OwnerStoreDAO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -92,6 +95,50 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
         log.info("편의시설 정보 등록 완료");
     }
 
+	// storeId로 가게 정보를 조회하는 메서드 (수정시)
+    @Override
+    public StoreVO getStoreById(int storeId) throws Exception {
+        return ownerStoreDao.getStoreById(storeId);
+    }
+    
+    // 가게 정보를 업데이트하는 메서드
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int updateStore(int storeId, StoreDTO store, List<ScheduleDTO> schedules, StoreCategoryDTO category,
+			FacilityDTO facility, List<MultipartFile> updateFiles, List<String> deletedImages) throws Exception {
+    	setSidoCodeId(store);
+        // 가게 정보 업데이트
+        int updatedCount = ownerStoreDao.updateStore(storeId, store);
+        
+        // 일정 정보 업데이트
+        for (ScheduleDTO schedule : schedules) {
+            ownerStoreDao.updateSchedule(storeId, schedule);
+        }
+
+        // 카테고리 정보 업데이트
+        if (category != null) {
+            ownerStoreDao.updateCategory(storeId, category);
+        }
+
+        // 시설 정보 업데이트
+        if (facility != null) {
+            ownerStoreDao.updateFacility(storeId, facility);
+        }
+
+        // 파일 삭제 로직: 삭제 요청된 파일 처리
+        if (deletedImages != null && !deletedImages.isEmpty()) {
+        	deleteStoreImages(deletedImages, storeId);
+        }
+
+        // 파일 처리 로직: 새로 추가된 파일 저장
+        if (updateFiles != null && !updateFiles.isEmpty()) {
+            saveStoreImages(updateFiles, storeId);
+        }
+
+        return updatedCount; // 업데이트된 가게 수 반환
+    }
+    
+    // 파일을 저장하는 메서드
     private void saveStoreImages(List<MultipartFile> files, int storeId) throws Exception {
         // 파일 개수가 5개를 초과하는 경우 예외 발생
         if (files.size() > 5) {
@@ -113,7 +160,27 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
             log.info("가게 이미지 저장 완료: {}", uploadImageInfo.get("imageFileName"));
         }
     }
+    
+    // 파일을 삭제하는 메서드
+    private void deleteStoreImages(List<String> deleteFiles, int storeId) throws Exception {
+        for (String deleteFile : deleteFiles) {
+            
+            // 인스턴스 생성
+            S3ImageManager s3ImageManager = new S3ImageManager(s3Client, bucketName, deleteFile);
+            
+            log.info("서비스 단 deleteFile : " +  deleteFile);
+            // 파일 삭제
+            s3ImageManager.deleteImage();
 
+            // 데이터베이스에서 이미지 정보 삭제
+            if (ownerStoreDao.deleteStoreImages(storeId, deleteFile) <= 0) {
+                throw new Exception("가게 이미지 삭제 실패");
+            }
+            log.info("가게 이미지 삭제 완료: {}", deleteFile);
+        }
+    }
+    
+    // 입력받은 sido 이름으로 sidoCode값을 설정해주는 메서드
     private void setSidoCodeId(StoreDTO store) {
         Map<String, Integer> sidoCodeMap = new HashMap<>();
         sidoCodeMap.put("서울", 10);
@@ -141,4 +208,5 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
             throw new IllegalArgumentException("유효한 지역을 입력해주세요: " + store.getSidoCode());
         }
     }
+    
 }

@@ -36,6 +36,58 @@
 	    VALUES
 	    (#{storeId}, #{url}, #{fileName})
 	</insert>
+	
+    <select id="getStoreById" resultType="com.team.goott.owner.domain.StoreVO">
+       SELECT * 
+       FROM store 
+       WHERE storeId = #{storeId}
+    </select>
+    
+    <update id="updateStore" parameterType="com.team.goott.owner.domain.StoreDTO">
+    UPDATE store SET
+        rotationId = #{rotationId},
+        sidoCodeId = #{sidoCodeId},
+        storeName = #{storeName},
+        address = #{address},
+        tel = #{tel},
+        description = #{description},
+        directionGuide = #{directionGuide},
+        maxPeople = #{maxPeople},
+        maxPeoplePerReserve = #{maxPeoplePerReserve},
+        isBlocked = #{isBlocked},
+        locationLatX = #{locationLatX},
+        locationLonY = #{locationLonY}
+    WHERE storeId = #{storeId}
+	</update>
+	
+	<update id="updateSchedule" parameterType= "com.team.goott.owner.domain.ScheduleDTO">
+	UPDATE schedule SET
+		dayCodeId = #{dayCodeId},
+		open = #{open},
+		close = #{close},
+		closeDay = #{closeDay}
+	WHERE storeId = #{storeId}	
+	</update>
+	
+	<update id="updateCategory" parameterType="com.team.goott.owner.domain.StoreCategoryDTO">
+	UPDATE storeCategory SET
+		categoryCodeId = #{categoryCodeId},
+		storeCategoryName = #{storeCategoryName}
+	WHERE storeId = #{storeId}
+	</update>
+	
+	<update id="updateFacility" parameterType="com.team.goott.owner.domain.FacilityDTO">
+	UPDATE facility SET
+		facilityCode = #{facilityCode}
+	WHERE storeId = #{storeId}
+	</update>
+	
+	<delete id="deleteStoreImage" parameterType="com.team.goott.owner.domain.StoreImagesDTO">
+    DELETE FROM storeImages
+    WHERE storeId = #{storeId} AND fileName = #{fileName}
+	</delete>
+	
+	
 
 
 </mapper>

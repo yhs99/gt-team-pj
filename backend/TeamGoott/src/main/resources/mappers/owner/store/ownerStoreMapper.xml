@@ -30,6 +30,12 @@
     	(#{storeId}, #{facilityCode})
     </insert>
 
+	<insert id="createStoreImages" parameterType="com.team.goott.owner.domain.StoreImagesDTO">
+	    INSERT INTO storeImages
+	    (storeId, url, fileName)
+	    VALUES
+	    (#{storeId}, #{url}, #{fileName})
+	</insert>
 
 
 </mapper>

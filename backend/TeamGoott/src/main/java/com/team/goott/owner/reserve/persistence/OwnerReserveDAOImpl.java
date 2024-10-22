@@ -1,5 +1,6 @@
 package com.team.goott.owner.reserve.persistence;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +10,12 @@ import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.team.goott.owner.domain.NotificationDTO;
+import com.team.goott.owner.domain.ReserveSlotsDTO;
+import com.team.goott.owner.domain.StoreDTO;
+import com.team.goott.owner.domain.StoreVO;
 import com.team.goott.user.domain.ReserveDTO;
+import com.team.goott.user.domain.UserDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,5 +52,44 @@ public class OwnerReserveDAOImpl implements OwnerReserveDAO {
 		args.put("statusCode", statusCode);
 		return session.update(ns+"updateStatus", args);
 	}
+
+	@Override
+	public ReserveDTO getReserve(int reserveId) {
+		return session.selectOne(ns+"getReserve", reserveId);
+	}
+
+	@Override
+	public ReserveSlotsDTO getReserveSlots(int storeId, LocalDateTime reserveTime) {
+		Map<String, Object> args = new HashMap<String, Object>();
+		args.put("storeId", storeId);
+		args.put("reserveTime", reserveTime);
+		return session.selectOne(ns+"getReserveSlot", args);
+	}
+
+	@Override
+	public UserDTO getUser(int userId) {
+		return session.selectOne(ns+"getUser", userId);
+	}
+
+	@Override
+	public StoreVO getStore(int storeId) {
+		return session.selectOne(ns+"getStore", storeId);
+	}
+
+	@Override
+	public int setNotification(NotificationDTO notification) {
+		return session.insert(ns+"insertNotification", notification);
+	}
+
+	@Override
+	public List<NotificationDTO> getNotification(int userId) {
+		return session.selectList(ns+"getNotification", userId);
+	}
+
+	@Override
+	public int updateNotification(int alarmId) {
+		return session.update(ns+"updateNotification", alarmId);
+	}
+
 
 }

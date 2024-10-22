@@ -22,7 +22,35 @@
 		select count(*) from reserve where storeId = #{storeId} and date_format(reserveTime, "%Y-%m-%d") = curdate()
 	</select>
 	
+	<select id="getReserve" resultType="com.team.goott.user.domain.ReserveDTO">
+		select * from reserve where reserveId = #{reserveId}
+	</select>
+	
+	<select id="getReserveSlot" resultType="com.team.goott.owner.domain.ReserveSlotsDTO">
+		select * from reserveSlots where storeId = #{storeId} and slotDatetime = #{reserveTime}
+	</select>
+	
+	<select id="getUser" resultType="com.team.goott.user.domain.UserDTO">
+		select * from user where userId = #{userId}
+	</select>
+	
+	<select id="getStore" resultType="com.team.goott.owner.domain.StoreVO">
+		select * from store where storeId = #{storeId}
+	</select>
+	
+	<insert id="insertNotification">
+		insert into notification(userId, message) values(#{userId}, #{message})
+	</insert>
+	
+	<select id="getNotification" resultType="com.team.goott.owner.domain.NotificationDTO">
+		select * from notification where userId = #{userId}
+	</select>
+	
 	<update id="updateStatus">
-		update reserve set statusCodeId = #{statusCodeId} where reserveId = #{reserveId}
+		update reserve set statusCodeId = #{statusCode} where reserveId = #{reserveId}
+	</update>
+	
+	<update id="updateNotification">
+		update notification set isRead = true where alarmId = #{alarmId}
 	</update>
 </mapper>

@@ -18,7 +18,7 @@ import lombok.ToString;
 public class ReserveDTO {
 	private int reserveId;
 	private int storeId;
-	private String userId;
+	private int userId;
 	private int couponId;
 	private LocalDateTime reserveTime;
 	private String name;

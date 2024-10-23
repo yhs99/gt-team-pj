@@ -33,6 +33,7 @@ public class UserCartServiceImpl implements UserCartService {
 	    if (menuList.isEmpty()) {
 	        throw new Exception("해당 메뉴가 존재하지 않습니다.");
 	    }
+	   
 
 	    MenuDTO menu = menuList.get(0);
 
@@ -42,7 +43,14 @@ public class UserCartServiceImpl implements UserCartService {
 
 	    double totalPrice = cartDTO.getPrice() * cartDTO.getStock();
 	    cartDTO.setTotalPrice(totalPrice);
-
+	    
+	    List<CartDTO> existingCartItems = cartDAO.getUserCart(cartDTO.getUserId());
+	    for(CartDTO existingItem : existingCartItems) {
+	        if (existingItem.getStoreId() != cartDTO.getStoreId()) {
+	            throw new Exception("장바구니에는 같은 식당 메뉴만 추가할 수 있습니다.");
+	        }
+	    }
+	    
 	    cartDAO.addCart(cartDTO);
 	}
 

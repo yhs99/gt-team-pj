@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OwnerCouponServiceImpl implements OwnerCouponService {
 
-		@Autowired
+		  @Autowired
 	    private OwnerCouponDAO ownerCouponDAO;
 
 	    // 쿠폰 조회

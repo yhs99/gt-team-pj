@@ -1,4 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.team.mappers.user.reserve.userReserveMapper">
+<mapper
+	namespace="com.team.mappers.user.reserve.userReserveMapper">
+	<select id="getCartCheck"
+		resultType="com.team.goott.user.domain.CartDTO">
+		select * from cart where userId = #{userId}
+	</select>
+	
+	<insert id="insertReserve">
+    insert into reserve(reserveId, storeId, userId, couponId, reserveTime, name, people, statusCodeId, memo)
+    values(#{reserveDTO.reserveId}, #{reserveDTO.storeId}, #{userId}, #{reserveDTO.couponId}, #{reserveDTO.reserveTime}, #{reserveDTO.name}, #{reserveDTO.people}, #{reserveDTO.statusCodeId}, #{reserveDTO.memo})
+</insert>
+
+	<select id="getMaxPeople" resultType="int">
+		select maxPeople from store where storeId = #{storeId}
+	</select>
+	
+	<select id="getTimeTotPeople" resultType="int">
+		select sum(people) from reserve where storeId = #{storeId} AND reserveTime = #{reserveTime}
+	</select>
+	
+	<select id="getMaxPeoplePerReserve" resultType="int">
+		select maxPeoplePerReserve from store where storeId = #{storeId}
+	</select>
+	
+	<update id="updateReserved">
+		update reserveSlots set reserved = 1  where storeId = #{storeId} AND slotDatetime = #{reserveTime};
+	</update>
+	
+	<select id="getStoreMenuById" resultType="com.team.goott.user.domain.MenuDTO">
+		select * from menu where menuId = #{menuId} AND storeId = #{storeId} 
+	</select>
+	<update id="updateReserve">
+		update reserve set statusCodeId = 3 where reserveId = #{reserveId} AND userId =#{userId}
+	</update>
+
 </mapper>

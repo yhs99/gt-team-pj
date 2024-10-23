@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team.goott.admin.domain.AdminDTO;
@@ -90,6 +89,13 @@ public class UserUsersController {
 		} else {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 로그인 그룹입니다.");
 		}
+	}
+	
+	@PostMapping("/logout")
+	public ResponseEntity<Object> userLogout(HttpSession session) {
+		session.invalidate();
+		
+		return ResponseEntity.ok("로그아웃 완료");
 	}
 
 	// 회원 로그인 메서드

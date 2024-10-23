@@ -1,6 +1,7 @@
 package com.team.goott.owner.menu.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -8,7 +9,7 @@ import com.team.goott.owner.domain.MenuDTO;
 
 public interface OwnerMenuService {
 
-	List<MenuDTO> getAllMenu(boolean isMain, int storeId);
+	Map<String, Object> getAllMenu(int storeId);
 
 	int deleteMenu(int menuId, int storeId);
 

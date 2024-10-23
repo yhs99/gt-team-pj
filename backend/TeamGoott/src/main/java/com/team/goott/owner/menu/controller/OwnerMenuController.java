@@ -89,9 +89,9 @@ public class OwnerMenuController {
 	public ResponseEntity<Object> modifyMenu(@PathVariable("menuId") int menuId, @RequestPart("menu") MenuDTO updateMenu, @RequestPart("file")MultipartFile file ,  HttpSession session){
 		int result = 0;
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
-		int storeId = storeSession.getStoreId();
 		
 		if(storeSession != null) {
+			int storeId = storeSession.getStoreId();
 			MenuDTO originMenu = service.getMenu(menuId);
 			if(storeId == originMenu.getStoreId()) {
 				result = service.updateMenu(menuId, updateMenu, file, originMenu);
@@ -109,9 +109,9 @@ public class OwnerMenuController {
 	@DeleteMapping("/menu/{menuId}")
 	public ResponseEntity<Object> deleteMenu(@PathVariable("menuId") int menuId, HttpSession session){
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
-		int storeId = storeSession.getStoreId();
 		int result = 0;
 		if(storeSession != null) {
+			int storeId = storeSession.getStoreId();
 			MenuDTO menu = service.getMenu(menuId);
 			log.info(menu.toString());
 			if(menu.getStoreId() == storeId) {

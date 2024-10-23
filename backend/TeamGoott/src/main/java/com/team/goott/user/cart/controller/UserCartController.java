@@ -52,14 +52,13 @@ public class UserCartController {
 	// 장바구니에 담기
 	@PostMapping("/cart")
 	public ResponseEntity<Object> addCart(@RequestBody CartDTO cartDTO, HttpSession session) {
-//		UserDTO userSession = (UserDTO) session.getAttribute("user");
-//
-//		if (userSession == null) {
-//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
-//		}
+		UserDTO userSession = (UserDTO) session.getAttribute("user");
+
+		if (userSession == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
+		}
 		try {
-			//userSession.getUserId()
-			cartDTO.setUserId(1);
+			cartDTO.setUserId(userSession.getUserId());
 			userCartService.addCart(cartDTO);
 			log.info("메뉴가 추가됐습니다 : {}", cartDTO);
 			return ResponseEntity.ok("메뉴가 장바구니에 담겼습니다.");

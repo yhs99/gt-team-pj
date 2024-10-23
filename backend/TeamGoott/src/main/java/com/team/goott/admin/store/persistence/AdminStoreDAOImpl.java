@@ -1,7 +1,7 @@
 package com.team.goott.admin.store.persistence;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.team.goott.owner.domain.ReserveSlotsDTO;
 import com.team.goott.owner.domain.ScheduleDTO;
+import com.team.goott.owner.domain.StoreDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,13 +34,23 @@ public class AdminStoreDAOImpl implements AdminStoreDAO {
 	}
 
 	@Override
-	public List<ReserveSlotsDTO> getExistingSlots(LocalDate date) {
-		return ses.selectList(NS+"getExistingSlots", date);
+	public List<ReserveSlotsDTO> getExistingSlots(Map<String, Object> map) {
+		return ses.selectList(NS+"getExistingSlots", map);
 	}
 
 	@Override
 	public int insertReserveSlot(ReserveSlotsDTO newSlot) {
 		return ses.insert(NS+"insertReserveSlot", newSlot);
+	}
+
+	@Override
+	public List<StoreDTO> getAllStoreLists() {
+		return ses.selectList(NS+"getAllStoreLists");
+	}
+
+	@Override
+	public int batchInsertSlots(List<ReserveSlotsDTO> slots) {
+		return ses.insert(NS+"batchInsertSlots", slots);
 	}
 
 }

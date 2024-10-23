@@ -1,5 +1,7 @@
 package com.team.goott.admin.users.service;
 
+import com.team.goott.admin.domain.AdminDTO;
+
 import java.util.Map;
 
 import com.team.goott.infra.UserNotFoundException;
@@ -11,4 +13,5 @@ public interface AdminUsersService {
 	Map<String, Object> getAllUsers();
 	UserDTO getUserInfo(int userId);
 	int patchUserInfo(UserRegisterDTO userUpdateData, int userId) throws UserNotFoundException, UserNotMatchException;
+	AdminDTO login(String id, String password);
 }

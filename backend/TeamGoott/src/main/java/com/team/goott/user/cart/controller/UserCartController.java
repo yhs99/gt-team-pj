@@ -59,13 +59,21 @@ public class UserCartController {
 		}
 		try {
 			cartDTO.setUserId(userSession.getUserId());
+			
+		    List<CartDTO> existingCartItems = userCartService.getUserCart(cartDTO.getUserId());
+		    
+		    for(CartDTO existingItem : existingCartItems) {
+		        if (existingItem.getStoreId() != cartDTO.getStoreId()) {
+		        	 return ResponseEntity.badRequest().body("장바구니에는 같은 식당 메뉴만 추가할 수 있습니다.");
+		        }
+		    }
 			userCartService.addCart(cartDTO);
 			log.info("메뉴가 추가됐습니다 : {}", cartDTO);
 			return ResponseEntity.ok("메뉴가 장바구니에 담겼습니다.");
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("메뉴 추가에 실패했습니다 : {}", e.getMessage());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("메뉴가 장바구니에 담기지 못했습니다.. 다시 한번 확인해주세요!");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
 

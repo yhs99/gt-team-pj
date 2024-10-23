@@ -13,17 +13,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class PayHistoryDTO {
-	private int payHistoryId;
-	private int reserveId;
-	private int storeId;
+public class MenuDTO {
 	private int menuId;
+	private int storeId;
 	private String menuName;
-	private int stock;
-	private double stockPerPrice;
-	private int stockTotal;
-	private double totalPrice;
-	private int couponYN;
-	private int couponId;
-	private double payAmount;
+	private int price;
+	private String menuImageUrl;
+	private String menumenuImageName;;
+	private String description;
+	private boolean isMain;
 }

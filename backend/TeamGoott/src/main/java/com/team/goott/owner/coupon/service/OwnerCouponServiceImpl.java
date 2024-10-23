@@ -43,7 +43,7 @@ public class OwnerCouponServiceImpl implements OwnerCouponService {
 	        if (coupon != null && coupon.getStoreId() == storeId) {
 	            return ownerCouponDAO.deleteCoupon(couponId); // 1 반환 시 성공
 	        } else {
-	            throw new Exception("쿠폰 삭제 권한이 없습니다."); // 권한 없음 예외 처리
+	            throw new Exception("쿠폰 삭제 권한이 없습니다. "); // 권한 없음 예외 처리
 	        }
 	    }
 

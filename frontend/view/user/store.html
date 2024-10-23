@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Store</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <h1>장바구니</h1>
+      <ul>
+        <li v-for="item in cartItems" :key="item.cartId">
+          {{ item.menuName }} - {{ item.price }} 원 (수량: {{ item.stock }})
+          <button @click="removeFromCart(item.cartId)">삭제</button>
+        </li>
+      </ul>
+      <input v-model="newItem.menuName" placeholder="메뉴 이름" />
+      <input v-model="newItem.storeId" placeholder="매장 ID" />
+      <input v-model="newItem.menuId" placeholder="메뉴 ID" />
+      <input v-model="newItem.stock" type="number" placeholder="수량" />
+      <input v-model="newItem.price" type="number" placeholder="가격" />
+      <button @click="addToCart">장바구니에 추가</button>
+    </div>
+
+    <script>
+      // cartService는 API 호출을 위한 서비스 파일입니다. 적절하게 구현되어 있어야 합니다.
+      const cartService = {
+        getUserCart(userId) {
+          // 사용자 장바구니를 가져오는 API 호출 (예시)
+          return axios.get(`/api/cart/user/${userId}`);
+        },
+        addToCart(cartItem) {
+          // 장바구니에 추가하는 API 호출 (예시)
+          return axios.post("/api/cart", cartItem);
+        },
+        deleteFromCart(cartId) {
+          // 장바구니에서 삭제하는 API 호출 (예시)
+          return axios.delete(`/api/cart/${cartId}`);
+        },
+      };
+
+      new Vue({
+        el: "#app",
+        data() {
+          return {
+            cartItems: [],
+            newItem: {
+              menuName: "",
+              storeId: null,
+              menuId: null,
+              stock: 1,
+              price: 0,
+            },
+            userId: 1, // 예시로 유저 ID를 하드코딩
+          };
+        },
+        created() {
+          this.loadCart();
+        },
+        methods: {
+          loadCart() {
+            cartService
+              .getUserCart(this.userId)
+              .then((response) => {
+                this.cartItems = response.data;
+              })
+              .catch((error) => {
+                console.error("장바구니 로드 실패:", error);
+              });
+          },
+          addToCart() {
+            const cartItem = {
+              menuName: this.newItem.menuName,
+              storeId: this.newItem.storeId,
+              menuId: this.newItem.menuId,
+              stock: this.newItem.stock,
+              price: this.newItem.price,
+            };
+
+            cartService
+              .addToCart(cartItem)
+              .then(() => {
+                this.loadCart(); // 장바구니 새로 고침
+                this.resetNewItem();
+              })
+              .catch((error) => {
+                console.error("장바구니 추가 실패:", error);
+              });
+          },
+          removeFromCart(cartId) {
+            cartService
+              .deleteFromCart(cartId)
+              .then(() => {
+                this.loadCart(); // 장바구니 새로 고침
+              })
+              .catch((error) => {
+                console.error("장바구니 삭제 실패:", error);
+              });
+          },
+          resetNewItem() {
+            this.newItem = {
+              menuName: "",
+              storeId: null,
+              menuId: null,
+              stock: 1,
+              price: 0,
+            };
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

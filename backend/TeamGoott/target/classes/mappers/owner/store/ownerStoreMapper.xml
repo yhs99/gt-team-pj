@@ -10,4 +10,14 @@
     </insert>
 
 
+	<select id="ownerLoginInfo" parameterType="map"
+		resultType="com.team.goott.owner.domain.StoreDTO">
+		SELECT s.* FROM store s	JOIN owner o ON s.ownerId = o.ownerId
+		WHERE o.id = #{id} AND o.password = SHA2(#{pw}, 256)
+	</select>
+	
+	 <insert id="ownerRegister" parameterType="com.team.goott.owner.domain.OwnerDTO">
+        INSERT INTO owner (id, password) VALUES (#{id},SHA2(#{password},256))
+    </insert>
+    
 </mapper>

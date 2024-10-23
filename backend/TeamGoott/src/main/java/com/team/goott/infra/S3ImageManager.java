@@ -1,18 +1,13 @@
 package com.team.goott.infra;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-
 import org.springframework.web.multipart.MultipartFile;
 
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -22,9 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class S3ImageManager {
 
-    private static final String ALGORITHM = "AES";
-    private static final String KEY = "1234567890123456";
-    
     private AmazonS3 s3Client;
     private String bucketName;
 	private ObjectMetadata metaData;
@@ -55,8 +47,7 @@ public class S3ImageManager {
 	 */
 	public S3ImageManager(MultipartFile multipartImageFile, AmazonS3 s3Client, String bucketName) throws Exception {
 		this.multipartImageFile = multipartImageFile;
-		String fileExt = "."+multipartImageFile.getOriginalFilename().split("\\.")[1];
-		this.fileName = "/"+getUuidFileName(multipartImageFile.getOriginalFilename(), fileExt);
+		this.fileName = "/"+getUuidFileName(multipartImageFile.getOriginalFilename());
 		this.s3Client = s3Client;
 		this.bucketName = bucketName;
 		this.metaData = new ObjectMetadata();
@@ -81,12 +72,8 @@ public class S3ImageManager {
 				returnObj.put("imageUrl", s3Client.getUrl(bucketName, fileName)+"");
 				returnObj.put("imageFileName", this.fileName);
 				return returnObj;
-			} catch(AmazonServiceException ase) {
-				ase.printStackTrace();
-				throw new Exception(ase.getMessage());
-			} catch(AmazonClientException ase) {
-				ase.printStackTrace();
-				throw new Exception(ase.getMessage());
+			} catch(SdkClientException | IOException e) {
+				throw new ImageUploadFailedException();
 			}
 		} else {
 			throw new Exception("파일 객체를 생성해야합니다.");
@@ -96,34 +83,13 @@ public class S3ImageManager {
 	public boolean deleteImage() throws Exception {
 		try {
 			s3Client.deleteObject(bucketName, this.fileName);
-		} catch(AmazonServiceException ase) {
-			ase.printStackTrace();
-			throw new Exception(ase.getMessage());
-		} catch(AmazonClientException ase) {
-			ase.printStackTrace();
-			throw new Exception(ase.getMessage());
+		} catch(SdkClientException ase) {
+			throw new ImageUploadFailedException();
 		}
 		return true;
 	}
-	
-    public String encrypt(String plainText) throws Exception {
-        SecretKeySpec keySpec = new SecretKeySpec(KEY.getBytes(), ALGORITHM);
-        Cipher cipher = Cipher.getInstance(ALGORITHM);
-        cipher.init(Cipher.ENCRYPT_MODE, keySpec);
-        byte[] encryptedBytes = cipher.doFinal(plainText.getBytes());
-        return Base64.getEncoder().encodeToString(encryptedBytes);
-    }
-
-    public String decrypt(String encryptedText) throws Exception {
-        SecretKeySpec keySpec = new SecretKeySpec(KEY.getBytes(), ALGORITHM);
-        Cipher cipher = Cipher.getInstance(ALGORITHM);
-        cipher.init(Cipher.DECRYPT_MODE, keySpec);
-        byte[] decodedBytes = Base64.getDecoder().decode(encryptedText);
-        byte[] decryptedBytes = cipher.doFinal(decodedBytes);
-        return new String(decryptedBytes);
-    }
     
-    public String getUuidFileName(String fileName, String fileExt) {
-		return UUID.randomUUID().toString()+"_"+fileName+fileExt;
+    public String getUuidFileName(String fileName) {
+		return UUID.randomUUID().toString()+"_"+fileName;
     }
 }

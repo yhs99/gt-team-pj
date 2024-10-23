@@ -10,6 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team.goott.owner.domain.StoreDTO;
+
+
+import org.mybatis.spring.MyBatisSystemException;
+import org.springframework.dao.DuplicateKeyException;
+
+import com.team.goott.owner.domain.OwnerDTO;
 import com.team.goott.owner.store.service.OwnerStoreService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +24,24 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequestMapping("/store")
 public class OwnerStoreController {
-
+	
 	@Autowired
 	private OwnerStoreService ownerStoreService;
+	
+	// 점주 가입
+	@PostMapping("/owner/register")
+	public ResponseEntity<Object> userLoginRequest(OwnerDTO ownerDTO){
+		boolean result = false;
+		try {
+			result = ownerStoreService.register(ownerDTO);
+		} catch (DuplicateKeyException | MyBatisSystemException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("중복된 아이디 입니다 ");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류 발생 ");
+		}
+		return ResponseEntity.ok(result?"성공 ":"실패 ");
+	}
 	
     @PostMapping("")
     public ResponseEntity<Object> registerStore(HttpSession session, StoreDTO store) {

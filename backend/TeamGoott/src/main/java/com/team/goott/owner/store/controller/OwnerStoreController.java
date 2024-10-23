@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -71,24 +72,32 @@ public class OwnerStoreController {
     public ResponseEntity<Object> updateStore(
             HttpSession session,
             @PathVariable int storeId,
-            @RequestPart("storeDTO") StoreDTO store,
-            @RequestPart("scheduleDTO") List<ScheduleDTO> schedules,
-            @RequestPart("storeCategoryDTO") StoreCategoryDTO category,
-            @RequestPart("facilityDTO") FacilityDTO facility,
-            @RequestPart(value = "file", required = false) List<MultipartFile> updatefiles,
-            @RequestPart("deletedImageUrls") String deleteImage) throws Exception {
+            @Valid @RequestPart("storeDTO") StoreDTO store,
+            @RequestPart(value = "scheduleDTO", required = false) List<ScheduleDTO> schedules,
+            @RequestPart(value = "storeCategoryDTO", required = false) StoreCategoryDTO category,
+            @RequestPart(value = "facilityDTO", required = false) FacilityDTO facility,
+            @RequestPart(value = "file", required = false) List<MultipartFile> updateFiles,
+            @RequestPart(value = "deletedImageUrls", required = false) List<Object> deleteImages) throws Exception {
     	
     	// 삭제 요청받은 fileName을 저장하는 리스트
-    	 List<String> deleteImages = new ArrayList<>();
-    	 deleteImages.add(deleteImage);
-    	 
-    	log.info("Deleted images: {}", deleteImages);
+        List<String> deleteImage = new ArrayList<>();
+        
+        // deleteImages가 null이 아니고 비어있지 않은지 확인
+        if (deleteImages != null && !deleteImages.isEmpty()) {
+            for (Object obj : deleteImages) {
+                if (obj instanceof String) {
+                    deleteImage.add((String) obj); // Object를 String으로 캐스팅하여 추가
+                }
+            }
+        }
+	    	log.info("Deleted images: {}", deleteImage);
+    	
 
         // 현재 세션에서 ownerId 가져오기
-        Integer ownerId = getOwnerIdFromSession(session);
-        if (ownerId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
+        Integer ownerId = 6;
+//        if (ownerId == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+//        }
 
         // 수정할 가게 정보 확인
         StoreVO existingStore = ownerStoreService.getStoreById(storeId);
@@ -102,14 +111,16 @@ public class OwnerStoreController {
         }
 
         // StoreDTO에 storeId 설정
+        
+//        Integer storeId = 84;
         store.setStoreId(storeId);
-
+        
         // 요청 테스트 (로그 확인용)
         log.info("PUT 테스트 : " + existingStore.toString());
 
         // 가게 수정
         try {
-            int result = ownerStoreService.updateStore(storeId, store, schedules, category, facility, updatefiles, deleteImages);
+            int result = ownerStoreService.updateStore(storeId, store, schedules, category, facility, updateFiles, deleteImage);
             if (result == 1) {
                 return ResponseEntity.ok("가게가 성공적으로 수정되었습니다.");
             } else {

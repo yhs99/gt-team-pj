@@ -1,6 +1,7 @@
 package com.team.goott.owner.store.persistence;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
@@ -8,10 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.team.goott.owner.domain.FacilityDTO;
+import com.team.goott.owner.domain.FacilityVO;
 import com.team.goott.owner.domain.ScheduleDTO;
+import com.team.goott.owner.domain.ScheduleVO;
 import com.team.goott.owner.domain.StoreCategoryDTO;
+import com.team.goott.owner.domain.StoreCategoryVO;
 import com.team.goott.owner.domain.StoreDTO;
 import com.team.goott.owner.domain.StoreImagesDTO;
+import com.team.goott.owner.domain.StoreImagesVO;
 import com.team.goott.owner.domain.StoreVO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -62,38 +67,64 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
 	public StoreVO getStoreById(int storeId) throws Exception {
 		return ses.selectOne(ns + "getStoreById", storeId);
 	}
+	
+    @Override
+    public List<ScheduleVO> getSchedulesByStoreId(int storeId) throws Exception {
+        return ses.selectList(ns + "getSchedulesByStoreId", storeId);
+    }
 
+    @Override
+    public StoreCategoryVO getStoreCategoryByStoreId(int storeId) throws Exception {
+        return ses.selectOne(ns + "getStoreCategoryByStoreId", storeId);
+    }
+
+    @Override
+    public FacilityVO getFacilityByStoreId(int storeId) throws Exception {
+        return ses.selectOne(ns + "getFacilityByStoreId", storeId);
+    }
+
+    @Override
+    public List<StoreImagesVO> getStoreImagesByStoreId(int storeId) throws Exception {
+        return ses.selectList(ns + "getStoreImagesByStoreId", storeId);
+    }
 	// storeId를 이용해 store 테이블의 정보를 수정
     @Override
-    public int updateStore(int storeId, StoreDTO store) throws Exception {
-        store.setStoreId(storeId); // StoreDTO에 storeId 설정
-        return ses.update(ns + "updateStore", store); // SQL 쿼리 호출
+    public int updateStore(int storeId, Map<String, Object> storeUpdateData) throws Exception {
+    	storeUpdateData.put("storeId", storeId);
+        return ses.update(ns + "updateStore", storeUpdateData); // SQL 쿼리 호출
     }
     
-    // storeId를 이용해 schedule 테이블의 정보를 수정
     @Override
-    public void updateSchedule(int storeId, ScheduleDTO schedule) throws Exception {
+    public void updateSchedule(int storeId, ScheduleVO schedule) throws Exception {
+        schedule.setStoreId(storeId);
         ses.update(ns + "updateSchedule", schedule);
     }
 
-    // storeId를 이용해 storeCategory 테이블의 정보를 수정
     @Override
-    public void updateCategory(int storeId, StoreCategoryDTO category) throws Exception {
-        ses.update(ns + "updateCategory", category);
+    public void insertSchedule(int storeId, ScheduleDTO schedule) throws Exception {
+        schedule.setStoreId(storeId);
+        ses.insert(ns + "insertSchedule", schedule);
     }
 
-    // storeId를 이용해 facility 테이블을 수정
     @Override
-    public void updateFacility(int storeId, FacilityDTO facility) throws Exception {
-        ses.update(ns + "updateFacility", facility);
+    public void updateCategory(int storeId, Map<String, Object> categoryUpdateData) throws Exception {
+        categoryUpdateData.put("storeId", storeId);
+        ses.update(ns + "updateCategory", categoryUpdateData);
     }
-    
-    // 삭제 요청받은 fileName을 이용하여 storeId를 참조하는 storeImages의 테이블을 수정
-    public int deleteStoreImages(int storeId, String deleteFile) throws Exception {
+
+    @Override
+    public void updateFacility(int storeId, Map<String, Object> facilityUpdateData) throws Exception {
+        facilityUpdateData.put("storeId", storeId);
+        ses.update(ns + "updateFacility", facilityUpdateData);
+    }
+
+    @Override
+    public int deleteStoreImages(int storeId, String imageUrl) throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put("storeId", storeId);
-        params.put("fileName", deleteFile);
-        return ses.delete(ns + "deleteStoreImage", params);
+        params.put("imageUrl", imageUrl);
+        return ses.delete("OwnerStoreMapper.deleteImage", params);
     }
+
 
 }

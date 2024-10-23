@@ -37,57 +37,78 @@
 	    (#{storeId}, #{url}, #{fileName})
 	</insert>
 	
-    <select id="getStoreById" resultType="com.team.goott.owner.domain.StoreVO">
-       SELECT * 
-       FROM store 
-       WHERE storeId = #{storeId}
-    </select>
-    
-    <update id="updateStore" parameterType="com.team.goott.owner.domain.StoreDTO">
-    UPDATE store SET
-        rotationId = #{rotationId},
-        sidoCodeId = #{sidoCodeId},
-        storeName = #{storeName},
-        address = #{address},
-        tel = #{tel},
-        description = #{description},
-        directionGuide = #{directionGuide},
-        maxPeople = #{maxPeople},
-        maxPeoplePerReserve = #{maxPeoplePerReserve},
-        isBlocked = #{isBlocked},
-        locationLatX = #{locationLatX},
-        locationLonY = #{locationLonY}
-    WHERE storeId = #{storeId}
+	<select id="getStoreById" resultType="com.team.goott.owner.domain.StoreVO">
+	       SELECT * 
+	       FROM store 
+	       WHERE storeId = #{storeId}
+	</select>
+	    
+	<select id="getSchedulesByStoreId" resultType="com.team.goott.owner.domain.ScheduleVO">
+	    SELECT * FROM schedule WHERE storeId = #{storeId}
+	</select>
+	
+	<select id="getStoreCategoryByStoreId" resultType="com.team.goott.owner.domain.StoreCategoryVO">
+	    SELECT * FROM storeCategory WHERE storeId = #{storeId}
+	</select>
+	
+	<select id="getFacilityByStoreId" resultType="com.team.goott.owner.domain.FacilityVO">
+	    SELECT * FROM facility WHERE storeId = #{storeId}
+	</select>
+	
+	<select id="getStoreImagesByStoreId" resultType="com.team.goott.owner.domain.StoreImagesVO">
+	    SELECT * FROM storeImages WHERE storeId = #{storeId}
+	</select>
+	    
+	<update id="updateStore" parameterType="map">
+	    UPDATE store
+	    <set>
+	        <if test="rotationId != null">rotationId = #{rotationId},</if>
+	        <if test="sidoCodeId != null">sidoCodeId = #{sidoCodeId},</if>
+	        <if test="storeName != null and storeName != ''">storeName = #{storeName},</if>
+	        <if test="address != null and address != ''">address = #{address},</if>
+	        <if test="tel != null and tel != ''">tel = #{tel},</if>
+	        <if test="description != null and description != ''">description = #{description},</if>
+	        <if test="directionGuide != null and directionGuide != ''">directionGuide = #{directionGuide},</if>
+	        <if test="maxPeople != null">maxPeople = #{maxPeople},</if>
+	        <if test="maxPeoplePerReserve != null">maxPeoplePerReserve = #{maxPeoplePerReserve},</if>
+	        <if test="isBlocked != null">isBlocked = #{isBlocked},</if>
+	        <if test="locationLatX != null">locationLatX = #{locationLatX},</if>
+	        <if test="locationLonY != null">locationLonY = #{locationLonY}</if>
+	    </set>
+	    WHERE storeId = #{storeId}
+	</update>
+		
+	
+	<update id="updateSchedule" parameterType="com.team.goott.owner.domain.ScheduleVO">
+	    UPDATE schedule
+	    <set>
+	        <if test="dayCodeId != null">dayCodeId = #{dayCodeId},</if>
+	        <if test="open != null">open = #{open},</if>
+	        <if test="close != null">close = #{close},</if>
+	        <if test="closeDay != null">closeDay = #{closeDay}</if>
+	    </set>
+	    WHERE scheduleId = #{scheduleId} AND storeId = #{storeId}
 	</update>
 	
-	<update id="updateSchedule" parameterType= "com.team.goott.owner.domain.ScheduleDTO">
-	UPDATE schedule SET
-		dayCodeId = #{dayCodeId},
-		open = #{open},
-		close = #{close},
-		closeDay = #{closeDay}
-	WHERE storeId = #{storeId}	
+	<update id="updateCategory" parameterType="map">
+	    UPDATE storeCategory
+	    <set>
+	        <if test="categoryName != null">categoryName = #{categoryName}</if>
+	    </set>
+	    WHERE storeId = #{storeId}
 	</update>
 	
-	<update id="updateCategory" parameterType="com.team.goott.owner.domain.StoreCategoryDTO">
-	UPDATE storeCategory SET
-		categoryCodeId = #{categoryCodeId},
-		storeCategoryName = #{storeCategoryName}
-	WHERE storeId = #{storeId}
+	<update id="updateFacility" parameterType="map">
+	    UPDATE facility
+	    <set>
+	        <if test="facilityCode != null">facilityCode = #{facilityCode}</if>
+	    </set>
+	    WHERE storeId = #{storeId}
 	</update>
 	
-	<update id="updateFacility" parameterType="com.team.goott.owner.domain.FacilityDTO">
-	UPDATE facility SET
-		facilityCode = #{facilityCode}
-	WHERE storeId = #{storeId}
-	</update>
-	
-	<delete id="deleteStoreImage" parameterType="com.team.goott.owner.domain.StoreImagesDTO">
-    DELETE FROM storeImages
-    WHERE storeId = #{storeId} AND fileName = #{fileName}
-	</delete>
-	
-	
-
+		<delete id="deleteStoreImage" parameterType="com.team.goott.owner.domain.StoreImagesDTO">
+	    DELETE FROM storeImages
+	    WHERE storeId = #{storeId} AND fileName = #{fileName}
+		</delete>
 
 </mapper>

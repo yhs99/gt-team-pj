@@ -2,13 +2,17 @@ package com.team.goott.user.register.controller;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team.goott.infra.ValidationException;
@@ -27,9 +31,10 @@ public class UserRegisterController {
 	
 	@PostMapping("/register")
 	public ResponseEntity<Object> userRegister(HttpSession session, UserRegisterDTO user) {
+		log.info(user.toString());
 		int status = 0;
 		try {
-			service.userRegister(user);
+			status = service.userRegister(user);
 		}catch(ValidationException e) {
 			log.error(e.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

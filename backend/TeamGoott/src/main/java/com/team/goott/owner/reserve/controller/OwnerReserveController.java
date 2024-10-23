@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,12 +55,19 @@ public class OwnerReserveController {
 	//예약 승인 or 취소 처리
 	
 	@PostMapping("/reserve/{reserveId}")
+	@Transactional
 	public ResponseEntity<Object> updateStatus(@PathVariable("reserveId") int reserveId, @RequestParam("statusCode") int statusCode , HttpSession session){
 		StoreDTO storeSession = (StoreDTO)session.getAttribute("store");
 		
 		int result = 0;
 		if(storeSession != null) {
-			result = service.updateStatus(reserveId,statusCode);
+			int storeId = storeSession.getStoreId();
+			ReserveDTO reserve = service.getReserve(reserveId);
+			if(storeId == reserve.getStoreId()) {
+				result = service.updateStatus(reserveId,statusCode);				
+			} else {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("해당 예약에 대한 권한이 없습니다.");
+			}
 		}else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
 		}

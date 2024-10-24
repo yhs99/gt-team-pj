@@ -32,4 +32,29 @@ public class AdminReviewDAOImpl implements AdminReviewDAO {
 		return ses.selectList(NS+"getAllReviewImages", sortBy);
 	}
 
+	@Override
+	public List<ReviewDTO> getAllDeleteReqReviews() {
+		return ses.selectList(NS+"getAllDeleteReqReviews");
+	}
+
+	@Override
+	public List<ReviewImagesDTO> getAllDeleteReqReviewImages() {
+		return ses.selectList(NS+"getAllDeleteReqReviewImages");
+	}
+
+	@Override
+	public List<ReviewImagesDTO> getTargetReviewImages(int reviewId) {
+		return ses.selectOne(NS+"getTargetReviewImages", reviewId);
+	}
+
+	@Override
+	public int deleteReview(int reviewId) {
+		return ses.delete(NS+"deleteReview", reviewId);
+	}
+
+	@Override
+	public int deleteReviewImages(int reviewId) {
+		return ses.delete(NS+"deleteReviewImages", reviewId);
+	}
+
 }

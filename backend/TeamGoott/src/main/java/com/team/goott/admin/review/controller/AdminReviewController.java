@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +44,33 @@ public class AdminReviewController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("권한이 없습니다.");
 		}
 		return ResponseEntity.ok(returnMap);
+	}
+	
+	@GetMapping("/deleteReview")
+	public ResponseEntity<Object> getAllDeleteRequestedReviews(HttpSession session) {
+		List<ReviewVO> reviews = new ArrayList<ReviewVO>();
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		if(checkAdminSession(session)) {
+			reviews = adminReviewService.getAllDeleteRequestedReviews();
+			returnMap.put("reviewCount", reviews.size());
+			returnMap.put("reviewData", reviews);
+		}else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("권한이 없습니다.");
+		}
+		
+		return ResponseEntity.ok(returnMap);
+	}
+	
+	@DeleteMapping("/deleteReview/{reviewId}")
+	public ResponseEntity<Object> deleteReview(HttpSession session,
+											  @PathVariable(name = "reviewId") int reviewId) {
+		try {
+			adminReviewService.deleteReview(reviewId);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+		return ResponseEntity.ok("삭제 완료");
 	}
 	
 	public boolean checkAdminSession(HttpSession session) {

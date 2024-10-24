@@ -70,4 +70,34 @@
 	        </choose>
         </where>
 	</select>
+	
+	<select id="getAllDeleteReqReviews" resultType="com.team.goott.admin.domain.ReviewDTO">
+		SELECT *
+		FROM review
+		WHERE isDeleteReq = 1
+	</select>
+	
+	<select id="getAllDeleteReqReviewImages" resultType="com.team.goott.user.domain.ReviewImagesDTO">
+		SELECT ri.*
+		FROM reviewImages ri
+		JOIN review r
+		ON ri.reviewId = r.reviewId
+		WHERE r.isDeleteReq = 1
+	</select>
+	
+	<select id="getTargetReviewImages" parameterType="int">
+		SELECT ri.*
+		FROM reviewImages ri
+		WHERE reviewId = #{reviewId}
+	</select>
+	
+	<delete id="deleteReview">
+		DELETE FROM review
+		WHERE reviewId = #{reviewId}
+	</delete>	
+	
+	<delete id="deleteReviewImages">
+		DELETE FROM reviewImages
+		WHERE reviewId = #{reviewId}
+	</delete>
 </mapper>

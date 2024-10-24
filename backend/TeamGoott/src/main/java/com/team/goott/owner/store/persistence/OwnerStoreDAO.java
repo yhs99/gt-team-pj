@@ -49,16 +49,20 @@ public interface OwnerStoreDAO {
 	// store 테이블 수정
 	int updateStore(int storeId, Map<String, Object> store) throws Exception;
 	
-    void updateSchedule(int storeId, ScheduleVO schedule) throws Exception;
+	// schedule 테이블 수정 (store 테이블이 수정될 때 트랙잭션 처리)
+    void updateSchedule(int storeId, Map<String, Object> scheduleUpdateData) throws Exception;
     
-    void insertSchedule(int storeId, ScheduleDTO schedule) throws Exception;
-    
+    // category 테이블 수정 (store 테이블이 수정될 때 트랙잭션 처리)
     void updateCategory(int storeId, Map<String, Object> categoryUpdateData) throws Exception;
-    
+
+	// facility 테이블 수정 (store 테이블이 수정될 때 트랙잭션 처리)
     void updateFacility(int storeId, Map<String, Object> facilityUpdateData) throws Exception;
     
     // 요청받은 이미지 파일을 storeId를 참조하여 storeImages 테이블의 이미지를 삭제
-    int deleteStoreImages(int storeId, String deleteFile) throws Exception;
+    int deleteStoreImagesByFileNames(int storeId, Map<String, List<String>> filesToDeleteMap) throws Exception;
+
+    // 이미지의 수를 가져오는 메서드
+	int getStoreImagesCountByStoreId(int storeId) throws Exception;
 	
 	
 

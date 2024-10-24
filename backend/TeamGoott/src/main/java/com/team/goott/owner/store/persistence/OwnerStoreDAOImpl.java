@@ -62,31 +62,36 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
 		return ses.insert(ns + "createStoreImages", storeImages);
 	}
 
-	// storeId로 store테이블의 정보를 가져오기
+	// storeId로 store 테이블의 정보를 가져오기
 	@Override
 	public StoreVO getStoreById(int storeId) throws Exception {
 		return ses.selectOne(ns + "getStoreById", storeId);
 	}
 	
+	// storeId로 schedule 테이블의 정보를 가져오기
     @Override
     public List<ScheduleVO> getSchedulesByStoreId(int storeId) throws Exception {
         return ses.selectList(ns + "getSchedulesByStoreId", storeId);
     }
 
+    // storeId로 category 테이블의 정보를 가져오기
     @Override
     public StoreCategoryVO getStoreCategoryByStoreId(int storeId) throws Exception {
         return ses.selectOne(ns + "getStoreCategoryByStoreId", storeId);
     }
 
+    // storeId로 facility 테이블의 정보를 가져오기
     @Override
     public FacilityVO getFacilityByStoreId(int storeId) throws Exception {
         return ses.selectOne(ns + "getFacilityByStoreId", storeId);
     }
 
+    // storeId로 storeImages 테이블의 정보를 가져오기
     @Override
     public List<StoreImagesVO> getStoreImagesByStoreId(int storeId) throws Exception {
         return ses.selectList(ns + "getStoreImagesByStoreId", storeId);
     }
+    
 	// storeId를 이용해 store 테이블의 정보를 수정
     @Override
     public int updateStore(int storeId, Map<String, Object> storeUpdateData) throws Exception {
@@ -94,37 +99,41 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
         return ses.update(ns + "updateStore", storeUpdateData); // SQL 쿼리 호출
     }
     
+    // storeId를 참조하는 schedule 테이블 수정
     @Override
-    public void updateSchedule(int storeId, ScheduleVO schedule) throws Exception {
-        schedule.setStoreId(storeId);
-        ses.update(ns + "updateSchedule", schedule);
+    public void updateSchedule(int storeId,  Map<String, Object> scheduleUpdateData) throws Exception {
+    	scheduleUpdateData.put("storeId", storeId);
+        ses.update(ns + "updateSchedule", scheduleUpdateData);
     }
 
-    @Override
-    public void insertSchedule(int storeId, ScheduleDTO schedule) throws Exception {
-        schedule.setStoreId(storeId);
-        ses.insert(ns + "insertSchedule", schedule);
-    }
-
+    // storeId를 참조하는 category 테이블 수정
     @Override
     public void updateCategory(int storeId, Map<String, Object> categoryUpdateData) throws Exception {
         categoryUpdateData.put("storeId", storeId);
         ses.update(ns + "updateCategory", categoryUpdateData);
     }
 
+    // storeId를 참조하는 facility 테이블 수정
     @Override
     public void updateFacility(int storeId, Map<String, Object> facilityUpdateData) throws Exception {
         facilityUpdateData.put("storeId", storeId);
         ses.update(ns + "updateFacility", facilityUpdateData);
     }
 
+    // storeId를 참조하는 storeImages 테이블의 fileName, storeId를 이용하여 삭제 요청 받은 파일을 삭제
     @Override
-    public int deleteStoreImages(int storeId, String imageUrl) throws Exception {
+    public int deleteStoreImagesByFileNames(int storeId, Map<String, List<String>> filesToDeleteMap) throws Exception{
         Map<String, Object> params = new HashMap<>();
         params.put("storeId", storeId);
-        params.put("imageUrl", imageUrl);
-        return ses.delete("OwnerStoreMapper.deleteImage", params);
+        params.put("fileNames", filesToDeleteMap.get("fileNames"));
+        return ses.delete(ns + "deleteStoreImagesByFileNames", params);
     }
+
+    // 해당 가게의 사진이 5장 이상 저장되지 않게 storeImages 테이블의 image 수를 가져옴
+	@Override
+	public int getStoreImagesCountByStoreId(int storeId) throws Exception {
+		return ses.selectOne(ns+ "selectStoreImagesCountByStoreId", storeId);
+	}
 
 
 }

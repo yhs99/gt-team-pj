@@ -106,9 +106,28 @@
 	    WHERE storeId = #{storeId}
 	</update>
 	
-		<delete id="deleteStoreImage" parameterType="com.team.goott.owner.domain.StoreImagesDTO">
+	<delete id="deleteStoreImagesByFileNames" parameterType="map">
 	    DELETE FROM storeImages
-	    WHERE storeId = #{storeId} AND fileName = #{fileName}
-		</delete>
+	    WHERE storeId = #{storeId}
+	    AND fileName IN 
+	    <foreach collection="fileNames" item="fileName" open="(" separator="," close=")">
+	        #{fileName}
+	    </foreach>
+	</delete>
+	
+	<select id="selectStoreImagesCountByStoreId" resultType="int">
+		select count(storeId) from storeImages where storeId = #{storeId}
+	</select>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 </mapper>

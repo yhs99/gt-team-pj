@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.team.goott.user.domain.MenuDTO;
 import com.team.goott.user.cart.persistence.UserCartDAO;
 import com.team.goott.user.domain.CartDTO;
+import com.team.goott.user.domain.ExtendedCartDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,6 +51,13 @@ public class UserCartServiceImpl implements UserCartService {
 	public void deleteFromCart(int cartId, int userId) throws Exception {
 		cartDAO.deleteFromCart(cartId, userId);
 	}
+
+	@Override
+	public List<ExtendedCartDTO> getUserCartById(int userId) throws Exception {
+		return cartDAO.getUserCartById(userId);
+	}
+
+	
 
 	  
 	

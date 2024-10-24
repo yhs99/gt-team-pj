@@ -4,6 +4,7 @@ import java.util.List;
 
 
 import com.team.goott.user.domain.CartDTO;
+import com.team.goott.user.domain.ExtendedCartDTO;
 
 public interface UserCartService {
 	List<CartDTO> getUserCart(int userId) throws Exception;
@@ -11,5 +12,7 @@ public interface UserCartService {
 	void addCart(CartDTO cartDTO) throws Exception;
 
 	void deleteFromCart(int cartId, int userId) throws Exception;
+
+	List<ExtendedCartDTO> getUserCartById(int userId) throws Exception;
 
 }

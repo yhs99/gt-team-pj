@@ -40,9 +40,9 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
 
 	// schedule 테이블에 데이터 저장
 	@Override
-	public int createSchedule(ScheduleDTO schedule) throws Exception {
-		return ses.insert(ns + "createSchedule", schedule);
-	}
+    public int createSchedule(Map<String, Object> scheduleMap) {
+        return ses.insert(ns + "createSchedule", scheduleMap);
+    }
 
 	// category 테이블에 데이터 저장
 	@Override

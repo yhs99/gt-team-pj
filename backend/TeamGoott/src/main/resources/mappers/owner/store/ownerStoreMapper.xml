@@ -9,15 +9,13 @@
         (#{ownerId}, #{rotationId}, #{sidoCodeId}, #{storeName}, #{address}, #{tel}, #{description}, #{directionGuide}, #{maxPeople}, #{maxPeoplePerReserve}, #{isBlocked}, #{locationLatX}, #{locationLonY})
     </insert>
     
-    <insert id="createSchedule" parameterType="com.team.goott.owner.domain.ScheduleDTO">
-    	INSERT INTO schedule
-    	(storeId, dayCodeId, open, close, closeDay)
-    	VALUES
-    	(#{storeId}, #{dayCodeId}, #{open}, #{close}, #{closeDay})
+    <insert id="createSchedule">
+        INSERT INTO schedule (storeId, dayCodeId, open, close, closeDay)
+        VALUES (#{storeId}, #{dayCodeId}, #{open}, #{close}, #{closeDay})
     </insert>
-    
+
     <insert id="createCategory" parameterType="com.team.goott.owner.domain.StoreCategoryDTO">
-    	INSERT INTO storeCategory
+    	INSERT INTO storeCategory	
     	(storeId, categoryCodeId, storeCategoryName)
     	VALUES
     	(#{storeId}, #{categoryCodeId}, #{storeCategoryName})

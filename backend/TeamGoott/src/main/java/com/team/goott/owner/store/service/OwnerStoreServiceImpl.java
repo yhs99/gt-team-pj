@@ -103,27 +103,34 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
     private void saveSchedules(List<ScheduleDTO> schedules, int storeId) throws Exception {
         for (ScheduleDTO schedule : schedules) {
             schedule.setStoreId(storeId);
+            log.info("서비스단 schedule : {} ", schedule);
 
-            // closeDay가 true인 경우: open과 close가 모두 null이면 예외 발생
+            Map<String, Object> scheduleMap = new HashMap<>();
+
             if (schedule.isCloseDay()) {
-                if (schedule.getOpen() == null && schedule.getClose() == null) {
+                // closeDay가 true인 경우: open과 close는 null이 아니어야 함
+                if (schedule.getOpen() == null || schedule.getClose() == null) {
                     throw new Exception("일정 등록 실패: closeDay가 true일 때 open과 close는 null일 수 없습니다.");
                 }
-                // closeDay가 true인 경우 open과 close가 null이 아닐 수 있으므로, 
-                // open과 close가 유효한 경우에만 DB에 저장
+                scheduleMap.put("closeDay", 1);
             } else {
-                // closeDay가 false인 경우: open과 close를 null로 설정
-                schedule.setOpen(null);
-                schedule.setClose(null);
+                scheduleMap.put("closeDay", 0);
             }
 
-            // 데이터베이스에 저장
-            if (ownerStoreDao.createSchedule(schedule) <= 0) {
+            scheduleMap.put("storeId", storeId);
+            scheduleMap.put("dayCodeId", schedule.getDayCodeId());
+            scheduleMap.put("open", schedule.getOpen());
+            scheduleMap.put("close", schedule.getClose());
+
+            // 데이터베이스에 스케줄 저장
+            int result = ownerStoreDao.createSchedule(scheduleMap);
+            if (result <= 0) {
                 throw new Exception("일정 등록에 실패하였습니다.");
             }
         }
+        log.info("모든 일정이 성공적으로 등록되었습니다.");
     }
-
+    
     private void saveCategory(StoreCategoryDTO category, int storeId) throws Exception {
         category.setStoreId(storeId);
         if (ownerStoreDao.createCategory(category) <= 0) {
@@ -454,5 +461,5 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
             throw new IllegalArgumentException("유효한 지역을 입력해주세요: " + store.getSidoCode());
         }
     }
-
+    
 }

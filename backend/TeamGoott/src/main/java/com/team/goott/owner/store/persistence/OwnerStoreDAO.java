@@ -20,7 +20,7 @@ public interface OwnerStoreDAO {
 	int createStore(StoreDTO store) throws Exception;
 
 	// schedule 테이블에 데이터 저장
-	int createSchedule(ScheduleDTO schedule) throws Exception;
+	int createSchedule(Map<String, Object> scheduleMap);
 
 	// category 테이블에 데이터 저장
 	int createCategory(StoreCategoryDTO category) throws Exception;

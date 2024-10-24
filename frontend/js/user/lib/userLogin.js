@@ -17,7 +17,7 @@ new Vue({
             return true;
         },
         async login() {
-            if (this.validateId()) {
+            // if (this.validateId()) {
                 const formData = new FormData();
                 formData.append('id', this.id);
                 formData.append('password', this.password);
@@ -31,7 +31,7 @@ new Vue({
                 } catch (error) {
                     console.error('API 요청 실패:', error.response.data.message);
                     this.idError=error.response.data.message;
-                }
+                // }
             }
         }
     }

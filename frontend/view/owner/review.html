@@ -20,6 +20,7 @@
 
     <!-- Template Stylesheet -->
     <link href="/css/owner/style.css" rel="stylesheet" />
+    <link href="/css/owner/review.css" rel="stylesheet" />
 
     <!-- JavaScript Libraries -->
 
@@ -198,10 +199,7 @@
         <!-- Navbar End -->
 
         <!-- Sale & Revenue Start -->
-         <div id="app">
-            {{name}}
-         </div>
-        <div class="container-fluid pt-4 px-4">
+        <div class="container-fluid pt-4 px-4 mb-4">
           <div class="row g-4">
             <div class="col-sm-6 col-xl-3">
               <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
@@ -245,7 +243,12 @@
 
         <div class="col-12">
           <div class="bg-light rounded h-100 p-4">
-              <h6 class="mb-4">리뷰 목록</h6>
+              <h6 class="mb-4 reviewList">리뷰 목록
+                <div class="orderMethods">
+                  <a @click="getAllReviews('newest')">최신순</a>
+                  <a @click="getAllReviews('score')">별점순</a>
+                </div>
+              </h6>
               <div class="table-responsive">
                   <table class="table">
                       <thead>
@@ -255,17 +258,17 @@
                               <th scope="col">평점</th>
                               <th scope="col">리뷰내용</th>
                               <th scope="col">게시일</th>
-                              <th scope="col">Status</th>
+                              <th scope="col">삭제요청</th>
                           </tr>
                       </thead>
                       <tbody>
-                          <tr>
-                              <th scope="row">1</th>
-                              <td>John</td>
-                              <td>Doe</td>
-                              <td>jhon@email.com</td>
-                              <td>USA</td>
-                              <td>Member</td>
+                          <tr v-for="(review,index) in getAllReviewList" :key="review.reviewId">
+                              <th scope="row">{{index + 1}}</th>
+                              <td>{{review.userName}}</td>
+                              <td>{{review.score}}</td>
+                              <td>{{review.content}}</td>
+                              <td>{{new Date(review.createAt).toLocaleDateString()}}</td>
+                              <td>삭제</td>
                           </tr>
                       </tbody>
                   </table>

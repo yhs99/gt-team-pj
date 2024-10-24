@@ -99,8 +99,12 @@ public class AdminReviewServiceImpl implements AdminReviewService {
 	@Override
 	@Transactional(rollbackFor = {ImageDeleteFailedException.class, Exception.class})
 	public boolean deleteReview(int reviewId) throws ImageDeleteFailedException, Exception {
+		ReviewDTO targetReviewInfo = dao.getTargetReviewInfo(reviewId);
+		if(targetReviewInfo == null ) {
+			throw new Exception("유효하지 않은 리뷰이거나, 삭제 요청이 되지 않은 리뷰입니다.");
+		}
 		List<ReviewImagesDTO> targetReviewImageInfo = dao.getTargetReviewImages(reviewId);
-		if(targetReviewImageInfo.size() > 0) {
+		if(targetReviewImageInfo != null && targetReviewImageInfo.size() > 0) {
 			dao.deleteReviewImages(reviewId);
 			for (ReviewImagesDTO reviewImagesDTO : targetReviewImageInfo) {
 				String fileName = reviewImagesDTO.getFileName();

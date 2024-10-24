@@ -64,11 +64,15 @@ public class AdminReviewController {
 	@DeleteMapping("/deleteReview/{reviewId}")
 	public ResponseEntity<Object> deleteReview(HttpSession session,
 											  @PathVariable(name = "reviewId") int reviewId) {
-		try {
-			adminReviewService.deleteReview(reviewId);
-		}catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		if(checkAdminSession(session)) {
+			try {
+				adminReviewService.deleteReview(reviewId);
+			}catch (Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+			}
+		}else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("권한이 없습니다.");
 		}
 		return ResponseEntity.ok("삭제 완료");
 	}

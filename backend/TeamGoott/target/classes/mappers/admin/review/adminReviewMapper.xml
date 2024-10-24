@@ -85,7 +85,14 @@
 		WHERE r.isDeleteReq = 1
 	</select>
 	
-	<select id="getTargetReviewImages" parameterType="int">
+	<select id="getTargetReviewInfo" resultType="com.team.goott.admin.domain.ReviewDTO">
+		SELECT *
+		FROM review
+		WHERE reviewId = #{reviewId}
+		AND isDeleteReq = 1
+	</select>
+	
+	<select id="getTargetReviewImages" parameterType="int" resultType="com.team.goott.user.domain.ReviewImagesDTO">
 		SELECT ri.*
 		FROM reviewImages ri
 		WHERE reviewId = #{reviewId}
@@ -94,6 +101,7 @@
 	<delete id="deleteReview">
 		DELETE FROM review
 		WHERE reviewId = #{reviewId}
+		AND isDeleteReq = 1
 	</delete>	
 	
 	<delete id="deleteReviewImages">

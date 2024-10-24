@@ -44,7 +44,7 @@ public class AdminReviewDAOImpl implements AdminReviewDAO {
 
 	@Override
 	public List<ReviewImagesDTO> getTargetReviewImages(int reviewId) {
-		return ses.selectOne(NS+"getTargetReviewImages", reviewId);
+		return ses.selectList(NS+"getTargetReviewImages", reviewId);
 	}
 
 	@Override
@@ -55,6 +55,11 @@ public class AdminReviewDAOImpl implements AdminReviewDAO {
 	@Override
 	public int deleteReviewImages(int reviewId) {
 		return ses.delete(NS+"deleteReviewImages", reviewId);
+	}
+
+	@Override
+	public ReviewDTO getTargetReviewInfo(int reviewId) {
+		return ses.selectOne(NS+"getTargetReviewInfo", reviewId);
 	}
 
 }

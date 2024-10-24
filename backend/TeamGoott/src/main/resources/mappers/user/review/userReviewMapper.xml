@@ -2,7 +2,43 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.user.review.userReviewMapper">
 
-<select id="getAllrevws">
-select * from review
+<select id="getAllrevws" resultType="com.team.goott.user.domain.ReviewDTO">
+select * from review where storeId = #{storeId} and isDeleteReq = 0 
+order by createAt DESC
 </select> 
+
+<select id="getBoardByNo" resultType="com.team.goott.user.domain.ReviewDTO">
+select * from review where reviewId= #{reviewId}
+</select>
+
+<insert id="insertReview" useGeneratedKeys="true" keyProperty="reviewId">
+insert into review (storeId,userId,score,content) values (#{storeId},#{userId},#{score},#{content})
+	<selectKey keyProperty="reviewId" resultType="int" order="AFTER">
+		select last_insert_id()
+	</selectKey>
+</insert>
+
+<update id="deleteReview">
+update review set isDeleteReq = 1 where reviewId = #{reviewId}
+</update>
+
+<insert id="insertImgs">
+insert into reviewImages(reviewId, url, fileName, fileType) values (#{reviewId},#{url},#{fileName},#{fileType})
+</insert>
+
+<select id="getFileByNo" resultType="com.team.goott.user.domain.reviewImagesDTO">
+select * from reviewImages where reviewId = #{reviewId}
+</select>
+
+<delete id="deleteFiles">
+delete * from reviewImages where reviewId = #{reviewId}
+</delete>
+
+<update id="updateReview">
+update review set score = #{score}, content = #{content} where reviewId = #{reviewId}
+</update>
+
+<delete id="deleteImgsById">
+delete * from reviewImages where imageId = #{imageId}
+</delete>
 </mapper>

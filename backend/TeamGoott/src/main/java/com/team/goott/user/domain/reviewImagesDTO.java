@@ -19,4 +19,6 @@ public class reviewImagesDTO {
 	private String url;
 	private String fileName;
 	private String fileType;
+	
+	private reviewImagesStatus fileStatus;
 }

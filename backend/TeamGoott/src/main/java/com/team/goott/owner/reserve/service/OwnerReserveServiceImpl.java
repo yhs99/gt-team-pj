@@ -74,11 +74,11 @@ public class OwnerReserveServiceImpl implements OwnerReserveService {
 	}
 
 	private void sendEmailNotification(int reserveId) {
+		// 유저 정보, 예약 식당 정보, 예약 정보 
 		ReserveDTO reserve = reserveDAO.getReserve(reserveId);
 		StoreVO store = reserveDAO.getStore(reserve.getStoreId());
 		int userId = reserve.getUserId();
 		UserDTO user = reserveDAO.getUser(userId);
-		log.info("user email : " +  user.getEmail());
 		
 		SendEmailService emailService = new SendEmailService();
 		
@@ -92,16 +92,38 @@ public class OwnerReserveServiceImpl implements OwnerReserveService {
 	
 
 	private int sendNotificationToUser(int reserveId) {
+		
+		//알림을 보낼 유저, 예약 변경 사항 정보
 		ReserveDTO reserve = reserveDAO.getReserve(reserveId);
+		StoreVO store = reserveDAO.getStore(reserve.getStoreId());
 		int userId = reserve.getUserId();
 		UserDTO user = reserveDAO.getUser(userId);
 		
+		
+		
 		NotificationDTO notification = new NotificationDTO();
 		notification.setUserId(user.getUserId());
-		notification.setMessage("예약 변경 사항이 있습니다 메일을 확인해 주세요");
+		
+
+		// 에약 상태에 따른 알림 메세지 설정
+		switch (reserve.getStatusCodeId()) {
+		case 1:
+			notification.setMessage("예약하신 "+store.getStoreName() + "에 대한 예약 상태가 업데이트 되었습니다 : " + "예약대기" );
+			break;
+		case 2:
+			notification.setMessage("예약하신 "+store.getStoreName() + "에 대한 예약 상태가 업데이트 되었습니다 : " + "예약승인" );
+			break;
+		case 3:
+			notification.setMessage("예약하신 "+store.getStoreName() + "에 대한 예약 상태가 업데이트 되었습니다 : " + "예약취소" );
+			break;
+		case 4:
+			notification.setMessage("예약 방문하신 가게에 대한 리뷰를 남겨주세요!" );
+			break;
+		}
 		
 		log.info("{}", notification.toString());
 		
+		// 알림 테이블에 insert
 		return reserveDAO.setNotification(notification);
 		
 	}

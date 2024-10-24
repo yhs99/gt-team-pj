@@ -38,15 +38,17 @@ public class OwnerReserveController {
 	//예약 목록 불러오기
 	@GetMapping("/reserve")
 	public ResponseEntity<Object> getAllReservation(@RequestParam(value = "sortMethod", defaultValue = "newest") String sortMethod , HttpSession session) {
-		log.info("예약목록 API 기능 동작");
 		ReserveInfoVO reserveInfo = null;
+		//세션 객체 저장
 		StoreDTO storeSession = (StoreDTO)session.getAttribute("store");
 		
+		//로그인시
 		if(storeSession != null) {
 			int storeId = storeSession.getStoreId();
 			reserveInfo = service.getAllReserveInfo(storeId, sortMethod);
 			
 		} else {
+			//로그인 실패 시
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
 		}
 		return ResponseEntity.ok(reserveInfo);
@@ -62,8 +64,11 @@ public class OwnerReserveController {
 		int result = 0;
 		if(storeSession != null) {
 			int storeId = storeSession.getStoreId();
+			// 승인 할 예약 가져오기
 			ReserveDTO reserve = service.getReserve(reserveId);
+			//승인 할 에약의 storeId와 로그인 한 점주의 storeId가 같을 시
 			if(storeId == reserve.getStoreId()) {
+				// 예약 상태 업데이트
 				result = service.updateStatus(reserveId,statusCode);				
 			} else {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("해당 예약에 대한 권한이 없습니다.");
@@ -101,17 +106,29 @@ public class OwnerReserveController {
 		return ResponseEntity.ok(reserveSlot);
 	}
 	
-	//유저 알림 조회 (이건 유저 컨트롤단에서 추가해주면 될듯)
-	@GetMapping("/notification")
-	public ResponseEntity<Object> getNotification(@RequestParam("userId") int userId){
-		List<NotificationDTO> notification = service.getNotification(userId);
+	//알림 조회 
+	@GetMapping("/reserve/notification")
+	public ResponseEntity<Object> getNotification(@RequestParam("userId") int userId, HttpSession session){
+		StoreDTO storeSession = (StoreDTO)session.getAttribute("store");
+		List<NotificationDTO> notification = null;
+		if(storeSession != null) {
+			notification = service.getNotification(userId);
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
+		}
 		return ResponseEntity.ok(notification);
 	}
 	
-	// 유저 알림 읽음 처리 
-	@PutMapping("/notification")
-	public ResponseEntity<Object> readNotification(@RequestParam("alarmId") int alarmId){
-		int result = service.updateNotification(alarmId);
+	//알림 읽음 처리 
+	@PutMapping("/reserve/notification")
+	public ResponseEntity<Object> readNotification(@RequestParam("alarmId") int alarmId, HttpSession session){
+		StoreDTO storeSession = (StoreDTO)session.getAttribute("store");
+		int result = 0;
+		if(storeSession != null) {
+			result = service.updateNotification(alarmId);
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
+		}
 		return ResponseEntity.ok(result == 1 ? "읽음 처리 완료" : "읽음 처리 실패");
 	}
 	

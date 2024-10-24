@@ -12,6 +12,7 @@ tmp/
 *.swp
 *~.nib
 **/connection.properties
+**/config.properties
 .settings/
 .loadpath
 .recommenders

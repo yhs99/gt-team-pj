@@ -13,7 +13,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class reviewImagesDTO {
+public class ReviewImagesDTO {
 	private int imageId;
 	private int reviewId;
 	private String url;

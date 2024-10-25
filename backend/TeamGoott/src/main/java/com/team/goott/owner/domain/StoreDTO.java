@@ -20,6 +20,7 @@ public class StoreDTO {
 	private int ownerId;
 	private int rotationId;
 	private int sidoCodeId;
+	private String storeName;
 	private String address;
 	private String tel;
 	private String description;

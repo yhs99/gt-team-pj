@@ -23,23 +23,6 @@
     <link href="/css/owner/review.css" rel="stylesheet" />
 
     <!-- JavaScript Libraries -->
-
-    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
-    <script src="/js/user/lib/wow/wow.min.js"></script>
-    <script src="/js/owner/lib/chart/chart.min.js"></script>
-    <script src="/js/owner/lib/easing/easing.min.js"></script>
-    <script src="/js/user/lib/counterup/counterup.min.js"></script>
-    <script src="/js/user/lib/lightbox/js/lightbox.min.js"></script>
-    <script src="/node_modules/vue/dist/vue.min.js"></script>
-    <script src="/node_modules/axios/dist/axios.min.js"></script>
-    <script src="/js/owner/lib/waypoints/waypoints.min.js"></script>
-    <script src="/js/owner/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
-    <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-    <!-- Template Javascript -->
-    <script type="module" src="/js/owner/main.js"></script>
     <script type="module" src="/js/owner/review.js"></script>
   </head>
 
@@ -240,6 +223,22 @@
           </div>
         </div>
         <!-- Sale & Revenue End -->
+        <div class="container-fluid pt-4 px-4">
+          <div class="row g-4">
+            <div class="col-sm-12 col-xl-6 mb-4">
+              <div class="bg-light rounded h-100 p-4">
+                  <h6 class="mb-4">최근 리뷰 평점 추이 (6개월 기준)</h6>
+                  <canvas id="bar-chart"></canvas>
+              </div>
+            </div>
+            <div class="col-sm-12 col-xl-6 mb-4">  
+              <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">월 별 리뷰 수</h6>
+                <canvas id="line-chart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div class="col-12">
           <div class="bg-light rounded h-100 p-4">
@@ -296,5 +295,25 @@
       <!-- Back to Top -->
       <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
+
+
+    
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="/js/user/lib/wow/wow.min.js"></script>
+    <script src="/js/owner/lib/chart/chart.min.js"></script>
+    <script src="/js/owner/lib/easing/easing.min.js"></script>
+    <script src="/js/user/lib/counterup/counterup.min.js"></script>
+    <script src="/js/user/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/node_modules/vue/dist/vue.min.js"></script>
+    <script src="/node_modules/axios/dist/axios.min.js"></script>
+    <script src="/js/owner/lib/waypoints/waypoints.min.js"></script>
+    <script src="/js/owner/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <!-- Template Javascript -->
+    <script type="module" src="/js/owner/main.js"></script>
+   
   </body>
 </html>

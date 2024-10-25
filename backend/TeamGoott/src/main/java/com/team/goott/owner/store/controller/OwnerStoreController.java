@@ -56,8 +56,8 @@ public class OwnerStoreController {
 	    
 	    StoreVO storeData = null;
 	    List<ScheduleVO> scheduleData = null; 
-	    StoreCategoryVO storeCategoryData = null;
-	    FacilityVO facilityData = null; 
+	    List<StoreCategoryVO> storeCategoryData = null;
+	    List<FacilityVO> facilityData = null; 
 	    List<StoreImagesVO> storeImageData = null;
 	    
 	    try {
@@ -119,16 +119,16 @@ public class OwnerStoreController {
 	@PostMapping("")
 	public ResponseEntity<Object> registerStore(HttpSession session, @RequestPart("storeDTO") StoreDTO store,
 			@RequestPart("scheduleDTO") List<ScheduleDTO> schedules,
-			@RequestPart("storeCategoryDTO") StoreCategoryDTO category,
-			@RequestPart("facilityDTO") FacilityDTO facility,
+			@RequestPart("storeCategoryDTO") List<StoreCategoryDTO> category,
+			@RequestPart("facilityDTO") List<FacilityDTO> facility,
 			@RequestPart(value = "file", required = false) List<MultipartFile> files) {
 
 		// 세션에서 ownerId 가져오기
-		Integer ownerId = 6;
+		Integer ownerId = getOwnerIdFromSession(session);
 		
-//        if (ownerId == null) {
-//          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-//        }
+        if (ownerId == null) {
+          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
 
 		// StoreDTO에 ownerId 설정
 		store.setOwnerId(ownerId);
@@ -156,8 +156,8 @@ public class OwnerStoreController {
             @PathVariable int storeId,
             @Valid @RequestPart("storeDTO") StoreDTO store,
             @RequestPart(value = "scheduleDTO", required = false) List<ScheduleDTO> schedules,
-            @RequestPart(value = "storeCategoryDTO", required = false) StoreCategoryDTO category,
-            @RequestPart(value = "facilityDTO", required = false) FacilityDTO facility,
+            @RequestPart(value = "storeCategoryDTO", required = false) List<StoreCategoryDTO> category,
+            @RequestPart(value = "facilityDTO", required = false) List<FacilityDTO> facility,
             @RequestPart(value = "file", required = false) List<MultipartFile> updateFiles,
             @RequestPart(value = "deletedImageUrls", required = false) List<Object> deleteImages) throws Exception {
     	
@@ -176,7 +176,6 @@ public class OwnerStoreController {
     	
         // 현재 세션에서 ownerId 가져오기
         Integer ownerId = getOwnerIdFromSession(session);
-        
         if (ownerId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
@@ -197,7 +196,7 @@ public class OwnerStoreController {
         store.setStoreId(storeId);
         
         // 요청 테스트 (로그 확인용)
-        log.info("PUT 테스트 : " + existingStore.toString());
+        log.info("PUT 테스트 : " + facility.toString());
 
         // 가게 수정
         try {
@@ -219,8 +218,8 @@ public class OwnerStoreController {
 	}
 
 	// 요청 테스트
-	private void requestTest(StoreDTO store, List<ScheduleDTO> schedules, StoreCategoryDTO category,
-			FacilityDTO facility, List<MultipartFile> files) {
+	private void requestTest(StoreDTO store, List<ScheduleDTO> schedules, List<StoreCategoryDTO> category,
+			List<FacilityDTO> facility, List<MultipartFile> files) {
 		log.info("store 테스트 : " + store.toString());
 		log.info("schedule 테스트 : " + schedules.toString());
 		log.info("category 테스트 : " + category.toString());
@@ -243,7 +242,8 @@ public class OwnerStoreController {
 	        case 4: return "목요일";
 	        case 5: return "금요일";
 	        case 6: return "토요일";
-	        default: return "알 수 없는 요일";
-	    }
+			default:
+				return "알 수 없는 요일";
+			}
 	}
 }

@@ -44,7 +44,7 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
     // 모든 테이블에 정보가 insert 되었을 때 실행
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public int createStore(StoreDTO store, List<ScheduleDTO> schedules, StoreCategoryDTO category, FacilityDTO facility, List<MultipartFile> files) throws Exception {
+    public int createStore(StoreDTO store, List<ScheduleDTO> schedules, List<StoreCategoryDTO> category, List<FacilityDTO> facility, List<MultipartFile> files) throws Exception {
     	validateStoreDTO(store);
         setSidoCodeId(store);
         log.info("서비스단 store : {}", store);
@@ -131,22 +131,51 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
         log.info("모든 일정이 성공적으로 등록되었습니다.");
     }
     
-    private void saveCategory(StoreCategoryDTO category, int storeId) throws Exception {
-        category.setStoreId(storeId);
-        if (ownerStoreDao.createCategory(category) <= 0) {
-            throw new Exception("카테고리 등록에 실패하였습니다.");
+    private void saveCategory(List<StoreCategoryDTO> categories, int storeId) throws Exception {
+        if (categories == null || categories.isEmpty()) {
+            throw new Exception("카테고리 목록이 비어 있습니다.");
         }
-        log.info("카테고리 저장 완료: {}", category.getStoreCategoryName());
+
+        for (StoreCategoryDTO category : categories) {
+            if (category.getCategoryCodeId() == null || category.getStoreCategoryName() == null) {
+                throw new Exception("카테고리 코드 ID와 카테고리 이름은 필수입니다.");
+            }
+            
+            category.setStoreId(storeId);
+            Map<String, Object> categoryMap = new HashMap<>();
+            categoryMap.put("storeId", storeId);
+            categoryMap.put("categoryCodeId", category.getCategoryCodeId());
+            categoryMap.put("storeCategoryName", category.getStoreCategoryName());
+
+            if (ownerStoreDao.createCategory(categoryMap) <= 0) {
+                throw new Exception("카테고리 등록에 실패하였습니다.");
+            }
+            log.info("카테고리 저장 완료: {}", category.getStoreCategoryName());
+        }
     }
 
-    private void saveFacility(FacilityDTO facility, int storeId) throws Exception {
-        facility.setStoreId(storeId);
-        if (ownerStoreDao.createFacility(facility) <= 0) {
-            throw new Exception("편의시설 정보 등록에 실패하였습니다.");
+    private void saveFacility(List<FacilityDTO> facilities, int storeId) throws Exception {
+        if (facilities == null || facilities.isEmpty()) {
+            throw new Exception("편의시설 목록이 비어 있습니다.");
         }
-        log.info("편의시설 정보 등록 완료");
-    }
 
+        for (FacilityDTO facility : facilities) {
+            if (facility.getFacilityCode() == null) {
+                throw new Exception("편의시설 코드가 필수입니다.");
+            }
+
+            facility.setStoreId(storeId);
+            Map<String, Object> facilityMap = new HashMap<>();
+            facilityMap.put("storeId", storeId);
+            facilityMap.put("facilityCode", facility.getFacilityCode());
+
+            if (ownerStoreDao.createFacility(facilityMap) <= 0) {
+                throw new Exception("편의시설 정보 등록에 실패하였습니다.");
+            }
+            log.info("편의시설 정보 등록 완료: {}", facility.getFacilityCode());
+        }
+    }
+    
     // storeId로 store 테이블 정보를 조회하는 메서드 
     @Override
     public StoreVO getStoreById(int storeId) throws Exception {
@@ -161,13 +190,13 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
 
     // storeId로 storeCategory 테이블 정보를 조회하는 메서드 
     @Override
-    public StoreCategoryVO getStoreCategoryByStoreId(int storeId) throws Exception {
+    public List<StoreCategoryVO> getStoreCategoryByStoreId(int storeId) throws Exception {
         return ownerStoreDao.getStoreCategoryByStoreId(storeId);
     }
 
     // storeId로 facility 테이블 정보를 조회하는 메서드 
     @Override
-    public FacilityVO getFacilityByStoreId(int storeId) throws Exception {
+    public List<FacilityVO> getFacilityByStoreId(int storeId) throws Exception {
         return ownerStoreDao.getFacilityByStoreId(storeId);
     }
 
@@ -179,8 +208,8 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int updateStore(int storeId, StoreDTO store, List<ScheduleDTO> schedules, StoreCategoryDTO category,
-                           FacilityDTO facility, List<MultipartFile> updateFiles, List<String> deletedImages) throws Exception {
+    public int updateStore(int storeId, StoreDTO store, List<ScheduleDTO> schedules, List<StoreCategoryDTO> category,
+                           List<FacilityDTO> facility, List<MultipartFile> updateFiles, List<String> deletedImages) throws Exception {
 
         log.info("서비스단 요청 테스트 : --------------------------------------");
         
@@ -191,9 +220,8 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
         // 기존 데이터 조회
         StoreVO storeData = ownerStoreDao.getStoreById(storeId);
         List<ScheduleVO> scheduleData = ownerStoreDao.getSchedulesByStoreId(storeId);
-        StoreCategoryVO storeCategoryData = ownerStoreDao.getStoreCategoryByStoreId(storeId);
-        FacilityVO facilityData = ownerStoreDao.getFacilityByStoreId(storeId);
-        
+        List<StoreCategoryVO> storeCategoryData = ownerStoreDao.getStoreCategoryByStoreId(storeId);
+        List<FacilityVO> facilityData = ownerStoreDao.getFacilityByStoreId(storeId);
 
         log.info("서비스단 : storeData : " + storeData);
         log.info("서비스단 : scheduleData : " + scheduleData);
@@ -216,8 +244,6 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
 
         // 이미지 처리: 삭제 및 추가
         processImages(storeId, updateFiles, deletedImages);
-        
-        
 
         return updatedCount; // 업데이트된 가게 수 반환
     }
@@ -305,38 +331,86 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
         }
     }
 
-    private void updateCategory(int storeId, StoreCategoryDTO category, StoreCategoryVO storeCategoryData) throws Exception {
-        if (category != null) {
-            Map<String, Object> categoryUpdateData = new HashMap<>();
-
-            // 카테고리 정보 비교 및 업데이트
-            if (!storeCategoryData.getStoreCategoryName().equals(category.getStoreCategoryName())) {
-                categoryUpdateData.put("storeCategoryName", category.getStoreCategoryName());
+    private void updateCategory(int storeId, List<StoreCategoryDTO> categoryList, List<StoreCategoryVO> storeCategoryDataList) throws Exception {
+        if (categoryList != null && storeCategoryDataList != null) {
+            Map<String, StoreCategoryVO> storeCategoryDataMap = new HashMap<>();
+            
+            // 기존 카테고리 데이터를 Map에 저장
+            for (StoreCategoryVO storeCategoryData : storeCategoryDataList) {
+                storeCategoryDataMap.put(storeCategoryData.getCategoryCodeId(), storeCategoryData);
             }
 
-            // 카테고리 정보 업데이트
-            if (!categoryUpdateData.isEmpty()) {
-                ownerStoreDao.updateCategory(storeId, categoryUpdateData);
+            // Insert 로직
+            for (StoreCategoryDTO category : categoryList) {
+                // 기존 카테고리가 없을 경우 새로 추가
+                if (!storeCategoryDataMap.containsKey(category.getCategoryCodeId())) {
+                    Map<String, Object> categoryInsertData = new HashMap<>();
+                    categoryInsertData.put("categoryCodeId", category.getCategoryCodeId());
+                    categoryInsertData.put("storeCategoryName", category.getStoreCategoryName());
+                    categoryInsertData.put("storeId", storeId);
+
+                    // 새 카테고리 추가 로직
+                    ownerStoreDao.createCategory(categoryInsertData); // Insert 메서드 호출
+                    log.info("새 카테고리 추가 완료: " + category.getStoreCategoryName());
+                }
             }
+
+            // Delete 로직
+            for (StoreCategoryVO categoryNotInDTO : storeCategoryDataMap.values()) {
+                // categoryList에 없는 카테고리 삭제
+                if (!categoryList.stream().anyMatch(c -> c.getCategoryCodeId().equals(categoryNotInDTO.getCategoryCodeId()))) {
+                    if (ownerStoreDao.deleteCategory(storeId, categoryNotInDTO.getCategoryCodeId()) == 1) {
+                        log.info("storeCategory에 요청받지 못한 데이터 삭제 완료: " + categoryNotInDTO.getCategoryCodeId());
+                    }
+                }
+            }
+        } else {
+            throw new Exception("카테고리 list가 null입니다");
         }
     }
 
-    private void updateFacility(int storeId, FacilityDTO facility, FacilityVO facilityData) throws Exception {
-        if (facility != null) {
-            Map<String, Object> facilityUpdateData = new HashMap<>();
+    private void updateFacility(int storeId, List<FacilityDTO> facilities, List<FacilityVO> facilitydata) throws Exception {
+        Map<String, Object> facilityMap = new HashMap<>();
 
-            // 시설 정보 비교 및 업데이트
-            if (!facilityData.getFacilityCode().equals(facility.getFacilityCode())) {
-                facilityUpdateData.put("facilityCode", facility.getFacilityCode());
+        // Insert 로직
+        if (facilities != null) {
+            for (FacilityDTO facility : facilities) {
+                log.info("서비스단 updateFacility : " + facility.getFacilityCode());
+                facilityMap.put("storeId", storeId);
+                facilityMap.put("facilityCode", facility.getFacilityCode());
+
+                // 기존 facilitydata에서 facilityCode 비교
+                boolean exists = false;
+                for (FacilityVO existingFacility : facilitydata) {
+                    if (existingFacility.getFacilityCode().equals(facility.getFacilityCode())) {
+                        exists = true; // 이미 존재하는 경우
+                        break;
+                    }
+                }
+
+                // 존재하지 않는 경우 DB에 저장 (Insert)
+                if (!exists) {
+                    ownerStoreDao.createFacility(facilityMap); // DB 저장 메서드 호출
+                }
+            }
+        }
+
+        // Delete 로직
+        for (FacilityVO existingFacility : facilitydata) {
+            boolean exists = false;
+            for (FacilityDTO facility : facilities) {
+                if (existingFacility.getFacilityCode().equals(facility.getFacilityCode())) {
+                    exists = true; // facilities에 존재하는 경우
+                    break;
+                }
             }
 
-            // 시설 정보 업데이트
-            if (!facilityUpdateData.isEmpty()) {
-                ownerStoreDao.updateFacility(storeId, facilityUpdateData);
+            // facilities에 존재하지 않는 경우 DB에서 삭제
+            if (!exists) {
+                ownerStoreDao.deleteFacility(storeId, existingFacility.getFacilityCode()); // DB 삭제 메서드 호출
             }
         }
     }
-
     // 해당 가게의 storeId를 참조하는 storeImages 테이블의 사진 수가 5장이 넘을경우 예외처리 
     @Transactional(rollbackFor = Exception.class)
     private void processImages(int storeId, List<MultipartFile> updateFiles, List<String> deletedImages) throws Exception {

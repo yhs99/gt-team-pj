@@ -8,11 +8,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.team.goott.owner.domain.FacilityDTO;
 import com.team.goott.owner.domain.FacilityVO;
-import com.team.goott.owner.domain.ScheduleDTO;
 import com.team.goott.owner.domain.ScheduleVO;
-import com.team.goott.owner.domain.StoreCategoryDTO;
 import com.team.goott.owner.domain.StoreCategoryVO;
 import com.team.goott.owner.domain.StoreDTO;
 import com.team.goott.owner.domain.StoreImagesDTO;
@@ -46,13 +43,13 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
 
 	// category 테이블에 데이터 저장
 	@Override
-	public int createCategory(StoreCategoryDTO category) throws Exception {
+	public int createCategory(Map<String, Object> category) throws Exception {
 		return ses.insert(ns + "createCategory", category);
 	}
 
 	// facility 테이블에 데이터 저장
 	@Override
-	public int createFacility(FacilityDTO facility) throws Exception {
+	public int createFacility(Map<String, Object> facility) throws Exception {
 		return ses.insert(ns + "createFacility", facility);
 	}
 	
@@ -76,14 +73,14 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
 
     // storeId로 category 테이블의 정보를 가져오기
     @Override
-    public StoreCategoryVO getStoreCategoryByStoreId(int storeId) throws Exception {
-        return ses.selectOne(ns + "getStoreCategoryByStoreId", storeId);
+    public List<StoreCategoryVO> getStoreCategoryByStoreId(int storeId) throws Exception {
+        return ses.selectList(ns + "getStoreCategoryByStoreId", storeId);
     }
 
     // storeId로 facility 테이블의 정보를 가져오기
     @Override
-    public FacilityVO getFacilityByStoreId(int storeId) throws Exception {
-        return ses.selectOne(ns + "getFacilityByStoreId", storeId);
+    public List<FacilityVO> getFacilityByStoreId(int storeId) throws Exception {
+        return ses.selectList(ns + "getFacilityByStoreId", storeId);
     }
 
     // storeId로 storeImages 테이블의 정보를 가져오기
@@ -106,20 +103,6 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
         ses.update(ns + "updateSchedule", scheduleUpdateData);
     }
 
-    // storeId를 참조하는 category 테이블 수정
-    @Override
-    public void updateCategory(int storeId, Map<String, Object> categoryUpdateData) throws Exception {
-        categoryUpdateData.put("storeId", storeId);
-        ses.update(ns + "updateCategory", categoryUpdateData);
-    }
-
-    // storeId를 참조하는 facility 테이블 수정
-    @Override
-    public void updateFacility(int storeId, Map<String, Object> facilityUpdateData) throws Exception {
-        facilityUpdateData.put("storeId", storeId);
-        ses.update(ns + "updateFacility", facilityUpdateData);
-    }
-
     // storeId를 참조하는 storeImages 테이블의 fileName, storeId를 이용하여 삭제 요청 받은 파일을 삭제
     @Override
     public int deleteStoreImagesByFileNames(int storeId, Map<String, List<String>> filesToDeleteMap) throws Exception{
@@ -134,6 +117,27 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
 	public int getStoreImagesCountByStoreId(int storeId) throws Exception {
 		return ses.selectOne(ns+ "selectStoreImagesCountByStoreId", storeId);
 	}
+	
+	// put 요청 들어왔을 때 기존 db에 없는 값이 요청되면 db에서 요청받지 못한 값들을 삭제
+	@Override
+	public int deleteCategory(int storeId, String categoryCodeId) throws Exception {
+	    // 파라미터를 담을 Map 객체 생성
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("storeId", storeId);
+	    params.put("categoryCodeId", categoryCodeId);
+	    params.put("storeCategoryName", categoryCodeId);
 
+	    return ses.delete(ns + "deleteCategory", params);
+	}
+	
+	// put 요청 들어왔을 때 기존 db에 없는 값이 요청되면 db에서 요청받지 못한 값들을 삭제
+    @Override
+    public int deleteFacility(int storeId, String facilityDeleteData) throws Exception {
+    	Map<String, Object> params = new HashMap<>();
+    	params.put("storeId", storeId);
+    	params.put("facilityCode", facilityDeleteData);
+    	
+        return ses.delete(ns + "deleteFacility", params);
+    }
 
 }

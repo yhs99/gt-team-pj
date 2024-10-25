@@ -17,7 +17,7 @@ import com.team.goott.owner.domain.StoreVO;
 public interface OwnerStoreService {
 
 	// 가게 등록 메서드
-	int createStore(StoreDTO store, List<ScheduleDTO> schedules, StoreCategoryDTO category, FacilityDTO facility, List<MultipartFile> files) throws Exception;
+	int createStore(StoreDTO store, List<ScheduleDTO> schedules, List<StoreCategoryDTO> category, List<FacilityDTO> facility, List<MultipartFile> files) throws Exception;
 
 	// storeId로 가게 테이블 조회
 	StoreVO getStoreById(int storeId) throws Exception;
@@ -26,17 +26,17 @@ public interface OwnerStoreService {
 	List<ScheduleVO> getSchedulesByStoreId(int storeId) throws Exception;
 	
 	// storeId로 가게 카테고리 테이블 조회
-	StoreCategoryVO getStoreCategoryByStoreId(int storeId) throws Exception;
+	List<StoreCategoryVO> getStoreCategoryByStoreId(int storeId) throws Exception;
 	
 	// storeId로 가게 편의시설 테이블 조회
-	FacilityVO getFacilityByStoreId(int storeId) throws Exception;
+	List<FacilityVO> getFacilityByStoreId(int storeId) throws Exception;
 	
 	// storeId로 가게 이미지 테이블 조회 
 	List<StoreImagesVO> getStoreImagesByStoreId(int storeId) throws Exception;
 
 	// 가게 정보를 수정하는 메서드
-	int updateStore(int storeId, StoreDTO store, List<ScheduleDTO> schedules, StoreCategoryDTO category,
-			FacilityDTO facility, List<MultipartFile> updatefiles, List<String> deleteImages) throws Exception;
+	int updateStore(int storeId, StoreDTO store, List<ScheduleDTO> schedules, List<StoreCategoryDTO> category,
+			List<FacilityDTO> facility, List<MultipartFile> updatefiles, List<String> deleteImages) throws Exception;
 	
 	
 

@@ -3,11 +3,8 @@ package com.team.goott.owner.store.persistence;
 import java.util.List;
 import java.util.Map;
 
-import com.team.goott.owner.domain.FacilityDTO;
 import com.team.goott.owner.domain.FacilityVO;
-import com.team.goott.owner.domain.ScheduleDTO;
 import com.team.goott.owner.domain.ScheduleVO;
-import com.team.goott.owner.domain.StoreCategoryDTO;
 import com.team.goott.owner.domain.StoreCategoryVO;
 import com.team.goott.owner.domain.StoreDTO;
 import com.team.goott.owner.domain.StoreImagesDTO;
@@ -23,10 +20,10 @@ public interface OwnerStoreDAO {
 	int createSchedule(Map<String, Object> scheduleMap);
 
 	// category 테이블에 데이터 저장
-	int createCategory(StoreCategoryDTO category) throws Exception;
+	int createCategory(Map<String, Object> category) throws Exception;
 
 	// facility 테이블에 데이터 저장
-	int createFacility(FacilityDTO facility) throws Exception;
+	int createFacility(Map<String, Object> facility) throws Exception;
 
 	// storeImages 테이블에 데이터 저장
 	int createStoreImages(StoreImagesDTO storeImages) throws Exception;
@@ -38,10 +35,10 @@ public interface OwnerStoreDAO {
     List<ScheduleVO> getSchedulesByStoreId(int storeId) throws Exception;
     
     // storeId로 가게 카테고리 테이블 조회 
-    StoreCategoryVO getStoreCategoryByStoreId(int storeId) throws Exception;
+    List<StoreCategoryVO> getStoreCategoryByStoreId(int storeId) throws Exception;
     
     // storeId로 가게 편의시설 테이블 조회
-    FacilityVO getFacilityByStoreId(int storeId) throws Exception;
+    List<FacilityVO> getFacilityByStoreId(int storeId) throws Exception;
     
     // storeId로 가게 이미지 테이블 조회
     List<StoreImagesVO> getStoreImagesByStoreId(int storeId) throws Exception;
@@ -52,18 +49,16 @@ public interface OwnerStoreDAO {
 	// schedule 테이블 수정 (store 테이블이 수정될 때 트랙잭션 처리)
     void updateSchedule(int storeId, Map<String, Object> scheduleUpdateData) throws Exception;
     
-    // category 테이블 수정 (store 테이블이 수정될 때 트랙잭션 처리)
-    void updateCategory(int storeId, Map<String, Object> categoryUpdateData) throws Exception;
-
-	// facility 테이블 수정 (store 테이블이 수정될 때 트랙잭션 처리)
-    void updateFacility(int storeId, Map<String, Object> facilityUpdateData) throws Exception;
-    
-    // 요청받은 이미지 파일을 storeId를 참조하여 storeImages 테이블의 이미지를 삭제
+    // 요청받은 imageName이 DB에 존재할 경우 이미지 삭제처리
     int deleteStoreImagesByFileNames(int storeId, Map<String, List<String>> filesToDeleteMap) throws Exception;
 
     // 이미지의 수를 가져오는 메서드
 	int getStoreImagesCountByStoreId(int storeId) throws Exception;
+
+	// 수정시 원래있던 데이터 삭제
+	int deleteCategory(int storeId, String categoryCodeId) throws Exception;
 	
-	
+	// 수정시 원래있던 데이터 삭제
+	int deleteFacility(int storeId, String facilityDeleteData) throws Exception;
 
 }

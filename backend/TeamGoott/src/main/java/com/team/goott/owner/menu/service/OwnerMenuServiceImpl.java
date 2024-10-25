@@ -64,13 +64,21 @@ public class OwnerMenuServiceImpl implements OwnerMenuService {
 	}
 
 	@Override
-	public int uploadMenu(MenuDTO menu, MultipartFile file) {
+	public int uploadMenu(MenuDTO menu, MultipartFile file, int storeId) {
 		MenuDTO uploadMenu = menu;
+		log.info("{}",file.getOriginalFilename().isEmpty());
 		try {
-			S3ImageManager s3ImageManager = new S3ImageManager(file, s3Client, bucketName);
-			Map<String, String> uploadImageInfo = s3ImageManager.uploadImage();
-			uploadMenu.setMenuImageUrl(uploadImageInfo.get("imageUrl"));
-			uploadMenu.setMenuImageName(uploadImageInfo.get("imageFileName"));
+			//이미지 파일 처리
+			if(!file.getOriginalFilename().isEmpty()) {
+				S3ImageManager s3ImageManager = new S3ImageManager(file, s3Client, bucketName);
+				Map<String, String> uploadImageInfo = s3ImageManager.uploadImage();
+				uploadMenu.setMenuImageUrl(uploadImageInfo.get("imageUrl"));
+				uploadMenu.setMenuImageName(uploadImageInfo.get("imageFileName"));
+			} else {
+				uploadMenu.setMenuImageName("noImage.jpg");
+				uploadMenu.setMenuImageUrl("https://goott-bucket.s3.ap-northeast-2.amazonaws.com//noImage.jpg");
+			}
+			uploadMenu.setStoreId(storeId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -82,17 +90,23 @@ public class OwnerMenuServiceImpl implements OwnerMenuService {
 	public int updateMenu(int menuId, MenuDTO updateMenu, MultipartFile file, MenuDTO originMenu) {
 		MenuDTO modifyMenu = updateMenu;
 		try {
-			S3ImageManager uploadS3ImageManager = new S3ImageManager(file, s3Client, bucketName);
-			S3ImageManager deleteS3ImageManager = new S3ImageManager(s3Client, bucketName, originMenu.getMenuImageName());
-			
-			if(deleteS3ImageManager.deleteImage()) {
-				log.info("기존 이미지 삭제 완료");
-				Map<String, String> uploadImageInfo = uploadS3ImageManager.uploadImage();
-				modifyMenu.setMenuImageUrl(uploadImageInfo.get("imageUrl"));
-				modifyMenu.setMenuImageName(uploadImageInfo.get("imageFileName"));
+			// 수정 메뉴 이미지 파일 처리
+			if(!file.getOriginalFilename().isEmpty()) {
+				S3ImageManager uploadS3ImageManager = new S3ImageManager(file, s3Client, bucketName);
+				S3ImageManager deleteS3ImageManager = new S3ImageManager(s3Client, bucketName, originMenu.getMenuImageName());
+				
+				if(deleteS3ImageManager.deleteImage()) {
+					log.info("기존 이미지 삭제 완료");
+					Map<String, String> uploadImageInfo = uploadS3ImageManager.uploadImage();
+					modifyMenu.setMenuImageUrl(uploadImageInfo.get("imageUrl"));
+					modifyMenu.setMenuImageName(uploadImageInfo.get("imageFileName"));
+				} else {
+					log.info("이미지 삭제 실패");
+					return 0;
+				}
 			} else {
-				log.info("이미지 삭제 실패");
-				return 0;
+				modifyMenu.setMenuImageName("noImage.jpg");
+				modifyMenu.setMenuImageUrl("https://goott-bucket.s3.ap-northeast-2.amazonaws.com//noImage.jpg");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -28,7 +28,5 @@ public class CouponDTO {
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime end;
 	private Integer discount;
-	private Integer stock;
-	
-
+	private Integer stock
 }

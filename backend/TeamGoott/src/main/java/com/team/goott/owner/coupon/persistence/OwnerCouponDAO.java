@@ -23,6 +23,4 @@ public interface OwnerCouponDAO {
 	// 쿠폰 수정
 	int modifyCoupon(Map<String, Object> updateCoupon) throws Exception;
 
-
-
 }

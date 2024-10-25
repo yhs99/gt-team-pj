@@ -89,9 +89,7 @@ public class OwnerCouponController {
 	 // 쿠폰 삭제
     @DeleteMapping("/{couponId}") // 쿠폰 ID를 경로 변수로 받음
     public ResponseEntity<Object> deleteCoupon(HttpSession session, @PathVariable int couponId) {
-    	
         StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
-        
         if (storeSession == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다."); // 로그인 필요
         }

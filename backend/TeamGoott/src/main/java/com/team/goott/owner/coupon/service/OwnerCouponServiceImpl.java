@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OwnerCouponServiceImpl implements OwnerCouponService {
 
 		@Autowired
-	    private OwnerCouponDAO ownerCouponDAO;
+    private OwnerCouponDAO ownerCouponDAO;
 
 	    // 쿠폰 조회
 	    @Override
@@ -32,7 +32,6 @@ public class OwnerCouponServiceImpl implements OwnerCouponService {
 	    // 쿠폰 생성
 	    @Override
 	    public int createCoupon(CouponDTO coupon) throws Exception {
-	    	
 	        // couponName과 discount가 null이 아닌 경우에만 쿠폰 생성
 	        if (coupon.getCouponName() != null && coupon.getDiscount() != null) {
 	            validateAndSetDefaults(coupon);
@@ -64,7 +63,6 @@ public class OwnerCouponServiceImpl implements OwnerCouponService {
 
 	        if (existingCoupon != null && existingCoupon.getStoreId() == storeId) {
 	            parseCouponDates(coupon);
-	            
 	            validateAndSetDefaults(coupon);
 	            
 	            Map<String, Object> couponData = new HashMap<>();
@@ -138,5 +136,4 @@ public class OwnerCouponServiceImpl implements OwnerCouponService {
 	            throw new IllegalArgumentException("수량이나 날짜 중 하나는 반드시 설정되어야 합니다.");
 	        }
 	    }
-	 
 	}

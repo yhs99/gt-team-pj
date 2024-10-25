@@ -13,10 +13,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class reviewImagesDTO {
-	private int imageId;
-	private int reviewId;
-	private String url;
-	private String fileName;
-	private String fileType;
+public class LoginDTO {
+	String loginGroup;
+	String id;
+	String password;
 }

@@ -83,6 +83,7 @@ public class S3ImageManager {
 	public boolean deleteImage() throws Exception {
 		try {
 			s3Client.deleteObject(bucketName, this.fileName);
+			log.info("{} 객체 삭제 완료.", this.fileName);
 		} catch(SdkClientException ase) {
 			throw new ImageUploadFailedException();
 		}

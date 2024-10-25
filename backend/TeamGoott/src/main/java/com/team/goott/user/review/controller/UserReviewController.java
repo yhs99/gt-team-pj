@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.jdbc.Null;
@@ -57,19 +58,30 @@ public class UserReviewController {
 	    }
 	
 	 
-	 @GetMapping("/{reviewId}")
-	 	public ResponseEntity<ReviewDTO> viewBoard(@PathVariable("reviewId") int reviewId){
+	 @GetMapping({"/{reviewId}","/{reviewId}/mod"})
+	 	public ResponseEntity<ReviewDTO> viewBoard(@PathVariable("reviewId") int reviewId,
+	 			HttpServletRequest request){
 		 //리뷰 상세정보
-		log.info("{}번 글 조회",reviewId);
-		 ReviewDTO reviewDTO= service.reviewByNo(reviewId);
+		 ReviewDTO  reviewDTO= service.reviewByNo(reviewId);
+		 
+		 if(request.getRequestURI().endsWith("/mod")) {
+			
+			 this.modifyFileList = reviewDTO.getReviewImages();
+			 System.out.println("이 리뷰의 파일 목록");
+			 showModifyList();
+			 
+		}else {//수정 버튼을 눌렀을 때 파일 목록을 가져옴
+			log.info("{}번 글 조회",reviewId);
+		
+		//썸네일
+			
+		
+		
+		}
 	
 		return ResponseEntity.ok(reviewDTO);
 	 }
 	 
-//	 @GetMapping("/addReview")
-//	 public String showAddReview() {//리뷰 저장페이지 보기
-//		 return "/uReview/showAddForm";
-//	 }
 	 
 	 @PostMapping("/")
 	 public ResponseEntity<String> addReview(@RequestPart("review") ReviewDTO comingDTO, @RequestPart("file")List<MultipartFile> files){
@@ -90,6 +102,8 @@ public class UserReviewController {
 			}
 			
 			reviewImageslst.add(rImgDTO);
+			
+			if(rImgDTO)
 		}
 		
 		comingDTO.setReviewImages(reviewImageslst);
@@ -152,7 +166,7 @@ public class UserReviewController {
 
 
 	private void showModifyList() {
-		System.out.println("=============추가된 파일들(modifyList)=============");
+		System.out.println("=============modifyList 목록=============");
 		for(reviewImagesDTO img : modifyFileList) {
 			System.out.println(img.toString());
 		}
@@ -178,12 +192,19 @@ public class UserReviewController {
 	 
 	// 아직 최종 수정이 될지는 미지수 상태 : 하드에서 삭제할 수 없는 단계
 	// 삭제 될 파일을 체크만 해두고 최종 요청이 들어오면 그 때 실제 삭제처리를 해야 한다.
-	 @PostMapping("RemoveAFile")
-	 public ResponseEntity<Object> modifyRemoveAFile(@RequestParam("removeFileNo") int removeFileNo){
+	 @PostMapping("/removeAFile")
+	 public ResponseEntity<String> modifyRemoveAFile(@RequestParam("removeFileNo") int removeFileNo){
+	
 		 System.out.println(removeFileNo+"번 파일 삭제 요청");
+		 
 		 for(reviewImagesDTO img : this.modifyFileList) {//원래 있던 리스트를 돌려야..
-			 
+			 if(img.getImageId() == removeFileNo) {
+				 img.setFileStatus(reviewImagesStatus.DELETE);
+			 }
+			 System.out.println("modifylist에 딜리트 추가");
+			 showModifyList();
 		 }
+		return ResponseEntity.ok(removeFileNo+"번 파일 삭제 대기");
 		 
 	 }
 

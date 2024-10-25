@@ -128,6 +128,7 @@ public class UserReviewServiceImpl implements UserReviewService {
 
 
 	@Override
+	@Transactional
 	public boolean updateReview(ReviewDTO modifyReview) {
 		// 리뷰 수정
 		boolean result = false;

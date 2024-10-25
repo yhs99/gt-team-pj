@@ -31,7 +31,7 @@ select * from reviewImages where reviewId = #{reviewId}
 </select>
 
 <delete id="deleteFiles">
-delete * from reviewImages where reviewId = #{reviewId}
+delete from reviewImages where reviewId = #{reviewId}
 </delete>
 
 <update id="updateReview">
@@ -39,6 +39,6 @@ update review set score = #{score}, content = #{content} where reviewId = #{revi
 </update>
 
 <delete id="deleteImgsById">
-delete * from reviewImages where imageId = #{imageId}
+delete from reviewImages where imageId = #{imageId}
 </delete>
 </mapper>

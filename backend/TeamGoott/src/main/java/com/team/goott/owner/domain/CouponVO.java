@@ -21,7 +21,7 @@ public class CouponVO {
 	private int storeId;
 	private LocalDateTime start;
 	private LocalDateTime end;
-	private Integer discount;
-	private Integer stock;
+	private int discount;
+	private int stock;
 	private boolean isDeleted;
 }

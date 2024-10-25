@@ -2,9 +2,7 @@ package com.team.goott.owner.coupon.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,8 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OwnerCouponServiceImpl implements OwnerCouponService {
 
-		@Autowired
-    private OwnerCouponDAO ownerCouponDAO;
+		  @Autowired
+	    private OwnerCouponDAO ownerCouponDAO;
 
 	    // 쿠폰 조회
 	    @Override
@@ -32,14 +30,8 @@ public class OwnerCouponServiceImpl implements OwnerCouponService {
 	    // 쿠폰 생성
 	    @Override
 	    public int createCoupon(CouponDTO coupon) throws Exception {
-	        // couponName과 discount가 null이 아닌 경우에만 쿠폰 생성
-	        if (coupon.getCouponName() != null && coupon.getDiscount() != null) {
-	            validateAndSetDefaults(coupon);
-	            parseCouponDates(coupon);
-	            return ownerCouponDAO.createCoupon(coupon);
-	        } else {
-	            throw new IllegalArgumentException("쿠폰 이름과 할인율은 반드시 설정되어야 합니다."); // 예외 처리
-	        }
+	        validateAndSetDefaults(coupon);
+	        return ownerCouponDAO.createCoupon(coupon);
 	    }
 
 	    // 쿠폰 삭제
@@ -55,7 +47,7 @@ public class OwnerCouponServiceImpl implements OwnerCouponService {
 	        }
 	    }
 
-	 // 쿠폰 수정
+	    // 쿠폰 수정
 	    @Override
 	    @Transactional(rollbackFor = Exception.class)
 	    public int modifyCoupon(int couponId, int storeId, CouponDTO coupon) throws Exception {
@@ -64,32 +56,7 @@ public class OwnerCouponServiceImpl implements OwnerCouponService {
 	        if (existingCoupon != null && existingCoupon.getStoreId() == storeId) {
 	            parseCouponDates(coupon);
 	            validateAndSetDefaults(coupon);
-	            
-	            Map<String, Object> couponData = new HashMap<>();
-	            couponData.put("couponId", couponId);
-	            couponData.put("storeId", storeId);
-
-	            if (!existingCoupon.getCouponName().equals(coupon.getCouponName())) {
-	                couponData.put("couponName", coupon.getCouponName());
-	            }
-	            
-	            if (existingCoupon.getDiscount() != coupon.getDiscount()) {
-	                couponData.put("discount", coupon.getDiscount());
-	            }
-	            
-	            if (existingCoupon.getStock() != coupon.getStock()) {
-	                couponData.put("stock", coupon.getStock());
-	            }
-	            
-	            if (existingCoupon.getStart() == null || !existingCoupon.getStart().equals(coupon.getStart())) {
-	                couponData.put("start", coupon.getStart());
-	            }
-
-	            if (existingCoupon.getEnd() == null || !existingCoupon.getEnd().equals(coupon.getEnd())) {
-	                couponData.put("end", coupon.getEnd());
-	            }
-
-	                return ownerCouponDAO.modifyCoupon(couponData); // 1 반환 시 성공
+	            return ownerCouponDAO.modifyCoupon(couponId, coupon); // 1 반환 시 성공
 	        } else {
 	            throw new Exception("쿠폰 수정 권한이 없습니다."); // 권한 없음 예외 처리
 	        }
@@ -105,35 +72,16 @@ public class OwnerCouponServiceImpl implements OwnerCouponService {
 	        }
 	    }
 
-	 // 쿠폰의 날짜를 지정하면 수량을 무제한으로 변경하고
-	 // 쿠폰의 수량을 입력하면 기한을 무제한으로 지정하는 메서드
+	    // 쿠폰의 날짜를 지정하면 수량을 무제한으로 변경해주고
+	    // 쿠폰의 수량을 입력하면 기한을 무제한으로 지정하는 메서드
 	    private void validateAndSetDefaults(CouponDTO coupon) {
-	        boolean hasStartDate = coupon.getStart() != null;
-	        boolean hasEndDate = coupon.getEnd() != null;
-	        
-	        if (coupon.getStock() == null) {
-	            coupon.setStock(0);
-	        }
-	        
-	        boolean hasStock = coupon.getStock() > 0;
-
-	        // 날짜와 수량이 모두 설정된 경우 예외 처리
-	        if (hasStartDate && hasEndDate && hasStock) {
-	            throw new IllegalArgumentException("날짜 또는 수량 중 하나만 설정할 수 있습니다.");
-	        }
-
-	        // 날짜가 설정되어 있으면 수량을 무제한으로 설정하지 않음
-	        if (hasStartDate || hasEndDate) {
-	            if (hasStock) {
-	                throw new IllegalArgumentException("날짜가 설정된 경우 수량은 입력할 수 없습니다.");
+	        if (coupon.getStock() == 0) {
+	            if (coupon.getStart() == null || coupon.getEnd() == null) {
+	                throw new IllegalArgumentException("시작날짜와 종료날짜는 필수입니다.");
 	            }
-	        } else if (hasStock) {
-	            // 수량이 설정되어 있으면 날짜를 무제한으로 설정
-	            coupon.setStart(null);
-	            coupon.setEnd(null);
+	            coupon.setStock(Integer.MAX_VALUE); // stock이 0인 경우 무제한으로 설정
 	        } else {
-	            // 수량도 없고 날짜도 없으면 예외 처리
-	            throw new IllegalArgumentException("수량이나 날짜 중 하나는 반드시 설정되어야 합니다.");
+	            coupon.setEnd(null); // stock이 입력되었으면 end 값을 무제한으로 설정
 	        }
 	    }
 	}

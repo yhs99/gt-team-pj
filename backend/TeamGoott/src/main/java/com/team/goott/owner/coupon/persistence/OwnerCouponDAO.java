@@ -1,7 +1,6 @@
 package com.team.goott.owner.coupon.persistence;
 
 import java.util.List;
-import java.util.Map;
 
 import com.team.goott.owner.domain.CouponDTO;
 import com.team.goott.owner.domain.CouponVO;
@@ -21,6 +20,8 @@ public interface OwnerCouponDAO {
 	int deleteCoupon(int couponId) throws Exception;
 
 	// 쿠폰 수정
-	int modifyCoupon(Map<String, Object> updateCoupon) throws Exception;
+	int modifyCoupon(int couponId, CouponDTO coupon) throws Exception;
+
+
 
 }

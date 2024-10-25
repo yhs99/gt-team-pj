@@ -27,16 +27,15 @@
 		#{couponId};
 	</update>
 
-<update id="modifyCoupon" parameterType="map">
-    UPDATE coupon
-    <set>
-        <if test="couponName != null">couponName = #{couponName},</if>
-        <if test="start != null">start = #{start},</if>
-        <if test="end != null">end = #{end},</if>
-        <if test="discount != null">discount = #{discount},</if>
-        <if test="stock != null">stock = #{stock},</if>
-    </set>
-    WHERE couponId = #{couponId} AND storeId = #{storeId}
-</update>
+	<update id="modifyCoupon">
+		UPDATE coupon
+		SET
+		couponName = #{coupon.couponName},
+		start = #{coupon.start},
+		end = #{coupon.end},
+		discount = #{coupon.discount},
+		stock = #{coupon.stock}
+		WHERE couponId = #{couponId}
+	</update>
 
 </mapper>

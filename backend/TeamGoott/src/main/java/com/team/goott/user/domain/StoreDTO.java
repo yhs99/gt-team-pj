@@ -1,6 +1,4 @@
-package com.team.goott.owner.domain;
-
-import java.math.BigDecimal;
+package com.team.goott.user.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +16,7 @@ import lombok.ToString;
 public class StoreDTO {
 	private int storeId;
 	private int ownerId;
-	private int rotationId;
+	private int rotationInd;
 	private int sidoCodeId;
 	private String storeName;
 	private String address;
@@ -27,6 +25,7 @@ public class StoreDTO {
 	private String directionGuide;
 	private int maxPeople;
 	private int maxPeoplePerReserve;
-	private BigDecimal locationLatX;
-	private BigDecimal locationLonY;
+	private boolean isBlocked;
+	private double locationLatX;
+	private double locationLonY;
 }

@@ -13,10 +13,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class reviewImagesDTO {
-	private int imageId;
-	private int reviewId;
-	private String url;
-	private String fileName;
-	private String fileType;
+public class StoreCategoryDTO {
+	private int categoryId; 
+	private int storeId;
+	private int categoryCodeId;
+	private String categoryName;
 }

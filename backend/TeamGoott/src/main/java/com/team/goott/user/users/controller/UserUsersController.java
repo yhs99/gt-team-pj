@@ -62,8 +62,10 @@ public class UserUsersController {
 		if(sessionData instanceof UserDTO) {
 			map.put("name", ((UserDTO) sessionData).getName());
 			map.put("profileImageUrl", ((UserDTO) sessionData).getProfileImageUrl());
+			map.put("loginType", "user");
 		}else if(sessionData instanceof StoreDTO) {
 			map.put("name", ((StoreDTO) sessionData).getStoreName());
+			map.put("loginType", "store");
 		}else if(sessionData instanceof AdminDTO) {
 			map.put("name", ((AdminDTO) sessionData).getId());
 		}

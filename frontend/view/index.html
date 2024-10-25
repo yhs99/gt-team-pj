@@ -6,7 +6,9 @@
       <meta content="width=device-width, initial-scale=1.0" name="viewport">
       <meta content="" name="keywords">
       <meta content="" name="description">
+      <link rel="icon" type="image/png" href="/assets/mainIcon.png" />
 
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css" type="text/css"/>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
       <link href="/node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
       <link href="/css/user/animate/animate.min.css" rel="stylesheet">
@@ -34,38 +36,31 @@
   <body>
     
   <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
-    <div class="spinner-grow text-primary" role="status"></div>
+    <div class="spinner-grow text-warning" role="status"></div>
   </div>
-  <div id="app" class="bg-light">
+<div id="app" class="bg-light">
   <div class="container-fluid bg-light">
     <div class="container p-3 mb-3">
       <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-          <a class="navbar-brand fs-3 text-warning fw-bold" href="#"><i class="fa-light fa-utensils"></i>SmartReserve</a>
+          <a class="navbar-brand fs-3 text-warning fw-bold" href="#"><img src="/assets/mainIcon.png"> SmartReserve</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-              </li>
-              
-              <li class="nav-item">
-                <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-              </li>
             </ul>
             <div v-if="loginYN==true">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item dropdown">
                   <img v-bind:src="`${profileImageUrl}`" width="40px" height="40px" class="dropdown-toggle rounded-circle border"
                   href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <ul class="dropdown-menu">
-                    <li class="dropdown-item" @click="logout()" class="cursor">
-                      <a @click="logout()" href="#">로그아웃</a>
+                  <ul class="dropdown-menu text-center">
+                    <li class="dropdown-item" role="button" @click="logout">
+                      <p>로그아웃</p>
+                    </li>
+                    <li class="dropdown-item" role="button">
+                      <a href="/view/user/myPage">내 정보</a>
                     </li>
                   </ul>
                 </li>
@@ -75,8 +70,8 @@
             </ul>
             </div>
             <div v-else>
-              <button class="btn btn-outline-warning m-2" type="submit">로그인</button>
-              <button class="btn btn-outline-warning m-2" type="submit">회원가입</button>
+              <button class="btn btn-outline-warning m-2" type="button" onclick="location.href = '/view/user/userLogin'">로그인</button>
+              <button class="btn btn-outline-warning m-2" type="button" onclick="location.href = '/view/user/userRegister'">회원가입</button>
             </div>
           </div>
         </div>
@@ -90,15 +85,25 @@
             <div class="col-lg-7 col-md-12">
                 <small class="d-inline-block fw-bold text-dark text-uppercase bg-light border border-warning rounded-pill px-4 py-1 mb-4 animated bounceInDown">환영합니다</small>
                 <h1 class class="display-1 mb-4 animated bounceInDown">예약을 <br></class><span class="text-warning">더</span> 빠르고 </br><span class="text-warning">더 </span>알뜰하게</h1>
-                <a href="" class="btn btn-warning border-0 rounded-pill py-3 px-4 px-md-5 me-4 animated bounceInLeft">식당 둘러보기</a>
-                <a href="../view/user/userLogin.html" class="btn btn-warning border-0 rounded-pill py-3 px-4 px-md-5 animated bounceInLeft">
-                  회원가입 하러가기
+                <a href="/view/user/stores" class="btn btn-warning border-0 rounded-pill py-3 px-4 px-md-5 me-4 animated bounceInLeft fw-bold">식당 둘러보기</a>
+                <a v-if="loginYN==false" href="/view/user/userLogin" class="btn btn-warning border-0 rounded-pill py-3 px-4 px-md-5 animated bounceInLeft fw-bold">
+                  로그인 하러가기
                 </a>
             </div>
             <div class="col-lg-5 col-md-12">
                 <img src="/assets/user/img/hero.png" class="img-fluid rounded animated zoomIn" alt="">
             </div>
         </div>
+    </div>
+  </div>
+  <div class="container-fluid footer">
+    <div class="container">
+      <footer class="py-3 my-4">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+         </ul>
+         <p class="text-center text-body-secondary">문의 : tnwksqhdlf22@gmail.com</p>
+        <p class="text-center text-body-secondary">© 2024 SmartReserve All rights reserved</p>
+      </footer>
     </div>
   </div>
 </div>

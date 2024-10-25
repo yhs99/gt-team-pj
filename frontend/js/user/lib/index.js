@@ -12,9 +12,14 @@ new Vue({
       fetchUserData: function() {
           axios.get('/api/status') // 서버에 /api/status 요청
               .then(response => {
-                this.userName = response.data.data.name;
-                this.profileImageUrl = response.data.data.profileImageUrl;
-                this.loginYN=true;
+                console.log(response);
+                if(response.data.data.loginType == 'user') {
+                    this.userName = response.data.data.name;
+                    this.profileImageUrl = response.data.data.profileImageUrl;
+                    this.loginYN=true;
+                }else if(response.data.data.loginType == 'store') {
+                    location.href = '/view/owner/index';
+                }
               })
               .catch(error => {
                   console.error("Error fetching user data:", error);

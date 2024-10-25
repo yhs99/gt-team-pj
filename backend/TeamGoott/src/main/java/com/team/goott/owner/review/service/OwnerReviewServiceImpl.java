@@ -65,8 +65,8 @@ public class OwnerReviewServiceImpl implements OwnerReviewService {
 				
 				int index = (reviewMonth - currentMonth + 12) % 12; 
 				
-				if(index == 6) {
-					index -= 1;
+				if(index >= 6) {
+					index = 12 - index;
 				}
 				
 				

@@ -1,21 +1,21 @@
 package com.team.goott.user.domain;
 
+import java.time.LocalTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
-@Builder
-public class StoreCategoryDTO {
-	private int imageId;
+@Data
+public class ScheduleDTO {
+	private int scheduleId;
 	private int storeId;
-	private String url;
-	private String fileName;
+	private int dayCodeId;
+	private LocalTime open;
+	private LocalTime close;
+	private boolean closeDay;
 }

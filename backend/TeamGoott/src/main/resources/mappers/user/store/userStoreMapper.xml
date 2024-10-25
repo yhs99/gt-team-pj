@@ -1,38 +1,146 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.user.store.userStoreMapper">
-	<select id="getAllStores"
+	<select id="getStore"
 		resultType="com.team.goott.user.domain.StoreDTO">
 		select * from store
 	</select>
-  
+	<select id="getFacility"
+		resultType="com.team.goott.user.domain.FacilityDTO">
+		select * from facility
+	</select>
+	<select id="getSchedule"
+		resultType="com.team.goott.user.domain.ScheduleDTO">
+		select * from schedule
+	</select>
+	<select id="getSidocode"
+		resultType="com.team.goott.user.domain.SidoCodeDTO">
+		select * from sidoCode
+	</select>
+	<select id="getStoreCategory"
+		resultType="com.team.goott.user.domain.StoreCategoryDTO">
+		select * from storeCategory
+	</select>
+	<select id="getStoreImages"
+		resultType="com.team.goott.user.domain.StoreImagesDTO">
+		select * from storeImages
+	</select>
+
+
+
+	<select id="getDetailMenu"
+		resultType="com.team.goott.user.domain.MenuDTO">
+		select * from menu where storeId = #{storeId}
+	</select>
+	<select id="getDetailReserveSlots"
+		resultType="com.team.goott.user.domain.ReserveSlotsDTO">
+		select * from reserveSlots where storeId = #{storeId}
+	</select>
+	<select id="getDetailSchedule"
+		resultType="com.team.goott.user.domain.ReserveSlotsDTO">
+		select * from reserveSlots where storeId = #{storeId}
+	</select>
+	<select id="getDetailCoupon"
+		resultType="com.team.goott.user.domain.CouponDTO">
+		select * from coupon where storeId = #{storeId}
+	</select>
+	<select id="getDetailReview"
+		resultType="com.team.goott.user.domain.ReviewDTO">
+		select * from review where storeId = #{storeId}
+	</select>
+	<select id="getDetailStore"
+		resultType="com.team.goott.user.domain.StoreDTO">
+		select * from store where storeId = #{storeId}
+	</select>
+	<select id="getDetailFacility"
+		resultType="com.team.goott.user.domain.FacilityDTO">
+		select * from facility where storeId = #{storeId}
+	</select>
+	<select id="getDetailStoreImages"
+		resultType="com.team.goott.user.domain.StoreImagesDTO">
+		select * from storeImages where storeId = #{storeId}
+	</select>
+	<select id="getMenu" resultType="com.team.goott.user.domain.MenuDTO">
+		select * from menu
+	</select>
+
+
 	<select id="getStoreById"
 		resultType="com.team.goott.user.domain.StoreDTO">
-		select * from store where storeId = #{stordId}
+		select * from store where storeId = #{storeId}
 	</select>
-  
-	<select id="getStoresByCategory" resultType="com.team.goott.user.domain.StoreDTO">
-    SELECT s.*
+
+	<select id="getStoreIdsByCategoryAndSido" resultType="int">
+    SELECT s.storeId 
     FROM store s
     JOIN storeCategory sc ON s.storeId = sc.storeId
-    WHERE 1 = 1
-    <if test="categoryCodeIds != null and categoryCodeIds.size() > 0">
-        AND sc.categoryCodeId IN
-        <foreach item="categoryCodeId" collection="categoryCodeIds" open="(" separator="," close=")">
-            #{categoryCodeId}
-        </foreach>
-    </if>
-    <if test="sidoCodeIds != null and sidoCodeIds.size() > 0">
-        AND s.sidoCodeId IN
-        <foreach item="sidoCodeId" collection="sidoCodeIds" open="(" separator="," close=")">
-            #{sidoCodeId}
-        </foreach>
-    </if>
+    
+    <where>
+        <if test="categoryCodeIds != null and categoryCodeIds.size() > 0">
+            sc.categoryCodeId IN
+            <foreach item="categoryCodeId" collection="categoryCodeIds" open="(" separator="," close=")">
+                #{categoryCodeId}
+            </foreach>
+        </if>
+        
+        <if test="sidoCodeIds != null and sidoCodeIds.size() > 0">
+            <if test="categoryCodeIds != null and categoryCodeIds.size() > 0">
+                AND
+            </if>
+            s.sidoCodeId IN
+            <foreach item="sidoCodeId" collection="sidoCodeIds" open="(" separator="," close=")">
+                #{sidoCodeId}
+            </foreach>
+        </if>
+    </where>
 </select>
 
- <select id="ownerLoginInfo" parameterType="map"
+    <select id="getMenusByStoreIds" resultType="com.team.goott.user.domain.MenuDTO">
+        SELECT * FROM menu WHERE storeId IN
+        <foreach item="storeId" collection="list" open="(" separator="," close=")">
+            #{storeId}
+        </foreach>
+    </select>
+
+    <select id="getCouponsByStoreIds" resultType="com.team.goott.user.domain.CouponDTO">
+        SELECT * FROM coupon WHERE storeId IN
+        <foreach item="storeId" collection="list" open="(" separator="," close=")">
+            #{storeId}
+        </foreach>
+    </select>
+
+    <select id="getStoresByIds" resultType="com.team.goott.user.domain.StoreDTO">
+        SELECT * FROM store WHERE storeId IN
+        <foreach item="storeId" collection="list" open="(" separator="," close=")">
+            #{storeId}
+        </foreach>
+    </select>
+
+    <select id="getSchedulesByStoreIds" resultType="com.team.goott.user.domain.ScheduleDTO">
+        SELECT * FROM schedule WHERE storeId IN
+        <foreach item="storeId" collection="list" open="(" separator="," close=")">
+            #{storeId}
+        </foreach>
+    </select>
+
+    <select id="getStoreImagesByStoreIds" resultType="com.team.goott.user.domain.StoreImagesDTO">
+        SELECT * FROM storeImages WHERE storeId IN
+        <foreach item="storeId" collection="list" open="(" separator="," close=")">
+            #{storeId}
+        </foreach>
+    </select>
+
+    <select id="getStoreCategoriesByStoreIds" resultType="com.team.goott.user.domain.StoreCategoryDTO">
+        SELECT * FROM storeCategory WHERE storeId IN
+        <foreach item="storeId" collection="list" open="(" separator="," close=")">
+            #{storeId}
+        </foreach>
+    </select>
+
+	<select id="ownerLoginInfo" parameterType="map"
 		resultType="com.team.goott.owner.domain.StoreDTO">
-		SELECT s.* FROM store s	JOIN owner o ON s.ownerId = o.ownerId
+		SELECT s.* FROM store s JOIN owner o ON s.ownerId =
+		o.ownerId
 		WHERE o.id = #{id} AND o.password = SHA2(#{pw}, 256)
-	</select> 
+	</select>
 </mapper>

@@ -41,4 +41,99 @@
         (#{slot.storeId}, #{slot.slotDatetime})
     </foreach>
 </insert>
+
+
+<resultMap id="storesResultMap" type="com.team.goott.admin.domain.StoresVO">
+    <id property="storeId" column="storeId"/>
+    <result property="ownerId" column="ownerId"/>
+    <result property="rotationId" column="rotationId"/>
+    <result property="sidoCodeId" column="sidoCodeId"/>
+    <result property="storeName" column="storeName"/>
+    <result property="address" column="address"/>
+    <result property="tel" column="tel"/>
+    <result property="description" column="description"/>
+    <result property="directionGuide" column="directionGuide"/>
+    <result property="maxPeople" column="maxPeople"/>
+    <result property="maxPeoplePerReserve" column="maxPeoplePerReserve"/>
+    <result property="locationLatX" column="locationLatX"/>
+    <result property="locationLonY" column="locationLonY"/>
+    <collection property="storeImages" ofType="com.team.goott.admin.domain.StoreImagesVO">
+        <id property="imageId" column="imageId"/>
+        <result property="url" column="url"/>
+        <result property="fileName" column="fileName"/>
+    </collection>
+
+    <collection property="facilities" ofType="com.team.goott.admin.domain.StoreFacilityVO">
+        <id property="facilityCode" column="facilityCode"/>
+        <result property="facilityName" column="facilityName"/>
+    </collection>
+
+    <collection property="storeCategories" ofType="com.team.goott.admin.domain.StoreCategoryVO">
+        <id property="categoryId" column="categoryId"/>
+        <result property="categoryCodeId" column="categoryCodeId"/>
+        <result property="storeCategoryName" column="storeCategoryName"/>
+    </collection>
+
+    <collection property="storeSchedules" ofType="com.team.goott.admin.domain.StoreScheduleVO">
+        <id property="scheduleId" column="scheduleId"/>
+        <result property="dayCodeId" column="dayCodeId"/>
+        <result property="open" column="open"/>
+        <result property="close" column="close"/>
+        <result property="closeDay" column="closeDay"/>
+    </collection>
+</resultMap>
+
+<select id="getStoresInfo" parameterType="map" resultMap="storesResultMap">
+	SELECT 
+        s.storeId,
+        s.ownerId,
+        s.rotationId,
+        s.sidoCodeId,
+        s.storeName,
+        s.address,
+        s.tel,
+        s.description,
+        s.directionGuide,
+        s.maxPeople,
+        s.maxPeoplePerReserve,
+        s.locationLatX,
+        s.locationLonY,
+        si.imageId,
+        si.url,
+        si.fileName,
+        f.facilityCode,
+        fc.facilityName,
+        sc.categoryId,
+        sc.categoryCodeId,
+        sc.storeCategoryName,
+        ss.scheduleId,
+        ss.dayCodeId,
+        ss.open,
+        ss.close,
+        ss.closeDay
+
+    FROM store s
+    LEFT JOIN storeImages si ON s.storeId = si.storeId
+    LEFT JOIN facility f ON s.storeId = f.storeId
+    LEFT JOIN facilityCode fc ON f.facilityCode = fc.facilityCode
+    LEFT JOIN storeCategory sc ON s.storeId = sc.storeId
+    LEFT JOIN schedule ss ON s.storeId = ss.storeId
+
+    WHERE 1=1
+    <if test="categoryId != null and categoryId.size > 0">
+        AND sc.categoryCodeId IN
+        <foreach item="category" collection="categoryId" open="(" separator="," close=")">
+            #{category}
+        </foreach>
+    </if>
+    <if test="sidoCodeId != null and sidoCodeId.size > 0">
+        AND s.sidoCodeId IN
+        <foreach item="sido" collection="sidoCodeId" open="(" separator="," close=")">
+            #{sido}
+        </foreach>
+    </if>
+    <if test="searchParam != null and searchParam != ''">
+        AND s.storeName LIKE CONCAT('%', #{searchParam}, '%')
+    </if>
+</select>
 </mapper>

@@ -13,28 +13,11 @@ new Vue({
     fetchUserData: function() {
       axios.get('/api/status') // 서버에 /api/status 요청
       .then(response => {
-        console.log(response);
-        if(response.data.data.loginType == 'store') {
-            this.name = response.data.data.name;
-            this.loginYN=true;
-        }else if(response.data.data.loginType == 'user') {
-            location.href = '/';
-        }
+        console.log("admin checked");
       })
       .catch(error => {
         location.href = '/';
       });
-    },
-    logoutProcess: function() {
-      axios.post('/api/logout')
-        .then(response => {
-          console.log(response);
-          if(response.status === 200) {
-            location.href = '/';
-          }
-        }).catch(error => {
-          console.error(error);
-        });
     },
     fetchAllDeleteRequestReviews: function() {
       axios.get('/api/admin/deleteReview')
@@ -75,8 +58,19 @@ new Vue({
         this.fetchAllDeleteRequestReviews();
       })
     },
+    logoutProcess: function() {
+      axios.post('/api/logout')
+        .then(response => {
+          console.log(response);
+          if(response.status === 200) {
+            location.href = '/';
+          }
+        }).catch(error => {
+          console.error(error);
+        });
+    },
     formatDate: function(timestamp) {
-      // 밀리초 단위의 타임스탬프를 변환하여 날짜로 포맷
+      // timestamp 타입을 Date로 변환
       const date = new Date(timestamp);
       return date.toLocaleString(); // 날짜와 시간을 로컬 형식으로 반환
     }

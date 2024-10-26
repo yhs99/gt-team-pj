@@ -10,4 +10,5 @@ public interface AdminReviewService {
 	public List<ReviewVO> getAllReivews(Map<String, String> sortBy);
 	public List<ReviewVO> getAllDeleteRequestedReviews();
 	public boolean deleteReview(int reviewId) throws ImageDeleteFailedException, Exception;
+	public boolean cancelDeleteReview(int reviewId) throws Exception;
 }

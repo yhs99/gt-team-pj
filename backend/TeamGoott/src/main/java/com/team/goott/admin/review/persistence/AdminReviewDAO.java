@@ -15,4 +15,5 @@ public interface AdminReviewDAO {
 	public int deleteReview(int reviewId);
 	public int deleteReviewImages(int reviewId);
 	public ReviewDTO getTargetReviewInfo(int reviewId);
+	public int cancelDeleteReview(int reviewId);
 }

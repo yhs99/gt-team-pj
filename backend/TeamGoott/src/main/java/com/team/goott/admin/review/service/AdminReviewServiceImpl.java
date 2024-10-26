@@ -82,6 +82,7 @@ public class AdminReviewServiceImpl implements AdminReviewService {
 			reviewVo.setScore(review.getScore());
 			reviewVo.setUserId(review.getUserId());
 			reviewVo.setName(review.getName());
+			reviewVo.setStoreName(review.getStoreName());
 			reviewVo.setProfileImageUrl(review.getProfileImageUrl());
 			reviewVo.setStoreId(review.getStoreId());
 			for(ReviewImagesDTO image : reviewImages) {
@@ -119,6 +120,15 @@ public class AdminReviewServiceImpl implements AdminReviewService {
 		}
 		
 		return dao.deleteReview(reviewId) == 1 ? true : false;
+	}
+
+	@Override
+	public boolean cancelDeleteReview(int reviewId) throws Exception {
+		ReviewDTO targetReviewInfo = dao.getTargetReviewInfo(reviewId);
+		if(targetReviewInfo == null ) {
+			throw new Exception("유효하지 않은 리뷰이거나, 삭제 요청이 되지 않은 리뷰입니다.");
+		}
+		return dao.cancelDeleteReview(reviewId) == 1 ? true : false;
 	}
 
 	

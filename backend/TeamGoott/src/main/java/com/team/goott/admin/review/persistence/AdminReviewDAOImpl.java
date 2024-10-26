@@ -62,4 +62,9 @@ public class AdminReviewDAOImpl implements AdminReviewDAO {
 		return ses.selectOne(NS+"getTargetReviewInfo", reviewId);
 	}
 
+	@Override
+	public int cancelDeleteReview(int reviewId) {
+		return ses.update(NS+"cancelDeleteReqReview", reviewId);
+	}
+
 }

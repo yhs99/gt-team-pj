@@ -12,15 +12,12 @@ new Vue({
   },
   methods: {
       checkLogin: function() {
-          axios.get('/api/status')
-          .then(response => {
-            location.href='/view/admin/srAdminIndex';
-          }).catch(error => {
-              if(error.status == 401) {
-                  console.log("로그인 정보가 없습니다.");
-              }
-              this.loginYN = true;
-          })
+        axios.get('/api/status')
+        .then(response => {
+          location.href = '/view/admin/srAdminIndex';
+        })
+        .catch(error => {
+        })
       },
       async login() {
         const formData = new FormData();

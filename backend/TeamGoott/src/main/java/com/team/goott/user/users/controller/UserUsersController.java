@@ -11,14 +11,12 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team.goott.admin.domain.AdminDTO;
 import com.team.goott.admin.users.service.AdminUsersService;
-import com.team.goott.owner.domain.OwnerDTO;
 import com.team.goott.owner.domain.StoreDTO;
 import com.team.goott.owner.store.service.OwnerStoreService;
 import com.team.goott.user.domain.LoginDTO;
@@ -68,6 +66,9 @@ public class UserUsersController {
 			map.put("loginType", "store");
 		}else if(sessionData instanceof AdminDTO) {
 			map.put("name", ((AdminDTO) sessionData).getId());
+			map.put("loginType", "admin");
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 되어있지 않습니다.");
 		}
 		
 		return ResponseEntity.ok(map);

@@ -3,7 +3,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.team.goott.owner.domain.FacilityDTO;
-import com.team.goott.owner.domain.ScheduleDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

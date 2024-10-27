@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,28 +20,24 @@ import com.team.goott.admin.store.service.AdminStoreService;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/")
 @Slf4j
 public class AdminStoreController {
 
-	private final String UNAUTHORIZED_MESSAGE = "권한이 없습니다.";
+	//private final String UNAUTHORIZED_MESSAGE = "권한이 없습니다.";
 	
 	@Autowired
 	private AdminStoreService adminStoreService;
 	
-	@GetMapping("/stores")
+	@GetMapping("/searchDetail")
 	public ResponseEntity<Object> getStoresInfo(HttpSession session
 												, @RequestParam(name = "categoryId", required = false) List<String> categoryId
 												, @RequestParam(name = "sidoCodeId", required = false) List<String> sidoCodeId
 												, @RequestParam(name = "searchParam", required = false) String searchParam) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-		if(checkAdminSession(session)) {
-			List<StoresVO> stores = adminStoreService.getStoresInfo(categoryId, sidoCodeId, searchParam);
-			resultMap.put("storeLists", stores);
-			resultMap.put("storeCount", stores.size());
-		}else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED_MESSAGE);
-		}
+		List<StoresVO> stores = adminStoreService.getStoresInfo(categoryId, sidoCodeId, searchParam);
+		resultMap.put("storeLists", stores);
+		resultMap.put("storeCount", stores.size());
 		return ResponseEntity.ok(resultMap);
 	}
 	

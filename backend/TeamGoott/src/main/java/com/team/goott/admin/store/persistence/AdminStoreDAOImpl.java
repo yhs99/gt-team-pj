@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.team.goott.admin.domain.StoresVO;
 import com.team.goott.owner.domain.ReserveSlotsDTO;
 import com.team.goott.owner.domain.ScheduleDTO;
 import com.team.goott.owner.domain.StoreDTO;
@@ -51,6 +52,16 @@ public class AdminStoreDAOImpl implements AdminStoreDAO {
 	@Override
 	public int batchInsertSlots(List<ReserveSlotsDTO> slots) {
 		return ses.insert(NS+"batchInsertSlots", slots);
+	}
+
+	@Override
+	public List<StoresVO> getStoresInfo(Map<String, Object> searchMap) {
+		return ses.selectList(NS+"getStoresInfo", searchMap);
+	}
+
+	@Override
+	public int getStoresInfoCnt(Map<String, Object> searchMap) {
+		return ses.selectOne(NS+"getStoresInfoCnt", searchMap);
 	}
 
 }

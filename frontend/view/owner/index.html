@@ -2,27 +2,21 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
-    <title>DASHMIN - Bootstrap Admin Template</title>
+    <title></title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta content="" name="keywords" />
     <meta content="" name="description" />
 
-    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css" type="text/css"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
     <link href="/node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
-
-    <!-- Libraries Stylesheet -->
     <link href="/css/owner/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
     <link href="/css/owner/lib/tempusdominus/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
     <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-    <!-- Template Stylesheet -->
     <link href="/css/owner/style.css" rel="stylesheet" />
+    <link href="/css/owner/mainlogo.css" rel="stylesheet">
 
     <!-- JavaScript Libraries -->
-
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
     <script src="/js/user/lib/wow/wow.min.js"></script>
@@ -42,12 +36,12 @@
   </head>
 
   <body>
+  <div id="app">
     <div class="container-xxl position-relative bg-white d-flex p-0">
       <!-- Spinner Start -->
       <div
         id="spinner"
-        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center"
-      >
+        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem" role="status">
           <span class="sr-only">Loading...</span>
         </div>
@@ -57,19 +51,13 @@
       <!-- Sidebar Start -->
       <div class="sidebar pe-4 pb-3">
         <nav class="navbar bg-light navbar-light">
-          <a href="index.html" class="navbar-brand mx-4 mb-3">
-            <h3 id="app" class="text-primary"><i class="fa fa-hashtag me-2"></i>{{name}}smart reserve</h3>
+          <a href="index" class="navbar-brand mx-4 mb-3">
+            <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>SmartReserve</h3>
           </a>
           <div class="d-flex align-items-center ms-4 mb-4">
-            <div class="position-relative">
-              <img class="rounded-circle" src="" alt="" style="width: 40px; height: 40px" />
-              <div
-                class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"
-              ></div>
-            </div>
             <div class="ms-3">
-              <h6 class="mb-0">사용자 이름</h6>
-              <span>(가게이름) 점주님</span>
+              <span>{{ name }}</span>
+              <p> 점주님 안녕하세요!</p>
             </div>
           </div>
           <div class="navbar-nav w-100">
@@ -88,16 +76,6 @@
             <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>폼</a>
             <a href="table.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>테이블</a>
             <a href="/view/owner/review.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>리뷰</a>
-            <div class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
-                ><i class="far fa-file-alt me-2"></i>페이지</a
-              >
-              <div class="dropdown-menu bg-transparent border-0">
-                <a href="signin.html" class="dropdown-item">로그인</a>
-                <a href="signup.html" class="dropdown-item">계정 생성하기</a>
-                <a href="404.html" class="dropdown-item">에러 페이지</a>
-                <a href="blank.html" class="dropdown-item">빈 페이지</a>
-              </div>
             </div>
           </div>
         </nav>
@@ -108,7 +86,7 @@
       <div class="content">
         <!-- Navbar Start -->
         <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-          <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
+          <a href="/view/owner/index" class="navbar-brand d-flex d-lg-none me-4">
             <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
           </a>
           <a href="#" class="sidebar-toggler flex-shrink-0">
@@ -120,50 +98,11 @@
           <div class="navbar-nav align-items-center ms-auto">
             <div class="nav-item dropdown">
               <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <i class="fa fa-envelope me-lg-2"></i>
-                <span class="d-none d-lg-inline-flex">메세지</span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                <a href="#" class="dropdown-item">
-                  <div class="d-flex align-items-center">
-                    <img class="rounded-circle" src="" alt="" style="width: 40px; height: 40px" />
-                    <div class="ms-2">
-                      <h6 class="fw-normal mb-0">~ 가 메세지 보냈다</h6>
-                      <small>~ 분전</small>
-                    </div>
-                  </div>
-                </a>
-                <hr class="dropdown-divider" />
-                <a href="#" class="dropdown-item">
-                  <div class="d-flex align-items-center">
-                    <img class="rounded-circle" src="" alt="" style="width: 40px; height: 40px" />
-                    <div class="ms-2">
-                      <h6 class="fw-normal mb-0">~ 가 메세지 보냈다</h6>
-                      <small>~ 분전</small>
-                    </div>
-                  </div>
-                </a>
-                <hr class="dropdown-divider" />
-                <a href="#" class="dropdown-item">
-                  <div class="d-flex align-items-center">
-                    <img class="rounded-circle" src="" alt="" style="width: 40px; height: 40px" />
-                    <div class="ms-2">
-                      <h6 class="fw-normal mb-0">~ 가 메세지 보냈다</h6>
-                      <small>~ 분전</small>
-                    </div>
-                  </div>
-                </a>
-                <hr class="dropdown-divider" />
-                <a href="#" class="dropdown-item text-center">모든 메세지 확인</a>
-              </div>
-            </div>
-            <div class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                 <i class="fa fa-bell me-lg-2"></i>
                 <span class="d-none d-lg-inline-flex">알림</span>
               </a>
               <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                <a href="#" class="dropdown-item">
+                <a href="#" class="dropdown-item" role="button">
                   <h6 class="fw-normal mb-0">프로필 업데이트</h6>
                   <small>15 minutes ago</small>
                 </a>
@@ -183,19 +122,54 @@
             </div>
             <div class="nav-item dropdown">
               <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <img class="rounded-circle me-lg-2" src="" alt="" style="width: 40px; height: 40px" />
-                <span class="d-none d-lg-inline-flex">사용자 이름</span>
+                <span class="d-none d-lg-inline-flex">{{ name }}</span>
               </a>
               <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                <a href="#" class="dropdown-item">내 계정</a>
-                <a href="#" class="dropdown-item">세팅</a>
-                <a href="#" class="dropdown-item">로그아웃</a>
+                <a @click="logoutProcess" href="#" class="dropdown-item">로그아웃</a>
               </div>
             </div>
           </div>
         </nav>
         <!-- Navbar End -->
 
+        <div id="reviewLists" class="container-fluid pt-4 px-4">
+          <div class="bg-light text-center rounded p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+              <h6 class="mb-0">최근 리뷰</h6>
+              <a href="">전체 보기</a>
+            </div>
+            <div class="table-responsive">
+              <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                  <tr class="text-dark">
+                    <th scope="col"><input class="form-check-input" type="checkbox" /></th>
+                    <th scope="col">리뷰 ID</th>
+                    <th scope="col">가게 ID</th>
+                    <th scope="col">유저 ID</th>
+                    <th scope="col">점수</th>
+                    <th scope="col">내용</th>
+                    <th scope="col">작성 날짜</th>
+                    <th scope="col">삭제 요청</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- 최대 5개만 보여줌 -->
+                  <tr v-for="(review, index) in reviews.slice(0, 5)" :key="review.reviewId">
+                  <!-- <tr v-for="(review, index) in reviews" :key="review.reviewId"> 전체 리뷰 for문 -->
+                    <th scope="col"><input class="form-check-input" type="checkbox" /></th>
+                    <td>{{ review.reviewId }}</td>
+                    <td>{{ review.storeId }}</td>
+                    <td>{{ review.userId }}</td>
+                    <td>{{ review.score }}</td>
+                    <td>{{ review.content }}</td>
+                    <td>{{ formatDate(review.createAt) }}</td> <!-- vue js에서 작성한 함수 -->
+                    <td><button class="btn btn-danger btn-block" @click="deleteReq(review.reviewId)">삭제 요청</button>({{ review.deleteReq }})</td> 
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
         <!-- Sale & Revenue Start -->
         <div class="container-fluid pt-4 px-4">
           <div class="row g-4">
@@ -264,78 +238,6 @@
         </div>
         <!-- Sales Chart End -->
 
-        <!-- Recent Sales Start -->
-        <div class="container-fluid pt-4 px-4">
-          <div class="bg-light text-center rounded p-4">
-            <div class="d-flex align-items-center justify-content-between mb-4">
-              <h6 class="mb-0">최근 수익</h6>
-              <a href="">전체 보기</a>
-            </div>
-            <div class="table-responsive">
-              <table class="table text-start align-middle table-bordered table-hover mb-0">
-                <thead>
-                  <tr class="text-dark">
-                    <th scope="col"><input class="form-check-input" type="checkbox" /></th>
-                    <th scope="col">날짜</th>
-                    <th scope="col">청구서</th>
-                    <th scope="col">손님</th>
-                    <th scope="col">금액</th>
-                    <th scope="col">상태</th>
-                    <th scope="col">작업</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>24.10.14</td>
-                    <td>청구서</td>
-                    <td>abc@abc.com</td>
-                    <td>77,000원</td>
-                    <td>예약 상태</td>
-                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>24.10.07</td>
-                    <td>청구서</td>
-                    <td>bca@abc.com</td>
-                    <td>10,000원</td>
-                    <td>대기</td>
-                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>24.10.03</td>
-                    <td>청구서</td>
-                    <td>bcd@abc.com</td>
-                    <td>154,000원</td>
-                    <td>승인</td>
-                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>24.10.02</td>
-                    <td>청구서</td>
-                    <td>baca@abc.com</td>
-                    <td>100,000원</td>
-                    <td>취소</td>
-                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                  </tr>
-                  <tr>
-                    <td><input class="form-check-input" type="checkbox" /></td>
-                    <td>24.10.01</td>
-                    <td>청구서</td>
-                    <td>bca12@abc.com</td>
-                    <td>8,000원</td>
-                    <td>완료</td>
-                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <!-- Recent Sales End -->
 
         <!-- Widgets Start -->
         <div class="container-fluid pt-4 px-4">
@@ -475,5 +377,7 @@
       <!-- Back to Top -->
       <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
+    <script src="/js/owner/index.js"></script>
+  </div>
   </body>
 </html>

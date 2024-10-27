@@ -29,10 +29,25 @@
         </foreach>
     </if>
 </select>
-  
+
  <select id="ownerLoginInfo" parameterType="map"
 		resultType="com.team.goott.owner.domain.StoreDTO">
 		SELECT s.* FROM store s	JOIN owner o ON s.ownerId = o.ownerId
 		WHERE o.id = #{id} AND o.password = SHA2(#{pw}, 256)
 	</select>
+
+	<select id="getStoreFiltersCategory" resultType="com.team.goott.owner.domain.CategoryCodeVO">
+		SELECT categoryCodeId, categoryName
+		FROM categoryCode
+	</select>
+	
+	<select id="getStoreFiltersSidoCode" resultType="com.team.goott.owner.domain.sidoCodeVO">
+		SELECT sidoCodeId, sidoName
+		FROM sidoCode
+	</select> 
+	
+	<select id="getStoreFiltersFacilityCode" resultType="com.team.goott.owner.domain.FacilityCodeVO">
+		SELECT facilityCode, facilityName
+		FROM facilityCode
+	</select> 
 </mapper>

@@ -1,4 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.admin.review.adminReviewMapper">
+	<select id="getAllReviews" parameterType="map" resultType="com.team.goott.admin.domain.ReviewDTO">
+		SELECT r.*, u.name, u.profileImageUrl
+		FROM review r JOIN user u
+		ON r.userId = u.userId
+    <where>
+        <choose>
+            <when test="searchBy == 'storeId'">
+                r.storeId = #{searchValue}
+            </when>
+            <when test="searchBy == 'userId'">
+                r.userId = #{searchValue}
+            </when>
+            <otherwise>
+                1=1
+            </otherwise>
+        </choose>
+    </where>
+    <if test="sortBy != null and sortBy != ''">
+        ORDER BY 
+        <choose>
+            <when test="sortBy == 'createAt'">
+                r.createAt
+            </when>
+            <when test="sortBy == 'userId'">
+                r.userId
+            </when>
+            <when test="sortBy == 'storeId'">
+                r.storeId
+            </when>
+            <when test="sortBy == 'score'">
+                r.score
+            </when>
+            <otherwise>
+                r.createAt
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="sortMethod == 'asc'">
+                ASC
+            </when>
+            <when test="sortMethod == 'desc'">
+                DESC
+            </when>
+            <otherwise>
+                DESC
+            </otherwise>
+        </choose>
+    </if>
+    <if test="sortBy == null or sortBy == ''">
+        ORDER BY r.createAt DESC
+    </if>
+	</select>
+	
+	<select id="getAllReviewImages" parameterType="map" resultType="com.team.goott.user.domain.ReviewImagesDTO">
+		SELECT ri.*
+		FROM reviewImages ri
+		JOIN review r
+		ON ri.reviewId = r.reviewId
+		<where>
+	        <choose>
+	            <when test="searchBy == 'storeId'">
+	                r.storeId = #{searchValue}
+	            </when>
+	            <when test="searchBy == 'userId'">
+	                r.userId = #{searchValue}
+	            </when>
+	        </choose>
+        </where>
+	</select>
+	
+	<select id="getAllDeleteReqReviews" resultType="com.team.goott.admin.domain.ReviewDTO">
+		SELECT r.*, s.storeName, u.name
+		FROM review r
+        JOIN store s
+        ON r.storeId = s.storeId
+        JOIN user u
+        ON r.userId = u.userId
+		WHERE isDeleteReq = 1;
+	</select>
+	
+	<select id="getAllDeleteReqReviewImages" resultType="com.team.goott.user.domain.ReviewImagesDTO">
+		SELECT ri.*
+		FROM reviewImages ri
+		JOIN review r
+		ON ri.reviewId = r.reviewId
+		WHERE r.isDeleteReq = 1
+	</select>
+	
+	<select id="getTargetReviewInfo" resultType="com.team.goott.admin.domain.ReviewDTO">
+		SELECT *
+		FROM review
+		WHERE reviewId = #{reviewId}
+		AND isDeleteReq = 1
+	</select>
+	
+	<select id="getTargetReviewImages" parameterType="int" resultType="com.team.goott.user.domain.ReviewImagesDTO">
+		SELECT ri.*
+		FROM reviewImages ri
+		WHERE reviewId = #{reviewId}
+	</select>
+	
+	<delete id="deleteReview">
+		DELETE FROM review
+		WHERE reviewId = #{reviewId}
+		AND isDeleteReq = 1
+	</delete>	
+	
+	<delete id="deleteReviewImages">
+		DELETE FROM reviewImages
+		WHERE reviewId = #{reviewId}
+	</delete>
+	
+	<update id="cancelDeleteReqReview" parameterType="int">
+		UPDATE review
+		SET isDeleteReq = 0
+		WHERE reviewId = #{reviewId}
+	</update>
 </mapper>

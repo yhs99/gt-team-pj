@@ -11,7 +11,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,36 +40,40 @@ public class UserUsersController {
 
 	// 로그인 상태 체크
 	@GetMapping("/status")
-	public ResponseEntity<Object> checkStatus(@CookieValue(value = "JSESSIONID", required = false) String sessionId,
-			HttpServletRequest request) {
-
-		if (sessionId == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션 ID가 없습니다.");
-		}
-
-		// 세션 ID를 이용해 로그인 상태를 확인하는 로직을 추가합니다.
-		boolean isLoggedIn = checkLoginStatus(sessionId, request);
-		log.info("세션 체크 여부: " + isLoggedIn);
-		if (isLoggedIn) {
-			return ResponseEntity.ok("로그인 상태입니다.");
-		} else {
+	public ResponseEntity<Object> checkStatus(HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		if(session == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 되어있지 않습니다.");
 		}
 
-	}
-
-	// 세션 체크 메서드
-	private boolean checkLoginStatus(String sessionId, HttpServletRequest request) {
-		HttpSession session = request.getSession(false);
-		log.info("서버에 있는 세션 아이디값 : {}", session.getId());
-		log.info("쿠기에 저장된 세션 아이디값 : {}", sessionId);
-		if (session != null && sessionId.equals(session.getId())) {
-			return true;
-		} else {
-			return false;
+		Object sessionData = null;
+		Map<String, String> map = new HashMap<String, String>();
+		
+		if(session.getAttribute("user") != null) {
+			sessionData = (UserDTO) session.getAttribute("user");
+		}else if(session.getAttribute("store") != null) {
+			sessionData = (StoreDTO) session.getAttribute("store");
+		}else if(session.getAttribute("admin") != null) {
+			sessionData = (AdminDTO) session.getAttribute("admin");
 		}
+		
+		if(sessionData instanceof UserDTO) {
+			map.put("name", ((UserDTO) sessionData).getName());
+			map.put("profileImageUrl", ((UserDTO) sessionData).getProfileImageUrl());
+			map.put("loginType", "user");
+		}else if(sessionData instanceof StoreDTO) {
+			map.put("name", ((StoreDTO) sessionData).getStoreName());
+			map.put("loginType", "store");
+		}else if(sessionData instanceof AdminDTO) {
+			map.put("name", ((AdminDTO) sessionData).getId());
+			map.put("loginType", "admin");
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 되어있지 않습니다.");
+		}
+		
+		return ResponseEntity.ok(map);
+		
 	}
-
 	// 통합 로그인
 	@PostMapping("/login")
 	public ResponseEntity<Object> userLoginRequest(LoginDTO loginDTO, HttpSession session,

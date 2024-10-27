@@ -3,6 +3,7 @@ package com.team.goott.user.store.service;
 import java.util.List;
 
 import com.team.goott.user.domain.StoreDTO;
+import com.team.goott.user.domain.StoreFiltersVO;
 
 public interface UserStoreService {
 
@@ -12,4 +13,5 @@ public interface UserStoreService {
 
 	List<StoreDTO> getStoresByCategoriesAndSidos(List<String> categoryCodeIds, List<Integer> sidoCodeIds) throws Exception;
 
+	StoreFiltersVO getStoreFilters();
 }

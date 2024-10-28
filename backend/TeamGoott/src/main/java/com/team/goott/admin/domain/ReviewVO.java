@@ -25,7 +25,6 @@ public class ReviewVO {
 	private int storeId;
 	private String storeName;
 	private int userId;
-	private String userName;
 	private int score;
 	private String content;
 	private boolean isDeleteReq;

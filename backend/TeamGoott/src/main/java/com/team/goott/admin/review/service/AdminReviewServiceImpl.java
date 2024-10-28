@@ -50,6 +50,7 @@ public class AdminReviewServiceImpl implements AdminReviewService {
 			reviewVo.setDateTime(review.getDateTime());
 			reviewVo.setScore(review.getScore());
 			reviewVo.setUserId(review.getUserId());
+			reviewVo.setStoreName(review.getStoreName());
 			reviewVo.setName(review.getName());
 			reviewVo.setProfileImageUrl(review.getProfileImageUrl());
 			reviewVo.setStoreId(review.getStoreId());

@@ -95,7 +95,7 @@ public class SendEmailService {
 
 	private void getAccount() throws FileNotFoundException, IOException {
 		Properties account = new Properties();
-		account.load(new FileReader("D:\\lecture\\gt-team-pj\\backend\\TeamGoott\\src\\main\\resources\\config.properties"));
+		account.load(new FileReader("D:\\lecture\\gt-team-pj\\backend\\TeamGoott\\src\\main\\resources\\connection.properties"));
 		this.userName = (String) account.get("username");
 		this.password = (String) account.get("password");
 	}

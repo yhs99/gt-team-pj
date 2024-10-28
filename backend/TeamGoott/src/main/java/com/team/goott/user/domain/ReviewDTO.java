@@ -35,7 +35,7 @@ public class ReviewDTO {
 	private boolean isDeleteReq;
 	
 	private List<MultipartFile> inputImages; 
-	private List<reviewImagesDTO> reviewImages;
+	private List<ReviewImagesDTO> reviewImages;
 	
 	public void setCreateAt(Timestamp createAt) {
 		this.createAt = createAt;

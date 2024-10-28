@@ -31,7 +31,7 @@ update review set isDeleteReq = 1 where reviewId = #{reviewId}
 insert into reviewImages(reviewId, url, fileName, fileType) values (#{reviewId},#{url},#{fileName},#{fileType})
 </insert>
 
-<select id="getFileByNo" resultType="com.team.goott.user.domain.reviewImagesDTO">
+<select id="getFileByNo" resultType="com.team.goott.user.domain.ReviewImagesDTO">
 select * from reviewImages where reviewId = #{reviewId}
 </select>
 
@@ -51,7 +51,7 @@ delete from reviewImages where imageId = #{imageId}
 select * from reserve where userId = #{userId}
 </select>
 
-<select id="getUserReviews" resultType="com.team.goott.user.domain.reviewImagesDTO">
+<select id="getUserReviews" resultType="com.team.goott.user.domain.ReviewImagesDTO">
 select * from review where userId= #{userId} and isDeleteReq = 0 
 </select>
 </mapper>

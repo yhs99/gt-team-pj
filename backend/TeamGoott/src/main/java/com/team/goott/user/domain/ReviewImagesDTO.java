@@ -20,5 +20,5 @@ public class ReviewImagesDTO {
 	private String fileName;
 	private String fileType;
 	
-	private reviewImagesStatus fileStatus;
+	private ReviewImagesStatus fileStatus;
 }

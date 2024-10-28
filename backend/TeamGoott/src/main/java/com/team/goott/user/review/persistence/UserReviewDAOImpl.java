@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.team.goott.user.domain.ReserveDTO;
 import com.team.goott.user.domain.ReviewDTO;
 import com.team.goott.user.domain.ReviewPageDTO;
-import com.team.goott.user.domain.reviewImagesDTO;
+import com.team.goott.user.domain.ReviewImagesDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,13 +48,13 @@ public class UserReviewDAOImpl implements UserReviewDAO {
 	}
 
 	@Override
-	public int insertImgs(reviewImagesDTO reviewImg) {
+	public int insertImgs(ReviewImagesDTO reviewImg) {
 		// 이미지 첨부
 		return ses.insert(ns+"insertImgs", reviewImg);
 	}
 
 	@Override
-	public List<reviewImagesDTO> filesByNo(int reviewId) {
+	public List<ReviewImagesDTO> filesByNo(int reviewId) {
 		// 상세조회 첨부된 파일 불러오기
 		return ses.selectList(ns+"getFileByNo",reviewId);
 	}

@@ -5,7 +5,7 @@ import java.util.List;
 import com.team.goott.user.domain.ReserveDTO;
 import com.team.goott.user.domain.ReviewDTO;
 import com.team.goott.user.domain.ReviewPageDTO;
-import com.team.goott.user.domain.reviewImagesDTO;
+import com.team.goott.user.domain.ReviewImagesDTO;
 
 public interface UserReviewDAO {
 
@@ -17,9 +17,9 @@ public interface UserReviewDAO {
 
 	int delReview(int reviewId);
 
-	int insertImgs(reviewImagesDTO reviewImg);
+	int insertImgs(ReviewImagesDTO reviewImg);
 
-	List<reviewImagesDTO> filesByNo(int reviewId);
+	List<ReviewImagesDTO> filesByNo(int reviewId);
 
 	int delFiles(int reviewId);
 

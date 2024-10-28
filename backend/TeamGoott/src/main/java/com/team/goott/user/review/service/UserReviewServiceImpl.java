@@ -24,9 +24,9 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.team.goott.infra.S3ImageManager;
 import com.team.goott.user.domain.ReserveDTO;
 import com.team.goott.user.domain.ReviewDTO;
+import com.team.goott.user.domain.ReviewImagesDTO;
 import com.team.goott.user.domain.ReviewPageDTO;
-import com.team.goott.user.domain.reviewImagesDTO;
-import com.team.goott.user.domain.reviewImagesStatus;
+import com.team.goott.user.domain.ReviewImagesStatus;
 import com.team.goott.user.review.persistence.UserReviewDAO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +63,7 @@ public class UserReviewServiceImpl implements UserReviewService {
 	public ReviewDTO reviewByNo(int reviewId) {
 		// 리뷰 조회
 		ReviewDTO review = revDAO.reviewByNo(reviewId);
-		List<reviewImagesDTO> imagesDTO = new ArrayList<reviewImagesDTO>();
+		List<ReviewImagesDTO> imagesDTO = new ArrayList<ReviewImagesDTO>();
 		imagesDTO = revDAO.filesByNo(reviewId);
 		review.setReviewImages(imagesDTO);
 		
@@ -78,7 +78,7 @@ public class UserReviewServiceImpl implements UserReviewService {
 		if(revDAO.insertReview(reviewDTO)==1) {
 			int generatedId = reviewDTO.getReviewId();
 			if(reviewDTO.getReviewImages() != null) {
-				for(reviewImagesDTO imgs : reviewDTO.getReviewImages()) {
+				for(ReviewImagesDTO imgs : reviewDTO.getReviewImages()) {
 					imgs.setReviewId(generatedId);
 					revDAO.insertImgs(imgs);
 				}
@@ -93,8 +93,8 @@ public class UserReviewServiceImpl implements UserReviewService {
 
 
 	@Override
-	public reviewImagesDTO imageIntoDTO(int reviewId, MultipartFile file) throws IOException, Exception {
-		reviewImagesDTO reviewImg = new reviewImagesDTO();
+	public ReviewImagesDTO imageIntoDTO(int reviewId, MultipartFile file) throws IOException, Exception {
+		ReviewImagesDTO reviewImg = new ReviewImagesDTO();
 		// 원본 이미지 저장
 		log.info("리뷰아이디 : {}", reviewId);
 		S3ImageManager imageManager = new S3ImageManager(file, s3Client, bucketName);
@@ -121,7 +121,7 @@ public class UserReviewServiceImpl implements UserReviewService {
 
 	@Override
 	@Transactional
-	public boolean deleteReviewNFile(int reviewId, List<reviewImagesDTO> imgDtoList) {
+	public boolean deleteReviewNFile(int reviewId, List<ReviewImagesDTO> imgDtoList) {
 		// 리뷰 삭제, 파일 삭제
 		boolean result = false;
 		
@@ -134,7 +134,7 @@ public class UserReviewServiceImpl implements UserReviewService {
 					  log.info("파일 삭제 정보 삭제 완료");
 	                  log.info("삭제할 이미지 개수: {}", imgDtoList.size());
 						
-	                  for(reviewImagesDTO fileName : imgDtoList) {
+	                  for(ReviewImagesDTO fileName : imgDtoList) {
 							result = new S3ImageManager(s3Client, bucketName, fileName.getFileName()).deleteImage();
 							if(result) {
 								log.info("파일 삭제 완료 : "+ fileName.getFileName());
@@ -162,16 +162,16 @@ public class UserReviewServiceImpl implements UserReviewService {
 		int reviewId=modifyReview.getReviewId();
 		
 		if(revDAO.updateReview(modifyReview) == 1) {
-			for(reviewImagesDTO img : modifyReview.getReviewImages()) {
+			for(ReviewImagesDTO img : modifyReview.getReviewImages()) {
 
 				int imageId=img.getImageId();
 				
-				if (img.getFileStatus() == reviewImagesStatus.INSERT) {
+				if (img.getFileStatus() == ReviewImagesStatus.INSERT) {
 					img.setReviewId(reviewId);
 					revDAO.insertImgs(img);
 					
 					
-				}else if(img.getFileStatus() == reviewImagesStatus.DELETE) {
+				}else if(img.getFileStatus() == ReviewImagesStatus.DELETE) {
 					revDAO.deleteImgs(imageId);
 				}
 			}

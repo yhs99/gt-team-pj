@@ -1,5 +1,5 @@
 package com.team.goott.user.domain;
 
-public enum reviewImagesStatus {
+public enum ReviewImagesStatus {
 	INSERT,DELETE
 }

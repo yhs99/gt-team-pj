@@ -14,7 +14,6 @@ import lombok.ToString;
 @ToString
 @Builder
 public class FacilityDTO {
-	private int facilityId;
 	private int storeId;
 	private String facilityCode;
 }

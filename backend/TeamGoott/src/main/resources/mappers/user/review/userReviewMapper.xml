@@ -51,7 +51,7 @@ delete from reviewImages where imageId = #{imageId}
 select * from reserve where userId = #{userId}
 </select>
 
-<select id="getUserReviews" resultType="com.team.goott.user.domain.ReviewImagesDTO">
+<select id="getUserReviews" resultType="com.team.goott.user.domain.ReviewDTO">
 select * from review where userId= #{userId} and isDeleteReq = 0 
 </select>
 </mapper>

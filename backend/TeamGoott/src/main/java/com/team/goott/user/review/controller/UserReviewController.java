@@ -61,7 +61,7 @@ public class UserReviewController {
 	
 	 @GetMapping("/store/{storeId}")
 	 public ResponseEntity<List<ReviewDTO>> getAllReview(@PathVariable("storeId") int storeId, 
-	    		@RequestParam(value = "page", defaultValue = "1") int page,
+	    		@RequestParam(value = "page", defaultValue = "0") int page,
 	            @RequestParam(value = "size", defaultValue = "5") int size){
 		 //모든 리뷰 기져오기 (페이지네이션)
 		 List<ReviewDTO> lst = service.getAllReviews(storeId, page, size);
@@ -86,7 +86,7 @@ public class UserReviewController {
 	 public ResponseEntity<ReviewDTO> viewBoard(@PathVariable("reviewId") int reviewId,
 	 			HttpServletRequest request){
 		 //리뷰 상세정보
-		 ReviewDTO  reviewDTO= service.reviewByNo(reviewId);
+		 ReviewDTO reviewDTO= service.reviewByNo(reviewId);
 		 
 		 if(request.getRequestURI().endsWith("/mod")) {
 			//수정 버튼을 눌렀을 때 파일 목록을 가져옴
@@ -96,7 +96,6 @@ public class UserReviewController {
 			 
 		}else {
 			log.info("{}번 글 조회",reviewId);
-		
 		
 		}
 	
@@ -220,8 +219,9 @@ public class UserReviewController {
 			 
 			 
 			}else {
-				
+				reviewDTO.setReviewImages(modifyFileList);
 				service.updateReview(reviewDTO);
+			    modifyFileList.clear();
 			}
 				 
 		return ResponseEntity.ok(reviewDTO);
@@ -238,9 +238,8 @@ public class UserReviewController {
 	}
 	 
 	 @DeleteMapping("/{reviewId}")
-	 public ResponseEntity<String> delReview(@PathVariable("reviewId") int reviewId){
+	 public ResponseEntity<Object> delReview(@PathVariable("reviewId") int reviewId){
 		 //리뷰 삭제 : isDelete 를 -1로 바꿔줌//
-		 ResponseEntity<String> resEntity;
 		 ReviewDTO reviewDto= service.reviewByNo(reviewId);
 		 
 
@@ -256,17 +255,17 @@ public class UserReviewController {
 		    }
 		 
 		 if(service.deleteReviewNFile(reviewId,imgDtoList)) {
-			 
-			 resEntity = new ResponseEntity<String>(DEL_SUCCEEDED,HttpStatus.OK);
+			 System.out.println("1");
+			 return ResponseEntity.ok(DEL_SUCCEEDED);
 		 }else {
 		
-			 resEntity = new ResponseEntity<String>(DEL_FAILED,HttpStatus.NOT_FOUND);
+			 System.out.println("2");
+			 return ResponseEntity.badRequest().body(DEL_FAILED);
 		}
 		 
-		 return resEntity;
 	 }
 	 
-	//mod페이지에 먼저 들어갈 것
+	//mod페이지에 먼저 들어가야 modifylist가 생성된다
 	 @PostMapping("/removeAFile")
 	 public ResponseEntity<String> modifyRemoveAFile(@RequestParam("removeFileNo") int removeFileNo){
 	
@@ -282,14 +281,16 @@ public class UserReviewController {
 		 
 	 }
 	 
+	 //마이페이지에서 쓸 수 있는 리뷰 보기
 	 //user의 reserveId가 
 	 //reservestatusCode가 4인지 체크하고,  reserveId당 한번만 글작성이 가능하도록 하는 메서드
 	 @PostMapping("/user/{userId}")
-	 public ResponseEntity<Object> checkReserveDone(@PathVariable("userId") int userId) {
+	 public ResponseEntity<List<String>> checkReserveDone(@PathVariable("userId") int userId) {
 	     // 유저의 예약 상태 가져오기
 	     List<ReserveDTO> reserves = service.getStatusByUserId(userId);
 	     // 유저의 리뷰 목록 가져오기
 	     List<ReviewDTO> reviews = service.getUserReview(userId);
+	     List<String> lst = new ArrayList<String>();
 
 	     // 리뷰 ID를 저장할 Set
 	     Set<Integer> reviewedReserveIds = reviews.stream()
@@ -300,18 +301,25 @@ public class UserReviewController {
 	     for (ReserveDTO userReserveInfo : reserves) {
 	         int reserveStatus = userReserveInfo.getStatusCodeId();
 	         int reserveId = userReserveInfo.getReserveId();
-
-	         if (reserveStatus != 4) {
-	             return ResponseEntity.badRequest().body("해당 리뷰는 처리할 수 없습니다. 아직 완료되지 않았습니다.");
-	         }
-
+	       
 	         // 예약 ID가 이미 리뷰에 포함되어 있는지 확인
 	         if (reviewedReserveIds.contains(reserveId)) {
-	             return ResponseEntity.badRequest().body("해당 리뷰는 이미 처리되었습니다.");
+	        	 lst.add(reserveId + " : 해당 리뷰는 이미 처리되었습니다.");
+	          
+	         }else {
+	        	 
+	        	 if (reserveStatus != 4) {
+	        		 lst.add(reserveId + " : 상태가 완료될 때까지 기다려주세요.");
+		            
+		         }else {
+		        	 lst.add(reserveId + " : 상태가 완료되었습니다. 식당 리뷰를 작성해주세요.");
+		         }
+	        	 
 	         }
+	        
 	     }
 
-	     return ResponseEntity.ok("상태가 완료되었습니다. 식당 리뷰를 작성해주세요.");
+	     return ResponseEntity.ok(lst);
 	 }
 	 
 	 //로그인 확인은 생략 : 로그인이 되어야 마이페이지에 갈 수 있고 마이페이지에 가야 리뷰를 작성, 수정할 수 있으므로, 식당 페이지에서 리뷰를 수정하는건 조금 이상한듯(네이버 쇼핑 참고)

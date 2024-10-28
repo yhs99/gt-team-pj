@@ -121,20 +121,25 @@ public class UserReviewServiceImpl implements UserReviewService {
 
 	@Override
 	@Transactional
-	public boolean deleteReviewNFile(int reviewId, List<ReviewImagesDTO> imgDtoList) {
+	public boolean deleteReviewNFile(int reviewId, List<ReviewImagesDTO> list) {
 		// 리뷰 삭제, 파일 삭제
 		boolean result = false;
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!"+ list.toString());
+		System.out.println(list == null);
+		System.out.println(list.isEmpty());
+		System.out.println(list != null);
+		System.out.println(!list.isEmpty());
 		
 		try {
 			if(revDAO.delReview(reviewId)==1) {
 			 log.info("리뷰 삭제 완료");
 				
-			 if (imgDtoList != null && !imgDtoList.isEmpty()) {
-					if(revDAO.delFiles(reviewId)==1) {
+			 if (list != null && !list.isEmpty()) {
+					if(revDAO.delFiles(reviewId) > 0) {
 					  log.info("파일 삭제 정보 삭제 완료");
-	                  log.info("삭제할 이미지 개수: {}", imgDtoList.size());
+	                  log.info("삭제할 이미지 개수: {}", list.size());
 						
-	                  for(ReviewImagesDTO fileName : imgDtoList) {
+	                  for(ReviewImagesDTO fileName : list) {
 							result = new S3ImageManager(s3Client, bucketName, fileName.getFileName()).deleteImage();
 							if(result) {
 								log.info("파일 삭제 완료 : "+ fileName.getFileName());
@@ -162,17 +167,19 @@ public class UserReviewServiceImpl implements UserReviewService {
 		int reviewId=modifyReview.getReviewId();
 		
 		if(revDAO.updateReview(modifyReview) == 1) {
-			for(ReviewImagesDTO img : modifyReview.getReviewImages()) {
-
-				int imageId=img.getImageId();
-				
-				if (img.getFileStatus() == ReviewImagesStatus.INSERT) {
-					img.setReviewId(reviewId);
-					revDAO.insertImgs(img);
+			
+			if(modifyReview.getReviewImages() != null) {
+				for(ReviewImagesDTO img : modifyReview.getReviewImages()) {
+	
+					int imageId=img.getImageId();
 					
-					
-				}else if(img.getFileStatus() == ReviewImagesStatus.DELETE) {
-					revDAO.deleteImgs(imageId);
+					if (img.getFileStatus() == ReviewImagesStatus.INSERT) {
+						img.setReviewId(reviewId);
+						revDAO.insertImgs(img);
+						
+					}else if(img.getFileStatus() == ReviewImagesStatus.DELETE) {
+						revDAO.deleteImgs(imageId);
+					}
 				}
 			}
 			result = true;

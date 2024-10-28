@@ -9,6 +9,8 @@ new Vue({
         totalAvgTodayScore : 0,
         countMonthlyReview : [],
         countScore : [],
+        showModal : false,
+        selectedReviewId : 0,
     },
 
     methods : {
@@ -84,6 +86,23 @@ new Vue({
                 }
              });
         },
+
+        //모달창 reviewId 값 할당
+        showDeleteRequestModal(reviewId){
+            this.showModal = true;
+            this.selectedReviewId = reviewId;
+            console.log(this.showModal,this.selectedReviewId);
+        },
+
+        //삭제 버튼 클릭시 리뷰 삭제 요청 
+        deleteReview(reviewId){
+            axios.delete(`/api/owner/review/${reviewId}`)
+            .then((response =>{
+                console.log(response);
+                this.showModal = false;
+                this.getAllReviews('score');
+            }))
+        }
     },
     mounted(){
         this.getAllReviews('score').then(() => {

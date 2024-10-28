@@ -23,6 +23,8 @@
     <link href="/css/owner/review.css" rel="stylesheet" />
 
     <!-- JavaScript Libraries -->
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
     <script type="module" src="/js/owner/review.js"></script>
   </head>
 
@@ -267,12 +269,42 @@
                               <td>{{review.score}}</td>
                               <td>{{review.content}}</td>
                               <td>{{new Date(review.createAt).toLocaleDateString()}}</td>
-                              <td>삭제</td>
+                              <td> 
+                                <button v-if="!review.deleteReq" type="button" class="btn btn-outline-danger m-2" @click="showDeleteRequestModal(review.reviewId)">DELETE</button>
+                                <button v-else type="button" class="btn btn-outline-danger m-2" disabled>삭제 요청 완료</button>
+                              </td>
+                              <!-- <td> <button type="button" class="btn btn-outline-danger m-2" data-bs-toggle="modal" data-bs-target="#myModal">DELETE</button></td> -->
                           </tr>
                       </tbody>
                   </table>
               </div>
           </div>
+      </div>
+
+      <!-- Modal -->
+      <div v-if="showModal"class="modal fade show" style="display: block;" >
+        <div class="modal-dialog">
+            <div class="modal-content">
+    
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">리뷰 삭제</h4>
+                    <button type="button" class="btn-close" @click="showModal = false"></button>
+                </div>
+    
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    해당 리뷰에 대한 삭제 요청을 보내시겠습니까?
+                </div>
+    
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" @click="deleteReview(selectedReviewId)">삭제</button>
+                    <button type="button" class="btn btn-secondary" @click="showModal = false">취소</button>
+                </div>
+    
+            </div>
+        </div>
       </div>
 
 
@@ -298,8 +330,7 @@
 
 
     
-    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+
     <script src="/js/user/lib/wow/wow.min.js"></script>
     <script src="/js/owner/lib/chart/chart.min.js"></script>
     <script src="/js/owner/lib/easing/easing.min.js"></script>

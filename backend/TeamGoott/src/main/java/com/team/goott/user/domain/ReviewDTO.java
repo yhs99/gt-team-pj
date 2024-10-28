@@ -26,6 +26,7 @@ public class ReviewDTO {
 	private int reviewId;
 	private int storeId;
 	private int userId;
+	private int reserveId;
 	private int score;
 	private String content;
 	private Timestamp createAt;

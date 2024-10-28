@@ -2,12 +2,14 @@ package com.team.goott.user.review.persistence;
 
 import java.util.List;
 
+import com.team.goott.user.domain.ReserveDTO;
 import com.team.goott.user.domain.ReviewDTO;
+import com.team.goott.user.domain.ReviewPageDTO;
 import com.team.goott.user.domain.reviewImagesDTO;
 
 public interface UserReviewDAO {
 
-	List<ReviewDTO> getAllReviews(int storeId);
+	List<ReviewDTO> getAllReviews(ReviewPageDTO paging);
 
 	ReviewDTO reviewByNo(int reviewId);
 
@@ -24,4 +26,10 @@ public interface UserReviewDAO {
 	int updateReview(ReviewDTO reviewDTO);
 
 	void deleteImgs(int imageId);
+
+	List<ReviewDTO> getMyReviews(ReviewPageDTO paging);
+
+	List<ReserveDTO> getReserveByUserId(int UserId);
+
+	List<ReviewDTO> getUserReviews(int userId);
 }

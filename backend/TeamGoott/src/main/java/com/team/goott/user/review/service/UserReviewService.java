@@ -5,22 +5,29 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.team.goott.user.domain.ReserveDTO;
 import com.team.goott.user.domain.ReviewDTO;
 import com.team.goott.user.domain.reviewImagesDTO;
 
 public interface UserReviewService {
 
-	List<ReviewDTO> getAllReviews(int storeId);
+	List<ReviewDTO> getAllReviews(int storeId, int page, int size);
 
 	ReviewDTO reviewByNo(int reviewId);
 
-	boolean addReview(ReviewDTO reviewDTO);
+	boolean addReviewPics(ReviewDTO reviewDTO);
 
 	reviewImagesDTO imageIntoDTO(int reviewId, MultipartFile file) throws IOException, Exception;
 
-	boolean deleteReviewNFile(int reviewId, List<reviewImagesDTO> imgDtolst);
+	boolean deleteReviewNFile(int reviewId, List<reviewImagesDTO> imgDtoList);
 
 	boolean updateReview(ReviewDTO reviewDTO);
+
+	List<ReviewDTO> getMyReview(int userId, int page, int size);
+
+	List<ReserveDTO> getStatusByUserId(int userId);
+
+	List<ReviewDTO> getUserReview(int userId);
 
 
 }

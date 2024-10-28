@@ -7,7 +7,9 @@ import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.team.goott.user.domain.ReserveDTO;
 import com.team.goott.user.domain.ReviewDTO;
+import com.team.goott.user.domain.ReviewPageDTO;
 import com.team.goott.user.domain.reviewImagesDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,15 +24,14 @@ public class UserReviewDAOImpl implements UserReviewDAO {
 	private static String ns="com.team.mappers.user.review.userReviewMapper.";
 	
 	@Override
-	public List<ReviewDTO> getAllReviews(int storeId){
-		// 리뷰들을 불러온다
-		
-		return ses.selectList(ns+"getAllrevws",storeId);
+	public List<ReviewDTO> getAllReviews(ReviewPageDTO paging){
+		// 리뷰 조회
+		return ses.selectList(ns+"getAllrevws",paging);
 	}
 
 	@Override
 	public ReviewDTO reviewByNo(int reviewId) {
-		// 리뷰 조회
+		// 리뷰 상세 조회
 		return ses.selectOne(ns+"getBoardByNo",reviewId);
 	}
 
@@ -61,7 +62,7 @@ public class UserReviewDAOImpl implements UserReviewDAO {
 	@Override
 	public int delFiles(int reviewId) {
 		// 상세조회 첨부된 파일 삭제하기
-		return ses.delete(ns+"",reviewId);
+		return ses.delete(ns+"deleteFiles",reviewId);
 	}
 
 	@Override
@@ -74,6 +75,24 @@ public class UserReviewDAOImpl implements UserReviewDAO {
 	public void deleteImgs(int imageId) {
 		// 수정시 파일 개별 삭제
 		ses.delete(ns+"deleteImgsById", imageId);
+	}
+
+	@Override
+	public List<ReviewDTO> getMyReviews(ReviewPageDTO paging) {
+		// 내 리뷰 가져오기
+		return ses.selectList(ns+"getMyReview",paging);
+	}
+
+	@Override
+	public List<ReserveDTO> getReserveByUserId(int userId) {
+		// 예약정보가져오기(userId)
+		return ses.selectList(ns+"reserveByUserId", userId);
+	}
+
+	@Override
+	public List<ReviewDTO> getUserReviews(int userId) {
+		// TODO Auto-generated method stub
+		return ses.selectList(ns+"getUserReviews", userId);
 	}
 
 }

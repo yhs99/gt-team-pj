@@ -7,20 +7,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @ToString
 @Builder
-public class BookmarkDTO {
-	private int bookMarkId;
-	private int userId;
+public class ReviewPageDTO {
+	
 	private int storeId;
+	private int userId;
+	private int offset;
+	private int size;
 	
 	
-	public BookmarkDTO(int userId, int storeId) {
-		this.userId = userId;
-		this.storeId = storeId;
-	}
+
 }

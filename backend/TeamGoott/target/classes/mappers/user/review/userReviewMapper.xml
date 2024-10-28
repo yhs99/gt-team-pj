@@ -4,15 +4,20 @@
 
 <select id="getAllrevws" resultType="com.team.goott.user.domain.ReviewDTO">
 select * from review where storeId = #{storeId} and isDeleteReq = 0 
-order by createAt DESC
+order by createAt DESC LIMIT #{size} OFFSET #{offset}
 </select> 
 
 <select id="getBoardByNo" resultType="com.team.goott.user.domain.ReviewDTO">
 select * from review where reviewId= #{reviewId}
 </select>
 
+<select id="getMyReview" resultType="com.team.goott.user.domain.ReviewDTO">
+select * from review where userId= #{userId} and isDeleteReq = 0 
+order by createAt DESC LIMIT #{size} OFFSET #{offset}
+</select>
+
 <insert id="insertReview" useGeneratedKeys="true" keyProperty="reviewId">
-insert into review (storeId,userId,score,content) values (#{storeId},#{userId},#{score},#{content})
+insert into review (storeId,userId,reserveId, score,content) values (#{storeId},#{userId},#{reserveId},#{score},#{content})
 	<selectKey keyProperty="reviewId" resultType="int" order="AFTER">
 		select last_insert_id()
 	</selectKey>
@@ -41,4 +46,12 @@ update review set score = #{score}, content = #{content} where reviewId = #{revi
 <delete id="deleteImgsById">
 delete from reviewImages where imageId = #{imageId}
 </delete>
+
+<select id="reserveByUserId" resultType="com.team.goott.user.domain.ReserveDTO">
+select * from reserve where userId = #{userId}
+</select>
+
+<select id="getUserReviews" resultType="com.team.goott.user.domain.reviewImagesDTO">
+select * from review where userId= #{userId} and isDeleteReq = 0 
+</select>
 </mapper>

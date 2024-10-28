@@ -1,10 +1,11 @@
 package com.team.goott.admin.users.service;
 
+import javax.inject.Inject;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
 import javax.validation.ValidationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import com.team.goott.infra.UserNotFoundException;
 import com.team.goott.infra.UserNotMatchException;
 import com.team.goott.user.domain.UserDTO;
 import com.team.goott.user.register.domain.UserRegisterDTO;
+
+import com.team.goott.admin.domain.AdminDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -89,6 +92,13 @@ public class AdminUsersServiceImpl implements AdminUsersService {
 		return dao.userInfoUpdate(updateData);
 	}
 
+	@Override
+	public AdminDTO login(String id, String password) {
+		
+		AdminDTO adminDTO = dao.login(id, password);
+		return adminDTO;
+	}
+
 	
 	public Map<String, String> userImageUpdate(MultipartFile image) {
 		Map<String, String> imageMap = null;
@@ -107,8 +117,10 @@ public class AdminUsersServiceImpl implements AdminUsersService {
 	public boolean deleteBeforeImageObj(String fileName) {
 		boolean result = false;
 		try {
-			result = new S3ImageManager(s3Client, bucketName, fileName).deleteImage();
-			if(result) log.info("삭제한 파일명 :: {}", fileName);
+			if(!fileName.equals("defaultUser.jpg") || !fileName.equals("/defaultUser.jpg")) {
+				result = new S3ImageManager(s3Client, bucketName, fileName).deleteImage();
+				if(result) log.info("삭제한 파일명 :: {}", fileName);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

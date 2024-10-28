@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.team.goott.owner.domain.FacilityDTO;
 import com.team.goott.owner.domain.FacilityVO;
+import com.team.goott.owner.domain.OwnerDTO;
 import com.team.goott.owner.domain.ScheduleDTO;
 import com.team.goott.owner.domain.ScheduleVO;
 import com.team.goott.owner.domain.StoreCategoryDTO;
@@ -38,7 +39,9 @@ public interface OwnerStoreService {
 	int updateStore(int storeId, StoreDTO store, List<ScheduleDTO> schedules, List<StoreCategoryDTO> category,
 			List<FacilityDTO> facility, List<MultipartFile> updatefiles, List<String> deleteImages) throws Exception;
 	
-	
+	StoreDTO login(String id, String pw);
+
+	boolean register(OwnerDTO ownerDTO);
 
 
 }

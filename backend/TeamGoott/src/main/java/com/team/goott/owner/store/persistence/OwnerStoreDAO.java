@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.team.goott.owner.domain.FacilityVO;
+import com.team.goott.owner.domain.OwnerDTO;
 import com.team.goott.owner.domain.ScheduleVO;
 import com.team.goott.owner.domain.StoreCategoryVO;
 import com.team.goott.owner.domain.StoreDTO;
@@ -15,6 +16,8 @@ public interface OwnerStoreDAO {
 
 	// store 테이블에 데이터 저장
 	int createStore(StoreDTO store) throws Exception;
+	StoreDTO login(String id, String pw);
+	boolean ownerRegister(OwnerDTO ownerDTO);
 
 	// schedule 테이블에 데이터 저장
 	int createSchedule(Map<String, Object> scheduleMap);

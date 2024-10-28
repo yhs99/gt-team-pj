@@ -1,28 +1,37 @@
 new Vue({
-  el: '#app',
+  el: '#app', // Vue 인스턴스를 '#app'에 바인딩
   data: {
-      userId: "",
-      id: "",
-      title: "",
-      completed: ""
+      userName:"",
+      profileImageUrl:"",
+      loginYN:false
   },
-  created() {
-      this.fetchData(); // 컴포넌트가 생성될 때 데이터 가져오기
+  created: function() {
+      this.fetchUserData(); // Vue 인스턴스 생성 시 데이터 요청
   },
   methods: {
-      fetchData() {
-          // 외부 API 호출
-          axios.get('https://jsonplaceholder.typicode.com/todos/1')
-                .then(response => {
-                    console.log(response);
-                    this.userId = response.data.userId;
-                    this.id = response.data.id;
-                    this.title = response.data.title;
-                    this.completed = response.data.completed;
-                })
-                .catch(error => {
-                    console.log(error);
-                })
-      }
+      fetchUserData: function() {
+          axios.get('/api/status') // 서버에 /api/status 요청
+              .then(response => {
+                console.log(response);
+                if(response.data.data.loginType == 'user') {
+                    this.userName = response.data.data.name;
+                    this.profileImageUrl = response.data.data.profileImageUrl;
+                    this.loginYN=true;
+                }else if(response.data.data.loginType == 'store') {
+                    location.href = '/view/owner/index';
+                }
+              })
+              .catch(error => {
+                  console.error("Error fetching user data:", error);
+              });
+      },
+        async logout() {
+            const response = await axios.post('/api/logout');
+            if(response.status === 200) {
+                location.reload();
+            }else {
+                alert("로그아웃 실패");
+            }
+        }
   }
-});
+})

@@ -1,4 +1,4 @@
-package com.team.goott.owner.domain;
+	package com.team.goott.owner.domain;
 
 import java.math.BigDecimal;
 
@@ -31,7 +31,7 @@ public class StoreDTO {
 	private String directionGuide;
 	private int maxPeople;
 	private int maxPeoplePerReserve;
-	private int isBlocked;	
+	private boolean isBlocked;
 	private BigDecimal locationLatX;
 	private BigDecimal locationLonY;
 }

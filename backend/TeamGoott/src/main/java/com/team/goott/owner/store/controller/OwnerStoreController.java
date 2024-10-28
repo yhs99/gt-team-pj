@@ -9,7 +9,9 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.team.goott.owner.domain.FacilityDTO;
 import com.team.goott.owner.domain.FacilityVO;
+import com.team.goott.owner.domain.OwnerDTO;
 import com.team.goott.owner.domain.ScheduleDTO;
 import com.team.goott.owner.domain.ScheduleVO;
 import com.team.goott.owner.domain.StoreCategoryDTO;
@@ -45,6 +48,21 @@ public class OwnerStoreController {
 	
 	@Autowired
 	private OwnerStoreDAO ownerStoreDao;
+	
+	// 점주 가입
+	@PostMapping("/owner/register")
+	public ResponseEntity<Object> userLoginRequest(OwnerDTO ownerDTO){
+		boolean result = false;
+		try {
+			result = ownerStoreService.register(ownerDTO);
+		} catch (DuplicateKeyException | MyBatisSystemException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("중복된 아이디 입니다 ");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류 발생 ");
+		}
+		return ResponseEntity.ok(result?"성공 ":"실패 ");
+	}
 	
 	@GetMapping("/{storeId}")
 	public ResponseEntity<Object> getStore(HttpSession session, @PathVariable int storeId) {

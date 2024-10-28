@@ -16,6 +16,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.team.goott.infra.S3ImageManager;
 import com.team.goott.owner.domain.FacilityDTO;
 import com.team.goott.owner.domain.FacilityVO;
+import com.team.goott.owner.domain.OwnerDTO;
 import com.team.goott.owner.domain.ScheduleDTO;
 import com.team.goott.owner.domain.ScheduleVO;
 import com.team.goott.owner.domain.StoreCategoryDTO;
@@ -40,6 +41,29 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
 
 	@Autowired
 	private OwnerStoreDAO ownerStoreDao;
+	
+	@Override
+	public StoreDTO login(String id, String pw) {
+		StoreDTO storeDTO = ownerStoreDao.login(id, pw);
+		return storeDTO;
+	}
+
+	@Override
+	public boolean register(OwnerDTO ownerDTO) {
+		// 점주 가입
+		// 레스토랑 정보도 같이 넣게 추가 필요함
+		// 2개 테이블 모두 insert 작업이 진행 되다 보니 트렌젝션 필수
+		// 수정 진행중
+		boolean result = false;
+
+		if (ownerStoreDao.ownerRegister(ownerDTO)) {
+			result = true;
+		} else {
+			result = false;
+		}
+
+		return result;
+	}
 
     // 모든 테이블에 정보가 insert 되었을 때 실행
     @Transactional(rollbackFor = Exception.class)

@@ -29,6 +29,7 @@ public class StoresVO {
 	private String directionGuide;
 	private int maxPeople;
 	private int maxPeoplePerReserve;
+	private boolean isBlocked;
 	private BigDecimal locationLatX;
 	private BigDecimal locationLonY;
 	private List<StoreImagesVO> storeImages;

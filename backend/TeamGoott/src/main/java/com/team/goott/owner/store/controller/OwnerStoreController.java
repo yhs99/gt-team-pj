@@ -49,7 +49,7 @@ public class OwnerStoreController {
 	@GetMapping("/{storeId}")
 	public ResponseEntity<Object> getStore(HttpSession session, @PathVariable int storeId) {
 	     Integer ownerId = getOwnerIdFromSession(session);
-	    
+	     
 	     if (ownerId == null) {
 	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
 	     }
@@ -214,7 +214,15 @@ public class OwnerStoreController {
 
 	// 세션에서 ownerId 가져오는 메서드
 	private Integer getOwnerIdFromSession(HttpSession session) {
-		return (Integer) session.getAttribute("ownerId");
+		
+		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
+		
+		if (storeSession == null) { 
+			ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다."); // 로그인 필요
+		}
+		
+		int ownerId = storeSession.getOwnerId();
+		return ownerId;
 	}
 
 	// 요청 테스트

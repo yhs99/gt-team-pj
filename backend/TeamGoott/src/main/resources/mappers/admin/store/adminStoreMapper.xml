@@ -55,6 +55,7 @@
     <result property="directionGuide" column="directionGuide"/>
     <result property="maxPeople" column="maxPeople"/>
     <result property="maxPeoplePerReserve" column="maxPeoplePerReserve"/>
+    <result property="isBlocked" column="isBlocked"/>
     <result property="locationLatX" column="locationLatX"/>
     <result property="locationLonY" column="locationLonY"/>
     <collection property="storeImages" ofType="com.team.goott.admin.domain.StoreImagesVO">
@@ -96,6 +97,7 @@
         s.directionGuide,
         s.maxPeople,
         s.maxPeoplePerReserve,
+        s.isBlocked,
         s.locationLatX,
         s.locationLonY,
         si.imageId,
@@ -135,5 +137,30 @@
     <if test="searchParam != null and searchParam != ''">
         AND s.storeName LIKE CONCAT('%', #{searchParam}, '%')
     </if>
+    <if test="showBlock != null and showBlock != ''">
+        AND isBlocked = #{showBlock}
+    </if>
 </select>
+
+<select id="isExistStore" parameterType="map" resultType="int">
+	SELECT COUNT(*)
+	FROM store
+	WHERE 1=1
+	AND storeId = #{storeId}
+    <if test="isBlocked != null and isBlocked != ''">
+        AND isBlocked = #{isBlocked}
+    </if>
+</select>
+
+<update id="blockStore" parameterType="int">
+	UPDATE store
+	SET isBlocked = 1
+	WHERE storeId = #{storeId}
+</update>
+
+<update id="cancelBlock" parameterType="int">
+	UPDATE store
+	SET isBlocked = 0
+	WHERE storeId = #{storeId}
+</update>
 </mapper>

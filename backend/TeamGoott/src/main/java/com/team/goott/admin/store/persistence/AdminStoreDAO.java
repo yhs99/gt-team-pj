@@ -16,5 +16,7 @@ public interface AdminStoreDAO {
 	int insertReserveSlot(ReserveSlotsDTO newSlot);
 	int batchInsertSlots(List<ReserveSlotsDTO> slots);
 	List<StoresVO> getStoresInfo(Map<String, Object> searchMap);
-	int getStoresInfoCnt(Map<String, Object> searchMap);
+	int isExistStore(Map<String, Integer> map);
+	int blockStore(int storeId);
+	int cancelBlock(int storeId);
 }

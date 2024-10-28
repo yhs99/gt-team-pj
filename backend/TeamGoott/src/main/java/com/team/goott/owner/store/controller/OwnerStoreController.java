@@ -48,11 +48,14 @@ public class OwnerStoreController {
 	
 	@GetMapping("/{storeId}")
 	public ResponseEntity<Object> getStore(HttpSession session, @PathVariable int storeId) {
-	     Integer ownerId = getOwnerIdFromSession(session);
 	     
-	     if (ownerId == null) {
+	     if (getOwnerIdFromSession(session) == null) {
 	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
 	     }
+	     
+	     int ownerId = getOwnerIdFromSession(session).getOwnerId();
+	     log.info("세션의 onwerId : {}"  , ownerId);
+	     
 	    
 	    StoreVO storeData = null;
 	    List<ScheduleVO> scheduleData = null; 
@@ -124,11 +127,11 @@ public class OwnerStoreController {
 			@RequestPart(value = "file", required = false) List<MultipartFile> files) {
 
 		// 세션에서 ownerId 가져오기
-		Integer ownerId = getOwnerIdFromSession(session);
 		
-        if (ownerId == null) {
+        if (getOwnerIdFromSession(session) == null) {
           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
+		int ownerId = getOwnerIdFromSession(session).getOwnerId();
 
 		// StoreDTO에 ownerId 설정
 		store.setOwnerId(ownerId);
@@ -175,11 +178,10 @@ public class OwnerStoreController {
 	    	log.info("Deleted images: {}", deleteImage);
     	
         // 현재 세션에서 ownerId 가져오기
-        Integer ownerId = getOwnerIdFromSession(session);
-        if (ownerId == null) {
+        if (getOwnerIdFromSession(session) == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
-
+        int ownerId = getOwnerIdFromSession(session).getOwnerId();
         // 수정할 가게 정보 확인
         StoreVO existingStore = ownerStoreService.getStoreById(storeId);
         if (existingStore == null) {
@@ -213,16 +215,11 @@ public class OwnerStoreController {
     }
 
 	// 세션에서 ownerId 가져오는 메서드
-	private Integer getOwnerIdFromSession(HttpSession session) {
+	private StoreDTO getOwnerIdFromSession(HttpSession session) {
 		
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
 		
-		if (storeSession == null) { 
-			ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다."); // 로그인 필요
-		}
-		
-		int ownerId = storeSession.getOwnerId();
-		return ownerId;
+		return storeSession;
 	}
 
 	// 요청 테스트

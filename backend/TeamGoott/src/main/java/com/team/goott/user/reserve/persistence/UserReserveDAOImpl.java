@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.team.goott.user.domain.CartDTO;
 import com.team.goott.user.domain.MenuDTO;
+import com.team.goott.user.domain.PayHistoryDTO;
 import com.team.goott.user.domain.ReserveDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,6 @@ public class UserReserveDAOImpl implements UserReserveDAO {
 	public int insertReserve(int userId, ReserveDTO reserveDTO) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("userId", userId);
-		log.info("Inserting reserve with storeId: {}", reserveDTO.getStoreId());
 		params.put("reserveDTO", reserveDTO);
 		return ses.insert(ns + "insertReserve", params);
 	}
@@ -78,7 +78,56 @@ public class UserReserveDAOImpl implements UserReserveDAO {
 		Map<String, Object> params = new HashMap<>();
 		params.put("reserveId", reserveId);
 		params.put("userId", userId);
-		return ses.delete(ns+"updateReserve",params);
+		return ses.update(ns+"updateReserve",params);
 	}
+
+	@Override
+	public int deleteCart(int userId) {
+		return ses.delete(ns+"deleteCart",userId);
+				
+	}
+
+	@Override
+	public int getCouponDiscount(int couponId) {
+		return ses.selectOne(ns+"getCouponDiscount",couponId);
+		
+	}
+
+	@Override
+	public int updateCouponStock(int couponId) {
+		return ses.update(ns+"updateCouponStock",couponId);
+		
+	}
+
+	@Override
+	public int insertPayHistory(PayHistoryDTO payHistoryDTO) {
+		return ses.insert(ns+"insertPayHistory", payHistoryDTO);
+	}
+
+	@Override
+	public int getSlotCheck(int storeId, LocalDateTime reserveTime) throws Exception {
+		Map<String, Object> params = new HashMap<>();
+		params.put("storeId", storeId);
+		params.put("reserveTime", reserveTime);
+		return ses.selectOne(ns+"getSlotCheck",params);
+	}
+
+	@Override
+	public int getCouponStockCheck(int couponId) {
+		return ses.selectOne(ns+"getCouponStockCheck",couponId);
+	}
+
+	@Override
+	public LocalDateTime getCouponStartTime(int couponId) throws Exception {
+		return ses.selectOne(ns+"getCouponStartTime", couponId);
+	}
+
+	@Override
+	public LocalDateTime getCouponEndTime(int couponId) throws Exception {
+		return ses.selectOne(ns+"getCouponEndTime", couponId);
+	}
+
+
+
 
 }

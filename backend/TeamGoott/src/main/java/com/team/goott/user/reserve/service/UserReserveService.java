@@ -7,7 +7,7 @@ public interface UserReserveService {
 
 	void createReserve(int userId, ReserveDTO reserveDTO) throws Exception;
 
-	int updateReserve(int reserveId, int userId);
+	int updateReserve(int reserveId, int userId) throws Exception;
 
 
 

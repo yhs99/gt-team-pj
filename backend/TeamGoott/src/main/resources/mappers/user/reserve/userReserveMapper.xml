@@ -6,33 +6,66 @@
 		resultType="com.team.goott.user.domain.CartDTO">
 		select * from cart where userId = #{userId}
 	</select>
-	
-	<insert id="insertReserve">
-    insert into reserve(reserveId, storeId, userId, couponId, reserveTime, name, people, statusCodeId, memo)
-    values(#{reserveDTO.reserveId}, #{reserveDTO.storeId}, #{userId}, #{reserveDTO.couponId}, #{reserveDTO.reserveTime}, #{reserveDTO.name}, #{reserveDTO.people}, #{reserveDTO.statusCodeId}, #{reserveDTO.memo})
+
+<insert id="insertReserve" parameterType="com.team.goott.user.domain.ReserveDTO" useGeneratedKeys="true" keyProperty="reserveDTO.reserveId">
+    INSERT INTO reserve (storeId, userId, couponId, reserveTime, name, people, statusCodeId, memo)
+    VALUES (#{reserveDTO.storeId}, #{userId}, #{reserveDTO.couponId}, #{reserveDTO.reserveTime}, #{reserveDTO.name}, #{reserveDTO.people}, 1, #{reserveDTO.memo})
 </insert>
 
 	<select id="getMaxPeople" resultType="int">
-		select maxPeople from store where storeId = #{storeId}
+		select maxPeople from store
+		where storeId = #{storeId}
 	</select>
-	
+
 	<select id="getTimeTotPeople" resultType="int">
-		select sum(people) from reserve where storeId = #{storeId} AND reserveTime = #{reserveTime}
+		select sum(people) from
+		reserve where storeId = #{storeId} AND reserveTime = #{reserveTime}
 	</select>
-	
+
 	<select id="getMaxPeoplePerReserve" resultType="int">
-		select maxPeoplePerReserve from store where storeId = #{storeId}
+		select
+		maxPeoplePerReserve from store where storeId = #{storeId}
 	</select>
-	
+
 	<update id="updateReserved">
-		update reserveSlots set reserved = 1  where storeId = #{storeId} AND slotDatetime = #{reserveTime};
-	</update>
-	
-	<select id="getStoreMenuById" resultType="com.team.goott.user.domain.MenuDTO">
-		select * from menu where menuId = #{menuId} AND storeId = #{storeId} 
-	</select>
-	<update id="updateReserve">
-		update reserve set statusCodeId = 3 where reserveId = #{reserveId} AND userId =#{userId}
+		update reserveSlots set reserved = 1 where storeId =
+		#{storeId} AND slotDatetime = #{reserveTime};
 	</update>
 
+	<select id="getStoreMenuById"
+		resultType="com.team.goott.user.domain.MenuDTO">
+		select * from menu where menuId = #{menuId} AND storeId =
+		#{storeId}
+	</select>
+	<update id="updateReserve">
+		update reserve set statusCodeId = 3 where reserveId =
+		#{reserveId} AND userId =#{userId}
+	</update>
+	<delete id="deleteCart">
+		delete from cart where userId = #{userId}
+	</delete>
+	<select id="getCouponDiscount" resultType="int">
+		select discount from coupon where couponId = #{couponId}
+	</select>
+	<update id="updateCouponStock">
+		update coupon set stock= stock-1 where couponId = #{couponId};
+	</update>
+	<insert id="insertPayHistory">
+		insert into payHistory(reserveId,storeId,menuId,menuName,stock,stockPerPrice,totalPrice,couponYN,couponId,payAmount)
+		 values(#{reserveId},#{storeId},#{menuId},#{menuName},#{stock},#{stockPerPrice},#{totalPrice},#{couponYN},#{couponId},#{payAmount})
+	</insert>
+	<select id="getSlotCheck" resultType="int">
+		select reserved from reserveSlots where storeId = #{storeId} AND slotDatetime = #{reserveTime}
+	</select>
+	<select id="getCouponStockCheck" resultType="int">
+		select stock from coupon where couponId = #{couponId}
+	</select>
+	<select id="getCouponStartTime" resultType="java.time.LocalDateTime">
+		select start from coupon where couponId = #{couponId}
+	</select>
+	<select id="getCouponEndTime" resultType="java.time.LocalDateTime">
+		select end from coupon where couponId = #{couponId}
+	</select>
+	
+	
 </mapper>

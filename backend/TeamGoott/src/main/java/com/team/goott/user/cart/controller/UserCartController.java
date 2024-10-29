@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.team.goott.user.cart.service.UserCartService;
 import com.team.goott.user.domain.CartDTO;
+import com.team.goott.user.domain.ExtendedCartDTO;
 import com.team.goott.user.domain.UserDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,21 +30,21 @@ public class UserCartController {
 
 	// 장바구니 조회
 	@GetMapping("/cart")
-	public ResponseEntity<Object> getUserCart(HttpSession session) {
-		List<CartDTO> cart = null;
+	public ResponseEntity<Object> getUserCartById(HttpSession session) {
+		List<ExtendedCartDTO> cart = null;
 		UserDTO userSession = (UserDTO) session.getAttribute("user");
 		if (userSession == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
 		}
 
 		try {
-			cart = userCartService.getUserCart(userSession.getUserId());
+			
+			cart = userCartService.getUserCartById(userSession.getUserId());
 			if (cart == null || cart.isEmpty()) {
 				return ResponseEntity.ok("");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.error("조회에 실패했습니다. {}: {}", userSession.getUserId(), e.getMessage());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("장바구니를 불러오는데 실패했습니다");
 		}
 		return ResponseEntity.ok(cart);

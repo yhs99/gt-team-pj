@@ -10,6 +10,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import com.team.goott.user.domain.CartDTO;
+import com.team.goott.user.domain.ExtendedCartDTO;
 import com.team.goott.user.domain.MenuDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -42,8 +43,18 @@ public class UserCartDAOImpl implements UserCartDAO {
 	}
 
 	@Override
-	public List<MenuDTO> getMenuCart(int menuId) {
+	public List<MenuDTO> getMenuCart(int menuId) throws Exception {
 		return ses.selectList(ns+"getMenuCart",menuId);
+	}
+
+	@Override
+	public List<ExtendedCartDTO> getUserCartById(int userId) throws Exception {
+		return ses.selectList(ns+"getUserCartById", userId);
+	}
+
+	@Override
+	public List<Integer> getCartStoreList(int userId) throws Exception {
+		return ses.selectList(ns+"getCartStoreList", userId);
 	}
 
 

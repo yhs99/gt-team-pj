@@ -70,4 +70,9 @@ public class UserStoreController {
 		    }
 		 return ResponseEntity.ok(stores);
 	}
+	
+	@GetMapping("/storeFilters")
+	public ResponseEntity<Object> getStoreFilters() {
+		return ResponseEntity.ok(userStoreService.getStoreFilters());
+	}
 }

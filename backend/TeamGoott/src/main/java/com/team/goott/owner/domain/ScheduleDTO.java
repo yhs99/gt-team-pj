@@ -10,9 +10,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@Builder
 @Data
 public class ScheduleDTO {
-	private int scheduleId;
 	private int storeId;
 	private int dayCodeId;
 	private LocalTime open;

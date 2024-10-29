@@ -30,7 +30,7 @@ public class ResponseAspect {
                                      .body(apiResponse);
             } else {
                 // 비정상 응답용 매핑
-                String errorMessage = (body != null) ? body.toString() : "An error occurred";
+                String errorMessage = (body != null) ? body.toString() : "오류가 발생했습니다.";
                 ApiResponse<Object> apiResponse = new ApiResponse<>("fail", errorMessage);
                 return ResponseEntity.status(responseEntity.getStatusCode())
                                      .headers(responseEntity.getHeaders())

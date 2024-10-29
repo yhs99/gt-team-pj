@@ -2,9 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.admin.review.adminReviewMapper">
 	<select id="getAllReviews" parameterType="map" resultType="com.team.goott.admin.domain.ReviewDTO">
-		SELECT r.*, u.name, u.profileImageUrl
+		SELECT r.*, u.name, u.profileImageUrl, s.storeName
 		FROM review r JOIN user u
 		ON r.userId = u.userId
+		JOIN store s
+		ON r.storeId = s.storeId
     <where>
         <choose>
             <when test="searchBy == 'storeId'">
@@ -72,9 +74,13 @@
 	</select>
 	
 	<select id="getAllDeleteReqReviews" resultType="com.team.goott.admin.domain.ReviewDTO">
-		SELECT *
-		FROM review
-		WHERE isDeleteReq = 1
+		SELECT r.*, s.storeName, u.name
+		FROM review r
+        JOIN store s
+        ON r.storeId = s.storeId
+        JOIN user u
+        ON r.userId = u.userId
+		WHERE isDeleteReq = 1;
 	</select>
 	
 	<select id="getAllDeleteReqReviewImages" resultType="com.team.goott.user.domain.ReviewImagesDTO">
@@ -108,4 +114,10 @@
 		DELETE FROM reviewImages
 		WHERE reviewId = #{reviewId}
 	</delete>
+	
+	<update id="cancelDeleteReqReview" parameterType="int">
+		UPDATE review
+		SET isDeleteReq = 0
+		WHERE reviewId = #{reviewId}
+	</update>
 </mapper>

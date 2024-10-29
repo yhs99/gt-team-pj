@@ -1,6 +1,5 @@
 package com.team.goott.owner.coupon.persistence;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,16 +47,10 @@ public class OwnerCouponDAOImpl implements OwnerCouponDAO {
 	}
 
 	@Override
-	public int modifyCoupon(int couponId, CouponDTO coupon) throws Exception {
-	    log.info("다오단 (수정) : " + couponId);
+	public int modifyCoupon(Map<String, Object> updateCoupon) throws Exception {
+	    log.info("다오단 (수정) : " + updateCoupon);
 
-	    // 쿠폰 정보를 Map에 담기
-	    Map<String, Object> params = new HashMap<>();
-	    params.put("couponId", couponId); // couponId 추가
-	    params.put("coupon", coupon); // CouponDTO 추가
-
-	    // 매퍼에 Map을 전달하여 업데이트 수행
-	    return ses.update(ns + "modifyCoupon", params);
+	    return ses.update(ns + "modifyCoupon", updateCoupon);
 	}
 
 }

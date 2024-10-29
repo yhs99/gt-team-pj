@@ -21,6 +21,7 @@ import lombok.ToString;
 public class ReviewDTO {
 	private int reviewId;
 	private int storeId;
+	private String storeName;
 	private int userId;
 	private int score;
 	private String content;

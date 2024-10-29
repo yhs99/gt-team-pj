@@ -45,7 +45,6 @@ public class UserCartController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.error("조회에 실패했습니다. {}: {}", userSession.getUserId(), e.getMessage());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("장바구니를 불러오는데 실패했습니다");
 		}
 		return ResponseEntity.ok(cart);

@@ -76,7 +76,8 @@ public class OwnerMenuController {
 		int result = 0;
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
 		if(storeSession != null) {
-			result = service.uploadMenu(menu, file);
+			int storeId = storeSession.getStoreId();
+			result = service.uploadMenu(menu, file, storeId);
 		}else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
 		}

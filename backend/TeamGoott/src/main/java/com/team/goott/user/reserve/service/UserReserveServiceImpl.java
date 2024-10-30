@@ -25,16 +25,16 @@ public class UserReserveServiceImpl implements UserReserveService {
 	private UserReserveDAO userReserveDAO;
 
 	@Override
-	@Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class) // 트랜잭션 적용
+	@Transactional (isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class) // 트랜잭션 적용
 	public void createReserve(int userId, ReserveDTO reserveDTO) throws Exception {
 		// 유효성 체크 (예약 인원 수, 메뉴 확인 등)
-		validateReservation(userId, reserveDTO);
-
+		 validateReservation(userId, reserveDTO);
+		 
 		// 예약 등록
 		userReserveDAO.insertReserve(userId, reserveDTO);
+		
 		// 카트 조회
 		List<CartDTO> cartList = userReserveDAO.getCartCheck(userId); // 사용자 ID로 카트 목록 조회
-
 		// PayHistoryDTO 설정 (카트에 있는 각 항목을 기반으로)
 		for (CartDTO cart : cartList) {
 			PayHistoryDTO payHistoryDTO = new PayHistoryDTO();
@@ -59,8 +59,9 @@ public class UserReserveServiceImpl implements UserReserveService {
 				throw new IllegalArgumentException("유효하지 않은 쿠폰입니다.");
 			}
 			// 쿠폰 시간 확인
-			if ((startTime != null && currentDateTime.isBefore(startTime))
-					|| (endTime != null && currentDateTime.isAfter(endTime))) {
+			if ((startTime != null && !currentDateTime.isBefore(startTime)) 
+			        || (endTime != null && !currentDateTime.isAfter(endTime))) {
+			}else {
 				throw new IllegalArgumentException("유효하지 않은 쿠폰입니다. 사용기간을 확인해 주세요");
 			}
 			if (discount >= 100) { // 고정할인
@@ -81,14 +82,11 @@ public class UserReserveServiceImpl implements UserReserveService {
 			// 결제 성공 후 카트 비우기
 			userReserveDAO.deleteCart(userId);
 		}
-
 		// 예약 등록하고 인원이 가득찼으면 reserved를 1로 변경
-		if (reserveDTO.getPeople() + getTimeTotPeople(reserveDTO.getStoreId(),
-				reserveDTO.getReserveTime()) == getMaxPeople(reserveDTO.getStoreId())) {
+		if (getTimeTotPeople(reserveDTO.getStoreId(),reserveDTO.getReserveTime()) == getMaxPeople(reserveDTO.getStoreId())) {
 			updateReserved(reserveDTO.getStoreId(), reserveDTO.getReserveTime());
 		}
 	}
-
 	// 예약 인원 확인
 	private void validateReservation(int userId, ReserveDTO reserveDTO) throws Exception {
 		List<CartDTO> cartList = getCartCheck(userId);
@@ -123,6 +121,10 @@ public class UserReserveServiceImpl implements UserReserveService {
 			}
 		}
 		if(userReserveDAO.getSlotCheck(reserveDTO.getStoreId(), reserveDTO.getReserveTime()) == 1) {
+			throw new IllegalArgumentException("예약이 닫혀있습니다. 식당에 문의해주세요.");
+		}
+		Integer slotCheckResult = userReserveDAO.getSlotCheck(reserveDTO.getStoreId(), reserveDTO.getReserveTime());
+		if(slotCheckResult == 1) {
 			throw new IllegalArgumentException("예약이 닫혀있습니다. 식당에 문의해주세요.");
 		}
 	}

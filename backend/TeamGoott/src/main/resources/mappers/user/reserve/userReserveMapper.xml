@@ -18,7 +18,7 @@
 	</select>
 
 	<select id="getTimeTotPeople" resultType="int">
-		select sum(people) from
+		select COALESCE(sum(people),0) from
 		reserve where storeId = #{storeId} AND reserveTime = #{reserveTime}
 	</select>
 

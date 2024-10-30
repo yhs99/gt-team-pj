@@ -2,6 +2,8 @@ package com.team.goott.user.domain;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +22,7 @@ public class ReserveDTO {
 	private int storeId;
 	private int userId;
 	private int couponId;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime reserveTime;
 	private String name;
 	private int people;

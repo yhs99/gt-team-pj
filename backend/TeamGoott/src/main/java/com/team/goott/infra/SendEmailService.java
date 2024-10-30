@@ -15,6 +15,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 
+import org.springframework.core.io.ClassPathResource;
+
 import com.team.goott.owner.domain.StoreVO;
 import com.team.goott.user.domain.ReserveDTO;
 import com.team.goott.user.domain.UserDTO;
@@ -95,7 +97,8 @@ public class SendEmailService {
 
 	private void getAccount() throws FileNotFoundException, IOException {
 		Properties account = new Properties();
-		account.load(new FileReader("D:\\lecture\\gt-team-pj\\backend\\TeamGoott\\src\\main\\resources\\connection.properties"));
+		ClassPathResource resource = new ClassPathResource("connection.properties");
+		account.load(new FileReader(resource.getFile()));
 		this.userName = (String) account.get("username");
 		this.password = (String) account.get("password");
 	}

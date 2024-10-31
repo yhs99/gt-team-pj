@@ -1,4 +1,4 @@
-package com.team.goott.user.domain;
+package com.team.goott.admin.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,10 +13,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class BookmarkDTO {
-	private int bookMarkId;
-	private int userId;
-	private int storeId;
-	
-
+public class ReviewImagesDTO {
+	private int imageId;
+	private int reviewId;
+	private String url;
+	private String fileName;
+	private String fileType;
 }

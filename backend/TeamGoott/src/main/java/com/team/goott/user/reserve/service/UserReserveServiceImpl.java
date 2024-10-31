@@ -1,5 +1,6 @@
 package com.team.goott.user.reserve.service;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -87,11 +88,11 @@ public class UserReserveServiceImpl implements UserReserveService {
 			updateReserved(reserveDTO.getStoreId(), reserveDTO.getReserveTime());
 		}
 	}
+
 	// 예약 인원 확인
 	private void validateReservation(int userId, ReserveDTO reserveDTO) throws Exception {
 		List<CartDTO> cartList = getCartCheck(userId);
-		if (reserveDTO.getPeople() + getTimeTotPeople(reserveDTO.getStoreId(),
-				reserveDTO.getReserveTime()) > getMaxPeople(reserveDTO.getStoreId())) {
+		if (reserveDTO.getPeople() + getTimeTotPeople(reserveDTO.getStoreId(), reserveDTO.getReserveTime()) > getMaxPeople(reserveDTO.getStoreId())) {
 			throw new IllegalArgumentException("예약 인원이 초과합니다.");
 			// 예약할 때 기본인원을 1명으로 해서 0명이 나오지 않게
 		}
@@ -120,11 +121,7 @@ public class UserReserveServiceImpl implements UserReserveService {
 				throw new IllegalArgumentException("담긴 메뉴에 오류가 있습니다. 삭제하고 다시 담아주세요.");
 			}
 		}
-		if(userReserveDAO.getSlotCheck(reserveDTO.getStoreId(), reserveDTO.getReserveTime()) == 1) {
-			throw new IllegalArgumentException("예약이 닫혀있습니다. 식당에 문의해주세요.");
-		}
-		Integer slotCheckResult = userReserveDAO.getSlotCheck(reserveDTO.getStoreId(), reserveDTO.getReserveTime());
-		if(slotCheckResult == 1) {
+		if (userReserveDAO.getSlotCheck(reserveDTO.getStoreId(), reserveDTO.getReserveTime()) == 1) {
 			throw new IllegalArgumentException("예약이 닫혀있습니다. 식당에 문의해주세요.");
 		}
 	}
@@ -152,6 +149,17 @@ public class UserReserveServiceImpl implements UserReserveService {
 	// 예약 제거
 	@Override
 	public int updateReserve(int reserveId, int userId) throws Exception {
+		Timestamp timestamp = userReserveDAO.getReserveTime(reserveId, userId);
+		LocalDateTime reserveTime = (timestamp != null) ? timestamp.toLocalDateTime() : null;
+		
+		int storeId = userReserveDAO.getStoreId(reserveId, userId);
+		// 예약이 제거되고 자리가 남으면 reserved를 다시 0으로 변경
+		if(getTimeTotPeople(storeId, reserveTime) == getMaxPeople(storeId)) {
+			Integer reservedStatus = userReserveDAO.getUpdateReserveSlotReserved(reserveTime, storeId);
+			if (reservedStatus != null && reservedStatus == 1) {
+				log.info("Slot에 reserved가 0으로 성공적으로 변경되었습니다.");
+			}
+		}
 		return userReserveDAO.updateReserve(reserveId, userId);
 	}
 }

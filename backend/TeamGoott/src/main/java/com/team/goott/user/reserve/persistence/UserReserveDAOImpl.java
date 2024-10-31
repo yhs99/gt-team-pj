@@ -1,5 +1,6 @@
 package com.team.goott.user.reserve.persistence;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -125,6 +126,30 @@ public class UserReserveDAOImpl implements UserReserveDAO {
 	@Override
 	public LocalDateTime getCouponEndTime(int couponId) throws Exception {
 		return ses.selectOne(ns+"getCouponEndTime", couponId);
+	}
+
+	@Override
+	public Timestamp getReserveTime(int reserveId, int userId) throws Exception {
+		Map<String, Object> params = new HashMap<>();
+		params.put("reserveId", reserveId);
+		params.put("userId", userId);
+		return ses.selectOne(ns+"getReserveTime",params);
+	}
+
+	@Override
+	public int getStoreId(int reserveId, int userId) throws Exception {
+		Map<String, Object> params = new HashMap<>();
+		params.put("reserveId", reserveId);
+		params.put("userId", userId);
+		return ses.selectOne(ns+"getStoreId",params);
+	}
+
+	@Override
+	public int getUpdateReserveSlotReserved(LocalDateTime reserveTime, int storeId) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("reserveTime", reserveTime);
+		params.put("storeId", storeId);
+		return ses.update(ns+"getUpdateReserveSlotReserved",params);
 	}
 
 

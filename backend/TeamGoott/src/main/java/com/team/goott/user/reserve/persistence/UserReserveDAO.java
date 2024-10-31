@@ -1,5 +1,6 @@
 package com.team.goott.user.reserve.persistence;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,6 +42,12 @@ public interface UserReserveDAO {
 	LocalDateTime getCouponStartTime(int couponId) throws Exception;
 
 	LocalDateTime getCouponEndTime(int couponId) throws Exception;
+
+	Timestamp getReserveTime(int reserveId, int userId) throws Exception;
+
+	int getStoreId(int reserveId, int userId) throws Exception;
+
+	int getUpdateReserveSlotReserved(LocalDateTime reserveTime, int storeId);
 
 
 }

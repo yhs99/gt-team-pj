@@ -11,4 +11,13 @@
     	<if test="profileImageName != null">, #{profileImageName}</if>
     	)
 	</insert>
+	<select id="myUserInfo" parameterType="int"
+		resultType="com.team.goott.user.domain.UserDTO">
+		SELECT * from user WHERE userId = #{userId}
+	</select>
+	<update id="userUpdateProcess" >
+		UPDATE user SET name = #{name},  mobile = #{mobile},
+		profileImageUrl=#{profileImageUrl}, profileImageName =#{profileImageName}
+    	WHERE userId = #{userId}
+	</update>
 </mapper>

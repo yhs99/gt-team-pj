@@ -49,9 +49,9 @@ public class UserReviewServiceImpl implements UserReviewService {
 	
 	@Override
 	public List<ReviewDTO> getAllReviews(int storeId, int page, int size) {
-		int offset = page * size;
-		ReviewPageDTO paging = ReviewPageDTO.builder().storeId(storeId).offset(offset).size(size).build();
-	
+		ReviewPageDTO paging = ReviewPageDTO.builder().storeId(storeId).page(page).size(size).build();
+		paging.setStartRow();
+		log.info(paging.toString());
 		List<ReviewDTO> lst = revDAO.getAllReviews(paging);
 		for(ReviewDTO list : lst) {
 			log.info("{}",list.getCreateAtLocalDateTime().toString());
@@ -124,14 +124,13 @@ public class UserReviewServiceImpl implements UserReviewService {
 	public boolean deleteReviewNFile(int reviewId, List<ReviewImagesDTO> list) {
 		// 리뷰 삭제, 파일 삭제
 		boolean result = false;
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!"+ list.toString());
 		System.out.println(list == null);
 		System.out.println(list.isEmpty());
 		System.out.println(list != null);
 		System.out.println(!list.isEmpty());
 		
 		try {
-			if(revDAO.delReview(reviewId)==1) {
+			if(revDAO.delReview(reviewId) == 1) {
 			 log.info("리뷰 삭제 완료");
 				
 			 if (list != null && !list.isEmpty()) {
@@ -190,8 +189,7 @@ public class UserReviewServiceImpl implements UserReviewService {
 
 	@Override
 	public List<ReviewDTO> getMyReview(int userId,int page, int size) {
-		int offset = page * size;
-		ReviewPageDTO paging = ReviewPageDTO.builder().userId(userId).offset(offset).size(size).build();
+		ReviewPageDTO paging = ReviewPageDTO.builder().userId(userId).page(page).size(size).build();
 		List<ReviewDTO> lst = revDAO.getMyReviews(paging);
 		for(ReviewDTO list : lst) {
 			log.info("{}",list.getCreateAtLocalDateTime().toString());
@@ -211,5 +209,19 @@ public class UserReviewServiceImpl implements UserReviewService {
 		List<ReviewDTO> reviews =revDAO.getUserReviews(userId);
 		return reviews;
 	}
+
+	@Override
+	public ReserveDTO getReserveInfoByReserveId(int reservationId) {
+		// 예약 번호로 예약 정보 가져오기
+		ReserveDTO reservation = revDAO.getReserveInfo(reservationId);
+		return reservation;
+	}
+
+	@Override
+	public List<ReviewImagesDTO> selectReviewImagesByReviewId(int reviewId) {
+		// reviewId에 따른 reviewImages
+		return revDAO.filesByNo(reviewId);
+	}
+
 
 }

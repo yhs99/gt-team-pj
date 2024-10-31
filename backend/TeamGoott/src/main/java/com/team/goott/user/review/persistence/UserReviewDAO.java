@@ -32,4 +32,9 @@ public interface UserReviewDAO {
 	List<ReserveDTO> getReserveByUserId(int UserId);
 
 	List<ReviewDTO> getUserReviews(int userId);
+
+	ReserveDTO getReserveInfo(int reserveId);
+
+
+
 }

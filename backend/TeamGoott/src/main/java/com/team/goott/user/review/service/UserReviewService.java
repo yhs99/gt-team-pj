@@ -29,5 +29,10 @@ public interface UserReviewService {
 
 	List<ReviewDTO> getUserReview(int userId);
 
+	ReserveDTO getReserveInfoByReserveId(int reservationId);
+	
+	List<ReviewImagesDTO> selectReviewImagesByReviewId(int reviewId);
+
+
 
 }

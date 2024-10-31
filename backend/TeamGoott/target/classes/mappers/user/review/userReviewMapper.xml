@@ -4,7 +4,7 @@
 
 <select id="getAllrevws" resultType="com.team.goott.user.domain.ReviewDTO">
 select * from review where storeId = #{storeId} and isDeleteReq = 0 
-order by createAt DESC LIMIT #{size} OFFSET #{offset}
+order by createAt DESC LIMIT #{startRow},#{size}
 </select> 
 
 <select id="getBoardByNo" resultType="com.team.goott.user.domain.ReviewDTO">
@@ -13,7 +13,7 @@ select * from review where reviewId= #{reviewId}
 
 <select id="getMyReview" resultType="com.team.goott.user.domain.ReviewDTO">
 select * from review where userId= #{userId} and isDeleteReq = 0 
-order by createAt DESC LIMIT #{size} OFFSET #{offset}
+order by createAt DESC LIMIT #{startRow},#{size}
 </select>
 
 <insert id="insertReview" useGeneratedKeys="true" keyProperty="reviewId">
@@ -54,4 +54,9 @@ select * from reserve where userId = #{userId}
 <select id="getUserReviews" resultType="com.team.goott.user.domain.ReviewDTO">
 select * from review where userId= #{userId} and isDeleteReq = 0 
 </select>
+
+<select id="getReserveByreserveId" resultType="com.team.goott.user.domain.ReserveDTO">
+select * from reserve where reserveId = #{reserveId}
+</select>
+
 </mapper>

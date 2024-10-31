@@ -91,8 +91,17 @@ public class UserReviewDAOImpl implements UserReviewDAO {
 
 	@Override
 	public List<ReviewDTO> getUserReviews(int userId) {
-		// TODO Auto-generated method stub
+		// userId로 리뷰들 가져오기
 		return ses.selectList(ns+"getUserReviews", userId);
 	}
+
+	@Override
+	public ReserveDTO getReserveInfo(int reserveId) {
+		// reserveId로 예약정보 가져오기
+		return ses.selectOne(ns+"getReserveByreserveId", reserveId);
+	}
+
+	
+
 
 }

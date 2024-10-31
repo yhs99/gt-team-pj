@@ -18,5 +18,7 @@ public interface UserCartDAO {
 
 	List<ExtendedCartDTO> getUserCartById(int userId) throws Exception;
 
+	List<Integer> getCartStoreList(int userId) throws Exception;
+
 
 }

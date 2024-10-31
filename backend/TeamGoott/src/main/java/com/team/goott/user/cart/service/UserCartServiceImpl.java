@@ -30,6 +30,12 @@ public class UserCartServiceImpl implements UserCartService {
 	public void addCart(CartDTO cartDTO) throws Exception {
 	    List<MenuDTO> menuList = cartDAO.getMenuCart(cartDTO.getMenuId());
 	    
+	    List<Integer> cartStoreList = cartDAO.getCartStoreList(cartDTO.getUserId());
+	    
+	    // 카트에 다른 storeId가 이미 존재할 경우 예외 발생
+	    if (!cartStoreList.isEmpty() && !cartStoreList.contains(cartDTO.getStoreId())) {
+	        throw new Exception("카트에는 한 매장의 상품만 담을 수 있습니다.");
+	    }
 	    
 	    if (menuList.isEmpty()) {
 	        throw new Exception("해당 메뉴가 존재하지 않습니다.");
@@ -56,12 +62,4 @@ public class UserCartServiceImpl implements UserCartService {
 	public List<ExtendedCartDTO> getUserCartById(int userId) throws Exception {
 		return cartDAO.getUserCartById(userId);
 	}
-
-	
-
-	  
-	
-   
-    
-    
 }

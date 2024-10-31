@@ -441,7 +441,6 @@ public class UserReviewController {
 		    int reserveStatus = reserveDto.getStatusCodeId();
 
 		    // 예약 체크
-		        
 	        if (checkReview) {
 	            // 리뷰 작성 여부 체크
 	            if (reviewedReserveIds.contains(reservationId)) {

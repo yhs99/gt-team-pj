@@ -81,7 +81,7 @@
             <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>위젯</a>
             <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>폼</a>
             <a href="table.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>테이블</a>
-            <a href="/view/owner/review.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>리뷰</a>
+            <a href="/view/owner/review" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>리뷰</a>
             </div>
           </div>
         </nav>
@@ -137,10 +137,57 @@
           </div>
         </nav>
         <!-- Navbar End -->
-
-       
          <!-- Sale & Revenue Start -->
-         <div class="container-fluid pt-4 px-4 mb-4">
+      <div class="container-fluid pt-4 px-4 mb-4">
+          <!-- 최근 예약 -->
+        <div id="reviewLists" class="container-fluid pt-4 px-4 mb-4">
+          <div class="bg-light text-center rounded p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+              <h6 class="mb-0">승인 대기중인 예약</h6>
+              <a href="/view/owner/reserve">전체 보기</a>
+            </div>
+            <div class="table-responsive">
+              <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                  <tr class="text-dark">
+                    <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
+                    <th scope="col">예약 ID</th>
+                    <th scope="col">가게 ID</th>
+                    <th scope="col">고객명</th>
+                    <th scope="col">인원수</th>
+                    <th scope="col">메모</th>
+                    <th scope="col">예약 날짜</th>
+                    <th scope="col">예약 상태</th>
+                    <th scope="col">예약 상태 변경</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- 최대 5개만 보여줌 -->
+                  <tr v-for="(reserve, index) in filteredReserves" :key="reserve.reserveId">
+                    <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
+                    <td>{{ reserve.reserveId }}</td>
+                    <td>{{ reserve.storeId }}</td>
+                    <td>{{ reserve.name }}</td>
+                    <td>{{ reserve.people }}</td>
+                    <td>{{ reserve.memo }}</td>
+                    <td>{{ reserve.reserveTime }}</td> 
+                    <td>
+                      <span v-if="reserve.statusCodeId === 1">대기</span>
+                      <span v-else-if="reserve.statusCodeId === 2">승인</span>
+                      <span v-else-if="reserve.statusCodeId === 3">취소</span>
+                      <span v-else-if="reserve.statusCodeId === 4">완료</span>
+                    </td> 
+                    <td class="status-button">
+                      <button class="btn btn-success btn-block" @click="updateReserveStatus(reserve.reserveId, 2)">예약 승인 </button>
+                      <button class="btn btn-danger btn-block" @click="updateReserveStatus(reserve.reserveId, 3)">예약 취소 </button>
+                    </td> 
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
           <div class="row g-4">
             <div class="col-sm-6 col-xl-3">
               <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
@@ -214,7 +261,7 @@
           <div class="bg-light text-center rounded p-4">
             <div class="d-flex align-items-center justify-content-between mb-4">
               <h6 class="mb-0">최근 리뷰</h6>
-              <a href="">전체 보기</a>
+              <a href="/view/owner/review">전체 보기</a>
             </div>
             <div class="table-responsive">
               <table class="table text-start align-middle table-bordered table-hover mb-0">
@@ -232,7 +279,7 @@
                 </thead>
                 <tbody>
                   <!-- 최대 5개만 보여줌 -->
-                  <tr v-for="(review, index) in reviews.slice(0, 5)" :key="review.reviewId">
+                  <tr v-for="(review, index) in filteredReviews" :key="review.reviewId">
                   <!-- <tr v-for="(review, index) in reviews" :key="review.reviewId"> 전체 리뷰 for문 -->
                     <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
                     <td>{{ review.reviewId }}</td>
@@ -249,59 +296,7 @@
           </div>
         </div>
         
-        <!-- 최근 예약 -->
-        <div id="reviewLists" class="container-fluid pt-4 px-4">
-          <div class="bg-light text-center rounded p-4">
-            <div class="d-flex align-items-center justify-content-between mb-4">
-              <h6 class="mb-0">최근 예약</h6>
-              <a href="">전체 보기</a>
-            </div>
-            <div class="table-responsive">
-              <table class="table text-start align-middle table-bordered table-hover mb-0">
-                <thead>
-                  <tr class="text-dark">
-                    <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
-                    <th scope="col">예약 ID</th>
-                    <th scope="col">가게 ID</th>
-                    <th scope="col">고객명</th>
-                    <th scope="col">인원수</th>
-                    <th scope="col">메모</th>
-                    <th scope="col">예약 날짜</th>
-                    <th scope="col">예약 상태</th>
-                    <th scope="col">예약 상태 변경</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- 최대 5개만 보여줌 -->
-                  <tr v-for="(reserve, index) in reserves.slice(0, 5)" :key="reserve.reserveId">
-                    <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
-                    <td>{{ reserve.reserveId }}</td>
-                    <td>{{ reserve.storeId }}</td>
-                    <td>{{ reserve.name }}</td>
-                    <td>{{ reserve.people }}</td>
-                    <td>{{ reserve.memo }}</td>
-                    <td>{{ reserve.reserveTime }}</td> 
-                    <td>
-                      <span v-if="reserve.statusCodeId === 1">대기</span>
-                      <span v-else-if="reserve.statusCodeId === 2">승인</span>
-                      <span v-else-if="reserve.statusCodeId === 3">취소</span>
-                      <span v-else-if="reserve.statusCodeId === 4">완료</span>
-                    </td> 
-                    <td>
-                      <select class="form-select" v-model="reserve.selectedStatus">
-                        <option value="1">대기</option>
-                        <option value="2">승인</option>
-                        <option value="3">취소</option>
-                        <option value="4">완료</option>
-                      </select>
-                      <button class="btn btn-danger btn-block" @click="updateReserveStatus(reserve.reserveId, reserve.selectedStatus)">예약 상태 업데이트</button></td> 
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
+        
         <!-- Footer Start -->
         <div class="container-fluid pt-4 px-4">
           <div class="bg-light rounded-top p-4">

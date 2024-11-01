@@ -20,25 +20,11 @@
 
     <!-- Template Stylesheet -->
     <link href="/css/owner/style.css" rel="stylesheet" />
+    <link href="/css/owner/review.css" rel="stylesheet" />
 
     <!-- JavaScript Libraries -->
-
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
-    <script src="/js/user/lib/wow/wow.min.js"></script>
-    <script src="/js/owner/lib/chart/chart.min.js"></script>
-    <script src="/js/owner/lib/easing/easing.min.js"></script>
-    <script src="/js/user/lib/counterup/counterup.min.js"></script>
-    <script src="/js/user/lib/lightbox/js/lightbox.min.js"></script>
-    <script src="/node_modules/vue/dist/vue.min.js"></script>
-    <script src="/node_modules/axios/dist/axios.min.js"></script>
-    <script src="/js/owner/lib/waypoints/waypoints.min.js"></script>
-    <script src="/js/owner/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
-    <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-    <!-- Template Javascript -->
-    <script type="module" src="/js/owner/main.js"></script>
     <script type="module" src="/js/owner/review.js"></script>
   </head>
 
@@ -58,7 +44,7 @@
       <!-- Sidebar Start -->
       <div class="sidebar pe-4 pb-3">
         <nav class="navbar bg-light navbar-light">
-          <a href="index.html" class="navbar-brand mx-4 mb-3">
+          <a href="index" class="navbar-brand mx-4 mb-3">
             <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>smart reserve</h3>
           </a>
           <div class="d-flex align-items-center ms-4 mb-4">
@@ -198,10 +184,7 @@
         <!-- Navbar End -->
 
         <!-- Sale & Revenue Start -->
-         <div id="app">
-            {{name}}
-         </div>
-        <div class="container-fluid pt-4 px-4">
+        <div class="container-fluid pt-4 px-4 mb-4">
           <div class="row g-4">
             <div class="col-sm-6 col-xl-3">
               <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
@@ -234,7 +217,7 @@
               <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                 <i class="fa fa-solid fa-star fa-3x text-primary"></i>
                 <div class="ms-3">
-                  <p class="mb-2">오늘 리뷰 총 평점</p>
+                  <p class="mb-2">오늘 리뷰 평점</p>
                   <h6 class="mb-0">{{totalAvgTodayScore}}</h6>
                 </div>
               </div>
@@ -242,10 +225,31 @@
           </div>
         </div>
         <!-- Sale & Revenue End -->
+        <div class="container-fluid pt-4 px-4">
+          <div class="row g-4">
+            <div class="col-sm-12 col-xl-6 mb-4">
+              <div class="bg-light rounded h-100 p-4">
+                  <h6 class="mb-4">최근 리뷰 평점 추이 (6개월 기준)</h6>
+                  <canvas id="bar-chart"></canvas>
+              </div>
+            </div>
+            <div class="col-sm-12 col-xl-6 mb-4">  
+              <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">월 별 리뷰 수</h6>
+                <canvas id="line-chart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div class="col-12">
           <div class="bg-light rounded h-100 p-4">
-              <h6 class="mb-4">리뷰 목록</h6>
+              <h6 class="mb-4 reviewList">리뷰 목록
+                <div class="orderMethods">
+                  <a @click="getAllReviews('newest')">최신순</a>
+                  <a @click="getAllReviews('score')">별점순</a>
+                </div>
+              </h6>
               <div class="table-responsive">
                   <table class="table">
                       <thead>
@@ -255,22 +259,52 @@
                               <th scope="col">평점</th>
                               <th scope="col">리뷰내용</th>
                               <th scope="col">게시일</th>
-                              <th scope="col">Status</th>
+                              <th scope="col">삭제요청</th>
                           </tr>
                       </thead>
                       <tbody>
-                          <tr>
-                              <th scope="row">1</th>
-                              <td>John</td>
-                              <td>Doe</td>
-                              <td>jhon@email.com</td>
-                              <td>USA</td>
-                              <td>Member</td>
+                          <tr v-for="(review,index) in getAllReviewList" :key="review.reviewId">
+                              <th scope="row">{{index + 1}}</th>
+                              <td>{{review.userName}}</td>
+                              <td>{{review.score}}</td>
+                              <td>{{review.content}}</td>
+                              <td>{{new Date(review.createAt).toLocaleDateString()}}</td>
+                              <td> 
+                                <button v-if="!review.deleteReq" type="button" class="btn btn-outline-danger m-2" @click="showDeleteRequestModal(review.reviewId)">DELETE</button>
+                                <button v-else type="button" class="btn btn-outline-danger m-2" disabled>삭제 요청 완료</button>
+                              </td>
+                              <!-- <td> <button type="button" class="btn btn-outline-danger m-2" data-bs-toggle="modal" data-bs-target="#myModal">DELETE</button></td> -->
                           </tr>
                       </tbody>
                   </table>
               </div>
           </div>
+      </div>
+
+      <!-- Modal -->
+      <div v-if="showModal"class="modal fade show" style="display: block;" >
+        <div class="modal-dialog">
+            <div class="modal-content">
+    
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">리뷰 삭제</h4>
+                    <button type="button" class="btn-close" @click="showModal = false"></button>
+                </div>
+    
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    해당 리뷰에 대한 삭제 요청을 보내시겠습니까?
+                </div>
+    
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" @click="deleteReview(selectedReviewId)">삭제</button>
+                    <button type="button" class="btn btn-secondary" @click="showModal = false">취소</button>
+                </div>
+    
+            </div>
+        </div>
       </div>
 
 
@@ -293,5 +327,24 @@
       <!-- Back to Top -->
       <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
+
+
+    
+
+    <script src="/js/user/lib/wow/wow.min.js"></script>
+    <script src="/js/owner/lib/chart/chart.min.js"></script>
+    <script src="/js/owner/lib/easing/easing.min.js"></script>
+    <script src="/js/user/lib/counterup/counterup.min.js"></script>
+    <script src="/js/user/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/node_modules/vue/dist/vue.min.js"></script>
+    <script src="/node_modules/axios/dist/axios.min.js"></script>
+    <script src="/js/owner/lib/waypoints/waypoints.min.js"></script>
+    <script src="/js/owner/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <!-- Template Javascript -->
+    <script type="module" src="/js/owner/main.js"></script>
+   
   </body>
 </html>

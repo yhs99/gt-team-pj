@@ -7,12 +7,24 @@ new Vue({
     reviews:[],
     reserves:[]
   },
+
+  computed : {
+
+    //예약 완료 상태는 보여주지 않음
+    filteredReserves(){
+      return this.reserves.filter(reserve => reserve.statusCodeId !== 4).slice(0,5);
+    },
+    filteredReviews(){
+      return this.reviews.filter(review => !review.deleteReq).slice(0,5);
+    }
+  },
   created: function() {
     this.fetchUserData(); // Vue 인스턴스 생성 시 데이터 요청
     this.fetchReviews();
     this.getFullCalendar();
     this.fetchReserves();
   },
+  
   methods: {
     getFullCalendar(){
       document.addEventListener('DOMContentLoaded', function() {
@@ -34,8 +46,8 @@ new Vue({
 
     updateReserveStatus : function(reserveId, status){
       var statusCode = Number.parseInt(status);
-      const params = {statusCode : statusCode}
-      axios.post('/api/owner/reserve/'+ reserveId,{params})
+      const params = {statusCode : statusCode};
+      axios.post('/api/owner/reserve/'+ reserveId, null, {params})
         .then((response =>{
           console.log(response);
         }))
@@ -94,5 +106,6 @@ new Vue({
       const date = new Date(timestamp);
       return date.toLocaleString(); // 날짜와 시간을 로컬 형식으로 반환
     }
-  }
+  },
+
 });

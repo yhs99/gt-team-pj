@@ -90,6 +90,16 @@
                 <div class="row">
                   <div class="col text-start">
                     <span>매장 갯수 : {{ totalStoreCount }}</span>
+                    <span>
+                      <div class="form-check">
+                        <label class="form-check-label" for="flexCheckChecked">
+                          <input class="form-check-input" type="checkbox" v-model="showBlock" id="flexCheckChecked">
+                          차단한 식당만 보기
+                        </label>
+                      </div>
+                    </span>
+                  </div>
+                  <div class="col text-start">
                   </div>
                   <div class="col text-end">
                     <span>페이지당 갯수</span>
@@ -106,11 +116,9 @@
                   <thead>
                     <tr>
                       <th>매장ID</th>
-                      <th>이름</th>
+                      <th>매장이름</th>
                       <th>주소</th>
                       <th>전화번호</th>
-                      <th>종류</th>
-                      <th>편의시설</th>
                       <th>수정</th>
                       <th>차단</th>
                     </tr>
@@ -121,7 +129,7 @@
                       <td class="w-10">{{ store.storeName }}</td>
                       <td class="w-10">{{ store.address }}</td>
                       <td class="w-10">{{ store.tel }}</td>
-                      <td class="w-20">
+                      <!-- <td class="w-20">
                         <span v-for="category in store.storeCategories" :key="category.categoryCodeId">
                         {{ category.categoryName }}
                         </span>
@@ -130,12 +138,15 @@
                         <span v-for="facility in store.facilities" :key="facility.facilityCodeId" class="badge bg-info text-dark">
                         {{ facility.facilityName }}
                         </span>
-                      </td>
+                      </td> -->
                       <td class="w-5">
                         <button @click="" class="btn btn-primary">자세히보기</button>
                       </td>
-                      <td class="w-5">
+                      <td class="w-5" v-if="showBlock == false">
                         <button @click="" class="btn btn-danger">차단하기</button>
+                      </td>
+                      <td class="w-5" v-if="showBlock == true">
+                        <button @click="" class="btn btn-success">차단해제</button>
                       </td>
                     </tr>
                   </tbody>

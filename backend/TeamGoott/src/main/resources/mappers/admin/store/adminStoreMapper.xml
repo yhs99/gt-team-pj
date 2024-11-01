@@ -193,16 +193,25 @@
 </select>
 
 <select id="getMonthlySales" resultType="com.team.goott.admin.domain.SummaryVO">
-	SELECT 
-		DATE_FORMAT(r.reserveTime, '%Y-%m') AS label,
-		SUM(p.payAmount) AS value
-	FROM payHistory p
-	JOIN reserve r
-	ON p.reserveId = r.reserveId
-	WHERE r.statusCodeId IN (2,4,5)
-	<if test="storeId != null and storeId != '' and storeId != 0">
+SELECT DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL seq MONTH), '%Y-%m') AS label,
+    COALESCE(SUM(p.payAmount), 0) AS value
+	FROM 
+    (SELECT 0 AS seq UNION ALL
+    SELECT 1 UNION ALL
+    SELECT 2 UNION ALL
+    SELECT 3 UNION ALL
+    SELECT 4 UNION ALL
+    SELECT 5) AS months
+	LEFT JOIN reserve r
+    ON DATE_FORMAT(r.reserveTime, '%Y-%m') = DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL months.seq MONTH), '%Y-%m')
+   	<if test="storeId != null and storeId != '' and storeId != 0">
 	AND r.storeId = #{storeId}
 	</if>
+    LEFT JOIN payHistory p
+	ON p.reserveId = r.reserveId
+	WHERE r.statusCodeId IN (2,4,5) OR r.statusCodeId is NULL
+	GROUP BY label
+	ORDER BY label
 </select>
 
 </mapper>

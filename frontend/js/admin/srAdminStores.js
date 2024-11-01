@@ -11,7 +11,8 @@ new Vue({
     searchParam: '',
     categories: [],
     facilities: [],
-    sidoCodes: []
+    sidoCodes: [],
+    showBlock: false
   },
   created: function() {
     this.checkAdminSession();
@@ -21,6 +22,7 @@ new Vue({
   watch: {    
     categoryId: 'fetchStores',
     sidoCodeId: 'fetchStores',
+    showBlock: 'fetchStores',
   },
   methods: {
     checkAdminSession: function() {
@@ -37,7 +39,8 @@ new Vue({
         params: {
           categoryId: this.categoryId.join(','),
           sidoCodeId: this.sidoCodeId.join(','),
-          searchParam: this.searchParam
+          searchParam: this.searchParam,
+          showBlock: this.showBlock?1:0
         }
       })
       .then(response => {

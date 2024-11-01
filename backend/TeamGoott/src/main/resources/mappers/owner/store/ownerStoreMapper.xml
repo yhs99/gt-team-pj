@@ -93,15 +93,15 @@
 
 
 	<update id="updateSchedule"
-		parameterType="com.team.goott.owner.domain.ScheduleVO">
+		parameterType="map">
 		UPDATE schedule
-		<set>
+		<trim prefix="set" suffixOverrides=",">
 			<if test="dayCodeId != null">dayCodeId = #{dayCodeId},</if>
 			<if test="open != null">open = #{open},</if>
 			<if test="close != null">close = #{close},</if>
 			<if test="closeDay != null">closeDay = #{closeDay}</if>
-		</set>
-		WHERE scheduleId = #{scheduleId} AND storeId = #{storeId}
+		</trim>
+		WHERE scheduleId = #{scheduleId}
 	</update>
 
 	<delete id="deleteStoreImagesByFileNames" parameterType="map">
@@ -130,15 +130,79 @@
 		WHERE facilityCode = #{facilityCode}
 		AND storeId = #{storeId}
 	</delete>
-
+	
+<!-- 	<select id="ownerLoginInfo" parameterType="map" -->
+<!-- 		resultType="com.team.goott.owner.domain.StoreDTO"> -->
+<!-- 		SELECT s.* FROM store s	JOIN owner o ON s.ownerId = o.ownerId -->
+<!-- 		WHERE o.id = #{id} AND o.password = SHA2(#{pw}, 256) -->
+<!-- 	</select> -->
+	
 	<select id="ownerLoginInfo" parameterType="map"
 		resultType="com.team.goott.owner.domain.StoreDTO">
-		SELECT s.* FROM store s	JOIN owner o ON s.ownerId = o.ownerId
-		WHERE o.id = #{id} AND o.password = SHA2(#{pw}, 256)
+		SELECT * from owner
+		WHERE id = #{id} AND password = SHA2(#{pw}, 256)
 	</select>
 	
 	 <insert id="ownerRegister" parameterType="com.team.goott.owner.domain.OwnerDTO">
         INSERT INTO owner (id, password) VALUES (#{id},SHA2(#{password},256))
     </insert>
     
+    <select id="getScheduleByStoreId" parameterType="int" resultType="com.team.goott.owner.domain.ScheduleDTO">
+    SELECT * 
+    FROM schedule
+    WHERE storeId = #{storeId}
+    ORDER BY storeId
+</select>
+
+	<select id="getScheduleByDayCode" parameterType="int" resultType="com.team.goott.owner.domain.ScheduleDTO">
+	    SELECT * 
+	    FROM schedule
+	    WHERE dayCodeId = #{dayCode}
+	    AND storeId = #{storeId}
+	    ORDER BY storeId
+	</select>
+
+	<insert id="batchInsertSlots" parameterType="java.util.List">
+	    INSERT INTO reserveSlots (storeId, slotDatetime)
+	    VALUES
+	    <foreach collection="list" item="slot" separator=",">
+	        (#{slot.storeId}, #{slot.slotDatetime})
+	    </foreach>
+	</insert>
+
+	<select id="getRotationCodeIdByStoreId" parameterType="int" resultType="int">
+	    SELECT r.rotation
+	    FROM store s
+	    JOIN rotationCode r ON s.rotationId = r.rotationCodeId
+	    WHERE s.storeId = #{storeId}
+	</select>
+
+	<select id="getExistingSlots" parameterType="map" resultType="com.team.goott.owner.domain.ReserveSlotsDTO">
+	    SELECT * 
+	    FROM reserveSlots
+	    WHERE DATE(slotDatetime) = #{date}
+	    AND storeId = #{storeId}
+	</select>
+
+	<insert id="insertReserveSlot" parameterType="com.team.goott.owner.domain.ReserveSlotsDTO">
+	    INSERT IGNORE INTO reserveSlots (storeId, slotDatetime)
+	    VALUES (#{storeId}, #{slotDatetime})
+	</insert>
+	
+	<delete id="deleteSlotsByDayCodeId" parameterType ="map">
+	DELETE FROM reserveSlots
+	WHERE storeId = #{storeId}
+	  AND DAYOFWEEK(slotDatetime) - 1 = #{dayCodeId} 
+	</delete>
+	
+    <insert id="updateReserveSlot" parameterType="com.team.goott.owner.domain.ReserveSlotsDTO">
+        INSERT INTO reserveSlots (storeId, slotDatetime)
+        VALUES (#{storeId}, #{slotDatetime})
+    </insert>
+    
+    <select id="getStoreByOwnerId" resultType="com.team.goott.owner.domain.StoreDTO">
+    	select * from store where ownerId = #{ownerId}
+    </select>
+
+
 </mapper>

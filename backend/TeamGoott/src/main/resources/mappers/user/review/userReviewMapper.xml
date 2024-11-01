@@ -1,4 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.user.review.userReviewMapper">
+
+<select id="getAllrevws" resultType="com.team.goott.user.domain.ReviewDTO">
+select * from review where storeId = #{storeId} and isDeleteReq = 0 
+order by createAt DESC LIMIT #{startRow},#{size}
+</select> 
+
+<select id="getBoardByNo" resultType="com.team.goott.user.domain.ReviewDTO">
+select * from review where reviewId= #{reviewId}
+</select>
+
+<select id="getMyReview" resultType="com.team.goott.user.domain.ReviewDTO">
+select * from review where userId= #{userId} and isDeleteReq = 0 
+order by createAt DESC LIMIT #{startRow},#{size}
+</select>
+
+<insert id="insertReview" useGeneratedKeys="true" keyProperty="reviewId">
+insert into review (storeId,userId,reserveId, score,content) values (#{storeId},#{userId},#{reserveId},#{score},#{content})
+	<selectKey keyProperty="reviewId" resultType="int" order="AFTER">
+		select last_insert_id()
+	</selectKey>
+</insert>
+
+<update id="deleteReview">
+update review set isDeleteReq = 1 where reviewId = #{reviewId}
+</update>
+
+<insert id="insertImgs">
+insert into reviewImages(reviewId, url, fileName, fileType) values (#{reviewId},#{url},#{fileName},#{fileType})
+</insert>
+
+<select id="getFileByNo" resultType="com.team.goott.user.domain.ReviewImagesDTO">
+select * from reviewImages where reviewId = #{reviewId}
+</select>
+
+<delete id="deleteFiles">
+delete from reviewImages where reviewId = #{reviewId}
+</delete>
+
+<update id="updateReview">
+update review set score = #{score}, content = #{content} where reviewId = #{reviewId}
+</update>
+
+<delete id="deleteImgsById">
+delete from reviewImages where imageId = #{imageId}
+</delete>
+
+<select id="reserveByUserId" resultType="com.team.goott.user.domain.ReserveDTO">
+select * from reserve where userId = #{userId}
+</select>
+
+<select id="getUserReviews" resultType="com.team.goott.user.domain.ReviewDTO">
+select * from review where userId= #{userId} and isDeleteReq = 0 
+</select>
+
+<select id="getReserveByreserveId" resultType="com.team.goott.user.domain.ReserveDTO">
+select * from reserve where reserveId = #{reserveId}
+</select>
+
 </mapper>

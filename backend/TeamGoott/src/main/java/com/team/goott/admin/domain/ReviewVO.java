@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.team.goott.user.domain.ReviewImagesDTO;
+import com.team.goott.admin.domain.ReviewImagesDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +25,6 @@ public class ReviewVO {
 	private int storeId;
 	private String storeName;
 	private int userId;
-	private String userName;
 	private int score;
 	private String content;
 	private boolean isDeleteReq;

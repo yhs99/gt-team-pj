@@ -2,9 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.admin.review.adminReviewMapper">
 	<select id="getAllReviews" parameterType="map" resultType="com.team.goott.admin.domain.ReviewDTO">
-		SELECT r.*, u.name, u.profileImageUrl
+		SELECT r.*, u.name, u.profileImageUrl, s.storeName
 		FROM review r JOIN user u
 		ON r.userId = u.userId
+		JOIN store s
+		ON r.storeId = s.storeId
     <where>
         <choose>
             <when test="searchBy == 'storeId'">
@@ -54,7 +56,7 @@
     </if>
 	</select>
 	
-	<select id="getAllReviewImages" parameterType="map" resultType="com.team.goott.user.domain.ReviewImagesDTO">
+	<select id="getAllReviewImages" parameterType="map" resultType="com.team.goott.admin.domain.ReviewImagesDTO">
 		SELECT ri.*
 		FROM reviewImages ri
 		JOIN review r
@@ -81,7 +83,7 @@
 		WHERE isDeleteReq = 1;
 	</select>
 	
-	<select id="getAllDeleteReqReviewImages" resultType="com.team.goott.user.domain.ReviewImagesDTO">
+	<select id="getAllDeleteReqReviewImages" resultType="com.team.goott.admin.domain.ReviewImagesDTO">
 		SELECT ri.*
 		FROM reviewImages ri
 		JOIN review r
@@ -96,7 +98,7 @@
 		AND isDeleteReq = 1
 	</select>
 	
-	<select id="getTargetReviewImages" parameterType="int" resultType="com.team.goott.user.domain.ReviewImagesDTO">
+	<select id="getTargetReviewImages" parameterType="int" resultType="com.team.goott.admin.domain.ReviewImagesDTO">
 		SELECT ri.*
 		FROM reviewImages ri
 		WHERE reviewId = #{reviewId}

@@ -33,7 +33,7 @@ new Vue({
       });
     },
     fetchStores: async function() {
-      await axios.get('/api/admin/stores', {
+      await axios.get('/api/searchStores', {
         params: {
           categoryId: this.categoryId.join(','),
           sidoCodeId: this.sidoCodeId.join(','),

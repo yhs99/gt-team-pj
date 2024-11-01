@@ -1,5 +1,6 @@
 package com.team.goott.admin.store.persistence;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -60,8 +61,18 @@ public class AdminStoreDAOImpl implements AdminStoreDAO {
 	}
 
 	@Override
-	public int getStoresInfoCnt(Map<String, Object> searchMap) {
-		return ses.selectOne(NS+"getStoresInfoCnt", searchMap);
+	public int isExistStore(Map<String, Integer> map) {
+		return ses.selectOne(NS+"isExistStore", map);
+	}
+
+	@Override
+	public int blockStore(int storeId) {
+		return ses.update(NS+"blockStore", storeId);
+	}
+
+	@Override
+	public int cancelBlock(int storeId) {
+		return ses.update(NS+"cancelBlock", storeId);
 	}
 
 }

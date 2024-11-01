@@ -427,7 +427,7 @@ public class UserReviewController {
 		    List<ReviewDTO> reviews = service.getUserReview(userId);
 		    //reserveId로 reserveDto가져오기
 		    ReserveDTO reserveDto = service.getReserveInfoByReserveId(reservationId);
-		    int userIdFromReserve = Integer.parseInt(reserveDto.getUserId());
+		    int userIdFromReserve = reserveDto.getUserId();
 		    
 		    if(userIdFromReserve != userId) {
 		    	 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("작성자와 사용자가 일치하지 않습니다.");

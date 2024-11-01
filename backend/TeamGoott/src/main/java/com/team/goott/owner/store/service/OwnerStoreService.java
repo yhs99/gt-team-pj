@@ -43,5 +43,9 @@ public interface OwnerStoreService {
 
 	boolean register(OwnerDTO ownerDTO);
 
+	// 로그인 성공시 ownerId로 store정보 가져오기
+	StoreDTO getStoreByOwnerId(int ownerId) ;
+
+
 
 }

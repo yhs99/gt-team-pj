@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import com.team.goott.owner.domain.FacilityVO;
 import com.team.goott.owner.domain.OwnerDTO;
+import com.team.goott.owner.domain.ReserveSlotsDTO;
+import com.team.goott.owner.domain.ScheduleDTO;
 import com.team.goott.owner.domain.ScheduleVO;
 import com.team.goott.owner.domain.StoreCategoryVO;
 import com.team.goott.owner.domain.StoreDTO;
@@ -32,7 +34,7 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
 	
 	// store 테이블에 데이터 저장
 	public int createStore(StoreDTO store) throws Exception {
-//		log.info(store.getOwnerId()+"");
+		log.info(store.getOwnerId()+"");
 		return ses.insert(NS + "createStore", store);
 	}
 	
@@ -160,5 +162,58 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
     	
         return ses.delete(NS + "deleteFacility", params);
     }
+    
+	@Override
+	public List<ScheduleDTO> getScheduleByStoreId(int storeId) {
+		return ses.selectList(NS+"getScheduleByDayCode", storeId);
+	}
+
+
+    @Override
+    public void batchInsertSlots(List<ReserveSlotsDTO> slots) {
+        ses.insert(NS + "batchInsertSlots", slots);
+    }
+    
+    @Override
+    public List<ScheduleDTO> getScheduleByDayCode(int dayCode, int storeId) {
+    	Map<String, Integer> params = new HashMap<String, Integer>();
+    	params.put("storeId", storeId);
+    	params.put("dayCode", dayCode);
+    	return ses.selectList(NS + "getScheduleByDayCode", params);
+    }
+
+    @Override
+    public int getRotationCodeIdByStoreId(int storeId) {
+    	return ses.selectOne(NS+"getRotationCodeIdByStoreId", storeId);
+    }
+    
+    @Override
+    public List<ReserveSlotsDTO> getExistingSlots(Map<String, Object> params) {
+        return ses.selectList(NS + "getExistingSlots", params);
+    }
+    
+	@Override
+	public int insertReserveSlot(ReserveSlotsDTO newSlot) {
+		return ses.insert(NS+"insertReserveSlot", newSlot);
+	}
+
+
+
+	@Override
+	public int deleteSlotsByDayCodeId(Map<String, Object> dayCodeMap) {
+		log.info("dao :: {} ", dayCodeMap.toString());
+		return ses.delete(NS + "deleteSlotsByDayCodeId", dayCodeMap);
+	}
+
+	@Override
+	public void UpdateReserveSlot(ReserveSlotsDTO newSlot)  {
+		ses.insert(NS + "updateReserveSlot" , newSlot);
+		
+	}
+
+	@Override
+	public StoreDTO getStoreByOwnerId(int ownerId) {
+		return ses.selectOne(NS + "getStoreByOwnerId", ownerId);
+	}
 
 }

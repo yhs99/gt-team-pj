@@ -73,7 +73,6 @@ public class OwnerStoreController {
 	     
 	     int ownerId = getOwnerIdFromSession(session).getOwnerId();
 	     log.info("세션의 onwerId : {}"  , ownerId);
-	     
 	    
 	    StoreVO storeData = null;
 	    List<ScheduleVO> scheduleData = null; 
@@ -156,6 +155,9 @@ public class OwnerStoreController {
 
 		// 요청 테스트
 		requestTest(store, schedules, category, facility, files);
+		
+		// 가게 스케쥴 변경시
+		
 
 		// 가게 저장
 		try {
@@ -221,6 +223,7 @@ public class OwnerStoreController {
         // 가게 수정
         try {
             int result = ownerStoreService.updateStore(storeId, store, schedules, category, facility, updateFiles, deleteImage);
+            
             if (result == 1) {
                 return ResponseEntity.ok("가게가 성공적으로 수정되었습니다.");
             } else {
@@ -232,7 +235,6 @@ public class OwnerStoreController {
         }
     }
 
-	// 세션에서 ownerId 가져오는 메서드
 	private StoreDTO getOwnerIdFromSession(HttpSession session) {
 		
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");

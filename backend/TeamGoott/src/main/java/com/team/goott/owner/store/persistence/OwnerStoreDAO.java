@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.team.goott.owner.domain.FacilityVO;
 import com.team.goott.owner.domain.OwnerDTO;
+import com.team.goott.owner.domain.ReserveSlotsDTO;
+import com.team.goott.owner.domain.ScheduleDTO;
 import com.team.goott.owner.domain.ScheduleVO;
 import com.team.goott.owner.domain.StoreCategoryVO;
 import com.team.goott.owner.domain.StoreDTO;
@@ -17,10 +19,11 @@ public interface OwnerStoreDAO {
 	// store 테이블에 데이터 저장
 	int createStore(StoreDTO store) throws Exception;
 	StoreDTO login(String id, String pw);
+	StoreDTO getStoreByOwnerId(int ownerId);
 	boolean ownerRegister(OwnerDTO ownerDTO);
 
 	// schedule 테이블에 데이터 저장
-	int createSchedule(Map<String, Object> scheduleMap);
+	int createSchedule(Map<String, Object> scheduleMap) throws Exception;;
 
 	// category 테이블에 데이터 저장
 	int createCategory(Map<String, Object> category) throws Exception;
@@ -63,5 +66,32 @@ public interface OwnerStoreDAO {
 	
 	// 수정시 원래있던 데이터 삭제
 	int deleteFacility(int storeId, String facilityDeleteData) throws Exception;
+	
+	// storeId로 스케쥴정보 가져옴
+	List<ScheduleDTO> getScheduleByStoreId(int storeId) ;
+	
+	// 예약 슬롯
+	void batchInsertSlots(List<ReserveSlotsDTO> slotsToInsert);
+	
+	// 스케쥴의 요일에따른 dayCode를 가져옴
+	List<ScheduleDTO> getScheduleByDayCode(int dayCode, int storeId);
+	
+	// storeId로 roationCode 가져옴
+	int getRotationCodeIdByStoreId(int storeId);
+
+	// 예약 슬롯 중복 체크
+	List<ReserveSlotsDTO> getExistingSlots(Map<String, Object> map);
+	
+	// 스케쥴이 변경되면 예약슬롯을 삭제해주는 메서드
+	int deleteSlotsByDayCodeId(Map<String, Object> dayCodeMap);
+
+	// 가게가 생성될 때 스케쥴에 따라 예약슬롯을 생성해주는 메서드
+	int insertReserveSlot(ReserveSlotsDTO newSlot);
+	
+	// 변경된 스케쥴에 따른 예약슬롯을 생성해주는 메서드
+	void UpdateReserveSlot(ReserveSlotsDTO newSlot);
+	
+
+	
 
 }

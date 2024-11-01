@@ -1,6 +1,7 @@
 
 package com.team.goott.user.bookmark.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.team.goott.user.bookmark.persistence.UserBookmarkDAO;
 import com.team.goott.user.domain.BookmarkDTO;
+import com.team.goott.user.domain.BookmarkInfoDTO;
+import com.team.goott.user.domain.TodayInfoDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,7 +25,7 @@ public boolean addBookMark(int userId, int storeId) {
     // 즐겨찾기 추가
     BookmarkDTO bookmark = new BookmarkDTO(userId, storeId);
     boolean result = false;
-
+    log.info(bookmark.toString());
         if(bDao.save(bookmark) == 1) {
         	result = true;
         }
@@ -30,22 +33,46 @@ public boolean addBookMark(int userId, int storeId) {
 }
 
 @Override
-public boolean removeBookmark(int userId, int storeId) {
+public boolean deleteBookmark(int userId, int storeId) {
 	//즐겨찾기 삭제
-	boolean result = false;
 	BookmarkDTO bookmark = new BookmarkDTO(userId, storeId);
+	boolean result = false;
+	
 	if(bDao.remove(bookmark) ==1) {
       	result = true;
       }
 
-	return false;
+	return result;
 }
 
 @Override
-public List<BookmarkDTO> getBookmarksByUserId(int userId) {
+public List<BookmarkInfoDTO> getBookmarkInfoByUserId(int userId) {
 	// 즐겨찾기 조회
-	 return bDao.selectBookmarkByUserId(userId);
+	List<BookmarkDTO> dtos = bDao.selectBookmarkByUserId(userId);
+	List<BookmarkInfoDTO> info = new ArrayList<>();
+	
+	for(BookmarkDTO dto : dtos) {
+		int storeId = dto.getStoreId();
+		BookmarkInfoDTO infoDto = new BookmarkInfoDTO();
+		TodayInfoDTO today = new TodayInfoDTO(storeId);
+		infoDto = bDao.selectInfoByStoreId(today);
+	
+		if(infoDto != null) {
+		
+		infoDto.setBookmarkDto(dto);
+		info.add(infoDto);
+		}
+	}
+	return info;
+	
 }
+
+@Override
+public int countBookMark(int userId) {
+	// 유저의 북마크 개수 가져오기
+	return bDao.countBookmarks(userId);
+}
+
 
 
 }

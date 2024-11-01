@@ -21,6 +21,7 @@ public class ReviewInfoVO {
 	private int todayReview;
 	private float totalScore;
 	private float todayTotalScore;
-	
+	private int[] countScore;
+	private int[] countMonthlyReview;
 	private List<ReviewVO> reviews;
 }

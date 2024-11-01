@@ -22,6 +22,7 @@ public class ReviewVO {
 	private int userId;
 	private int score;
 	private String content;
+	private String userName;
 	private Timestamp createAt;
 	private boolean isDeleteReq;
 }

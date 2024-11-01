@@ -1,7 +1,9 @@
 package com.team.goott.owner.domain;
 
 
-import java.sql.Timestamp;
+import java.util.List;
+
+import com.team.goott.user.domain.ReserveDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,13 +18,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class ReviewVO {
-	private int reviewId;
-	private int storeId;
-	private int userId;
-	private int score;
-	private String content;
-	private String userName;
-	private Timestamp createAt;
-	private boolean isDeleteReq;
+public class ReserveInfoVO {
+	private int totalReserve;
+	private int totalTodayReserve;
+	
+	private List<ReserveDTO> reservations; 
 }

@@ -31,5 +31,9 @@
 		join store s on m.storeId = s.storeId
 		where userId = #{userId};
 	</select>
+	<select id="getCartStoreList" resultType="int">
+		select DISTINCT storeId from cart where userId = #{userId}
+	</select>
+	
 
 </mapper>

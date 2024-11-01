@@ -36,6 +36,9 @@ import com.team.goott.owner.domain.StoreVO;
 import com.team.goott.owner.store.persistence.OwnerStoreDAO;
 import com.team.goott.owner.store.service.OwnerStoreService;
 
+import com.team.goott.owner.domain.OwnerDTO;
+import com.team.goott.owner.store.service.OwnerStoreService;
+
 import lombok.extern.slf4j.Slf4j;
 
 @RestController

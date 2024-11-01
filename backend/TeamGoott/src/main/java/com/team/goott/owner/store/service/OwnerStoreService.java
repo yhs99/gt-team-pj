@@ -37,8 +37,8 @@ public interface OwnerStoreService {
 
 	// 가게 정보를 수정하는 메서드
 	int updateStore(int storeId, StoreDTO store, List<ScheduleDTO> schedules, List<StoreCategoryDTO> category,
-			List<FacilityDTO> facility, List<MultipartFile> updatefiles, List<String> deleteImages) throws Exception;
-	
+	List<FacilityDTO> facility, List<MultipartFile> updatefiles, List<String> deleteImages) throws Exception;
+
 	StoreDTO login(String id, String pw);
 
 	boolean register(OwnerDTO ownerDTO);

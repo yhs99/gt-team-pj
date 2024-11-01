@@ -34,7 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class OwnerStoreServiceImpl implements OwnerStoreService {
-
+	@Inject
+	OwnerStoreDAO storeDAO;
 	@Inject
 	private AmazonS3 s3Client;
 

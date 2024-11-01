@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.team.goott.admin.domain.ReviewDTO;
-import com.team.goott.user.domain.ReviewImagesDTO;
+import com.team.goott.admin.domain.ReviewImagesDTO;
 
 public interface AdminReviewDAO {
 	public List<ReviewDTO> getAllReviews(Map<String, String> sortBy);

@@ -31,6 +31,7 @@
     <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
     <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="/node_modules/fullcalendar/index.global.min.js"></script>
     <!-- Template Javascript -->
     <script type="module" src="/js/owner/main.js"></script>
   </head>
@@ -40,81 +41,20 @@
     
     <div class="container-xxl position-relative bg-white d-flex p-0">
       <!-- Spinner Start -->
-      <div
-        id="spinner"
-        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
+      <spinner-component></spinner-component>
       <!-- Spinner End -->
 
       <!-- Sidebar Start -->
-      <div class="sidebar pe-4 pb-3">
-        <nav class="navbar bg-light navbar-light">
-          <a href="index" class="navbar-brand mx-4 mb-3">
-            <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>SmartReserve</h3>
-          </a>
-          <div class="navbar-nav w-100">
-            <a href="index.html" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>메인</a>
-            <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>매장 조회</a>
-            <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>유저 조회</a>
-            <a href="table.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>리뷰 삭제 요청건</a>
-            <a href="/view/owner/review.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>예약 내역 조회</a>
-            </div>
-          </div>
-        </nav>
+      <div id="sidebar" class="sidebar pe-4 pb-3">
+        <sidebar-component></sidebar-component>
+        </div>
       </div>
       <!-- Sidebar End -->
 
       <!-- Content Start -->
       <div class="content">
         <!-- Navbar Start -->
-        <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-          <a href="/view/owner/index" class="navbar-brand d-flex d-lg-none me-4">
-            <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-          </a>
-          <a href="#" class="sidebar-toggler flex-shrink-0">
-            <i class="fa fa-bars"></i>
-          </a>
-          <form class="d-none d-md-flex ms-4">
-            <input class="form-control border-0" type="search" placeholder="검색" />
-          </form>
-          <div class="navbar-nav align-items-center ms-auto">
-            <div class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <i class="fa fa-bell me-lg-2"></i>
-                <span class="d-none d-lg-inline-flex">알림</span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                <a href="#" class="dropdown-item" role="button">
-                  <h6 class="fw-normal mb-0">프로필 업데이트</h6>
-                  <small>15 minutes ago</small>
-                </a>
-                <hr class="dropdown-divider" />
-                <a href="#" class="dropdown-item">
-                  <h6 class="fw-normal mb-0">홍길북 님의 예약요청</h6>
-                  <small>15 minutes ago</small>
-                </a>
-                <hr class="dropdown-divider" />
-                <a href="#" class="dropdown-item">
-                  <h6 class="fw-normal mb-0">홍길순님이 예약을 취소했습니다</h6>
-                  <small>15 minutes ago</small>
-                </a>
-                <hr class="dropdown-divider" />
-                <a href="#" class="dropdown-item text-center">모든 알림메세지 확인하기</a>
-              </div>
-            </div>
-            <div class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <span class="d-none d-lg-inline-flex">관리자</span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                <a @click="logoutProcess" href="#" class="dropdown-item">로그아웃</a>
-              </div>
-            </div>
-          </div>
-        </nav>
+        <navbar-component></navbar-component>
         <!-- Navbar End -->
 
         <div class="container-fluid pt-4 px-4">
@@ -147,6 +87,20 @@
                     <button class="btn btn-success">검색</button>
                   </div>
                 </div>
+                <div class="row">
+                  <div class="col text-start">
+                    <span>매장 갯수 : {{ totalStoreCount }}</span>
+                  </div>
+                  <div class="col text-end">
+                    <span>페이지당 갯수</span>
+                    <select v-model="pageSize" @change="fetchStores" name="pageSize">
+                      <option value="5">5</option>
+                      <option value="10" selected>10</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                </div>
+              </div>
                 <div class="table-responsive">
                 <table class="table table-bordered table-hover">
                   <thead>
@@ -157,12 +111,13 @@
                       <th>전화번호</th>
                       <th>종류</th>
                       <th>편의시설</th>
-                      <th>자세히</th>
+                      <th>수정</th>
+                      <th>차단</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="store in paginatedStores" :key="store.storeId">
-                      <td class="w-10">{{ store.storeId }}</td>
+                      <td class="w-5">{{ store.storeId }}</td>
                       <td class="w-10">{{ store.storeName }}</td>
                       <td class="w-10">{{ store.address }}</td>
                       <td class="w-10">{{ store.tel }}</td>
@@ -177,7 +132,10 @@
                         </span>
                       </td>
                       <td class="w-5">
-                        <button class="btn btn-primary">자세히보기</button>
+                        <button @click="" class="btn btn-primary">자세히보기</button>
+                      </td>
+                      <td class="w-5">
+                        <button @click="" class="btn btn-danger">차단하기</button>
                       </td>
                     </tr>
                   </tbody>
@@ -204,15 +162,7 @@
         </div>
 
         <!-- Footer Start -->
-        <div class="container-fluid pt-4 px-4">
-          <div class="bg-light rounded-top p-4">
-            <div class="row">
-              <div class="col-12 col-sm-6 text-center text-sm-start">
-                &copy; <a href="#">smartreserve.store</a>, All Right Reserved.
-              </div>
-            </div>
-          </div>
-        </div>
+        <footer-component></footer-component>
         <!-- Footer End -->
       </div>
       <!-- Content End -->
@@ -220,6 +170,7 @@
       <!-- Back to Top -->
       <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
+    <script src="/js/admin/component.js"></script>
     <script src="/js/admin/srAdminStores.js"></script>
   </div>
   </body>

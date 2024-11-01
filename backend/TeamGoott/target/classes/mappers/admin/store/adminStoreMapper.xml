@@ -140,6 +140,9 @@
     <if test="showBlock != null and showBlock != ''">
         AND isBlocked = #{showBlock}
     </if>
+    <if test="storeId != null and storeId != '' and storeId > 0">
+        AND s.storeId = #{storeId}
+    </if>
 </select>
 
 <select id="isExistStore" parameterType="map" resultType="int">
@@ -163,4 +166,43 @@
 	SET isBlocked = 0
 	WHERE storeId = #{storeId}
 </update>
+
+ <select id="getSummaryTitle" resultType="com.team.goott.admin.domain.SummaryTitleDTO">
+	SELECT SUM(p.payAmount) AS totalSales,
+	    SUM(CASE WHEN DATE(r.reserveTime) = CURRENT_DATE THEN p.payAmount ELSE 0 END) AS todaySales,
+	    COUNT(r.reserveTime) AS totalReserveCnt,
+	    SUM(CASE WHEN DATE(r.reserveTime) = CURRENT_DATE THEN 1 ELSE 0 END) AS todayReserveCnt
+	FROM payHistory p
+	JOIN reserve r ON p.reserveId = r.reserveId
+	WHERE r.statusCodeId IN (2, 4, 5)
+	<if test="storeId != null and storeId != '' and storeId != 0">
+	AND r.storeId = #{storeId}
+	</if>
+</select>
+<select id="getDailySales" resultType="com.team.goott.admin.domain.SummaryVO">
+	SELECT 
+		DATE(r.reserveTime) AS label,
+		SUM(p.payAmount) AS value
+	FROM payHistory p
+	JOIN reserve r
+	ON p.reserveId = r.reserveId
+	WHERE r.statusCodeId IN (2,4,5)
+	<if test="storeId != null and storeId != '' and storeId != 0">
+	AND r.storeId = #{storeId}
+	</if>
+</select>
+
+<select id="getMonthlySales" resultType="com.team.goott.admin.domain.SummaryVO">
+	SELECT 
+		DATE_FORMAT(r.reserveTime, '%Y-%m') AS label,
+		SUM(p.payAmount) AS value
+	FROM payHistory p
+	JOIN reserve r
+	ON p.reserveId = r.reserveId
+	WHERE r.statusCodeId IN (2,4,5)
+	<if test="storeId != null and storeId != '' and storeId != 0">
+	AND r.storeId = #{storeId}
+	</if>
+</select>
+
 </mapper>

@@ -3,7 +3,7 @@ new Vue({
   data: {
     stores: [],
     currentPage: 1, // 현재 페이지
-    pageSize: 5, // 페이지당 표시 갯수
+    pageSize: 10, // 페이지당 표시 갯수
     totalStoreCount: 0, // 검색 총 결과수
     totalPages: 0, // 총 페이지
     categoryId: [],
@@ -63,17 +63,6 @@ new Vue({
       .catch(error => {
         console.error("Error fetching stores filters:", error);
       });
-    },
-    logoutProcess: function() {
-      axios.post('/api/logout')
-        .then(response => {
-          console.log(response);
-          if(response.status === 200) {
-            location.href = '/';
-          }
-        }).catch(error => {
-          console.error(error);
-        });
     }
   },
   computed: {

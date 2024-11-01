@@ -20,7 +20,7 @@
 
 	<select id="getMenuCart"
 		resultType="com.team.goott.user.domain.MenuDTO">
-		select * from menu where menuId = #{menuId}
+		select * from menu where menuId = #{menuId} AND storeId = #{storeId}
 	</select>
 
 	<select id="getUserCartById"

@@ -43,8 +43,11 @@ public class UserCartDAOImpl implements UserCartDAO {
 	}
 
 	@Override
-	public List<MenuDTO> getMenuCart(int menuId) throws Exception {
-		return ses.selectList(ns+"getMenuCart",menuId);
+	public List<MenuDTO> getMenuCart(int menuId, int storeId) throws Exception {
+		Map<String, Object> params = new HashMap<>();
+		params.put("menuId", menuId);
+		params.put("storeId", storeId);
+		return ses.selectList(ns+"getMenuCart",params);
 	}
 
 	@Override

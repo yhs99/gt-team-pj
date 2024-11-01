@@ -14,7 +14,7 @@ public interface UserCartDAO {
 
 	int deleteFromCart(int cartId, int userId) throws Exception;
 
-	List<MenuDTO> getMenuCart(int menuId) throws Exception;
+	List<MenuDTO> getMenuCart(int menuId, int storeId) throws Exception;
 
 	List<ExtendedCartDTO> getUserCartById(int userId) throws Exception;
 

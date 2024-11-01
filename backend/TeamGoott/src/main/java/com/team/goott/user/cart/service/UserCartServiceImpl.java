@@ -28,7 +28,7 @@ public class UserCartServiceImpl implements UserCartService {
 
 	@Override
 	public void addCart(CartDTO cartDTO) throws Exception {
-	    List<MenuDTO> menuList = cartDAO.getMenuCart(cartDTO.getMenuId());
+	    List<MenuDTO> menuList = cartDAO.getMenuCart(cartDTO.getStoreId(), cartDTO.getMenuId());
 	    
 	    List<Integer> cartStoreList = cartDAO.getCartStoreList(cartDTO.getUserId());
 	    

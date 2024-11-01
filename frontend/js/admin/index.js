@@ -17,15 +17,6 @@ new Vue({
     this.fetchSummary();
   },
   methods: {
-    fetchUserData: function() {
-      axios.get('/api/status')
-      .then(response => {
-        console.log("admin checked");
-      })
-      .catch(error => {
-        location.href = '/';
-      });
-    },
     fetchAllDeleteRequestReviews: function() { // 리뷰 삭제 요청 목록 조회
       axios.get('/api/admin/deleteReview')
       .then(response => {

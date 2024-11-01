@@ -1,18 +1,26 @@
 Vue.component('sidebar-component', {
+  data() {
+    return {activeMenu:window.location.pathname}
+  },
   template: `
   <nav class="navbar bg-light navbar-light">
             <a href="/view/admin/srAdminIndex" class="navbar-brand mx-4 mb-3">
               <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>SmartReserve</h3>
             </a>
             <div class="navbar-nav w-100">
-              <a href="index.html" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>대시보드</a>
-              <a href="/view/admin/srAdminStores" class="nav-item nav-link"><i class="fa fa-th me-2"></i>매장 관리</a>
-              <a href="/view/admin/srAdminUsers" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>유저 관리</a>
-              <a href="/view/admin/srAdminReserves" class="nav-item nav-link"><i class="fa fa-table me-2"></i>예약 관리</a>
-              <a href="/view/admin/srAdminReviews" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>리뷰 관리</a>
+              <a href="/view/admin/srAdminIndex" :class="['nav-item', 'nav-link', isActive('/view/admin/srAdminIndex')]"><i class="fa fa-tachometer-alt me-2"></i>대시보드</a>
+              <a href="/view/admin/srAdminStores" :class="['nav-item', 'nav-link', isActive('/view/admin/srAdminStores')]"><i class="fa fa-th me-2"></i>매장 관리</a>
+              <a href="/view/admin/srAdminUsers" :class="['nav-item', 'nav-link', isActive('/view/admin/srAdminUsers')]"><i class="fa fa-keyboard me-2"></i>유저 관리</a>
+              <a href="/view/admin/srAdminReserves" :class="['nav-item', 'nav-link', isActive('/view/admin/srAdminReserves')]"><i class="fa fa-table me-2"></i>예약 관리</a>
+              <a href="/view/admin/srAdminReviews" :class="['nav-item', 'nav-link', isActive('/view/admin/srAdminReviews')]"><i class="fa fa-chart-bar me-2"></i>리뷰 관리</a>
               </div>
             </nav>
-  `
+  `,
+  methods: {
+    isActive(menu) {
+      return this.activeMenu === menu ? 'active' : '';
+    }
+  }
   });
 
 Vue.component('footer-component', {
@@ -49,7 +57,20 @@ Vue.component('navbar-component', {
     </div>
   </div>
 </nav>`,
+created: function(){
+  this.fetchUserData();
+  this.spinner();
+},
 methods: {
+  fetchUserData: function() {
+    axios.get('/api/status')
+    .then(response => {
+      console.log("admin checked");
+    })
+    .catch(error => {
+      location.href = '/';
+    });
+  },
   logoutProcess: function() {
     axios.post('/api/logout')
       .then(response => {
@@ -60,6 +81,13 @@ methods: {
       }).catch(error => {
         console.error(error);
       });
+  },
+  spinner: function() {
+    setTimeout(function () {
+        if ($('#spinner').length > 0) {
+            $('#spinner').removeClass('show');
+        }
+    }, 1);
   }
 }
 });

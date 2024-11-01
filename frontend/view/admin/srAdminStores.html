@@ -32,6 +32,7 @@
     <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
     <script src="/node_modules/fullcalendar/index.global.min.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <!-- Template Javascript -->
     <script type="module" src="/js/owner/main.js"></script>
   </head>
@@ -140,7 +141,7 @@
                         </span>
                       </td> -->
                       <td class="w-5">
-                        <button @click="" class="btn btn-primary">자세히보기</button>
+                        <button @click="openModalForUpdate(store.storeId)" class="btn btn-primary">자세히보기</button>
                       </td>
                       <td class="w-5" v-if="showBlock == false">
                         <button @click="" class="btn btn-danger">차단하기</button>
@@ -178,6 +179,38 @@
       </div>
       <!-- Content End -->
 
+      <div class="modal fade" id="storeModal">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+      
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">매장정보 수정하기</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+      
+            <!-- Modal body -->
+            <div class="modal-body"> 
+              <form>
+                <div class="mb-3">
+                  <label for="storeName" class="form-label">매장명</label>
+                  <input type="text" class="form-control mb-3" id="storeName" v-model="storeInfo.storeName" :placeholder="storeInfo.storeName">
+                  <label for="tel" class="form-label">전화번호</label>
+                  <input type="text" class="form-control mb-3" id="tel" v-model="storeInfo.tel" :placeholder="storeInfo.tel">
+                  <label for="address" class="form-label">매장주소</label>
+                  <input type="text" class="form-control mb-3" id="address" v-model="storeInfo.address" :placeholder="storeInfo.address" @click="openAddress" readonly>
+                </div>
+              </form>
+            </div>
+      
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+      
+          </div>
+        </div>
+      </div>
       <!-- Back to Top -->
       <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>

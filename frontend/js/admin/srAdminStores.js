@@ -12,12 +12,17 @@ new Vue({
     categories: [],
     facilities: [],
     sidoCodes: [],
-    showBlock: false
+    showBlock: false,
+    storeInfo: {},
+    storeModal: null,
+    updateStoreData: {}
   },
   created: function() {
-    this.checkAdminSession();
     this.fetchStores();
     this.fetchFilters();
+  },
+  mounted() {
+    this.storeModal = new bootstrap.Modal(document.getElementById("storeModal"));
   },
   watch: {    
     categoryId: 'fetchStores',
@@ -25,15 +30,6 @@ new Vue({
     showBlock: 'fetchStores',
   },
   methods: {
-    checkAdminSession: function() {
-      axios.get('/api/status') // 서버에 /api/status 요청
-      .then(response => {
-        console.log('admin checked');
-      })
-      .catch(error => {
-        location.href = '/';
-      });
-    },
     fetchStores: async function() {
       await axios.get('/api/searchStores', {
         params: {
@@ -66,6 +62,25 @@ new Vue({
       .catch(error => {
         console.error("Error fetching stores filters:", error);
       });
+    },
+    openModalForUpdate(storeId) {
+      axios.get('/api/admin/store/'+storeId)
+      .then(response => {
+        this.storeInfo = response.data.data;
+        console.log(this.updateStoreData);
+        this.updateStoreData = {};
+        this.storeModal.show();
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    },
+    openAddress() {
+      new daum.Postcode({
+        oncomplete: (data) => {
+          this.storeInfo.address =data.address;
+        }
+      }).open();
     }
   },
   computed: {

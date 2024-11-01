@@ -8,7 +8,6 @@ new Vue({
       loginYN: false
   },
   created: function() {
-      this.checkLogin();
   },
   methods: {
       checkLogin: function() {

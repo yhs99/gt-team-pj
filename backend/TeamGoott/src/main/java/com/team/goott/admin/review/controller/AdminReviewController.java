@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -76,6 +77,22 @@ public class AdminReviewController {
 		}
 		return ResponseEntity.ok("삭제 완료");
 	}
+	
+	@PostMapping("/cancelDeleteReqReview/{reviewId}")
+	public ResponseEntity<Object> cancelDeleteReqReview(HttpSession session,
+														@PathVariable(name = "reviewId") int reviewId) {
+		if(checkAdminSession(session)) {
+			try {
+				adminReviewService.cancelDeleteReview(reviewId);
+			}catch(Exception e) {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+			}
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("권한이 없습니다.");
+		}
+		return ResponseEntity.ok("거절 완료");
+	}
+	
 	
 	public boolean checkAdminSession(HttpSession session) {
 		AdminDTO adminSession = (AdminDTO) session.getAttribute("admin");

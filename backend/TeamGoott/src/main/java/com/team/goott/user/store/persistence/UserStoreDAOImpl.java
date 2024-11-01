@@ -9,7 +9,11 @@ import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.team.goott.owner.domain.CategoryCodeVO;
+import com.team.goott.owner.domain.FacilityCodeVO;
+import com.team.goott.owner.domain.sidoCodeVO;
 import com.team.goott.user.domain.StoreDTO;
+import com.team.goott.user.domain.StoreFiltersVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,6 +47,22 @@ public class UserStoreDAOImpl implements UserStoreDAO {
 		params.put("categoryCodeIds", categoryCodeIds);
 		params.put("sidoCodeIds", sidoCodeIds);
 		return ses.selectList(ns+"getStoresByCategory",params);
+	}
+
+
+	@Override
+	public List<CategoryCodeVO> getStoreFilterCategory() {
+		return ses.selectList(ns+"getStoreFiltersCategory");
+	}
+	
+	@Override
+	public List<sidoCodeVO> getStoreFiltersSidoCode() {
+		return ses.selectList(ns+"getStoreFiltersSidoCode");
+	}
+	
+	@Override
+	public List<FacilityCodeVO> getStoreFiltersFacilityCode() {
+		return ses.selectList(ns+"getStoreFiltersFacilityCode");
 	}
 
 }

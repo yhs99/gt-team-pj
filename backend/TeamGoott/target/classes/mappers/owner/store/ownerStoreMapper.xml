@@ -2,6 +2,135 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.owner.store.ownerStoreMapper">
 
+	<insert id="createStore"
+		parameterType="com.team.goott.owner.domain.StoreDTO"
+		useGeneratedKeys="true" keyProperty="storeId">
+		INSERT INTO store
+		(ownerId, rotationId, sidoCodeId, storeName, address, tel, description,
+		directionGuide, maxPeople, maxPeoplePerReserve, isBlocked,
+		locationLatX, locationLonY)
+		VALUES
+		(#{ownerId}, #{rotationId}, #{sidoCodeId}, #{storeName}, #{address}, #{tel},
+		#{description}, #{directionGuide}, #{maxPeople},
+		#{maxPeoplePerReserve}, #{isBlocked}, #{locationLatX},
+		#{locationLonY})
+	</insert>
+
+	<insert id="createSchedule">
+		INSERT INTO schedule (storeId, dayCodeId, open, close, closeDay)
+		VALUES (#{storeId}, #{dayCodeId}, #{open}, #{close}, #{closeDay})
+	</insert>
+
+	<insert id="createCategory"
+		parameterType="com.team.goott.owner.domain.StoreCategoryDTO">
+		INSERT INTO storeCategory
+		(storeId, categoryCodeId, storeCategoryName)
+		VALUES
+		(#{storeId}, #{categoryCodeId}, #{storeCategoryName})
+	</insert>
+
+	<insert id="createFacility"
+		parameterType="com.team.goott.owner.domain.FacilityDTO">
+		INSERT INTO facility
+		(storeId, facilityCode)
+		VALUES
+		(#{storeId}, #{facilityCode})
+	</insert>
+
+	<insert id="createStoreImages"
+		parameterType="com.team.goott.owner.domain.StoreImagesDTO">
+		INSERT INTO storeImages
+		(storeId, url, fileName)
+		VALUES
+		(#{storeId}, #{url}, #{fileName})
+	</insert>
+
+	<select id="getStoreById"
+		resultType="com.team.goott.owner.domain.StoreVO">
+		SELECT *
+		FROM store
+		WHERE storeId = #{storeId}
+	</select>
+
+	<select id="getSchedulesByStoreId"
+		resultType="com.team.goott.owner.domain.ScheduleVO">
+		SELECT * FROM schedule WHERE storeId = #{storeId}
+	</select>
+
+	<select id="getStoreCategoryByStoreId"
+		resultType="com.team.goott.owner.domain.StoreCategoryVO">
+		SELECT * FROM storeCategory WHERE storeId = #{storeId}
+	</select>
+
+	<select id="getFacilityByStoreId"
+		resultType="com.team.goott.owner.domain.FacilityVO">
+		SELECT * FROM facility WHERE storeId = #{storeId}
+	</select>
+
+	<select id="getStoreImagesByStoreId"
+		resultType="com.team.goott.owner.domain.StoreImagesVO">
+		SELECT * FROM storeImages WHERE storeId = #{storeId}
+	</select>
+
+	<update id="updateStore" parameterType="map">
+		UPDATE store
+		<set>
+			<if test="rotationId != null">rotationId = #{rotationId},</if>
+			<if test="sidoCodeId != null">sidoCodeId = #{sidoCodeId},</if>
+			<if test="storeName != null and storeName != ''">storeName = #{storeName},</if>
+			<if test="address != null and address != ''">address = #{address},</if>
+			<if test="tel != null and tel != ''">tel = #{tel},</if>
+			<if test="description != null and description != ''">description = #{description},</if>
+			<if test="directionGuide != null and directionGuide != ''">directionGuide = #{directionGuide},</if>
+			<if test="maxPeople != null">maxPeople = #{maxPeople},</if>
+			<if test="maxPeoplePerReserve != null">maxPeoplePerReserve = #{maxPeoplePerReserve},</if>
+			<if test="isBlocked != null">isBlocked = #{isBlocked},</if>
+			<if test="locationLatX != null">locationLatX = #{locationLatX},</if>
+			<if test="locationLonY != null">locationLonY = #{locationLonY}</if>
+		</set>
+		WHERE storeId = #{storeId}
+	</update>
+
+
+	<update id="updateSchedule"
+		parameterType="com.team.goott.owner.domain.ScheduleVO">
+		UPDATE schedule
+		<set>
+			<if test="dayCodeId != null">dayCodeId = #{dayCodeId},</if>
+			<if test="open != null">open = #{open},</if>
+			<if test="close != null">close = #{close},</if>
+			<if test="closeDay != null">closeDay = #{closeDay}</if>
+		</set>
+		WHERE scheduleId = #{scheduleId} AND storeId = #{storeId}
+	</update>
+
+	<delete id="deleteStoreImagesByFileNames" parameterType="map">
+		DELETE FROM storeImages
+		WHERE storeId = #{storeId}
+		AND fileName IN
+		<foreach collection="fileNames" item="fileName" open="("
+			separator="," close=")">
+			#{fileName}
+		</foreach>
+	</delete>
+
+	<select id="selectStoreImagesCountByStoreId" resultType="int">
+		select
+		count(storeId) from storeImages where storeId = #{storeId}
+	</select>
+
+	<delete id="deleteCategory" parameterType="map">
+		DELETE FROM storeCategory
+		WHERE storeId = #{storeId}
+		AND categoryCodeId = #{categoryCodeId}
+	</delete>
+
+	<delete id="deleteFacility" parameterType="map">
+		DELETE FROM facility
+		WHERE facilityCode = #{facilityCode}
+		AND storeId = #{storeId}
+	</delete>
+
 	<select id="ownerLoginInfo" parameterType="map"
 		resultType="com.team.goott.owner.domain.StoreDTO">
 		SELECT s.* FROM store s	JOIN owner o ON s.ownerId = o.ownerId

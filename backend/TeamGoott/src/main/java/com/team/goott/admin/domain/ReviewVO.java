@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.team.goott.user.domain.ReviewImagesDTO;
+import com.team.goott.admin.domain.ReviewImagesDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +23,7 @@ import lombok.ToString;
 public class ReviewVO {
 	private int reviewId;
 	private int storeId;
+	private String storeName;
 	private int userId;
 	private int score;
 	private String content;

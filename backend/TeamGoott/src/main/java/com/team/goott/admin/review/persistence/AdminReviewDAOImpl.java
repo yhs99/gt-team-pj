@@ -9,7 +9,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import com.team.goott.admin.domain.ReviewDTO;
-import com.team.goott.user.domain.ReviewImagesDTO;
+import com.team.goott.admin.domain.ReviewImagesDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -60,6 +60,11 @@ public class AdminReviewDAOImpl implements AdminReviewDAO {
 	@Override
 	public ReviewDTO getTargetReviewInfo(int reviewId) {
 		return ses.selectOne(NS+"getTargetReviewInfo", reviewId);
+	}
+
+	@Override
+	public int cancelDeleteReview(int reviewId) {
+		return ses.update(NS+"cancelDeleteReqReview", reviewId);
 	}
 
 }

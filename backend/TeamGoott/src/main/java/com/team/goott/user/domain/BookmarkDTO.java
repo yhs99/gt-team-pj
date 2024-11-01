@@ -17,4 +17,6 @@ public class BookmarkDTO {
 	private int bookMarkId;
 	private int userId;
 	private int storeId;
+	
+
 }

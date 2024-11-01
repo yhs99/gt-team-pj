@@ -4,13 +4,6 @@
    
     
     "use strict";
-
-    new Vue({
-        el : '#app',
-        data : {
-            name : "hello vueJS"
-        }
-    })
     // Spinner
     var spinner = function () {
         setTimeout(function () {

@@ -1,5 +1,7 @@
 package com.team.goott.admin.domain;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,10 +15,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class ReviewImagesDTO {
-	private int imageId;
-	private int reviewId;
-	private String url;
-	private String fileName;
-	private String fileType;
+public class SummaryDTO {
+	private SummaryTitleDTO summaryTitle;
+	private List<SummaryVO> dailySales; // 일별 매출
+	private List<SummaryVO> monthlySales; // 월간 매출
 }

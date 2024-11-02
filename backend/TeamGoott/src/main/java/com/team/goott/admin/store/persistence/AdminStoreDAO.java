@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.team.goott.admin.domain.StoresVO;
+import com.team.goott.admin.domain.SummaryTitleDTO;
+import com.team.goott.admin.domain.SummaryVO;
 import com.team.goott.owner.domain.ReserveSlotsDTO;
 import com.team.goott.owner.domain.ScheduleDTO;
 import com.team.goott.owner.domain.StoreDTO;
@@ -19,4 +21,8 @@ public interface AdminStoreDAO {
 	int isExistStore(Map<String, Integer> map);
 	int blockStore(int storeId);
 	int cancelBlock(int storeId);
+	SummaryTitleDTO getSummaryTitle(int storeId);
+	List<SummaryVO> getDailySales(int storeId);
+	List<SummaryVO> getMonthlySales(int storeId);
+	StoresVO getStoreInfoForUpdate(Map<String, Object> map);
 }

@@ -81,6 +81,40 @@ public class AdminStoreController {
 		}
 	}
 	
+	@GetMapping({"admin/stats/sales", "admin/stats/sales/{storeId}"})
+	public ResponseEntity<Object> salesSummary(HttpSession session
+											, @PathVariable(required = false) Integer storeId) {
+		if(checkAdminSession(session)) {
+			try {
+				return ResponseEntity.ok(adminStoreService.getSummary(storeId == null ? 0 : storeId));
+			}catch(StoreNotFoundException e) {
+				return ResponseEntity.ok("해당 매장을 찾을 수 없습니다.");
+			}catch(Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");
+			}
+		}else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED_MESSAGE);
+		}
+	}
+	
+	@GetMapping("admin/store/{storeId}")
+	public ResponseEntity<Object> getStoreInfo(HttpSession session
+											, @PathVariable(required = true) int storeId) {
+		if(checkAdminSession(session)) {
+			try {
+				return ResponseEntity.ok(adminStoreService.getStoreInfoForUpdate(storeId));
+			}catch(StoreNotFoundException e) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 매장을 찾을 수 없습니다.");
+			}catch(Exception e) {
+				e.printStackTrace();
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");
+			}
+		}else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED_MESSAGE);
+		}
+	}
+	
 	public boolean checkAdminSession(HttpSession session) {
 		AdminDTO adminSession = (AdminDTO) session.getAttribute("admin");
 		if(adminSession == null) {

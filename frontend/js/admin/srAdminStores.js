@@ -182,7 +182,7 @@ new Vue({
         const response = await axios.put(`/api/admin/store/${this.updateStoreData.storeId}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
-        if(response.status) {
+        if(response.status === 200) {
           alert(response.data.data);
           this.storeModal.hide();
         }

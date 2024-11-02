@@ -1,5 +1,6 @@
 package com.team.goott.owner.store.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,16 +9,16 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.team.goott.owner.domain.OwnerDTO;
 import com.amazonaws.services.s3.AmazonS3;
+import com.team.goott.infra.ReserveSlotsScheduler;
 import com.team.goott.infra.S3ImageManager;
 import com.team.goott.owner.domain.FacilityDTO;
 import com.team.goott.owner.domain.FacilityVO;
+import com.team.goott.owner.domain.OwnerDTO;
 import com.team.goott.owner.domain.ScheduleDTO;
 import com.team.goott.owner.domain.ScheduleVO;
 import com.team.goott.owner.domain.StoreCategoryDTO;
@@ -33,7 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class OwnerStoreServiceImpl implements OwnerStoreService {
-
+	@Inject
+	OwnerStoreDAO storeDAO;
 	@Inject
 	private AmazonS3 s3Client;
 
@@ -43,18 +45,22 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
 	@Autowired
 	private OwnerStoreDAO ownerStoreDao;
 	
+    @Inject
+    private ReserveSlotsScheduler reserveSlotsScheduler;
+	
 	@Override
 	public StoreDTO login(String id, String pw) {
 		StoreDTO storeDTO = ownerStoreDao.login(id, pw);
 		return storeDTO;
 	}
+	
+	@Override
+	public StoreDTO getStoreByOwnerId(int ownerId) {
+		return ownerStoreDao.getStoreByOwnerId(ownerId);
+	}
 
 	@Override
 	public boolean register(OwnerDTO ownerDTO) {
-		// 점주 가입
-		// 레스토랑 정보도 같이 넣게 추가 필요함
-		// 2개 테이블 모두 insert 작업이 진행 되다 보니 트렌젝션 필수
-		// 수정 진행중
 		boolean result = false;
 
 		if (ownerStoreDao.ownerRegister(ownerDTO)) {
@@ -67,8 +73,8 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
 	}
 
     // 모든 테이블에 정보가 insert 되었을 때 실행
-    @Override
     @Transactional(rollbackFor = Exception.class)
+    @Override
     public int createStore(StoreDTO store, List<ScheduleDTO> schedules, List<StoreCategoryDTO> category, List<FacilityDTO> facility, List<MultipartFile> files) throws Exception {
     	validateStoreDTO(store);
         setSidoCodeId(store);
@@ -93,7 +99,9 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
 
         // 가게 이미지 등록 (최대 5장)
         saveStoreImages(files, store.getStoreId());
-
+        
+        reserveSlotsScheduler.createSlotsForStoreId(store.getStoreId(), LocalDate.now(), LocalDate.now().plusMonths(1));
+        
         return 1; 
     }
     
@@ -252,6 +260,7 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
         log.info("서비스단 : scheduleData : " + scheduleData);
         log.info("서비스단 : storeCategoryData : " + storeCategoryData);
         log.info("서비스단 : facilityData : " + facilityData);
+        log.info("서비스단 storeId : " + storeId);
 
         // 가게 정보 업데이트
         int updatedCount = updateStoreInfo(storeId, store, storeData);
@@ -269,6 +278,7 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
 
         // 이미지 처리: 삭제 및 추가
         processImages(storeId, updateFiles, deletedImages);
+        
 
         return updatedCount; // 업데이트된 가게 수 반환
     }
@@ -326,12 +336,23 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
     }
 
     private void updateSchedules(int storeId, List<ScheduleDTO> schedules, List<ScheduleVO> schedulesData) throws Exception {
+    	log.info("서비스 impl updateSchedules 의 storeId : " + storeId);
+    
+    	
+    	
         if (schedules != null && !schedules.isEmpty()) {
             for (ScheduleDTO newSchedule : schedules) {
-                for (ScheduleVO scheduleData : schedulesData) {
+            	boolean deleted = false;
+            	Map<String, Object> dayCodeMap = new HashMap<String, Object>();
+            	dayCodeMap.put("dayCodeId", newSchedule.getDayCodeId());
+            	boolean closeDay = newSchedule.isCloseDay();
+            	
+            	log.info("SERVICE의 SCHEDULE IS CLOSE? : " + dayCodeMap.get("closeDay"));
+            	
+            	for (ScheduleVO scheduleData : schedulesData) {
                     if (scheduleData.getDayCodeId() == newSchedule.getDayCodeId()) {
                         Map<String, Object> scheduleUpdateData = new HashMap<>();
-
+                        scheduleUpdateData.put("scheduleId", scheduleData.getScheduleId());
                         // 변경된 사항만 업데이트
                         if (!scheduleData.getOpen().equals(newSchedule.getOpen())) {
                             scheduleUpdateData.put("open", newSchedule.getOpen());
@@ -340,7 +361,7 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
                             scheduleUpdateData.put("close", newSchedule.getClose());
                         }
                         if (scheduleData.isCloseDay() != newSchedule.isCloseDay()) {
-                            scheduleUpdateData.put("isCloseDay", newSchedule.isCloseDay());
+                            scheduleUpdateData.put("closeDay", newSchedule.isCloseDay());
                         }
 
                         // 스케줄 정보 업데이트
@@ -349,14 +370,33 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
                             scheduleUpdateData.put("dayCodeId", scheduleData.getDayCodeId());
                             ownerStoreDao.updateSchedule(storeId, scheduleUpdateData);
                         }
+                        
+                     // 해당 날짜의 슬롯 삭제
+                        log.info("delete :: {}" ,dayCodeMap.get("dayCodeId"));
+    	                dayCodeMap.put("storeId", storeId);
+                        int deletedSlotCnt = ownerStoreDao.deleteSlotsByDayCodeId(dayCodeMap);
+                        log.info("{}개 슬롯 삭제 완료", deletedSlotCnt);
+                        deleted = true;
+                        
                         break;
                     }
+                }
+            	
+                if(deleted) {
+                	// 바뀐 운영시간을 참조하여 예약슬롯 재생성
+                	// 휴일일 경우 생성 X
+                	if (!closeDay) {
+                		dayCodeMap.put("newSchedule", newSchedule);
+                		reserveSlotsScheduler.updateSlotsForStore(storeId, LocalDate.now().plusDays(1), LocalDate.now().plusMonths(1), dayCodeMap);
+                	}
                 }
             }
         }
     }
 
-    private void updateCategory(int storeId, List<StoreCategoryDTO> categoryList, List<StoreCategoryVO> storeCategoryDataList) throws Exception {
+    
+    
+	private void updateCategory(int storeId, List<StoreCategoryDTO> categoryList, List<StoreCategoryVO> storeCategoryDataList) throws Exception {
         if (categoryList != null && storeCategoryDataList != null) {
             Map<String, StoreCategoryVO> storeCategoryDataMap = new HashMap<>();
             
@@ -560,5 +600,5 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
             throw new IllegalArgumentException("유효한 지역을 입력해주세요: " + store.getSidoCode());
         }
     }
-    
+
 }

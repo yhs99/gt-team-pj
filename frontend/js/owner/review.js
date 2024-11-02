@@ -6,56 +6,109 @@ new Vue({
         totalReviewCount : 0,
         totalAvgScore : 0,
         totalTodayReview : 0,
-        totalAvgTodayScore : 0
+        totalAvgTodayScore : 0,
+        countMonthlyReview : [],
+        countScore : [],
+        showModal : false,
+        selectedReviewId : 0,
     },
 
     methods : {
-        saveStoreDTO(){
-            const storeDTO = {
-                storeId: 3,
-                ownerId: 101,
-                rotationId: 5,
-                sidoCodeId: 32,
-                address: "123 Main St, City, Country",
-                tel: "123-456-7890",
-                description: "A great place to eat.",
-                directionGuide: "Next to the big mall.",
-                maxPeople: 50,
-                maxPeoplePerReserve: 10,
-                locationLatX: 37.123456,
-                locationLonY: 127.123456
-            };
 
-            // sessionStorage.setItem('store',JSON.stringify(storeDTO));
-
-            // const storedStoreDTO = JSON.parse(sessionStorage.getItem('store'));
-           return  axios.post("/api/owner/review", storeDTO)
-            .then(response =>{
-                console.log('storeDTO saved successfully : ', response.data)
-            })
-            .catch(error =>{
-                console.error('Error :' , error);
-            });
-        },
-
-        getAllReviews(){
-            axios.get("/api/owner/review")
+        getAllReviews(orderMethod){
+            //쿼리 파라미터 설정
+            const params = {sortMethod : orderMethod};
+            //차트에 값을 할당하기 주기 위해서 return문 사용
+            return axios.get("/api/owner/review", {params})
             .then((response =>{
                console.log(response); 
                 this.totalReviewCount = response.data.data.totalReview;
                 this.totalTodayReview = response.data.data.todayReview;
                 this.totalAvgScore = this.totalReviewCount > 0 ? Math.round(((response.data.data.totalScore) / this.totalReviewCount) * 100) /100 : 0;
                 this.totalAvgTodayScore = this.totalTodayReview > 0 ? Math.round(((response.data.data.todayTotalScore) / this.totalTodayReview) * 100) /100 : 0 ;
+                this.getAllReviewList = response.data.data.reviews;
+                this.countMonthlyReview = response.data.data.countMonthlyReview;
+                this.countScore = response.data.data.countScore;
             }))
             .catch((error)=>{
                 console.error(error);
             })
         },
+
+        createChart() {
+            console.log(this.countScore);
+            var ctx4 = document.getElementById("bar-chart").getContext("2d");
+            var myChart4 = new Chart(ctx4, {
+                type: "bar",
+                data: {
+                    labels: ["5점", "4점", "3점", "2점", "1점"],
+                    datasets: [{
+                        label : "score",
+                        backgroundColor: [
+                            "rgba(0, 156, 255, .7)",
+                            "rgba(0, 156, 255, .6)",
+                            "rgba(0, 156, 255, .5)",
+                            "rgba(0, 156, 255, .4)",
+                            "rgba(0, 156, 255, .3)"
+                        ],
+                        data: this.countScore
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+            const labels = [];
+            const today = new Date();
+
+            for(let i = 5 ; i >= 0 ;i--){
+                const month = new Date(today.getFullYear(), today.getMonth()- i, 1);
+                labels.push(month.toLocaleString('default',{month : 'long'}));
+            }
+
+            this.countMonthlyReview.reverse();
+
+            var ctx3 = document.getElementById("line-chart").getContext("2d");
+            var myChart3 = new Chart(ctx3, {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "review",
+                        fill: false,
+                        backgroundColor: "rgba(0, 156, 255, .3)",
+                        data: this.countMonthlyReview
+                     }]
+                 },
+                options: {
+                    responsive: true
+                }
+             });
+        },
+
+        //모달창 reviewId 값 할당
+        showDeleteRequestModal(reviewId){
+            this.showModal = true;
+            this.selectedReviewId = reviewId;
+            console.log(this.showModal,this.selectedReviewId);
+        },
+
+        //삭제 버튼 클릭시 리뷰 삭제 요청 
+        deleteReview(reviewId){
+            axios.delete(`/api/owner/review/${reviewId}`)
+            .then((response =>{
+                console.log(response);
+                this.showModal = false;
+                this.getAllReviews('score');
+            }))
+        }
     },
     mounted(){
-        this.saveStoreDTO().then(() => {
-            this.getAllReviews();
+        this.getAllReviews('score').then(() => {
+            this.createChart();
         });
+        
     }
 })
 

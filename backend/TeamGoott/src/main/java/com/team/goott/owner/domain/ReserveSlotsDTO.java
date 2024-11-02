@@ -24,4 +24,5 @@ public class ReserveSlotsDTO {
 	private LocalDateTime slotDatetime;
 	private boolean reserved;
 	private int userId;
+	
 }

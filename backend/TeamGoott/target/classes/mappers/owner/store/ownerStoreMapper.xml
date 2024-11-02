@@ -73,23 +73,30 @@
 	</select>
 
 	<update id="updateStore" parameterType="map">
-		UPDATE store
-		<set>
-			<if test="rotationId != null">rotationId = #{rotationId},</if>
-			<if test="sidoCodeId != null">sidoCodeId = #{sidoCodeId},</if>
-			<if test="storeName != null and storeName != ''">storeName = #{storeName},</if>
-			<if test="address != null and address != ''">address = #{address},</if>
-			<if test="tel != null and tel != ''">tel = #{tel},</if>
-			<if test="description != null and description != ''">description = #{description},</if>
-			<if test="directionGuide != null and directionGuide != ''">directionGuide = #{directionGuide},</if>
-			<if test="maxPeople != null">maxPeople = #{maxPeople},</if>
-			<if test="maxPeoplePerReserve != null">maxPeoplePerReserve = #{maxPeoplePerReserve},</if>
-			<if test="isBlocked != null">isBlocked = #{isBlocked},</if>
-			<if test="locationLatX != null">locationLatX = #{locationLatX},</if>
-			<if test="locationLonY != null">locationLonY = #{locationLonY}</if>
-		</set>
-		WHERE storeId = #{storeId}
-	</update>
+    <choose>
+        <when test="rotationId != null or sidoCodeId != null or storeName != null or address != null or tel != null or description != null or directionGuide != null or maxPeople != null or maxPeoplePerReserve != null or isBlocked != null or locationLatX != null or locationLonY != null">
+            UPDATE store
+            <set>
+                <if test="rotationId != null">rotationId = #{rotationId},</if>
+                <if test="rotationId != null">rotationIdLastUpdated = current_date(),</if>
+                <if test="sidoCodeId != null">sidoCodeId = #{sidoCodeId},</if>
+                <if test="storeName != null and storeName != ''">storeName = #{storeName},</if>
+                <if test="address != null and address != ''">address = #{address},</if>
+                <if test="tel != null and tel != ''">tel = #{tel},</if>
+                <if test="description != null and description != ''">description = #{description},</if>
+                <if test="directionGuide != null and directionGuide != ''">directionGuide = #{directionGuide},</if>
+                <if test="maxPeople != null">maxPeople = #{maxPeople},</if>
+                <if test="maxPeoplePerReserve != null">maxPeoplePerReserve = #{maxPeoplePerReserve},</if>
+                <if test="isBlocked != null">isBlocked = #{isBlocked},</if>
+                <if test="locationLatX != null">locationLatX = #{locationLatX},</if>
+                <if test="locationLonY != null">locationLonY = #{locationLonY}</if>
+            </set>
+            WHERE storeId = #{storeId}
+        </when>
+        <otherwise>
+        </otherwise>
+    </choose>
+</update>
 
 
 	<update id="updateSchedule"

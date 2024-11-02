@@ -9,8 +9,8 @@
     ORDER BY storeId
 </select>
 
-<select id="getRotationCodeIdByStoreId" parameterType="int" resultType="int">
-    SELECT r.rotation
+<select id="getRotationCodeIdByStoreId" parameterType="int" resultType="com.team.goott.admin.domain.RotationVO">
+    SELECT r.rotation, s.rotationIdLastUpdated
     FROM store s
     JOIN rotationCode r ON s.rotationId = r.rotationCodeId
     WHERE s.storeId = #{storeId}
@@ -21,6 +21,12 @@
     FROM reserveSlots
     WHERE DATE(slotDatetime) = #{date}
     AND storeId = #{storeId}
+</select>
+
+<select id="getLastReserveSlot" parameterType="int" resultType="java.time.LocalDate">
+SELECT MAX(slotDatetime)
+FROM reserveSlots
+WHERE storeId = #{storeId}
 </select>
 
 <insert id="insertReserveSlot" parameterType="com.team.goott.owner.domain.ReserveSlotsDTO">

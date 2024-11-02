@@ -34,6 +34,7 @@ new Vue({
       locationLatX:0,
       locationLonY:0
     },
+    beforeSchedule: [],
     selectedCategories: [],
     selectedFacilities: [],
     geocoder : ''
@@ -90,11 +91,14 @@ new Vue({
       axios.get('/api/admin/store/'+storeId)
       .then(response => {
         this.storeInfo = response.data.data;
+        this.storeInfo.sidoCode = this.sidoCodes.find(sidoCode => sidoCode.sidoCodeId === this.storeInfo.sidoCodeId).sidoName;
         this.selectedCategories = this.storeInfo.storeCategories.map(storeCategory => storeCategory.categoryCodeId);
         this.selectedFacilities = this.storeInfo.facilities.map(facility => facility.facilityCode);
+        this.beforeSchedule = JSON.parse(JSON.stringify(this.storeInfo.storeSchedules));
         this.updateStoreData = {};
         this.updateFlag = true;
         this.storeModal.show();
+        console.log(this.storeInfo);
       })
       .catch(error => {
         console.error(error);
@@ -103,7 +107,8 @@ new Vue({
     openAddress() {
       new daum.Postcode({
         oncomplete: (data) => {
-          this.storeInfo.address =data.address;
+          this.storeInfo.address = data.address;
+          this.storeInfo.sidoCode = data.sido;
           this.geocoder.addressSearch(data.address, (result, status) => {
             if (status === kakao.maps.services.Status.OK) {
               this.storeInfo.locationLatX = parseFloat(result[0].x).toFixed(7);
@@ -135,12 +140,13 @@ new Vue({
     },
     async submitUpdate() {
       try {
+        const selectedCategoryForm = [];
+        const selectedFacilityForm = [];
         this.spinnerShow(true);
         this.updateStoreData.storeId = this.storeInfo.storeId;
         this.updateStoreData.ownerId = this.storeInfo.ownerId;
         this.updateStoreData.rotationId = this.storeInfo.rotationId;
         this.updateStoreData.sidoCode = this.storeInfo.sidoCode;
-        this.updateStoreData.sidoCodeId = this.storeInfo.sidoCodeId;
         this.updateStoreData.storeName = this.storeInfo.storeName;
         this.updateStoreData.address = this.storeInfo.address;
         this.updateStoreData.tel = this.storeInfo.tel;
@@ -150,20 +156,42 @@ new Vue({
         this.updateStoreData.maxPeoplePerReserve = this.storeInfo.maxPeoplePerReserve;
         this.updateStoreData.locationLatX = this.storeInfo.locationLatX;
         this.updateStoreData.locationLonY = this.storeInfo.locationLonY;
+        this.selectedCategories.map(category => {
+          const categories = this.categories.find(cat => cat.categoryCodeId === category);
+          selectedCategoryForm.push({
+            categoryCodeId : categories.categoryCodeId,
+            storeCategoryName :  categories.categoryName
+          });
+        });
+        this.selectedFacilities.map(facility => {
+          const facilities = this.facilities.find(fac => fac.facilityCode === facility);
+          selectedFacilityForm.push({
+            storeId : this.updateStoreData.storeId,
+            facilityCode :  facilities.facilityCode
+          });
+        });
+        let changedSchedule = this.getUpdatedSchedules(this.beforeSchedule, this.storeInfo.storeSchedules);
         const formData = new FormData();
+        
         formData.append('storeDTO', new Blob([JSON.stringify(this.updateStoreData)], { type: 'application/json' }));
-        formData.append('storeCategoryDTO', new Blob([JSON.stringify(this.selectedCategories)], { type: 'application/json' }));
-        formData.append('facilityDTO', new Blob([JSON.stringify(this.selectedFacilities)], { type: 'application/json' }));
-        formData.append('scheduleDTO', new Blob([JSON.stringify(this.storeInfo.storeSchedules)], { type: 'application/json' }));
-        const response = await axios.put(`/api/owner/store/${this.updateStoreData.storeId}`, formData, {
+        formData.append('storeCategoryDTO', new Blob([JSON.stringify(selectedCategoryForm)], { type: 'application/json' }));
+        formData.append('facilityDTO', new Blob([JSON.stringify(selectedFacilityForm)], { type: 'application/json' }));
+        formData.append('scheduleDTO', new Blob([JSON.stringify(changedSchedule)], { type: 'application/json' }));
+        
+        this.storeModal.hide();
+        const response = await axios.put(`/api/admin/store/${this.updateStoreData.storeId}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
-        console.log(response);
+        if(response.status) {
+          alert(response.data.data);
+          this.storeModal.hide();
+        }
       } catch(error) {
         if(error.status === 404) {
           alert('서버가 원활하지 않습니다. 다시 시도해주세요');
         }else {
           alert('처리중 오류가 발생했습니다.');
+          this.fetchStores();
         }
         console.error(error);
       } finally {
@@ -172,6 +200,20 @@ new Vue({
     },
     spinnerShow(bool) {
       bool ? $('#spinner').addClass('show') : $('#spinner').removeClass('show');
+    },
+    getUpdatedSchedules(existingSchedules, newSchedules) {
+      const updatedObjects = [];
+    
+      newSchedules.forEach(newSchedule => {
+        const existingSchedule = existingSchedules.find(schedule => schedule.scheduleId === newSchedule.scheduleId);
+    
+        // 기존 데이터가 존재하고 값이 다를 경우 새 객체 추가
+        if (existingSchedule && JSON.stringify(existingSchedule) !== JSON.stringify(newSchedule)) {
+          updatedObjects.push({ ...newSchedule }); // 수정된 데이터로 새 객체 생성
+        }
+      });
+    
+      return updatedObjects;
     }
   },
   computed: {

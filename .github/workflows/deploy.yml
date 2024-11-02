@@ -46,7 +46,7 @@ jobs:
           echo "s3.secretKey=${S3_SECRETKEY}" >> backend/TeamGoott/src/main/resources/connection.properties
           echo "s3.region=ap-northeast-2" >> backend/TeamGoott/src/main/resources/connection.properties
           echo "s3.bucketName=goott-bucket" >> backend/TeamGoott/src/main/resources/connection.properties
-          echo "name=${username}" >> backend/TeamGoott/src/main/resources/connection.properties
+          echo "username=${username}" >> backend/TeamGoott/src/main/resources/connection.properties
           echo "password=${password}" >> backend/TeamGoott/src/main/resources/connection.properties
 
       - name: Build with Maven

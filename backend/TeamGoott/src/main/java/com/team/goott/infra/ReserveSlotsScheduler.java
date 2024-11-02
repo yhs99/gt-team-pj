@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Description;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import com.team.goott.admin.domain.RotationVO;
 import com.team.goott.admin.store.persistence.AdminStoreDAO;
 import com.team.goott.owner.domain.ReserveSlotsDTO;
 import com.team.goott.owner.domain.ScheduleDTO;
@@ -65,11 +66,14 @@ public class ReserveSlotsScheduler {
         	}
         	try {
 	            // storeId를 사용하여 rotationCodeId의 간격을 가져옵니다.
-	            int intervalMinutes = dao.getRotationCodeIdByStoreId(schedule.getStoreId());
-	
+	            RotationVO rotationInfo = dao.getRotationCodeIdByStoreId(schedule.getStoreId());
+	            LocalDate lastSlot = dao.getLastReserveSlot(schedule.getStoreId());
+	            //LocalDate lastUpdate = rotationInfo.getRotationIdLastUpdated();
+	            int intervalMinutes = rotationInfo.getRotation();
 	            LocalTime openTime = schedule.getOpen();
 	            LocalTime closeTime = schedule.getClose();
-	
+	            // rotation 업데이트 날짜가 마지막 슬롯 날짜 이후라면 새 간격 적용
+
 	            // 이미 생성된 예약 슬롯 조회
 	            Map<String, Object> map = new HashMap<String, Object>();
 	            map.put("date", date);
@@ -77,21 +81,31 @@ public class ReserveSlotsScheduler {
 	            List<ReserveSlotsDTO> existingSlots = dao.getExistingSlots(map);
 	
 	            // 예약 슬롯 생성
-	            for (LocalTime time = openTime; time.isBefore(closeTime); time = time.plusMinutes(intervalMinutes)) {
-	            	final LocalTime currentTime = time;
-	            	// 이미 존재하는 슬롯인지 확인
-	                boolean exists = existingSlots.stream()
-	                        .anyMatch(slot -> slot.getSlotDatetime().toLocalDate().equals(date) && 
-	                                slot.getSlotDatetime().toLocalTime().equals(currentTime));
-	
-	                if (!exists) {
+            	if(date.isAfter(lastSlot) && lastSlot != null) {
+            		for (LocalTime time = openTime; time.isBefore(closeTime); time = time.plusMinutes(intervalMinutes)) {
+		            	final LocalTime currentTime = time;
+		            	// 이미 존재하는 슬롯인지 확인
+		                boolean exists = existingSlots.stream()
+		                        .anyMatch(slot -> slot.getSlotDatetime().toLocalDate().equals(date) && 
+		                                slot.getSlotDatetime().toLocalTime().equals(currentTime));
+		
+		                if (!exists) {
+		                    // 새 슬롯을 생성
+		                	ReserveSlotsDTO newSlot = new ReserveSlotsDTO();
+		                    newSlot.setStoreId(schedule.getStoreId());
+		                    newSlot.setSlotDatetime(LocalDateTime.of(date, time)); // LocalDateTime으로 설정
+		                    slotsToInsert.add(newSlot); // 슬롯을 리스트에 추가
+		                }
+		            }
+	            } else {
+	            	log.info("{} 가게의 슬롯을 찾을 수 없어 생성합니다.",schedule.getStoreId());
+            		for (LocalTime time = openTime; time.isBefore(closeTime); time = time.plusMinutes(intervalMinutes)) {
 	                    // 새 슬롯을 생성
 	                	ReserveSlotsDTO newSlot = new ReserveSlotsDTO();
 	                    newSlot.setStoreId(schedule.getStoreId());
 	                    newSlot.setSlotDatetime(LocalDateTime.of(date, time)); // LocalDateTime으로 설정
 	                    slotsToInsert.add(newSlot); // 슬롯을 리스트에 추가
-	                    //log.info("["+ schedule.getStoreId() +"] :: "+date.toString() + ", " + time.toString());
-	                }
+		            }
 	            }
         	}catch (Exception e) {
         		e.printStackTrace();

@@ -1,4 +1,6 @@
-package com.team.goott.owner.domain;
+package com.team.goott.admin.domain;
+
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,10 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class StoreCategoryVO {
-	private int categoryId;
-	private int storeId;
-	private String categoryCodeId; 
-	private String storeCategoryName;
-
+public class RotationVO {
+	private int rotation;
+	private LocalDate rotationIdLastUpdated;
 }

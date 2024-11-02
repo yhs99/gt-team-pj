@@ -201,13 +201,14 @@
                   <input type="text" name="storeName" class="form-control mb-3" id="storeName" v-model="storeInfo.storeName" :placeholder="storeInfo.storeName">
                   <!-- 길 설명 -->
                   <label for="descprtion" class="form-label">매장 소개</label>
-                  <input type="text" name="descprtion" class="form-control mb-3" id="descprtion" v-model="storeInfo.descprtion" :placeholder="storeInfo.descprtion">
+                  <input type="text" name="descprtion" class="form-control mb-3" id="description" v-model="storeInfo.description" :placeholder="storeInfo.description">
                   <!-- 전화번호 -->
                   <label for="tel" class="form-label">전화번호</label>
                   <input type="text" name="tel" class="form-control mb-3" id="tel" v-model="storeInfo.tel" :placeholder="storeInfo.tel">
                   <!-- 매장주소 -->
                   <label for="address" class="form-label">매장주소</label>
                   <input type="text" name="address" class="form-control mb-3" id="address" v-model="storeInfo.address" :placeholder="storeInfo.address" @click="openAddress" readonly>
+                  <input type="hidden" name="sidoCode" class="form-control mb-3" id="sidoCode" v-model="storeInfo.sidoCode" :placeholder="storeInfo.sidoCode" readonly>
                   <input type="text" name="directionGuide" class="form-control mb-3" id="directionGuide" v-model="storeInfo.directionGuide" placeholder="오시는길 안내">
                   <!-- 매장 주소좌표값 -->
                   <input type="hidden" v-model="storeInfo.locationLatX" step="0.0000001"><input type="hidden" v-model="storeInfo.locationLonY" step="0.0000001">

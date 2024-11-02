@@ -68,7 +68,12 @@ methods: {
       console.log("admin checked");
     })
     .catch(error => {
-      location.href = '/';
+      if(error.status === 401) {
+        alert('로그인 정보를 확인할 수 없습니다. 다시 로그인해주세요');
+      }else {
+        alert('서버 오류로 인해 정보를 확인할 수 없습니다.');
+      }
+      location.href = '/view/admin/srAdminLogin';
     });
   },
   logoutProcess: function() {

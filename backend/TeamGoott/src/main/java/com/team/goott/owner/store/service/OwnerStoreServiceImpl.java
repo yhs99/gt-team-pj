@@ -244,7 +244,6 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
     public int updateStore(int storeId, StoreDTO store, List<ScheduleDTO> schedules, List<StoreCategoryDTO> category,
                            List<FacilityDTO> facility, List<MultipartFile> updateFiles, List<String> deletedImages) throws Exception {
 
-        log.info("서비스단 요청 테스트 : --------------------------------------");
         
         setSidoCodeId(store); // sidoCodeId 설정
 
@@ -280,7 +279,7 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
         processImages(storeId, updateFiles, deletedImages);
         
 
-        return updatedCount; // 업데이트된 가게 수 반환
+        return 1; // 업데이트된 가게 수 반환
     }
 
     private int updateStoreInfo(int storeId, StoreDTO store, StoreVO storeData) throws Exception {
@@ -331,7 +330,10 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
         }
 
         log.info("서비스단 storeUpdateData : " + storeUpdateData.toString());
-
+        if(storeUpdateData.isEmpty()) {
+        	log.info("업데이트할 store정보가 없어 쿼리 실행을 스킵합니다.");
+        	return 1;
+        }
         return ownerStoreDao.updateStore(storeId, storeUpdateData);
     }
 

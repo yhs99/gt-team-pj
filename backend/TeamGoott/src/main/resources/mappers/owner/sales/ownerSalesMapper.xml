@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.team.mappers.owner.review.ownerSalesMapper">
+
+<resultMap type="com.team.goott.owner.domain.SalesInfoVO" id="SalesResult">
+	<id property="payHistoryId" column ="payHistoryId"/>
+	<result property="reserveId" column="reserveId"/>
+	<result property="storeId" column="storeId"/>
+	<result property="menuId" column="menuId"/>
+	<result property="menuName" column="menuName"/>
+	<result property="stock" column="stock"/>
+	<result property="stockPerPrice" column="stockPerPrice"/>
+	<result property="totalPrice" column="totalPrice"/>
+	<result property="couponYN" column="couponYN"/>
+	<result property="couponId" column="couponId"/>
+	<result property="payAmount" column="payAmount"/>
+</resultMap>
+
+<select id="getSalesList" parameterType="map" resultMap="SalesResult">
+	SELECT * from payHistory
+	WHERE storeId = #{storeId}
+</select>
+</mapper>

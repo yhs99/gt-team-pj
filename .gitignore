@@ -8,3 +8,4 @@ docs
 contrib
 conf
 backend/TeamGoott/src/main/webapp/META-INF/MANIFEST.MF
+backend/**/pom.properties

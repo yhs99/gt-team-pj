@@ -82,10 +82,17 @@ public class UserReviewServiceImpl implements UserReviewService {
 					imgs.setReviewId(generatedId);
 					revDAO.insertImgs(imgs);
 				}
+				log.info("이미지 저장 완료");
 			}
+		}
 			
-			log.info("리뷰 저장 완료");
-			result = true;
+		if(revDAO.changeStatusCodeId(reviewDTO.getReserveId(), 5) > 0){
+			
+		result = true;
+		log.info("리뷰 저장 완료");
+		}else {
+		    log.error("리뷰 저장 실패: 리뷰 추가에 실패했습니다.");
+				
 		}
 		return result;
 	}
@@ -121,7 +128,7 @@ public class UserReviewServiceImpl implements UserReviewService {
 
 	@Override
 	@Transactional
-	public boolean deleteReviewNFile(int reviewId, List<ReviewImagesDTO> list) {
+	public boolean deleteReviewNFile(int reviewId, int reserveId, List<ReviewImagesDTO> list) {
 		// 리뷰 삭제, 파일 삭제
 		boolean result = false;
 		System.out.println(list == null);
@@ -146,10 +153,16 @@ public class UserReviewServiceImpl implements UserReviewService {
 						}
 					}
 				   }else {
-					   result=true;
 					   log.info("삭제할 이미지가 없음, 리뷰만 삭제 완료");
 				   }
-			}
+			 if(revDAO.changeStatusCodeId(reserveId, 4) > 0){
+					
+				 	result=true;
+					log.info("statusCode 4변경 완료");
+					
+					}
+				}
+			
 			} catch (Exception e) {
 				 log.error("삭제 중 오류 발생: {}", e.getMessage());
 			}
@@ -221,6 +234,12 @@ public class UserReviewServiceImpl implements UserReviewService {
 	public List<ReviewImagesDTO> selectReviewImagesByReviewId(int reviewId) {
 		// reviewId에 따른 reviewImages
 		return revDAO.filesByNo(reviewId);
+	}
+
+	@Override
+	public int checkImageExist(int imageId) {
+		// 이미지 파일이 존재하는지 확인
+		return revDAO.checkIfImageExist(imageId);
 	}
 
 

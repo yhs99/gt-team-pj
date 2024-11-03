@@ -2,5 +2,81 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.user.bookmark.userBookmarkMapper">
 
+<insert id="insertBookmark">
+insert into bookmark(userId, storeId) values (#{userId},#{storeId})
+</insert>
 
+<delete id="deleteBookmark">
+delete from bookmark where userId = #{userId} and storeId =#{storeId}
+</delete>
+
+<select id="selectBookmark" resultType="com.team.goott.user.domain.BookmarkDTO">
+select * from bookmark where userId = #{userId}
+</select>
+
+<select id="selectBookmarkInfo" resultType="com.team.goott.user.domain.BookmarkInfoDTO">
+    SELECT 
+    s.storeId,
+    i.url,
+    s.storeName,
+    s.description,
+    (SELECT AVG(r.score) FROM review r WHERE r.storeId = s.storeId) AS reviewScore,
+    (SELECT COUNT(*) FROM review r WHERE r.storeId = s.storeId) AS reviewCount,
+    c.categoryName,
+    d.sidoName,
+    h.open,
+    h.close,
+    h.dayCodeId,
+    h.closeDay, 
+    (SELECT AVG(price) FROM menu m WHERE m.storeId = s.storeId) AS averagePrice
+FROM 
+    store s 
+LEFT JOIN 
+    storeImages i ON i.storeId = s.storeId
+LEFT JOIN 
+    storeCategory sc ON s.storeId = sc.storeId
+LEFT JOIN 
+    categoryCode c ON c.categoryCodeId = sc.categoryCodeId
+LEFT JOIN 
+    sidoCode d ON d.sidoCodeId = s.sidoCodeId
+LEFT JOIN 
+    schedule h ON h.storeId = s.storeId
+WHERE 
+    s.storeId = #{storeId}  and dayCodeId = #{dayOfWeek}
+
+UNION
+
+SELECT 
+    s.storeId,
+    i.url,
+    s.storeName,
+    s.description,
+    (SELECT AVG(r.score) FROM review r WHERE r.storeId = s.storeId) AS reviewScore,
+    (SELECT COUNT(*) FROM review r WHERE r.storeId = s.storeId) AS reviewCount,
+    c.categoryName,
+    d.sidoName,
+    (SELECT MAX(h2.open) FROM schedule h2 WHERE h2.storeId = s.storeId AND h2.closeDay = 0) AS open,
+    (SELECT MAX(h2.close) FROM schedule h2 WHERE h2.storeId = s.storeId AND h2.closeDay = 0) AS close,
+      NULL AS dayCodeId,
+    (SELECT MAX(h2.closeDay) FROM schedule h2 WHERE h2.storeId = s.storeId AND h2.closeDay = 0) AS closeDay, 
+    (SELECT AVG(price) FROM menu m WHERE m.storeId = s.storeId) AS averagePrice
+FROM 
+    store s 
+LEFT JOIN 
+    storeImages i ON i.storeId = s.storeId
+LEFT JOIN 
+    storeCategory sc ON s.storeId = sc.storeId
+LEFT JOIN 
+    categoryCode c ON c.categoryCodeId = sc.categoryCodeId
+LEFT JOIN 
+    sidoCode d ON d.sidoCodeId = s.sidoCodeId
+WHERE 
+    s.storeId = #{storeId} 
+    
+    limit 1;
+</select>
+
+<select id="countBookmarks" resultType="int">
+select count(*) from bookmark where userId = #{userId}
+</select>
 </mapper>

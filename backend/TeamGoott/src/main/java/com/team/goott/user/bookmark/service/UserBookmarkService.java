@@ -15,6 +15,4 @@ List<BookmarkInfoDTO> getBookmarkInfoByUserId(int userId);
 
 int countBookMark(int userId);
 
-
-
 }

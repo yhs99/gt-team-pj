@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.inject.Inject;
-
-import com.team.goott.owner.domain.OwnerDTO;
 import com.team.goott.owner.domain.FacilityVO;
+import com.team.goott.owner.domain.OwnerDTO;
+import com.team.goott.owner.domain.ReserveSlotsDTO;
+import com.team.goott.owner.domain.ScheduleDTO;
 import com.team.goott.owner.domain.ScheduleVO;
 import com.team.goott.owner.domain.StoreCategoryVO;
 import com.team.goott.owner.domain.StoreDTO;
@@ -24,16 +25,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OwnerStoreDAOImpl implements OwnerStoreDAO {
 	
+	@Autowired
+	SqlSession ses;
+	
 	private final static String NS = "com.team.mappers.owner.store.ownerStoreMapper.";
-
-	@Inject
-	private SqlSession ses;
-
+	
 	@Override
+	
+	// store 테이블에 데이터 저장
 	public int createStore(StoreDTO store) throws Exception {
+		log.info(store.getOwnerId()+"");
 		return ses.insert(NS + "createStore", store);
 	}
-
+	
 	@Override
 	public StoreDTO login(String id, String pw) {
 		// 점주 로그인
@@ -53,12 +57,12 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
 			return false;
 		}
 	}
-	
+
 	// schedule 테이블에 데이터 저장
 	@Override
-	public int createSchedule(Map<String, Object> scheduleMap) {
-			return ses.insert(NS + "createSchedule", scheduleMap);
-	}
+    public int createSchedule(Map<String, Object> scheduleMap) {
+        return ses.insert(NS + "createSchedule", scheduleMap);
+    }
 
 	// category 테이블에 데이터 저장
 	@Override
@@ -85,51 +89,51 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
 	}
 	
 	// storeId로 schedule 테이블의 정보를 가져오기
-	@Override
-	public List<ScheduleVO> getSchedulesByStoreId(int storeId) throws Exception {
-			return ses.selectList(NS + "getSchedulesByStoreId", storeId);
-	}
+    @Override
+    public List<ScheduleVO> getSchedulesByStoreId(int storeId) throws Exception {
+        return ses.selectList(NS + "getSchedulesByStoreId", storeId);
+    }
 
-	// storeId로 category 테이블의 정보를 가져오기
-	@Override
-	public List<StoreCategoryVO> getStoreCategoryByStoreId(int storeId) throws Exception {
-			return ses.selectList(NS + "getStoreCategoryByStoreId", storeId);
-	}
+    // storeId로 category 테이블의 정보를 가져오기
+    @Override
+    public List<StoreCategoryVO> getStoreCategoryByStoreId(int storeId) throws Exception {
+        return ses.selectList(NS + "getStoreCategoryByStoreId", storeId);
+    }
 
-	// storeId로 facility 테이블의 정보를 가져오기
-	@Override
-	public List<FacilityVO> getFacilityByStoreId(int storeId) throws Exception {
-			return ses.selectList(NS + "getFacilityByStoreId", storeId);
-	}
+    // storeId로 facility 테이블의 정보를 가져오기
+    @Override
+    public List<FacilityVO> getFacilityByStoreId(int storeId) throws Exception {
+        return ses.selectList(NS + "getFacilityByStoreId", storeId);
+    }
 
-	// storeId로 storeImages 테이블의 정보를 가져오기
-	@Override
-	public List<StoreImagesVO> getStoreImagesByStoreId(int storeId) throws Exception {
-			return ses.selectList(NS + "getStoreImagesByStoreId", storeId);
-	}
+    // storeId로 storeImages 테이블의 정보를 가져오기
+    @Override
+    public List<StoreImagesVO> getStoreImagesByStoreId(int storeId) throws Exception {
+        return ses.selectList(NS + "getStoreImagesByStoreId", storeId);
+    }
     
 	// storeId를 이용해 store 테이블의 정보를 수정
-	@Override
-	public int updateStore(int storeId, Map<String, Object> storeUpdateData) throws Exception {
-		storeUpdateData.put("storeId", storeId);
-			return ses.update(NS + "updateStore", storeUpdateData); // SQL 쿼리 호출
-	}
+    @Override
+    public int updateStore(int storeId, Map<String, Object> storeUpdateData) throws Exception {
+    	storeUpdateData.put("storeId", storeId);
+        return ses.update(NS + "updateStore", storeUpdateData); // SQL 쿼리 호출
+    }
     
-	// storeId를 참조하는 schedule 테이블 수정
-	@Override
-	public void updateSchedule(int storeId,  Map<String, Object> scheduleUpdateData) throws Exception {
-		scheduleUpdateData.put("storeId", storeId);
-			ses.update(NS + "updateSchedule", scheduleUpdateData);
-	}
+    // storeId를 참조하는 schedule 테이블 수정
+    @Override
+    public void updateSchedule(int storeId,  Map<String, Object> scheduleUpdateData) throws Exception {
+    	scheduleUpdateData.put("storeId", storeId);
+        ses.update(NS + "updateSchedule", scheduleUpdateData);
+    }
 
-	// storeId를 참조하는 storeImages 테이블의 fileName, storeId를 이용하여 삭제 요청 받은 파일을 삭제
-	@Override
-	public int deleteStoreImagesByFileNames(int storeId, Map<String, List<String>> filesToDeleteMap) throws Exception{
-			Map<String, Object> params = new HashMap<>();
-			params.put("storeId", storeId);
-			params.put("fileNames", filesToDeleteMap.get("fileNames"));
-			return ses.delete(NS + "deleteStoreImagesByFileNames", params);
-	}
+    // storeId를 참조하는 storeImages 테이블의 fileName, storeId를 이용하여 삭제 요청 받은 파일을 삭제
+    @Override
+    public int deleteStoreImagesByFileNames(int storeId, Map<String, List<String>> filesToDeleteMap) throws Exception{
+        Map<String, Object> params = new HashMap<>();
+        params.put("storeId", storeId);
+        params.put("fileNames", filesToDeleteMap.get("fileNames"));
+        return ses.delete(NS + "deleteStoreImagesByFileNames", params);
+    }
 
     // 해당 가게의 사진이 5장 이상 저장되지 않게 storeImages 테이블의 image 수를 가져옴
 	@Override
@@ -158,5 +162,58 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
     	
         return ses.delete(NS + "deleteFacility", params);
     }
+    
+	@Override
+	public List<ScheduleDTO> getScheduleByStoreId(int storeId) {
+		return ses.selectList(NS+"getScheduleByDayCode", storeId);
+	}
+
+
+    @Override
+    public void batchInsertSlots(List<ReserveSlotsDTO> slots) {
+        ses.insert(NS + "batchInsertSlots", slots);
+    }
+    
+    @Override
+    public List<ScheduleDTO> getScheduleByDayCode(int dayCode, int storeId) {
+    	Map<String, Integer> params = new HashMap<String, Integer>();
+    	params.put("storeId", storeId);
+    	params.put("dayCode", dayCode);
+    	return ses.selectList(NS + "getScheduleByDayCode", params);
+    }
+
+    @Override
+    public int getRotationCodeIdByStoreId(int storeId) {
+    	return ses.selectOne(NS+"getRotationCodeIdByStoreId", storeId);
+    }
+    
+    @Override
+    public List<ReserveSlotsDTO> getExistingSlots(Map<String, Object> params) {
+        return ses.selectList(NS + "getExistingSlots", params);
+    }
+    
+	@Override
+	public int insertReserveSlot(ReserveSlotsDTO newSlot) {
+		return ses.insert(NS+"insertReserveSlot", newSlot);
+	}
+
+
+
+	@Override
+	public int deleteSlotsByDayCodeId(Map<String, Object> dayCodeMap) {
+		log.info("dao :: {} ", dayCodeMap.toString());
+		return ses.delete(NS + "deleteSlotsByDayCodeId", dayCodeMap);
+	}
+
+	@Override
+	public void UpdateReserveSlot(ReserveSlotsDTO newSlot)  {
+		ses.insert(NS + "updateReserveSlot" , newSlot);
+		
+	}
+
+	@Override
+	public StoreDTO getStoreByOwnerId(int ownerId) {
+		return ses.selectOne(NS + "getStoreByOwnerId", ownerId);
+	}
 
 }

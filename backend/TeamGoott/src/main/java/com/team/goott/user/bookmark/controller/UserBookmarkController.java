@@ -33,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/bookmark")
 public class UserBookmarkController {
 
-
 @Inject
 UserBookmarkService service;
 

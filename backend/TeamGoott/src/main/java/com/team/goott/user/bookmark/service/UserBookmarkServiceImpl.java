@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import com.team.goott.user.bookmark.persistence.UserBookmarkDAO;
@@ -72,7 +73,5 @@ public int countBookMark(int userId) {
 	// 유저의 북마크 개수 가져오기
 	return bDao.countBookmarks(userId);
 }
-
-
 
 }

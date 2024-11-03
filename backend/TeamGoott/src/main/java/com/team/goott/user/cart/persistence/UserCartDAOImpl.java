@@ -43,13 +43,18 @@ public class UserCartDAOImpl implements UserCartDAO {
 	}
 
 	@Override
-	public List<MenuDTO> getMenuCart(int menuId) {
+	public List<MenuDTO> getMenuCart(int menuId) throws Exception {
 		return ses.selectList(ns+"getMenuCart",menuId);
 	}
 
 	@Override
 	public List<ExtendedCartDTO> getUserCartById(int userId) throws Exception {
 		return ses.selectList(ns+"getUserCartById", userId);
+	}
+
+	@Override
+	public List<Integer> getCartStoreList(int userId) throws Exception {
+		return ses.selectList(ns+"getCartStoreList", userId);
 	}
 
 

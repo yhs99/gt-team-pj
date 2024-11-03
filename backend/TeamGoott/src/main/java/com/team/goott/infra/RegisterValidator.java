@@ -35,7 +35,7 @@ public class RegisterValidator {
     }
 
     // 이름은 한글만 허용
-    private String validateName(String name) {
+    public String validateName(String name) {
     	if(name != null) {
 	        String nameRegex = "^[가-힣]+$";
 	        if (!Pattern.matches(nameRegex, name)) {
@@ -48,7 +48,7 @@ public class RegisterValidator {
     }
 
     // 핸드폰 번호 형식 검증
-    private String validatePhoneNumber(String phoneNumber) {
+    public String validatePhoneNumber(String phoneNumber) {
     	if(phoneNumber != null && !"".equals(phoneNumber) ) {
 	        String phoneRegex = "^\\d{3}-\\d{4}-\\d{4}$";
 	        if (!Pattern.matches(phoneRegex, phoneNumber) || phoneNumber == null) {

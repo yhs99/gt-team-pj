@@ -40,6 +40,7 @@ public class UserStoreServiceImpl implements UserStoreService {
 		filter.setCategories(userStoreDAO.getStoreFilterCategory());
 		filter.setFacilities(userStoreDAO.getStoreFiltersFacilityCode());
 		filter.setSidoCodes(userStoreDAO.getStoreFiltersSidoCode());
+		filter.setRotations(userStoreDAO.getStoreFiltersRotationCode());
 		return filter;
 	}
 

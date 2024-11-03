@@ -13,8 +13,8 @@
     <link href="/css/owner/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
     <link href="/css/owner/lib/tempusdominus/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
     <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="/css/owner/style.css" rel="stylesheet" />
-    <link href="/css/owner/mainlogo.css" rel="stylesheet">
+    <link href="/css/admin/style.css" rel="stylesheet" />
+    <link href="/css/admin/mainlogo.css" rel="stylesheet">
 
     <!-- JavaScript Libraries -->
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
@@ -31,90 +31,31 @@
     <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
     <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="/node_modules/fullcalendar/index.global.min.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7394510cd6543ff560b02ba31649d9f3&libraries=services"></script>
     <!-- Template Javascript -->
     <script type="module" src="/js/owner/main.js"></script>
   </head>
 
   <body>
   <div id="app">
-    
     <div class="container-xxl position-relative bg-white d-flex p-0">
       <!-- Spinner Start -->
-      <div
-        id="spinner"
-        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
+      <spinner-component></spinner-component>
       <!-- Spinner End -->
 
       <!-- Sidebar Start -->
-      <div class="sidebar pe-4 pb-3">
-        <nav class="navbar bg-light navbar-light">
-          <a href="index" class="navbar-brand mx-4 mb-3">
-            <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>SmartReserve</h3>
-          </a>
-          <div class="navbar-nav w-100">
-            <a href="index.html" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>메인</a>
-            <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>매장 조회</a>
-            <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>유저 조회</a>
-            <a href="table.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>리뷰 삭제 요청건</a>
-            <a href="/view/owner/review.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>예약 내역 조회</a>
-            </div>
-          </div>
-        </nav>
+      <div id="sidebar" class="sidebar pe-4 pb-3">
+        <sidebar-component></sidebar-component>
+        </div>
       </div>
       <!-- Sidebar End -->
 
       <!-- Content Start -->
       <div class="content">
         <!-- Navbar Start -->
-        <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-          <a href="/view/owner/index" class="navbar-brand d-flex d-lg-none me-4">
-            <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-          </a>
-          <a href="#" class="sidebar-toggler flex-shrink-0">
-            <i class="fa fa-bars"></i>
-          </a>
-          <form class="d-none d-md-flex ms-4">
-            <input class="form-control border-0" type="search" placeholder="검색" />
-          </form>
-          <div class="navbar-nav align-items-center ms-auto">
-            <div class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <i class="fa fa-bell me-lg-2"></i>
-                <span class="d-none d-lg-inline-flex">알림</span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                <a href="#" class="dropdown-item" role="button">
-                  <h6 class="fw-normal mb-0">프로필 업데이트</h6>
-                  <small>15 minutes ago</small>
-                </a>
-                <hr class="dropdown-divider" />
-                <a href="#" class="dropdown-item">
-                  <h6 class="fw-normal mb-0">홍길북 님의 예약요청</h6>
-                  <small>15 minutes ago</small>
-                </a>
-                <hr class="dropdown-divider" />
-                <a href="#" class="dropdown-item">
-                  <h6 class="fw-normal mb-0">홍길순님이 예약을 취소했습니다</h6>
-                  <small>15 minutes ago</small>
-                </a>
-                <hr class="dropdown-divider" />
-                <a href="#" class="dropdown-item text-center">모든 알림메세지 확인하기</a>
-              </div>
-            </div>
-            <div class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <span class="d-none d-lg-inline-flex">관리자</span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                <a @click="logoutProcess" href="#" class="dropdown-item">로그아웃</a>
-              </div>
-            </div>
-          </div>
-        </nav>
+        <navbar-component></navbar-component>
         <!-- Navbar End -->
 
         <div class="container-fluid pt-4 px-4">
@@ -147,26 +88,49 @@
                     <button class="btn btn-success">검색</button>
                   </div>
                 </div>
+                <div class="row">
+                  <div class="col text-start">
+                    <span>매장 갯수 : {{ totalStoreCount }}</span>
+                    <span>
+                      <div class="form-check">
+                        <label class="form-check-label" for="flexCheckChecked">
+                          <input class="form-check-input" type="checkbox" v-model="showBlock" id="flexCheckChecked">
+                          차단한 식당만 보기
+                        </label>
+                      </div>
+                    </span>
+                  </div>
+                  <div class="col text-start">
+                  </div>
+                  <div class="col text-end">
+                    <span>페이지당 갯수</span>
+                    <select v-model="pageSize" @change="fetchStores" name="pageSize">
+                      <option value="5">5</option>
+                      <option value="10" selected>10</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                </div>
+              </div>
                 <div class="table-responsive">
                 <table class="table table-bordered table-hover">
                   <thead>
                     <tr>
                       <th>매장ID</th>
-                      <th>이름</th>
+                      <th>매장이름</th>
                       <th>주소</th>
                       <th>전화번호</th>
-                      <th>종류</th>
-                      <th>편의시설</th>
-                      <th>자세히</th>
+                      <th>수정</th>
+                      <th>차단</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="store in paginatedStores" :key="store.storeId">
-                      <td class="w-10">{{ store.storeId }}</td>
+                      <td class="w-5">{{ store.storeId }}</td>
                       <td class="w-10">{{ store.storeName }}</td>
                       <td class="w-10">{{ store.address }}</td>
                       <td class="w-10">{{ store.tel }}</td>
-                      <td class="w-20">
+                      <!-- <td class="w-20">
                         <span v-for="category in store.storeCategories" :key="category.categoryCodeId">
                         {{ category.categoryName }}
                         </span>
@@ -175,9 +139,15 @@
                         <span v-for="facility in store.facilities" :key="facility.facilityCodeId" class="badge bg-info text-dark">
                         {{ facility.facilityName }}
                         </span>
-                      </td>
+                      </td> -->
                       <td class="w-5">
-                        <button class="btn btn-primary">자세히보기</button>
+                        <button @click="openModalForUpdate(store.storeId)" class="btn btn-primary">자세히보기</button>
+                      </td>
+                      <td class="w-5" v-if="showBlock == false">
+                        <button @click="" class="btn btn-danger">차단하기</button>
+                      </td>
+                      <td class="w-5" v-if="showBlock == true">
+                        <button @click="" class="btn btn-success">차단해제</button>
                       </td>
                     </tr>
                   </tbody>
@@ -204,22 +174,133 @@
         </div>
 
         <!-- Footer Start -->
-        <div class="container-fluid pt-4 px-4">
-          <div class="bg-light rounded-top p-4">
-            <div class="row">
-              <div class="col-12 col-sm-6 text-center text-sm-start">
-                &copy; <a href="#">smartreserve.store</a>, All Right Reserved.
-              </div>
-            </div>
-          </div>
-        </div>
+        <footer-component></footer-component>
         <!-- Footer End -->
       </div>
       <!-- Content End -->
 
+      <div class="modal modal-lg fade" id="storeModal">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content">
+      
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">매장정보 수정하기</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+      
+            <!-- Modal body -->
+            <div class="modal-body"> 
+              <form v-on:submit="submitUpdate">
+                <div class="mb-3">
+                  <!-- storeId -->
+                   <fieldset class="border rounded-3 p-2"><legend class="float-none w-auto">매장관련</legend>
+                  <input type="hidden" v-model="storeInfo.storeId" name="storeId">
+                  <!-- 매장명 -->
+                  <label for="storeName" class="form-label">매장명</label>
+                  <input type="text" name="storeName" class="form-control mb-3" id="storeName" v-model="storeInfo.storeName" :placeholder="storeInfo.storeName">
+                  <!-- 길 설명 -->
+                  <label for="descprtion" class="form-label">매장 소개</label>
+                  <input type="text" name="descprtion" class="form-control mb-3" id="description" v-model="storeInfo.description" :placeholder="storeInfo.description">
+                  <!-- 전화번호 -->
+                  <label for="tel" class="form-label">전화번호</label>
+                  <input type="text" name="tel" class="form-control mb-3" id="tel" v-model="storeInfo.tel" :placeholder="storeInfo.tel">
+                  <!-- 매장주소 -->
+                  <label for="address" class="form-label">매장주소</label>
+                  <input type="text" name="address" class="form-control mb-3" id="address" v-model="storeInfo.address" :placeholder="storeInfo.address" @click="openAddress" readonly>
+                  <input type="hidden" name="sidoCode" class="form-control mb-3" id="sidoCode" v-model="storeInfo.sidoCode" :placeholder="storeInfo.sidoCode" readonly>
+                  <input type="text" name="directionGuide" class="form-control mb-3" id="directionGuide" v-model="storeInfo.directionGuide" placeholder="오시는길 안내">
+                  <!-- 매장 주소좌표값 -->
+                  <input type="hidden" v-model="storeInfo.locationLatX" step="0.0000001"><input type="hidden" v-model="storeInfo.locationLonY" step="0.0000001">
+                  </fieldset>
+                  <fieldset class="border rounded-3 p-2"><legend class="float-none w-auto">예약 관련</legend>
+                    <div class="row g-3">
+                      <div class="col-9">
+                        <!-- 카테고리선택 -->
+                        <div for="categories" class="form-label"><label>업종 선택 (복수 선택 가능)</label></div>
+                        <span v-for="category in categories" :key="category.categoryCodeId">
+                        <input type="checkbox" class="btn-check" :id="category.categoryCodeId" v-model="selectedCategories" :value="category.categoryCodeId" name="category">
+                        <label class="btn btn-outline-primary m-1" :for="category.categoryCodeId">{{category.categoryName}}</label>
+                        </span>
+                      </div>
+                      <!-- 예약 스케쥴 간격 -->
+                      <div class="col">
+                        <label for="rotationId" class="form-label">예약 간격</a></label>
+                        <select class="form-select" aria-describedby="rotationHelp" name="rotationId" id="rotationId" v-model="storeInfo.rotationId">
+                        <option v-for="rotation in rotations" :key="rotation.rotationCodeId" :value="rotation.rotationCodeId">{{ rotation.rotation }}분</option>
+                      </select>
+                      <div id="rotationHelp" class="form-text">설정한 간격으로 매일 자정에 예약 스케쥴이 생성됩니다.</div>
+                      </div>
+                    </div>
+                    <div class="row g-3">
+                      <div class="col">
+                        <!-- 1팀당 최대 인원 -->
+                        <div for="maxPeoplePerReserve" class="form-label"><label>팀당 최대 인원</label></div>
+                        <input type="number" class="form-control" id="maxPeoplePerReserve" v-model="storeInfo.maxPeoplePerReserve" @input="checkReservePeople">
+                        <p class="text-danger">{{ message }}</p>
+                      </div>
+                      <!-- 예약시간당 최대 수용 인원 -->
+                      <div class="col">
+                        <label for="maxPeople" class="form-label">예약 시간대 최대 인원</a></label>
+                        <input type="number" class="form-control" id="maxPeople" v-model="storeInfo.maxPeople">
+                      </div>
+                    </div>
+                  </fieldset>
+                    <!-- 영업시간 -->
+                    <fieldset class="border rounded-3 p-2"><legend class="float-none w-auto">영업시간</legend>
+                      <p class="text-center">휴일로 설정할 경우 해당 요일에는 예약 슬롯이 생성되지 않습니다.</p>
+                      <p class="text-center text-danger">※ 휴일 설정시 해당 요일에 최근 한 달안에 예약이 있을 경우 해당 예약은 자동취소 됩니다. ※</p>
+                      <div class="row g-3">
+                        <div class="col-4 text-center"><label>오픈시간</label></div>
+                        <div class="col-4 text-center"><label>마감시간</label></div>
+                        <div class="col-2 text-center"><label>요일</label></div>
+                        <div class="col-2 text-center"><small>휴일여부</small></div>
+                      </div>
+                      <div class="row g-3 mb-2" v-for="(schedule, index) in storeInfo.storeSchedules" :key="schedule.scheduleId">
+                        <div class="col-4">
+                          <!-- 오픈시간 -->
+                          <input type="time" name="open" class="form-control" v-model="schedule.open" :readonly="schedule.closeDay" @change="validateTime(index)">
+                        </div>
+                        <!-- 마감시간 -->
+                        <div class="col-4">
+                          <input type="time" name="close" class="form-control" v-model="schedule.close" :readonly="schedule.closeDay" @change="validateTime(index)">
+                        </div>
+                        <!-- 요일 -->
+                        <div class="col-2">
+                          <input type="text" name="dayOfWeek" class="form-control" v-model="schedule.dayOfWeek" readonly>
+                          <input type="hidden" name="dayCodeId" class="form-control" v-model="schedule.dayCodeId">
+                        </div>
+                        <!-- 휴일여부 -->
+                        <div class="col-2">
+                          <input type="checkbox" name="closeDay" class="form-check" v-model="schedule.closeDay" style="margin: 0 auto; vertical-align: middle;">
+                        </div>
+                      </div>
+                      <div> <small style="color:red;">{{ scheduleMessage }}</small></div>
+                    </fieldset>
+                    <!-- 영업시간 -->
+                    <fieldset class="border rounded-3 p-2"><legend class="float-none w-auto">편의시설 (복수 선택 가능)</legend>
+                    <div class="form-label"><label>편의시설</label></div>
+                    <span v-for="facility in facilities" :key="facility.facilityCode">
+                    <input type="checkbox" class="btn-check" :id="facility.facilityCode" name="facility" v-model="selectedFacilities" :value="facility.facilityCode">
+                    <label class="btn btn-outline-primary m-1" :for="facility.facilityCode">{{facility.facilityName}}</label>
+                    </span>
+                </div>
+            </div>
+      
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" @click="submitUpdate" class="btn btn-success" :disabled="!updateFlag">수정하기</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">취소</button>
+            </div>
+            
+          </form>
+          </div>
+        </div>
+      </div>
       <!-- Back to Top -->
       <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
+    <script src="/js/admin/component.js"></script>
     <script src="/js/admin/srAdminStores.js"></script>
   </div>
   </body>

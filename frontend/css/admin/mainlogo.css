@@ -7,3 +7,20 @@ a {
   text-decoration: none;
   color: black;
 }
+
+.profileImage {
+  width: 50px;
+  height: 50px;
+}
+
+.filter-menu input[type="radio"] {
+  display: none;
+}
+
+.filter-menu .filter-li{
+  padding: 5px;
+  cursor: pointer;
+}
+.filter-menu .filter-li label {
+  cursor: pointer;
+}

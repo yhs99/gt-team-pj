@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta content="" name="description" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css" type="text/css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="/node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="/css/owner/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+    <link href="/css/owner/lib/tempusdominus/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+    <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/admin/style.css" rel="stylesheet" />
+    <link href="/css/admin/mainlogo.css" rel="stylesheet">
+
+    <!-- JavaScript Libraries -->
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="/js/user/lib/wow/wow.min.js"></script>
+    <script src="/js/owner/lib/chart/chart.min.js"></script>
+    <script src="/js/owner/lib/easing/easing.min.js"></script>
+    <script src="/js/user/lib/counterup/counterup.min.js"></script>
+    <script src="/js/user/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/node_modules/vue/dist/vue.min.js"></script>
+    <script src="/node_modules/axios/dist/axios.min.js"></script>
+    <script src="/js/owner/lib/waypoints/waypoints.min.js"></script>
+    <script src="/js/owner/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <!-- Template Javascript -->
+    <script type="module" src="/js/owner/main.js"></script>
+    <script src="/js/admin/axiosSetting.js"></script>
+  </head>
+
+  <body>
+  <div id="app">
+    <div class="container-xxl position-relative bg-white d-flex p-0">
+      <!-- Spinner Start -->
+      <spinner-component></spinner-component>
+      <!-- Spinner End -->
+
+      <!-- Sidebar Start -->
+      <div id="sidebar" class="sidebar pe-4 pb-3">
+        <sidebar-component></sidebar-component>
+        </div>
+      </div>
+      <!-- Sidebar End -->
+
+      <!-- Content Start -->
+      <div class="content">
+        <!-- Navbar Start -->
+        <navbar-component></navbar-component>
+        <!-- Navbar End -->
+
+        <div class="container-fluid pt-4 px-4">
+          <div class="row g-4">
+            <div class="col-sm-12 col-xl-12">
+              <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <h6 class="mb-0">회원 조회</h6>
+                </div>
+                <div class="py-2 my-3 border rounded d-flex justify-content-center">
+                  <div class="w-50 input-group">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">{{ selectedFilterName }}</button>
+                    <ul class="dropdown-menu filter-menu">
+                      <li v-for="filter in filters" :key="filter.filter" class="filter-li">
+                        <input type="radio" :id="filter.filter" v-model="selectedFilter" :value="filter.filter" autocomplete="off" @change="getFilterName">
+                        <label class="p-2" :for="filter.filter">{{filter.filterName}}</label>
+                      </li>
+                    </ul>
+                    <input class="form-control" type="text" v-model="enterQuery" @keydown.enter="fetchUsers">
+                    <button class="btn btn-success" @click="fetchUsers">검색</button>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col text-start">
+                    <span>검색된 회원수 : {{ userCount }}</span>
+                  </div>
+                  <div class="col text-start">
+                  </div>
+                  <div class="col text-end">
+                    <span>페이지당 갯수</span>
+                    <select v-model="pageSize" @change="fetchUsers" name="pageSize">
+                      <option value="5">5</option>
+                      <option value="10" selected>10</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                </div>
+              </div>
+                <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th>회원ID</th>
+                      <th>프로필</th>
+                      <th>이름</th>
+                      <th>이메일</th>
+                      <th>전화번호</th>
+                      <th>성별</th>
+                      <th>리뷰 작성 수</th>
+                      <th>수정</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="user in paginatedUsers" :key="user.userId">
+                      <td class="w-5">{{ user.userId }}</td>
+                      <td class="w-10"><img :src="user.profileImageUrl" class="profileImage"></td>
+                      <td class="w-10">{{ user.name }}</td>
+                      <td class="w-10">{{ user.email }}</td>
+                      <td class="w-10">{{ user.mobile }}</td>
+                      <td class="w-10">{{ user.gender=='M'?'남':'여' }}</td>
+                      <td class="w-5">{{ user.reviewCnt }}</td>
+                      <td class="w-5">
+                        <button @click="openModalForUpdate(user.userId)" class="btn btn-primary">수정하기</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                </div>
+                <div id="pagination text-center">
+                  <ul class="pagination justify-content-center">
+                    <li class="page-item" v-if="currentPage > 1" @click="changePage(currentPage - 1)">
+                      <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                      </a>
+                    </li>
+                    <li class="page-item" v-for="page in totalPages" :key="page" @click="changePage(page)"><a class="page-link" href="#">{{ page }}</a></li>
+                    <li class="page-item" v-if="currentPage < totalPages" @click="changePage(currentPage + 1)">
+                      <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Start -->
+        <footer-component></footer-component>
+        <!-- Footer End -->
+      </div>
+      <!-- Content End -->
+      <!-- Back to Top -->
+      <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    
+      <div class="modal modal-lg fade" id="userModal">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content">
+      
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">회원정보 수정하기</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+      
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="mb-3">
+                  <!-- 회원ID -->
+                  <input type="hidden" v-model="userInfo.userId" name="userId">
+                  <!-- 회원명 -->
+                  <label for="userName" class="form-label">회원명</label>
+                  <input type="text" name="userName" class="form-control mb-3" id="userName" v-model="userInfo.name" :placeholder="userInfo.name">
+                  <!-- 이메일 -->
+                  <label for="email" class="form-label">이메일</label>
+                  <input type="text" name="email" class="form-control mb-3" id="email" v-model="userInfo.email" :placeholder="userInfo.email">
+                  <!-- 비밀번호 -->
+                  <label for="password" class="form-label">비밀번호</label>
+                  <input type="password" name="password" class="form-control mb-3" id="password" v-model="userInfo.password">
+                  <!-- 전화번호 -->
+                  <label for="mobile" class="form-label">전화번호</label>
+                  <input type="text" name="mobile" class="form-control mb-3" id="mobile" v-model="userInfo.mobile">
+                  <!-- 성별 -->
+                  <div class="row form-check">
+                    <label class="form-label">성별</label>
+                    <div class="col-2">
+                      <input type="radio" name="gender" id="genderM" class="form-check-control mb-3" v-model="userInfo.gender" value="M">
+                      <label for="genderM" class="form-check-label">남자</label>
+                    </div>
+                    <div class="col-2">
+                      <input type="radio" name="gender" id="genderW" class="form-check-control mb-3" v-model="userInfo.gender" value="W">
+                      <label for="genderW" class="form-check-label">여자</label>
+                    </div>
+                  </div>
+                  <label for="profileImage" class="form-label">프로필 이미지</label>
+                  <input type="file" id="profileImage" ref="fileInput" class="form-control file-upload-input" @change="onFileChange" accept="image/png, image/jpeg, image/jpg">
+                  <div v-if="previewImage">
+                    <img :src="previewImage" alt="미리보기 이미지" style="max-width: 150px; max-height: 150px;" />
+                  </div>
+                </div>
+            </div>
+      
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" @click="submitUpdate" class="btn btn-success" :disabled="!updateFlag">수정하기</button>
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">취소</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/admin/component.js"></script>
+    <script src="/js/admin/srAdminUsers.js"></script>
+  </div>
+  </body>
+</html>

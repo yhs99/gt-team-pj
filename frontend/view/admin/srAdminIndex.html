@@ -34,6 +34,7 @@
     <script src="/node_modules/fullcalendar/index.global.min.js"></script>
     <!-- Template Javascript -->
     <script type="module" src="/js/admin/chart.js"></script>
+    <script src="/js/admin/axiosSetting.js"></script>
   </head>
 
   <body>
@@ -69,12 +70,43 @@
               </div>
             </div>
             <div class="col-sm-12 col-xl-6">
-              <div class="bg-light text-center rounded p-4">
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                  <h6 class="mb-0">판매 및 수익</h6>
-                  <a href="">전체 보기</a>
+              <div class="row g-4 h-100">
+                <div class="col-sm-6 col-xl-6">
+                  <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100">
+                    <i class="fa fa-chart-line fa-3x text-primary"></i>
+                    <div class="ms-3">
+                      <p class="mb-2">총 매출액</p>
+                      <h6 class="mb-0">{{ Number(summaryTitle.totalSales).toLocaleString() }}원</h6>
+                    </div>
+                  </div>
                 </div>
-                <canvas id="salse-revenue"></canvas>
+                <div class="col-sm-6 col-xl-6">
+                  <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100">
+                    <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                    <div class="ms-3">
+                      <p class="mb-2">금일 매출액</p>
+                      <h6 class="mb-0">{{ Number(summaryTitle.todaySales).toLocaleString() }}원</h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-xl-6">
+                  <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100">
+                    <i class="fa fa-chart-area fa-3x text-primary"></i>
+                    <div class="ms-3">
+                      <p class="mb-2">총 예약 건수</p>
+                      <h6 class="mb-0">{{ Number(summaryTitle.totalReserveCnt).toLocaleString() }} 건</h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-xl-6">
+                  <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100">
+                    <i class="fa fa-chart-pie fa-3x text-primary"></i>
+                    <div class="ms-3">
+                      <p class="mb-2">금일 예약 건수</p>
+                      <h6 class="mb-0">{{ Number(summaryTitle.todayReserveCnt).toLocaleString() }} 건</h6>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -83,42 +115,6 @@
          
         <div class="container-fluid pt-4 px-4">
           <div class="row g-4">
-            <div class="col-sm-6 col-xl-3">
-              <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-line fa-3x text-primary"></i>
-                <div class="ms-3">
-                  <p class="mb-2">총 매출액</p>
-                  <h6 class="mb-0">{{ Number(summaryTitle.totalSales).toLocaleString() }}원</h6>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
-              <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-bar fa-3x text-primary"></i>
-                <div class="ms-3">
-                  <p class="mb-2">금일 매출액</p>
-                  <h6 class="mb-0">{{ Number(summaryTitle.todaySales).toLocaleString() }}원</h6>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
-              <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-area fa-3x text-primary"></i>
-                <div class="ms-3">
-                  <p class="mb-2">총 예약 건수</p>
-                  <h6 class="mb-0">{{ Number(summaryTitle.totalReserveCnt).toLocaleString() }} 건</h6>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
-              <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-pie fa-3x text-primary"></i>
-                <div class="ms-3">
-                  <p class="mb-2">금일 예약 건수</p>
-                  <h6 class="mb-0">{{ Number(summaryTitle.todayReserveCnt).toLocaleString() }} 건</h6>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
         <!-- Sale & Revenue End -->
@@ -187,7 +183,7 @@
         
 
 
-        <!-- Widgets Start -->
+        <!-- Widgets Start
         <div class="container-fluid pt-4 px-4">
           <div class="row g-4">
             <div class="col-sm-12 col-md-6 col-xl-4">
@@ -305,7 +301,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
         <!-- Widgets End -->
 
         <!-- Footer Start -->

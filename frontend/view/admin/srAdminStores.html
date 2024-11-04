@@ -36,6 +36,7 @@
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7394510cd6543ff560b02ba31649d9f3&libraries=services"></script>
     <!-- Template Javascript -->
     <script type="module" src="/js/owner/main.js"></script>
+    <script src="/js/admin/axiosSetting.js"></script>
   </head>
 
   <body>
@@ -144,10 +145,10 @@
                         <button @click="openModalForUpdate(store.storeId)" class="btn btn-primary">자세히보기</button>
                       </td>
                       <td class="w-5" v-if="showBlock == false">
-                        <button @click="" class="btn btn-danger">차단하기</button>
+                        <button @click="storeBlock(store.storeId, 1)" class="btn btn-danger">차단하기</button>
                       </td>
                       <td class="w-5" v-if="showBlock == true">
-                        <button @click="" class="btn btn-success">차단해제</button>
+                        <button @click="storeBlock(store.storeId, 0)" class="btn btn-success">차단해제</button>
                       </td>
                     </tr>
                   </tbody>

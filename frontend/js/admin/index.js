@@ -10,7 +10,6 @@ new Vue({
     monthlySales: []
   },
   created: function() {
-    this.fetchUserData(); // Vue 인스턴스 생성 시 데이터 요청
     this.fetchAllDeleteRequestReviews();
   },
   mounted: function() {

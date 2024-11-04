@@ -3,9 +3,10 @@ package com.team.goott.owner.sales.service;
 import java.util.List;
 
 import com.team.goott.owner.domain.SalesInfoVO;
+import com.team.goott.owner.domain.SalesVO;
 
 public interface OwnerSalesService {
 
-	List<SalesInfoVO> getSales(int storeId);
+	SalesInfoVO getSales(int storeId);
 
 }

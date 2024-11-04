@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team.goott.owner.domain.SalesInfoVO;
+import com.team.goott.owner.domain.SalesVO;
 import com.team.goott.owner.domain.StoreDTO;
 import com.team.goott.owner.sales.service.OwnerSalesService;
 
@@ -28,7 +29,7 @@ public class OwnerSalesController {
 	@GetMapping("/sales")
 	public ResponseEntity<Object> getSalesInfo(HttpSession session){
 		
-		List<SalesInfoVO> salesInfo = null;
+		SalesInfoVO salesInfo = null;
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
 		int storeId = storeSession.getStoreId();
 //		로그인 시

@@ -1,5 +1,7 @@
 package com.team.goott.owner.domain;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,15 +16,12 @@ import lombok.ToString;
 @ToString
 @Builder
 public class SalesInfoVO {
-	private int payHistoryId;
-	private int reserveId;
-	private int storeId;
-	private int menuId;
-	private String menuName;
-	private int stock;
-	private double stockPerPrice;
-	private double totalPrice;
-	private boolean couponYN;
-	private int couponId;
-	private double payAmount;
+	
+	private int totalSales; // 총 결제 금액
+	private int totalSalesCount; // 총 결제 수
+	private int todayTotalSales; // 오늘 자 결제 금액
+	private int todayTotalSalesCount; // 오늘 자 결제 수 
+	private int[] countMonthlySales; // 최근 6개월 결제 금액
+	private int[] countMonthlySalesCount; // 최근 6개월 결제 수
+	private List<SalesVO> sales;
 }

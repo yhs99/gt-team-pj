@@ -6,10 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,7 +18,8 @@ import com.team.goott.admin.domain.AdminDTO;
 import com.team.goott.admin.users.service.AdminUsersService;
 import com.team.goott.infra.UserNotFoundException;
 import com.team.goott.infra.UserNotMatchException;
-import com.team.goott.user.domain.UserDTO;
+import com.team.goott.admin.domain.UserDTO;
+import com.team.goott.admin.domain.UserSearchFilter;
 import com.team.goott.user.register.domain.UserRegisterDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +36,10 @@ public class AdminUsersController {
 	
 	// 전체 사용자 목록
 	@GetMapping("/users")
-	public ResponseEntity<Object> getUsers(HttpSession session) {
+	public ResponseEntity<Object> getUsers(HttpSession session
+										, @ModelAttribute UserSearchFilter filter) {
 		if(checkAdminSession(session)) {
-			return ResponseEntity.ok(ads.getAllUsers());
+			return ResponseEntity.ok(ads.getAllUsers(filter));
 		}else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED_MESSAGE);
 		}
@@ -60,18 +63,14 @@ public class AdminUsersController {
 	@PatchMapping("/users/{userId}")
 	public ResponseEntity<Object> putUserInfo(HttpSession session
 											, @PathVariable int userId
-											, @RequestPart(name = "userUpdateData") UserRegisterDTO userUpdateData
-											, @RequestPart(name = "imageFile", required = false) MultipartFile multipartFile) {
+											, @ModelAttribute UserRegisterDTO userUpdateData
+									        , @RequestParam(name="uploadImage", required = false) MultipartFile imageFile) {
 		if(checkAdminSession(session)) {
 			try {
-				if(multipartFile != null && multipartFile.getOriginalFilename().length() > 0) {
-					userUpdateData.setImageFile(multipartFile);
-				}
+				userUpdateData.setImageFile(imageFile);
 				ads.patchUserInfo(userUpdateData, userId);
 			}catch (UserNotFoundException e) {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-			}catch (UserNotMatchException e) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 			}catch (Exception e) {
 				e.printStackTrace();
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

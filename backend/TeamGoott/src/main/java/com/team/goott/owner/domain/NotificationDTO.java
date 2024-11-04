@@ -23,4 +23,7 @@ public class NotificationDTO {
 	private String message;
 	private boolean isRead;
 	private LocalDateTime createAt;
+	private int storeId;
+	private NotificationType notificationType;
+	private int reserveId;
 }

@@ -82,8 +82,8 @@ public class OwnerReserveDAOImpl implements OwnerReserveDAO {
 	}
 
 	@Override
-	public List<NotificationDTO> getNotification(int userId) {
-		return session.selectList(ns+"getNotification", userId);
+	public List<NotificationDTO> getNotification(int storeId) {
+		return session.selectList(ns+"getNotification", storeId);
 	}
 
 	@Override

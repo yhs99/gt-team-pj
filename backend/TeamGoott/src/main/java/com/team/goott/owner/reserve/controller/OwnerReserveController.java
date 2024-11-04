@@ -106,13 +106,13 @@ public class OwnerReserveController {
 		return ResponseEntity.ok(reserveSlot);
 	}
 	
-	//알림 조회 
+	//점주 알림 조회 
 	@GetMapping("/reserve/notification")
-	public ResponseEntity<Object> getNotification(@RequestParam("userId") int userId, HttpSession session){
+	public ResponseEntity<Object> getNotification(HttpSession session){
 		StoreDTO storeSession = (StoreDTO)session.getAttribute("store");
 		List<NotificationDTO> notification = null;
 		if(storeSession != null) {
-			notification = service.getNotification(userId);
+			notification = service.getNotification(storeSession.getStoreId());
 		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
 		}

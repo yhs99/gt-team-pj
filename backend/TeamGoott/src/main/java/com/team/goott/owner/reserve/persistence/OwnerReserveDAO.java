@@ -29,7 +29,7 @@ public interface OwnerReserveDAO {
 
 	int setNotification(NotificationDTO notification);
 
-	List<NotificationDTO> getNotification(int userId);
+	List<NotificationDTO> getNotification(int storeId);
 
 	int updateNotification(int alarmId);
 

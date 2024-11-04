@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.team.goott.infra.SendEmailService;
 import com.team.goott.owner.domain.NotificationDTO;
+import com.team.goott.owner.domain.NotificationType;
 import com.team.goott.owner.domain.ReserveInfoVO;
 import com.team.goott.owner.domain.ReserveSlotsDTO;
 import com.team.goott.owner.domain.StoreVO;
@@ -97,13 +98,15 @@ public class OwnerReserveServiceImpl implements OwnerReserveService {
 		ReserveDTO reserve = reserveDAO.getReserve(reserveId);
 		StoreVO store = reserveDAO.getStore(reserve.getStoreId());
 		int userId = reserve.getUserId();
+		int storeId = reserve.getStoreId();
 		UserDTO user = reserveDAO.getUser(userId);
-		
-		
+		NotificationType notificationType = NotificationType.valueOf("OWNER_TO_CUSTOMER");
 		
 		NotificationDTO notification = new NotificationDTO();
 		notification.setUserId(user.getUserId());
-		
+		notification.setStoreId(storeId);
+		notification.setNotificationType(notificationType);
+		notification.setReserveId(reserveId);
 
 		// 에약 상태에 따른 알림 메세지 설정
 		switch (reserve.getStatusCodeId()) {
@@ -130,8 +133,8 @@ public class OwnerReserveServiceImpl implements OwnerReserveService {
 
 
 	@Override
-	public List<NotificationDTO> getNotification(int userId) {
-		return reserveDAO.getNotification(userId);
+	public List<NotificationDTO> getNotification(int storeId) {
+		return reserveDAO.getNotification(storeId);
 	}
 
 

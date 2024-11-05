@@ -74,7 +74,7 @@ public class OwnerReserveServiceImpl implements OwnerReserveService {
 		return reserveDAO.getReserveSlots(storeId, reserveTime);
 	}
 
-	private void sendEmailNotification(int reserveId) {
+	public void sendEmailNotification(int reserveId) {
 		// 유저 정보, 예약 식당 정보, 예약 정보 
 		ReserveDTO reserve = reserveDAO.getReserve(reserveId);
 		StoreVO store = reserveDAO.getStore(reserve.getStoreId());
@@ -92,7 +92,7 @@ public class OwnerReserveServiceImpl implements OwnerReserveService {
 	}
 	
 
-	private int sendNotificationToUser(int reserveId) {
+	public int sendNotificationToUser(int reserveId) {
 		
 		//알림을 보낼 유저, 예약 변경 사항 정보
 		ReserveDTO reserve = reserveDAO.getReserve(reserveId);

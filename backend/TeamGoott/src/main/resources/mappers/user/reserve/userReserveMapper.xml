@@ -1,4 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.team.mappers.user.reserve.userReserveMapper">
+<mapper
+	namespace="com.team.mappers.user.reserve.userReserveMapper">
+	<select id="getCartCheck"
+		resultType="com.team.goott.user.domain.CartDTO">
+		select * from cart where userId = #{userId}
+	</select>
+
+	<insert id="insertReserve"
+		parameterType="com.team.goott.user.domain.ReserveDTO"
+		useGeneratedKeys="true" keyProperty="reserveDTO.reserveId">
+		INSERT INTO reserve (storeId, userId, couponId, reserveTime, name, people,
+		statusCodeId, memo)
+		VALUES (#{reserveDTO.storeId}, #{userId}, #{reserveDTO.couponId},
+		#{reserveDTO.reserveTime}, #{reserveDTO.name}, #{reserveDTO.people},
+		1, #{reserveDTO.memo})
+	</insert>
+
+	<select id="getMaxPeople" resultType="int">
+		select maxPeople from store
+		where storeId = #{storeId}
+	</select>
+
+	<select id="getTimeTotPeople" resultType="int">
+		select
+		COALESCE(sum(people),0) from
+		reserve where storeId = #{storeId} AND
+		reserveTime = #{reserveTime} AND
+		statusCodeId != 3
+	</select>
+
+	<select id="getMaxPeoplePerReserve" resultType="int">
+		select
+		maxPeoplePerReserve from store where storeId = #{storeId}
+	</select>
+
+	<update id="updateReserved">
+		update reserveSlots set reserved = 1 where storeId =
+		#{storeId} AND slotDatetime = #{reserveTime};
+	</update>
+
+	<select id="getStoreMenuById"
+		resultType="com.team.goott.user.domain.MenuDTO">
+		select * from menu where menuId = #{menuId} AND storeId =
+		#{storeId}
+	</select>
+	<update id="updateReserve">
+		update reserve set statusCodeId = 3 where reserveId =
+		#{reserveId} AND userId =#{userId}
+	</update>
+	<delete id="deleteCart">
+		delete from cart where userId = #{userId}
+	</delete>
+	<select id="getCouponDiscount" resultType="int">
+		select discount from
+		coupon where couponId = #{couponId}
+	</select>
+	<update id="updateCouponStock">
+		update coupon set stock= stock-1 where couponId =
+		#{couponId};
+	</update>
+	<insert id="insertPayHistory">
+		insert into
+		payHistory(reserveId,storeId,menuId,menuName,stock,stockPerPrice,totalPrice,couponYN,couponId,payAmount)
+		values(#{reserveId},#{storeId},#{menuId},#{menuName},#{stock},#{stockPerPrice},#{totalPrice},#{couponYN},#{couponId},#{payAmount})
+	</insert>
+	<select id="getSlotCheck" resultType="int">
+		select reserved from
+		reserveSlots where storeId = #{storeId} AND slotDatetime =
+		#{reserveTime}
+	</select>
+	<select id="getCouponStockCheck" resultType="int">
+		select stock from
+		coupon where couponId = #{couponId}
+	</select>
+	<select id="getCouponStartTime"
+		resultType="java.time.LocalDateTime">
+		select start from coupon where couponId = #{couponId}
+	</select>
+	<select id="getCouponEndTime"
+		resultType="java.time.LocalDateTime">
+		select end from coupon where couponId = #{couponId}
+	</select>
+	<select id="getReserveTime" resultType="java.sql.Timestamp">
+		select reserveTime from
+		reserve where reserveId = #{reserveId} AND userId = #{userId}
+	</select>
+	<select id="getStoreId" resultType="int">
+		select storeId from reserve where
+		reserveId = #{reserveId} AND userId = #{userId}
+	</select>
+	<update id="getUpdateReserveSlotReserved">
+		update reserveSlots set reserved = 0 where storeId =
+		#{storeId} AND
+		slotDatetime = #{reserveTime};
+	</update>
+
+
 </mapper>

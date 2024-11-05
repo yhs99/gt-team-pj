@@ -62,303 +62,149 @@
 
   <body>
     <div id="app">
-      <div class="container-xxl position-relative bg-white d-flex p-0">
-        <!-- Spinner Start -->
+    <div class="container-xxl position-relative bg-white d-flex p-0">
+      <!-- Spinner Start -->
+      <!-- <div
+        id="spinner"
+        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center"
+      >
         <div
-          id="spinner"
-          class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center"
+          class="spinner-border text-primary"
+          style="width: 3rem; height: 3rem"
+          role="status"
         >
-          <div
-            class="spinner-border text-primary"
-            style="width: 3rem; height: 3rem"
-            role="status"
-          >
-            <span class="sr-only">Loading...</span>
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div> -->
+      <!-- Spinner End -->
+
+      <!-- Sidebar Start -->
+      <div class="sidebar pe-4 pb-3">
+        <nav class="navbar bg-light navbar-light">
+          <a href="index" class="navbar-brand mx-4 mb-3">
+            <h3 class="text-primary">
+              <i class="fa fa-hashtag me-2"></i>SmartReserve
+            </h3>
+          </a>
+          <div class="d-flex align-items-center ms-4 mb-4">
+            <div class="ms-3">
+              <span>{{ name }}</span>
+              <p>점주님 안녕하세요!</p>
+            </div>
           </div>
-        </div>
-        <!-- Spinner End -->
-
-        <!-- Sidebar Start -->
-        <div class="sidebar pe-4 pb-3">
-          <nav class="navbar bg-light navbar-light">
-            <a href="index" class="navbar-brand mx-4 mb-3">
-              <h3 class="text-primary">
-                <i class="fa fa-hashtag me-2"></i>SmartReserve
-              </h3>
-            </a>
-            <div class="d-flex align-items-center ms-4 mb-4">
-              <div class="ms-3">
-                <span>{{ name }}</span>
-                <p>점주님 안녕하세요!</p>
-              </div>
-            </div>
-            <div class="navbar-nav w-100">
-              <a href="index.html" class="nav-item nav-link active"
-                ><i class="fa fa-tachometer-alt me-2"></i>대시보드</a
-              >
-              <div class="nav-item dropdown">
-                <a
-                  href="#"
-                  class="nav-link dropdown-toggle"
-                  data-bs-toggle="dropdown"
-                  ><i class="fa fa-laptop me-2"></i>식당 관리</a
-                >
-                <div class="dropdown-menu bg-transparent border-0">
-                  <a href="/view/owner/button.html" class="dropdown-item"
-                    >버튼</a
-                  >
-                  <a href="typography.html" class="dropdown-item">문자디자인</a>
-                  <a href="element.html" class="dropdown-item">기타 항목</a>
-                </div>
-                </div>
-                <a href="widget.html" class="nav-item nav-link"
-                  ><i class="fa fa-th me-2"></i>메뉴 관리</a
-                >
-                <a href="form.html" class="nav-item nav-link"
-                  ><i class="fa fa-keyboard me-2"></i>쿠폰 관리</a
-                >
-                <a href="table.html" class="nav-item nav-link"
-                  ><i class="fa fa-table me-2"></i>예약 관리</a
-                >
-                <a href="/view/owner/review" class="nav-item nav-link"
-                  ><i class="fa fa-chart-bar me-2"></i>리뷰 관리</a
-                >
-              </div>
-            </div>
-          </nav>
-        </div>
-        <!-- Sidebar End -->
-
-        <!-- Content Start -->
-        <div class="content">
-          <!-- Navbar Start -->
-          <nav
-            class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0"
-          >
-            <a
-              href="/view/owner/index"
-              class="navbar-brand d-flex d-lg-none me-4"
+          <div class="navbar-nav w-100">
+            <a href="index.html" class="nav-item nav-link active"
+              ><i class="fa fa-tachometer-alt me-2"></i>대시보드</a
             >
-              <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-            </a>
-            <a href="#" class="sidebar-toggler flex-shrink-0">
-              <i class="fa fa-bars"></i>
-            </a>
-
-            <div class="navbar-nav align-items-center ms-auto">
-              <div class="nav-item dropdown">
-                <a
-                  href="#"
-                  class="nav-link dropdown-toggle"
-                  data-bs-toggle="dropdown"
+            <div class="nav-item dropdown">
+              <a
+                href="#"
+                class="nav-link dropdown-toggle"
+                data-bs-toggle="dropdown"
+                ><i class="fa fa-laptop me-2"></i>식당 관리</a
+              >
+              <div class="dropdown-menu bg-transparent border-0">
+                <a href="/view/owner/button.html" class="dropdown-item"
+                  >버튼</a
                 >
-                  <i class="fa fa-bell me-lg-2"></i>
-                  <span class="d-none d-lg-inline-flex">알림</span>
-                </a>
-                <div
-                  class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0"
-                >
-                  <a href="#" class="dropdown-item" role="button">
-                    <h6 class="fw-normal mb-0">프로필 업데이트</h6>
-                    <small>15 minutes ago</small>
-                  </a>
-                  <hr class="dropdown-divider" />
-                  <a href="#" class="dropdown-item">
-                    <h6 class="fw-normal mb-0">홍길북 님의 예약요청</h6>
-                    <small>15 minutes ago</small>
-                  </a>
-                  <hr class="dropdown-divider" />
-                  <a href="#" class="dropdown-item">
-                    <h6 class="fw-normal mb-0">
-                      홍길순님이 예약을 취소했습니다
-                    </h6>
-                    <small>15 minutes ago</small>
-                  </a>
-                  <hr class="dropdown-divider" />
-                  <a href="#" class="dropdown-item text-center"
-                    >모든 알림메세지 확인하기</a
-                  >
-                </div>
-              </div>
-              <div class="nav-item dropdown">
-                <a
-                  href="#"
-                  class="nav-link dropdown-toggle"
-                  data-bs-toggle="dropdown"
-                >
-                  <span class="d-none d-lg-inline-flex">{{ name }}</span>
-                </a>
-                <div
-                  class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0"
-                >
-                  <a @click="logoutProcess" href="#" class="dropdown-item"
-                    >로그아웃</a
-                  >
-                </div>
+                <a href="typography.html" class="dropdown-item">문자디자인</a>
+                <a href="element.html" class="dropdown-item">기타 항목</a>
               </div>
             </div>
-          </nav>
-          <!-- Navbar End -->
-          <!-- Sale & Revenue Start -->
-          <div class="container-fluid pt-4 px-4 mb-4">
-            <!-- 최근 예약 -->
-            <div id="reviewLists" class="container-fluid pt-4 px-4 mb-4">
-              <div class="bg-light text-center rounded p-4">
-                <div
-                  class="d-flex align-items-center justify-content-between mb-4"
+            <a href="widget.html" class="nav-item nav-link"
+              ><i class="fa fa-th me-2"></i>메뉴 관리</a
+            >
+            <a href="form.html" class="nav-item nav-link"
+              ><i class="fa fa-keyboard me-2"></i>쿠폰 관리</a
+            >
+            <a href="table.html" class="nav-item nav-link"
+              ><i class="fa fa-table me-2"></i>예약 관리</a
+            >
+            <a href="/view/owner/review" class="nav-item nav-link"
+              ><i class="fa fa-chart-bar me-2"></i>리뷰 관리</a
+            >
+          </div>
+          </div>
+        </nav>
+      </div>
+      <!-- Sidebar End -->
+
+      <div class="content">
+        <!-- Navbar Start -->
+        <nav
+          class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0"
+        >
+          <a
+            href="/view/owner/index"
+            class="navbar-brand d-flex d-lg-none me-4"
+          >
+            <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
+          </a>
+          <a href="#" class="sidebar-toggler flex-shrink-0">
+            <i class="fa fa-bars"></i>
+          </a>
+
+          <div class="navbar-nav align-items-center ms-auto">
+            <div class="nav-item dropdown">
+              <a
+                href="#"
+                class="nav-link dropdown-toggle"
+                data-bs-toggle="dropdown"
+              >
+                <i class="fa fa-bell me-lg-2 position-relative">
+                  <span
+                    v-if="filteredNotifications.some(notification => !notification.read)"
+                    class="position-absolute top-0 start-100 translate-middle p-1 bg-danger rounded-circle"
+                    style="width: 8px; height: 8px;"
+                  ></span>
+
+                </i>
+                <span class="d-none d-lg-inline-flex">알림</span>
+              </a>
+              <div
+                class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0"
+              >
+              <div  v-for ="(notification, index) in filteredNotifications" :key="notification.alarmId">
+                <a class="dropdown-item" role="button" @click="readNotification(notification.alarmId, index)" :style="{'color': notification.read ? '#888' : 'initial'}" >
+                  <h6 class="fw-normal mb-0">{{notification.message}}</h6>
+                  <small>{{notification.createAt}}</small>
+                </a>
+                <hr class="dropdown-divider" />
+              </div>
+                <a href="#" class="dropdown-item text-center"
+                  >모든 알림메세지 확인하기</a
                 >
-                  <h6 class="mb-0">승인 대기중인 예약</h6>
-                  <a href="/view/owner/reserve">전체 보기</a>
-                </div>
-                <div class="table-responsive">
-                  <table
-                    class="table text-start align-middle table-bordered table-hover mb-0"
-                  >
-                    <thead>
-                      <tr class="text-dark">
-                        <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
-                        <th scope="col">예약 ID</th>
-                        <th scope="col">가게 ID</th>
-                        <th scope="col">고객명</th>
-                        <th scope="col">인원수</th>
-                        <th scope="col">메모</th>
-                        <th scope="col">예약 날짜</th>
-                        <th scope="col">예약 상태</th>
-                        <th scope="col">예약 상태 변경</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <!-- 최대 5개만 보여줌 -->
-                      <tr
-                        v-for="(reserve, index) in filteredReserves"
-                        :key="reserve.reserveId"
-                      >
-                        <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
-                        <td>{{ reserve.reserveId }}</td>
-                        <td>{{ reserve.storeId }}</td>
-                        <td>{{ reserve.name }}</td>
-                        <td>{{ reserve.people }}</td>
-                        <td>{{ reserve.memo }}</td>
-                        <td>{{ reserve.reserveTime }}</td>
-                        <td>
-                          <span v-if="reserve.statusCodeId === 1">대기</span>
-                          <span v-else-if="reserve.statusCodeId === 2"
-                            >승인</span
-                          >
-                          <span v-else-if="reserve.statusCodeId === 3"
-                            >취소</span
-                          >
-                          <span v-else-if="reserve.statusCodeId === 4"
-                            >완료</span
-                          >
-                        </td>
-                        <td class="status-button">
-                          <button
-                            class="btn btn-success btn-block"
-                            @click="updateReserveStatus(reserve.reserveId, 2)"
-                          >
-                            예약 승인
-                          </button>
-                          <button
-                            class="btn btn-danger btn-block"
-                            @click="updateReserveStatus(reserve.reserveId, 3)"
-                          >
-                            예약 취소
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
               </div>
             </div>
-
-            <div class="container-fluid row g-4">
-              <div class="col-sm-6 col-xl-3">
-                <div
-                  class="bg-light rounded d-flex align-items-center justify-content-between p-4"
+            <div class="nav-item dropdown">
+              <a
+                href="#"
+                class="nav-link dropdown-toggle"
+                data-bs-toggle="dropdown"
+              >
+                <span class="d-none d-lg-inline-flex">{{ name }}</span>
+              </a>
+              <div
+                class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0"
+              >
+                <a @click="logoutProcess" href="#" class="dropdown-item"
+                  >로그아웃</a
                 >
-                  <i class="fa fa-chart-line fa-3x text-primary"></i>
-                  <div class="ms-3">
-                    <p class="mb-2">오늘 판매 수익</p>
-                    <h6 class="mb-0">12,345원</h6>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-xl-3">
-                <div
-                  class="bg-light rounded d-flex align-items-center justify-content-between p-4"
-                >
-                  <i class="fa fa-chart-bar fa-3x text-primary"></i>
-                  <div class="ms-3">
-                    <p class="mb-2">총 판매 수익</p>
-                    <h6 class="mb-0">45,678원</h6>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-xl-3">
-                <div
-                  class="bg-light rounded d-flex align-items-center justify-content-between p-4"
-                >
-                  <i class="fa fa-chart-area fa-3x text-primary"></i>
-                  <div class="ms-3">
-                    <p class="mb-2">상반기 수익</p>
-                    <h6 class="mb-0">0원</h6>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6 col-xl-3">
-                <div
-                  class="bg-light rounded d-flex align-items-center justify-content-between p-4"
-                >
-                  <i class="fa fa-chart-pie fa-3x text-primary"></i>
-                  <div class="ms-3">
-                    <p class="mb-2">하반기 수익</p>
-                    <h6 class="mb-0">0원</h6>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
-          <!-- Sale & Revenue End -->
-          <!-- Sales Chart Start -->
-          <div class="container-fluid pt-4 px-4 mb-4">
-            <div class="row g-4">
-              <div class="col-sm-12 col-xl-6">
-                <div class="bg-light text-center rounded p-4">
-                  <div
-                    class="d-flex align-items-center justify-content-between mb-4"
-                  >
-                    <h6 class="mb-0">최근 6개월 매출 추이</h6>
-                  </div>
-                  <canvas id="sales-chart"></canvas>
-                </div>
-              </div>
-              <div class="col-sm-12 col-xl-6">
-                <div class="bg-light text-center rounded p-4">
-                  <div
-                    class="d-flex align-items-center justify-content-between mb-4"
-                  >
-                    <h6 class="mb-0">최근 6개월 결제 수 추이</h6>
-                  </div>
-                  <canvas id="salesCount-chart"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Sales Chart End -->
-
-          <!-- Calendar -->
-          <div id="calendar"></div>
-
-          <!-- 최근 리뷰 -->
-          <div id="reviewLists" class="container-fluid pt-4 px-4">
+        </nav>
+        <!-- Navbar End -->
+        <!-- Sale & Revenue Start -->
+        <div class="container-fluid pt-4 px-4 mb-4">
+          <!-- 최근 예약 -->
+          <div id="reviewLists" class="container-fluid pt-4 px-4 mb-4">
             <div class="bg-light text-center rounded p-4">
               <div
                 class="d-flex align-items-center justify-content-between mb-4"
               >
-                <h6 class="mb-0">최근 리뷰</h6>
-                <a href="/view/owner/review">전체 보기</a>
+                <h6 class="mb-0">승인 대기중인 예약</h6>
+                <a href="/view/owner/reserve">전체 보기</a>
               </div>
               <div class="table-responsive">
                 <table
@@ -367,37 +213,54 @@
                   <thead>
                     <tr class="text-dark">
                       <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
-                      <th scope="col">리뷰 ID</th>
+                      <th scope="col">예약 ID</th>
                       <th scope="col">가게 ID</th>
-                      <th scope="col">유저 ID</th>
-                      <th scope="col">점수</th>
-                      <th scope="col">내용</th>
-                      <th scope="col">작성 날짜</th>
-                      <th scope="col">삭제 요청</th>
+                      <th scope="col">고객명</th>
+                      <th scope="col">인원수</th>
+                      <th scope="col">메모</th>
+                      <th scope="col">예약 날짜</th>
+                      <th scope="col">예약 상태</th>
+                      <th scope="col">예약 상태 변경</th>
                     </tr>
                   </thead>
                   <tbody>
                     <!-- 최대 5개만 보여줌 -->
                     <tr
-                      v-for="(review, index) in filteredReviews"
-                      :key="review.reviewId"
+                      v-for="(reserve, index) in filteredReserves"
+                      :key="reserve.reserveId"
                     >
-                      <!-- <tr v-for="(review, index) in reviews" :key="review.reviewId"> 전체 리뷰 for문 -->
                       <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
-                      <td>{{ review.reviewId }}</td>
-                      <td>{{ review.storeId }}</td>
-                      <td>{{ review.userId }}</td>
-                      <td>{{ review.score }}</td>
-                      <td>{{ review.content }}</td>
-                      <td>{{ formatDate(review.createAt) }}</td>
-                      <!-- vue js에서 작성한 함수 -->
+                      <td>{{ reserve.reserveId }}</td>
+                      <td>{{ reserve.storeId }}</td>
+                      <td>{{ reserve.name }}</td>
+                      <td>{{ reserve.people }}</td>
+                      <td>{{ reserve.memo }}</td>
+                      <td>{{ reserve.reserveTime }}</td>
                       <td>
+                        <span v-if="reserve.statusCodeId === 1">대기</span>
+                        <span v-else-if="reserve.statusCodeId === 2"
+                          >승인</span
+                        >
+                        <span v-else-if="reserve.statusCodeId === 3"
+                          >취소</span
+                        >
+                        <span v-else-if="reserve.statusCodeId === 4"
+                          >완료</span
+                        >
+                      </td>
+                      <td class="status-button">
+                        <button
+                          class="btn btn-success btn-block"
+                          @click="updateReserveStatus(reserve.reserveId, 2)"
+                        >
+                          예약 승인
+                        </button>
                         <button
                           class="btn btn-danger btn-block"
-                          @click="deleteReq(review.reviewId)"
+                          @click="updateReserveStatus(reserve.reserveId, 3)"
                         >
-                          삭제 요청</button
-                        >({{ review.deleteReq }})
+                          예약 취소
+                        </button>
                       </td>
                     </tr>
                   </tbody>
@@ -406,26 +269,159 @@
             </div>
           </div>
 
-          <!-- Footer Start -->
-          <div class="container-fluid pt-4 px-4">
-            <div class="bg-light rounded-top p-4">
-              <div class="row">
-                <div class="col-12 col-sm-6 text-center text-sm-start">
-                  &copy; <a href="#">smartreserve.store</a>, All Right Reserved.
+          <div class="container-fluid row g-4">
+            <div class="col-sm-6 col-xl-3">
+              <div
+                class="bg-light rounded d-flex align-items-center justify-content-between p-4"
+              >
+                <i class="fa fa-chart-line fa-3x text-primary"></i>
+                <div class="ms-3">
+                  <p class="mb-2">오늘 판매 수익</p>
+                  <h6 class="mb-0">{{todayTotalSales.toLocaleString()}}원</h6>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+              <div
+                class="bg-light rounded d-flex align-items-center justify-content-between p-4"
+              >
+                <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                <div class="ms-3">
+                  <p class="mb-2">총 판매 수익</p>
+                  <h6 class="mb-0">{{totalSales.toLocaleString()}}원</h6>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+              <div
+                class="bg-light rounded d-flex align-items-center justify-content-between p-4"
+              >
+                <i class="fa fa-chart-area fa-3x text-primary"></i>
+                <div class="ms-3">
+                  <p class="mb-2">오늘 결제 수</p>
+                  <h6 class="mb-0">{{todayTotalSalesCount}}개</h6>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+              <div
+                class="bg-light rounded d-flex align-items-center justify-content-between p-4"
+              >
+                <i class="fa fa-chart-pie fa-3x text-primary"></i>
+                <div class="ms-3">
+                  <p class="mb-2">총 결제 수</p>
+                  <h6 class="mb-0">{{totalSalesCount}}개</h6>
                 </div>
               </div>
             </div>
           </div>
-          <!-- Footer End -->
         </div>
-        <!-- Content End -->
+        <!-- Sale & Revenue End -->
+        <!-- Sales Chart Start -->
+        <div class="container-fluid pt-4 px-4 mb-4">
+          <div class="row g-4">
+            <div class="col-sm-12 col-xl-6">
+              <div class="bg-light text-center rounded p-4">
+                <div
+                  class="d-flex align-items-center justify-content-between mb-4"
+                >
+                  <h6 class="mb-0">최근 6개월 매출 추이</h6>
+                </div>
+                <canvas id="sales-chart"></canvas>
+              </div>
+            </div>
+            <div class="col-sm-12 col-xl-6">
+              <div class="bg-light text-center rounded p-4">
+                <div
+                  class="d-flex align-items-center justify-content-between mb-4"
+                >
+                  <h6 class="mb-0">최근 6개월 결제 수 추이</h6>
+                </div>
+                <canvas id="salesCount-chart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Sales Chart End -->
 
-        <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"
-          ><i class="bi bi-arrow-up"></i
-        ></a>
+        <!-- Calendar -->
+        <div id="calendar"></div>
+
+        <!-- 최근 리뷰 -->
+        <div id="reviewLists" class="container-fluid pt-4 px-4">
+          <div class="bg-light text-center rounded p-4">
+            <div
+              class="d-flex align-items-center justify-content-between mb-4"
+            >
+              <h6 class="mb-0">최근 리뷰</h6>
+              <a href="/view/owner/review">전체 보기</a>
+            </div>
+            <div class="table-responsive">
+              <table
+                class="table text-start align-middle table-bordered table-hover mb-0"
+              >
+                <thead>
+                  <tr class="text-dark">
+                    <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
+                    <th scope="col">리뷰 ID</th>
+                    <th scope="col">가게 ID</th>
+                    <th scope="col">유저 ID</th>
+                    <th scope="col">점수</th>
+                    <th scope="col">내용</th>
+                    <th scope="col">작성 날짜</th>
+                    <th scope="col">삭제 요청</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- 최대 5개만 보여줌 -->
+                  <tr
+                    v-for="(review, index) in filteredReviews"
+                    :key="review.reviewId"
+                  >
+                    <!-- <tr v-for="(review, index) in reviews" :key="review.reviewId"> 전체 리뷰 for문 -->
+                    <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
+                    <td>{{ review.reviewId }}</td>
+                    <td>{{ review.storeId }}</td>
+                    <td>{{ review.userId }}</td>
+                    <td>{{ review.score }}</td>
+                    <td>{{ review.content }}</td>
+                    <td>{{ formatDate(review.createAt) }}</td>
+                    <!-- vue js에서 작성한 함수 -->
+                    <td>
+                      <button
+                        class="btn btn-danger btn-block"
+                        @click="deleteReq(review.reviewId)"
+                      >
+                        삭제 요청</button
+                      >({{ review.deleteReq }})
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Start -->
+        <div class="container-fluid pt-4 px-4">
+          <div class="bg-light rounded-top p-4">
+            <div class="row">
+              <div class="col-12 col-sm-6 text-center text-sm-start">
+                &copy; <a href="#">smartreserve.store</a>, All Right Reserved.
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Footer End -->
       </div>
-      <script src="/js/owner/index.js"></script>
+      <!-- Content End -->
+
+      <!-- Back to Top -->
+      <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"
+        ><i class="bi bi-arrow-up"></i
+      ></a>
     </div>
-  </body>
+    <script src="/js/owner/index.js"></script>
+  </div>
+</body>
 </html>

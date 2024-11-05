@@ -25,7 +25,7 @@
 	</select>
 
 	<select id="getTotalSales" resultType="int">
-		SELECT sum(payAmount) from payHistory
+		SELECT IFNULL(SUM(payAmount),0) from payHistory
 		WHERE storeId = #{storeId}
 	</select>
 	
@@ -35,7 +35,7 @@
 	</select>
 	
 	<select id="getTodayTotalSales" resultType="int">
-		SELECT sum(payAmount) from payHistory p left join reserve r
+		SELECT IFNULL(SUM(p.payAmount),0) from payHistory p inner join reserve r
 		ON p.reserveId = r.reserveId
 		WHERE p.storeID = #{storeId} and date_format(r.reserveTime, "%Y-%m-%d") = curdate();
 	</select>

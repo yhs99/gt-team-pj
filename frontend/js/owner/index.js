@@ -6,10 +6,13 @@ new Vue({
     reviews: [],
     reserves: [],
     sales: [],
-    totalPrice: 0,
-    todayTotalPrice: 0,
-    firstHalfPrice: 0,
-    secondHalfPrice: 0,
+    notifications: [],
+    countMonthlySalesCount: [],
+    countMonthlySales: [],
+    totalSales: 0,
+    todayTotalSales: 0,
+    todayTotalSalesCount: 0,
+    totalSalesCount: 0,
   },
 
   computed: {
@@ -19,8 +22,14 @@ new Vue({
         .filter((reserve) => reserve.statusCodeId !== 4)
         .slice(0, 5);
     },
+    //리뷰 요청 삭제 된거는 보여주지 않음
     filteredReviews() {
       return this.reviews.filter((review) => !review.deleteReq).slice(0, 5);
+    },
+
+    //읽은 알림은 보여주지 않음
+    filteredNotifications() {
+      return this.notifications.slice(0, 5);
     },
   },
   created: function () {
@@ -28,25 +37,49 @@ new Vue({
     this.fetchReviews();
     this.getFullCalendar();
     this.fetchReserves();
-    // this.getSalesInfo();
+    this.getNotification();
+    this.getSalesInfo();
   },
 
   methods: {
+    //알림 읽음 처리
+    readNotification(alarmId, index) {
+      this.notifications[index].read = true;
+      const params = { alarmId: alarmId };
+      axios
+        .put("/api/owner/reserve/notification", null, { params })
+        .then((response) => {
+          console.log(response);
+        });
+    },
+
     createChart() {
       var salesChart = document.getElementById("sales-chart").getContext("2d");
       var salesCountChart = document
         .getElementById("salesCount-chart")
         .getContext("2d");
+
+      const labels = [];
+      const today = new Date();
+
+      for (let i = 5; i >= 0; i--) {
+        const month = new Date(today.getFullYear(), today.getMonth() - i, 1);
+        labels.push(month.toLocaleString("default", { month: "long" }));
+      }
+
+      this.countMonthlySales.reverse();
+      this.countMonthlySalesCount.reverse();
+
       var myChart3 = new Chart(salesChart, {
         type: "line",
         data: {
-          labels: ["1", "2"],
+          labels: labels,
           datasets: [
             {
               label: "sales",
               fill: false,
               backgroundColor: "rgba(0, 156, 255, .3)",
-              // data: this.countMonthlyReview,
+              data: this.countMonthlySales,
             },
           ],
         },
@@ -57,13 +90,13 @@ new Vue({
       var myChart4 = new Chart(salesCountChart, {
         type: "line",
         data: {
-          labels: ["1", "2"],
+          labels: labels,
           datasets: [
             {
               label: "salesCount",
               fill: false,
               backgroundColor: "rgba(0, 156, 255, .3)",
-              // data: this.countMonthlyReview,
+              data: this.countMonthlySalesCount,
             },
           ],
         },
@@ -72,12 +105,29 @@ new Vue({
         },
       });
     },
+    //알림 목록 받아오기
+    getNotification() {
+      axios.get("/api/owner/reserve/notification").then((response) => {
+        console.log(response);
+        this.notifications = response.data.data;
+      });
+    },
 
+    //결제,매출 정보
     getSalesInfo() {
       axios.get("/api/owner/sales").then((response) => {
         console.log(response);
+        this.totalSales = response.data.data.totalSales;
+        this.totalSalesCount = response.data.data.totalSalesCount;
+        this.todayTotalSales = response.data.data.todayTotalSales;
+        this.todayTotalSalesCount = response.data.data.todayTotalSalesCount;
+        this.countMonthlySalesCount = response.data.data.countMonthlySalesCount;
+        this.countMonthlySales = response.data.data.countMonthlySales;
+
+        this.createChart();
       });
     },
+
     getFullCalendar() {
       document.addEventListener("DOMContentLoaded", function () {
         var calendarEl = document.getElementById("calendar");
@@ -95,6 +145,7 @@ new Vue({
       });
     },
 
+    //예약 상태 업데이트
     updateReserveStatus: function (reserveId, status) {
       var statusCode = Number.parseInt(status);
       const params = { statusCode: statusCode };
@@ -170,7 +221,5 @@ new Vue({
     },
   },
 
-  mounted() {
-    this.createChart();
-  },
+  mounted() {},
 });

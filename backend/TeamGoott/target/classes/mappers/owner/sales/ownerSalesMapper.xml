@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.team.mappers.owner.sales.ownerSalesMapper">
+
+<resultMap type="com.team.goott.owner.domain.SalesVO" id="SalesResult">
+	<id property="payHistoryId" column ="payHistoryId"/>
+	<result property="reserveId" column="reserveId"/>
+	<result property="storeId" column="storeId"/>
+	<result property="menuId" column="menuId"/>
+	<result property="menuName" column="menuName"/>
+	<result property="stock" column="stock"/>
+	<result property="stockPerPrice" column="stockPerPrice"/>
+	<result property="totalPrice" column="totalPrice"/>
+	<result property="couponYN" column="couponYN"/>
+	<result property="couponId" column="couponId"/>
+	<result property="payAmount" column="payAmount"/>
+	<result property="createAt" column="createAt"/>
+</resultMap>
+
+	<select id="getSalesList" parameterType="map" resultMap="SalesResult">
+		SELECT p.*, r.reserveTime 
+		FROM payHistory p left join reserve r
+		ON p.reserveId = r.reserveId
+		WHERE p.storeId = #{storeId};      
+	</select>
+
+	<select id="getTotalSales" resultType="int">
+		SELECT IFNULL(SUM(payAmount),0) from payHistory
+		WHERE storeId = #{storeId}
+	</select>
+	
+	<select id="getTotalSalesCount" resultType="int">
+		SELECT count(*) from payHistory
+		WHERE storeId = #{storeId}
+	</select>
+	
+	<select id="getTodayTotalSales" resultType="int">
+		SELECT IFNULL(SUM(p.payAmount),0) from payHistory p inner join reserve r
+		ON p.reserveId = r.reserveId
+		WHERE p.storeID = #{storeId} and date_format(r.reserveTime, "%Y-%m-%d") = curdate();
+	</select>
+	
+	<select id="getTodayTotalSalesCount" resultType="int">
+		SELECT count(*) from payHistory p left join reserve r
+		ON p.reserveId = r.reserveId
+		WHERE p.storeID = #{storeId} and date_format(r.reserveTime, "%Y-%m-%d") = curdate();
+	</select>
+</mapper>

@@ -14,7 +14,6 @@ import lombok.ToString;
 @ToString
 @Builder
 public class StoreCategoryVO {
-	
 	private int categoryId;
 	private int storeId;
 	private String categoryCodeId; 

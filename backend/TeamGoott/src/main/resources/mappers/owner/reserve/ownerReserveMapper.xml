@@ -39,11 +39,11 @@
 	</select>
 	
 	<insert id="insertNotification">
-		insert into notification(userId, message) values(#{userId}, #{message})
+		insert into notification(userId, message, storeId, notificationType, reserveId) values(#{userId}, #{message}, #{storeId}, #{notificationType}, #{reserveId})
 	</insert>
 	
 	<select id="getNotification" resultType="com.team.goott.owner.domain.NotificationDTO">
-		select * from notification where userId = #{userId}
+		select * from notification where storeId = #{storeId} and notificationType = #{notificationType}
 	</select>
 	
 	<update id="updateStatus">

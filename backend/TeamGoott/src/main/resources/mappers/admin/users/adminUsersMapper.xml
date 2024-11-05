@@ -2,15 +2,32 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.admin.users.adminUsersMapper">
 
-	<select id="getAllUsers" resultType="com.team.goott.user.domain.UserDTO">
-		SELECT *
-		FROM user
+	<select id="getAllUsers" parameterType="com.team.goott.admin.domain.UserSearchFilter" resultType="com.team.goott.admin.domain.UserDTO">
+		SELECT u.email, u.gender, u.mobile, u.name, u.profileImageUrl, u.profileImageName, u.userId, COUNT(r.reviewId) as reviewCnt
+		FROM user u
+		LEFT JOIN review r
+		ON u.userId = r.userId
+		WHERE 1=1
+		<if test="filterName != null and filterName != ''">
+		    <if test="filterName == 'userId'">
+		        AND u.userId = #{filterQuery}
+		    </if>
+		    <if test="filterName == 'name'">
+		        AND u.name LIKE CONCAT('%', #{filterQuery}, '%')
+		    </if>
+		    <if test="filterName == 'email'">
+		        AND u.email LIKE CONCAT('%', #{filterQuery}, '%')
+		    </if>
+		</if>
+		GROUP BY u.userId
 	</select>
 	
-	<select id="getUserInfoByUserId" resultType="com.team.goott.user.domain.UserDTO">
-		SELECT *
-		FROM user
-		WHERE userId = #{userId}
+	<select id="getUserInfoByUserId" resultType="com.team.goott.admin.domain.UserDTO">
+		SELECT u.email, u.gender, u.mobile, u.name, u.profileImageUrl, u.profileImageName, u.userId, COUNT(r.reviewId) as reviewCnt
+		FROM user u
+		JOIN review r
+		ON u.userId = r.userId
+		WHERE u.userId = #{userId}
 	</select>
 	
 	<update id="userInfoUpdate" parameterType="map">
@@ -18,6 +35,9 @@
 		  <set>
 		    <if test="email != null and email != ''">
 		      email = #{email},
+		    </if>
+		    <if test="password != null and password != ''">
+		      password = SHA2(#{password}, 256),
 		    </if>
 		    <if test="name != null and name != ''">
 		      name = #{name},

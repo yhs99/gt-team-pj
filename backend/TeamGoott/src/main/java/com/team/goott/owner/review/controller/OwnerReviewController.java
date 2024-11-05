@@ -43,7 +43,7 @@ public class OwnerReviewController {
 		return ResponseEntity.ok(reviews);
 	}
 	
-	// 삭제 요청
+	// 삭제 	요청
 	@DeleteMapping("/review/{reviewId}")
 	public ResponseEntity<Object> deleteReviewRequest(HttpSession session, @PathVariable("reviewId") int reviewId){
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");

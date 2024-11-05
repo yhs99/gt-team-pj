@@ -36,8 +36,6 @@ import com.team.goott.owner.domain.StoreVO;
 import com.team.goott.owner.store.persistence.OwnerStoreDAO;
 import com.team.goott.owner.store.service.OwnerStoreService;
 
-import com.team.goott.owner.domain.OwnerDTO;
-import com.team.goott.owner.store.service.OwnerStoreService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -67,14 +65,15 @@ public class OwnerStoreController {
 		return ResponseEntity.ok(result?"성공 ":"실패 ");
 	}
 	
-	@GetMapping("/{storeId}")
-	public ResponseEntity<Object> getStore(HttpSession session, @PathVariable int storeId) {
+	@GetMapping("")
+	public ResponseEntity<Object> getStore(HttpSession session) {
 	     
 	     if (getOwnerIdFromSession(session) == null) {
 	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
 	     }
 	     
 	     int ownerId = getOwnerIdFromSession(session).getOwnerId();
+	     int storeId = getOwnerIdFromSession(session).getStoreId();
 	     log.info("세션의 onwerId : {}"  , ownerId);
 	    
 	    StoreVO storeData = null;

@@ -1,32 +1,35 @@
-
 new Vue({
   el: '#app', // Vue 인스턴스를 '#app'에 바인딩
   data: {
-    name:"",
-    loginYN:false,
-    reviews:[],
-    reserves:[]
+    name: "",
+    loginYN: false,
+    reviews: [],
+    reserves: [],
+    store: [],
+    coupon: []
   },
 
-  computed : {
-
-    //예약 완료 상태는 보여주지 않음
-    filteredReserves(){
-      return this.reserves.filter(reserve => reserve.statusCodeId !== 4).slice(0,5);
+  computed: {
+    // 예약 완료 상태는 보여주지 않음
+    filteredReserves() {
+      return this.reserves.filter(reserve => reserve.statusCodeId !== 4).slice(0, 5);
     },
-    filteredReviews(){
-      return this.reviews.filter(review => !review.deleteReq).slice(0,5);
+    filteredReviews() {
+      return this.reviews.filter(review => !review.deleteReq).slice(0, 5);
     }
   },
+
   created: function() {
     this.fetchUserData(); // Vue 인스턴스 생성 시 데이터 요청
     this.fetchReviews();
     this.getFullCalendar();
     this.fetchReserves();
+    this.fetchStoreData();
+    this.fetchCouponData(); 
   },
   
   methods: {
-    getFullCalendar(){
+    getFullCalendar() {
       document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -36,76 +39,105 @@ new Vue({
       });
     },
     
-    fetchReserves : function(){
+    fetchReserves: function() {
       axios.get('/api/owner/reserve')
-        .then(response =>{
+        .then(response => {
           console.log(response);
           this.reserves = response.data.data.reservations;
-        })
+        });
     },
 
-    updateReserveStatus : function(reserveId, status){
-      var statusCode = Number.parseInt(status);
-      const params = {statusCode : statusCode};
-      axios.post('/api/owner/reserve/'+ reserveId, null, {params})
-        .then((response =>{
+    fetchStoreData: function() {
+      // 세션에서 storeId 가져오기
+      
+        axios.get(`/api/store`) // 가게 데이터 요청
+          .then(response => {
+            console.log(response);
+            this.store = response.data.data.store; // 가게 데이터를 저장
+          })
+          .catch(error => {
+            console.error("가게 데이터 로드 중 오류 발생:", error);
+          });
+     
+    },
+
+    fetchCouponData: function() {
+      axios.get('/api/coupon') // 쿠폰 데이터 요청
+        .then(response => {
           console.log(response);
-        }))
+          this.coupon = response.data.data.coupon; // 쿠폰 데이터를 저장
+        })
+        .catch(error => {
+          console.error("쿠폰 데이터 로드 중 오류 발생:", error);
+        });
+    },
+
+    updateReserveStatus: function(reserveId, status) {
+      var statusCode = Number.parseInt(status);
+      const params = { statusCode: statusCode };
+      axios.post('/api/owner/reserve/' + reserveId, null, { params })
+        .then(response => {
+          console.log(response);
+        });
     },
 
     fetchUserData: function() {
       axios.get('/api/status') // 서버에 /api/status 요청
-      .then(response => {
-        console.log(response);
-        if(response.data.data.loginType == 'store') {
+        .then(response => {
+          console.log(response);
+          if (response.data.data.loginType == 'store') {
             this.name = response.data.data.name;
-            this.loginYN=true;
-        }else if(response.data.data.loginType == 'user') {
+            this.loginYN = true;
+          } else if (response.data.data.loginType == 'user') {
             location.href = '/';
-        }
-      })
-      .catch(error => {
-        location.href = '/';
-      });
+          }
+        })
+        .catch(error => {
+          location.href = '/';
+        });
     },
+
     logoutProcess: function() {
       axios.post('/api/logout')
         .then(response => {
           console.log(response);
-          if(response.status === 200) {
+          if (response.status === 200) {
             location.href = '/';
           }
-        }).catch(error => {
+        })
+        .catch(error => {
           console.error(error);
         });
     },
+
     fetchReviews: function() {
       axios.get('/api/owner/review')
-      .then(response => {
-        console.log(response);
-        this.reviews = response.data.data.reviews;
-      })
-      .catch(error => {
-        console.log(error);
-      });
+        .then(response => {
+          console.log(response);
+          this.reviews = response.data.data.reviews;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
+
     deleteReq: function(reviewId) {
-      axios.delete('/api/owner/review/'+reviewId)
-      .then(response => {
-        if(response.status===200) {
-          alert(reviewId + "의 삭제 요청이 완료되었습니다.");
-        }
-      })
-      .catch(error => {
-        alert("에러발생");
-        console.log(error);
-      })
+      axios.delete('/api/owner/review/' + reviewId)
+        .then(response => {
+          if (response.status === 200) {
+            alert(reviewId + "의 삭제 요청이 완료되었습니다.");
+          }
+        })
+        .catch(error => {
+          alert("에러발생");
+          console.log(error);
+        });
     },
+
     formatDate: function(timestamp) {
       // 밀리초 단위의 타임스탬프를 변환하여 날짜로 포맷
       const date = new Date(timestamp);
       return date.toLocaleString(); // 날짜와 시간을 로컬 형식으로 반환
     }
   },
-
 });

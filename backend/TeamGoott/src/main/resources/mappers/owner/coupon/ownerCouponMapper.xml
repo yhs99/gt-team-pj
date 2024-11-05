@@ -5,7 +5,7 @@
 
 	<select id="selectCouponsByStoreId"
 		resultType="com.team.goott.owner.domain.CouponVO">
-		select * from coupon where storeId = #{storeId}
+		select * from coupon where storeId = #{storeId} and isDeleted = 0;
 	</select>
 
 	<insert id="createCoupon">
@@ -27,16 +27,16 @@
 		#{couponId};
 	</update>
 
-<update id="modifyCoupon" parameterType="map">
-    UPDATE coupon
-    <set>
-        <if test="couponName != null">couponName = #{couponName},</if>
-        <if test="start != null">start = #{start},</if>
-        <if test="end != null">end = #{end},</if>
-        <if test="discount != null">discount = #{discount},</if>
-        <if test="stock != null">stock = #{stock},</if>
-    </set>
-    WHERE couponId = #{couponId} AND storeId = #{storeId}
-</update>
+	<update id="modifyCoupon" parameterType="map">
+	    UPDATE coupon
+	    <set>
+	        <if test="couponName != null">couponName = #{couponName},</if>
+	        <if test="start != null">start = #{start},</if>
+	        <if test="end != null">end = #{end},</if>
+	        <if test="discount != null">discount = #{discount},</if>
+	        <if test="stock != null">stock = #{stock}</if>
+	    </set>
+	    WHERE couponId = #{couponId} AND storeId = #{storeId}
+	</update>
 
 </mapper>

@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.team.goott.user.domain.ReviewImagesDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

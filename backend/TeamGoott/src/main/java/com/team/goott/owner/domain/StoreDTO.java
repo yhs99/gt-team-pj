@@ -1,4 +1,4 @@
-package com.team.goott.owner.domain;
+	package com.team.goott.owner.domain;
 
 import java.math.BigDecimal;
 

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>검색</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script
+      src="https://kit.fontawesome.com/4e311c76e2.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="/css/user/search.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+        <div class="logo">
+          <img
+            src="/assets/mainIcon.png"
+            alt="SmartReserve Logo"
+            class="me-2"
+            width="30"
+            height="30"
+          />
+          <a href="/">SmartStore</a>
+        </div>
+        <form class="search-box" method="get" @submit.prevent="search">
+          <input
+            class="search-txt"
+            type="text"
+            placeholder="  찾으시는 식당을 검색해주세요."
+          />
+          <button class="search-btn" type="submit">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </form>
+        <h4><i class="fa-solid fa-utensils"></i> 카테고리를 선택해주세요</h4>
+        <button
+          v-for="category in categories"
+          :key="category.categoryCodeId"
+          :class="{ active: category.isActive }"
+          @click="toggleCategory(category)"
+        >
+          {{category.categoryName}}
+        </button>
+        <h4><i class="fa-solid fa-map"></i> 지역을 선택해주세요</h4>
+        <button
+          v-for="sido in sidoCodes"
+          :key="sido.sidoCodeId"
+          :class="{active: sido.isActive}"
+          @click="toggleSido(sido)"
+        >
+          {{sido.sidoName}}
+        </button>
+      </div>
+    </div>
+    <script type="module" src="/js/user/search.js"></script>
+  </body>
+</html>

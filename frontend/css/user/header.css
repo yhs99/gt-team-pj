@@ -1,0 +1,30 @@
+.fixed-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 70px;
+  background-color: #ffffff;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-brand img {
+  margin-left: 80px;
+}
+
+.form-control {
+  max-width: none;
+}
+
+.btn .fas.fa-bars {
+  font-size: 1.5rem;
+  color: #ff9800; /* 메뉴 버튼을 귀여운 주황색으로 변경 */
+}
+.btn.dropdown-toggle {
+  margin-right: 50px;
+}

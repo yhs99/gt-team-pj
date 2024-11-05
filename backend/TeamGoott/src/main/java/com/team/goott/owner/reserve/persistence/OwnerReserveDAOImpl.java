@@ -11,6 +11,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import com.team.goott.owner.domain.NotificationDTO;
+import com.team.goott.owner.domain.NotificationType;
 import com.team.goott.owner.domain.ReserveSlotsDTO;
 import com.team.goott.owner.domain.StoreDTO;
 import com.team.goott.owner.domain.StoreVO;
@@ -82,8 +83,12 @@ public class OwnerReserveDAOImpl implements OwnerReserveDAO {
 	}
 
 	@Override
-	public List<NotificationDTO> getNotification(int storeId) {
-		return session.selectList(ns+"getNotification", storeId);
+	public List<NotificationDTO> getNotification(int storeId, NotificationType type) {
+		log.info(type.toString());
+		Map<String, Object> args = new HashMap<String, Object>();
+		args.put("storeId", storeId);
+		args.put("notificationType", type);
+		return session.selectList(ns+"getNotification", args);
 	}
 
 	@Override

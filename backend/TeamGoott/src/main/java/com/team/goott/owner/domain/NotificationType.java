@@ -8,8 +8,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public enum NotificationType {
-	OWNER_TO_CUSTOMER("owner_to_customer"),
-	CUSTOMER_TO_OWNER("customer_to_owner");
+	OWNER_TO_CUSTOMER,
+	CUSTOMER_TO_OWNER;
 	
-	private final String val;
 }

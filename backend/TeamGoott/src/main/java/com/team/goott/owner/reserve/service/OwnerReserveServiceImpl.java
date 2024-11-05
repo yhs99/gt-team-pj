@@ -134,7 +134,9 @@ public class OwnerReserveServiceImpl implements OwnerReserveService {
 
 	@Override
 	public List<NotificationDTO> getNotification(int storeId) {
-		return reserveDAO.getNotification(storeId);
+		NotificationType type = NotificationType.CUSTOMER_TO_OWNER;
+		log.info(type.toString());
+		return reserveDAO.getNotification(storeId, type);
 	}
 
 

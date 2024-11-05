@@ -16,19 +16,18 @@ import lombok.ToString;
 @ToString
 @Builder
 public class StoreVO {
-	
-		private int storeId;
-		private int ownerId;
-		private int rotationId;
-		private int sidoCodeId;
-		private String storeName;
-		private String address;
-		private String tel;
-		private String description;
-		private String directionGuide;
-		private int maxPeople;
-		private int maxPeoplePerReserve;
-		private BigDecimal locationLatX;
-		private BigDecimal locationLonY;
-
+    private int storeId;            
+    private int ownerId;          
+    private int rotationId;     
+    private int sidoCodeId;         
+    private String storeName;    
+    private String address;     
+    private String tel;             
+    private String description;      
+    private String directionGuide;   
+    private int maxPeople;          
+    private int maxPeoplePerReserve; 
+    private boolean isBlocked;       
+    private BigDecimal locationLatX; 
+    private BigDecimal locationLonY; 
 }

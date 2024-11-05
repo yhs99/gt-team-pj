@@ -117,8 +117,10 @@ public class AdminUsersServiceImpl implements AdminUsersService {
 	public boolean deleteBeforeImageObj(String fileName) {
 		boolean result = false;
 		try {
-			result = new S3ImageManager(s3Client, bucketName, fileName).deleteImage();
-			if(result) log.info("삭제한 파일명 :: {}", fileName);
+			if(!fileName.equals("defaultUser.jpg") || !fileName.equals("/defaultUser.jpg")) {
+				result = new S3ImageManager(s3Client, bucketName, fileName).deleteImage();
+				if(result) log.info("삭제한 파일명 :: {}", fileName);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

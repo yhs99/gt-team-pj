@@ -1,5 +1,6 @@
 new Vue({
   el: "#vueApp",
+  components: {},
   data: {
     getAllReviewList: [],
     totalReviewCount: 0,

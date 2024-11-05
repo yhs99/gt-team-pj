@@ -102,6 +102,11 @@ new Vue({
         .post("/api/owner/reserve/" + reserveId, null, { params })
         .then((response) => {
           console.log(response);
+          if (statusCode == 2) {
+            alert(reserveId + "의 예약 승인요청이 완료 되었습니다.");
+          } else if (statusCode == 3) {
+            alert(reserveId + "의 예약 취소요청이 완료 되었습니다.");
+          }
         });
     },
 

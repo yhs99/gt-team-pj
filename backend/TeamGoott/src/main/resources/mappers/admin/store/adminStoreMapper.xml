@@ -196,6 +196,7 @@ WHERE storeId = #{storeId}
 	<if test="storeId != null and storeId != '' and storeId != 0">
 	AND r.storeId = #{storeId}
 	</if>
+	GROUP BY label
 </select>
 
 <select id="getMonthlySales" resultType="com.team.goott.admin.domain.SummaryVO">
@@ -210,12 +211,12 @@ SELECT DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL seq MONTH), '%Y-%m') AS label,
     SELECT 5) AS months
 	LEFT JOIN reserve r
     ON DATE_FORMAT(r.reserveTime, '%Y-%m') = DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL months.seq MONTH), '%Y-%m')
+    AND (r.statusCodeId IS NULL OR r.statusCodeId IN (2, 4, 5))
    	<if test="storeId != null and storeId != '' and storeId != 0">
 	AND r.storeId = #{storeId}
 	</if>
     LEFT JOIN payHistory p
 	ON p.reserveId = r.reserveId
-	WHERE r.statusCodeId IN (2,4,5) OR r.statusCodeId is NULL
 	GROUP BY label
 	ORDER BY label
 </select>

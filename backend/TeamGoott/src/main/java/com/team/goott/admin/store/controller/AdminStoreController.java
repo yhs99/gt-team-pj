@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.team.goott.admin.domain.AdminDTO;
+import com.team.goott.admin.domain.AdminOnly;
 import com.team.goott.admin.domain.StoresVO;
 import com.team.goott.admin.store.service.AdminStoreService;
 import com.team.goott.infra.StoreNotFoundException;
@@ -38,8 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/")
 @Slf4j
 public class AdminStoreController {
-
-	private final String UNAUTHORIZED_MESSAGE = "권한이 없습니다.";
 	
 	@Autowired
 	private AdminStoreService adminStoreService;
@@ -60,74 +58,63 @@ public class AdminStoreController {
 		return ResponseEntity.ok(resultMap);
 	}
 	
+	@AdminOnly
 	@DeleteMapping("admin/store/{storeId}")
 	public ResponseEntity<Object> blockStore(HttpSession session
 											, @PathVariable("storeId") int storeId) {
-		if(checkAdminSession(session)) {
-			try {
-				return ResponseEntity.ok(adminStoreService.blockStore(storeId) == 1 ? "블럭처리 되었습니다." : "서버 오류로 인해 블럭처리 되지 않았습니다.");
-			}catch(StoreNotFoundException e) {
-				return ResponseEntity.ok(e.getMessage());
-			}catch(Exception e) {
-				e.printStackTrace();
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");
-			}
-		}else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED_MESSAGE);
+		try {
+			return ResponseEntity.ok(adminStoreService.blockStore(storeId) == 1 ? "블럭처리 되었습니다." : "서버 오류로 인해 블럭처리 되지 않았습니다.");
+		}catch(StoreNotFoundException e) {
+			return ResponseEntity.ok(e.getMessage());
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");
 		}
 	}
 	
+	@AdminOnly
 	@PatchMapping("admin/store/{storeId}")
 	public ResponseEntity<Object> blockCancel(HttpSession session
 											, @PathVariable("storeId") int storeId) {
-		if(checkAdminSession(session)) {
-			try {
-				return ResponseEntity.ok(adminStoreService.cancelBlock(storeId) == 1 ? "블럭해제 처리 되었습니다." : "서버 오류로 인해 블럭해제 처리 되지 않았습니다.");
-			}catch(StoreNotFoundException e) {
-				return ResponseEntity.ok("해당 블럭 처리된 매장을 찾을 수 없습니다.");
-			}catch(Exception e) {
-				e.printStackTrace();
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");
-			}
-		}else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED_MESSAGE);
+		try {
+			return ResponseEntity.ok(adminStoreService.cancelBlock(storeId) == 1 ? "블럭해제 처리 되었습니다." : "서버 오류로 인해 블럭해제 처리 되지 않았습니다.");
+		}catch(StoreNotFoundException e) {
+			return ResponseEntity.ok("해당 블럭 처리된 매장을 찾을 수 없습니다.");
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");
 		}
 	}
 	
+	@AdminOnly
 	@GetMapping({"admin/stats/sales", "admin/stats/sales/{storeId}"})
 	public ResponseEntity<Object> salesSummary(HttpSession session
 											, @PathVariable(required = false) Integer storeId) {
-		if(checkAdminSession(session)) {
-			try {
-				return ResponseEntity.ok(adminStoreService.getSummary(storeId == null ? 0 : storeId));
-			}catch(StoreNotFoundException e) {
-				return ResponseEntity.ok("해당 매장을 찾을 수 없습니다.");
-			}catch(Exception e) {
-				e.printStackTrace();
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");
-			}
-		}else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED_MESSAGE);
+		try {
+			return ResponseEntity.ok(adminStoreService.getSummary(storeId == null ? 0 : storeId));
+		}catch(StoreNotFoundException e) {
+			return ResponseEntity.ok("해당 매장을 찾을 수 없습니다.");
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");
 		}
 	}
 	
+	@AdminOnly
 	@GetMapping("admin/store/{storeId}")
 	public ResponseEntity<Object> getStoreInfo(HttpSession session
 											, @PathVariable(required = true) int storeId) {
-		if(checkAdminSession(session)) {
-			try {
-				return ResponseEntity.ok(adminStoreService.getStoreInfoForUpdate(storeId));
-			}catch(StoreNotFoundException e) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 매장을 찾을 수 없습니다.");
-			}catch(Exception e) {
-				e.printStackTrace();
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");
-			}
-		}else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED_MESSAGE);
+		try {
+			return ResponseEntity.ok(adminStoreService.getStoreInfoForUpdate(storeId));
+		}catch(StoreNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 매장을 찾을 수 없습니다.");
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");
 		}
 	}
 	
+	@AdminOnly
 	@PutMapping("admin/store/{storeId}")
     public ResponseEntity<Object> updateStore(
             HttpSession session,
@@ -150,10 +137,6 @@ public class AdminStoreController {
                 }
             }
         }
-    	
-        if (!checkAdminSession(session)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
 
         if (ownerStoreService.getStoreById(storeId) == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("가게를 찾을 수 없습니다.");
@@ -173,11 +156,4 @@ public class AdminStoreController {
         }
     }
 	
-	public boolean checkAdminSession(HttpSession session) {
-		AdminDTO adminSession = (AdminDTO) session.getAttribute("admin");
-		if(adminSession == null) {
-			return false;
-		}
-		return true;
-	}
 }

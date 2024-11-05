@@ -3,7 +3,9 @@
 <mapper namespace="com.team.mappers.owner.review.ownerReviewMapper">
 
 	<select id="getAllReview" resultType="com.team.goott.owner.domain.ReviewVO">
-		select * from review
+		select r.*, u.name as userName 
+		from review r inner join user u
+		on r.userId = u.userId
 			<if test="storeId != 0">
 				where storeId = #{storeId}
 			</if>		

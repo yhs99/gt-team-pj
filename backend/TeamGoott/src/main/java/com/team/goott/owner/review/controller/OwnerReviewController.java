@@ -31,8 +31,9 @@ public class OwnerReviewController {
 		
 	// 전체 리뷰 목록, 총 리뷰수, 총 평점, 당일 리뷰수, 당일 리뷰 총 평점 가져오기
 	@GetMapping("/review")
-	public ResponseEntity<Object> getAllReview(@RequestParam(value = "sortMethod", defaultValue = "score") String sortMethod, HttpSession session) {
+	public ResponseEntity<Object> getAllReview(@RequestParam(value = "sortMethod",defaultValue = "score") String sortMethod, HttpSession session) {
 		StoreDTO storeDTO = (StoreDTO) session.getAttribute("store");
+		log.info("{}", sortMethod);
 		ReviewInfoVO reviews =  null;
 		if(storeDTO != null) {
 			reviews = service.getTotalReviewInfo(storeDTO.getStoreId(),sortMethod);

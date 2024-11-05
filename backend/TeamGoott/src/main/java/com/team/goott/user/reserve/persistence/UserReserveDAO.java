@@ -35,7 +35,7 @@ public interface UserReserveDAO {
 
 	int insertPayHistory(PayHistoryDTO payHistoryDTO) throws Exception;
 
-	int getSlotCheck(int storeId, LocalDateTime reserveTime) throws Exception;
+	Integer getSlotCheck(int storeId, LocalDateTime reserveTime) throws Exception;
 
 	int getCouponStockCheck(int couponId)throws Exception;
 
@@ -47,7 +47,9 @@ public interface UserReserveDAO {
 
 	int getStoreId(int reserveId, int userId) throws Exception;
 
-	int getUpdateReserveSlotReserved(LocalDateTime reserveTime, int storeId);
+	int getUpdateReserveSlotReserved(LocalDateTime reserveTime, int storeId) throws Exception;
+
+	Integer getCouponStoreId(Integer couponId) throws Exception;
 
 
 }

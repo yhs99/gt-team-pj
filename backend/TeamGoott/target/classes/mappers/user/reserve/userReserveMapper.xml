@@ -71,7 +71,7 @@
 		#{reserveTime}
 	</select>
 	<select id="getCouponStockCheck" resultType="int">
-		select stock from
+		select COALESCE(stock, 0) from
 		coupon where couponId = #{couponId}
 	</select>
 	<select id="getCouponStartTime"
@@ -95,6 +95,8 @@
 		#{storeId} AND
 		slotDatetime = #{reserveTime};
 	</update>
-
+	<select id="getCouponStoreId" resultType="int">
+		select storeId FROM coupon WHERE couponId = #{couponId}
+	</select>
 
 </mapper>

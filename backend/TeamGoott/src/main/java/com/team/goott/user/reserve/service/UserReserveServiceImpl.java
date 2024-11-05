@@ -28,65 +28,89 @@ public class UserReserveServiceImpl implements UserReserveService {
 	@Override
 	@Transactional (isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class) // 트랜잭션 적용
 	public void createReserve(int userId, ReserveDTO reserveDTO) throws Exception {
-		// 유효성 체크 (예약 인원 수, 메뉴 확인 등)
-		 validateReservation(userId, reserveDTO);
-		 
-		// 예약 등록
-		userReserveDAO.insertReserve(userId, reserveDTO);
-		
-		// 카트 조회
-		List<CartDTO> cartList = userReserveDAO.getCartCheck(userId); // 사용자 ID로 카트 목록 조회
-		// PayHistoryDTO 설정 (카트에 있는 각 항목을 기반으로)
-		for (CartDTO cart : cartList) {
-			PayHistoryDTO payHistoryDTO = new PayHistoryDTO();
-			payHistoryDTO.setReserveId(reserveDTO.getReserveId());
-			payHistoryDTO.setStoreId(cart.getStoreId());
-			payHistoryDTO.setMenuId(cart.getMenuId());
-			payHistoryDTO.setMenuName(cart.getMenuName());
-			payHistoryDTO.setStock(cart.getStock());
-			payHistoryDTO.setStockPerPrice(cart.getPrice());
-			int discount = userReserveDAO.getCouponDiscount(reserveDTO.getCouponId());
-			double itemTotal = cart.getPrice() * cart.getStock();
-			payHistoryDTO.setTotalPrice(itemTotal);
-			payHistoryDTO.setCouponId(reserveDTO.getCouponId());
-			payHistoryDTO.setCouponYN(reserveDTO.getCouponId() > 0 ? 1 : 0);
+	    // 유효성 체크 (예약 인원 수, 메뉴 확인 등)
+	    validateReservation(userId, reserveDTO);
 
-			double finalAmount;
-			LocalDateTime currentDateTime = LocalDateTime.now();
-			LocalDateTime startTime = userReserveDAO.getCouponStartTime(reserveDTO.getCouponId());
-			LocalDateTime endTime = userReserveDAO.getCouponEndTime(reserveDTO.getCouponId());
-			// 쿠폰 개수 확인
-			if (userReserveDAO.getCouponStockCheck(reserveDTO.getCouponId()) <= 0) {
-				throw new IllegalArgumentException("유효하지 않은 쿠폰입니다.");
-			}
-			// 쿠폰 시간 확인
-			if ((startTime != null && !currentDateTime.isBefore(startTime)) 
-			        || (endTime != null && !currentDateTime.isAfter(endTime))) {
-			}else {
-				throw new IllegalArgumentException("유효하지 않은 쿠폰입니다. 사용기간을 확인해 주세요");
-			}
-			if (discount >= 100) { // 고정할인
-				finalAmount = itemTotal - discount;
-				if (finalAmount < 0)
-					finalAmount = 0;
-			} else { // 퍼센트 할인
-				double discountRate = discount * 0.01;
-				finalAmount = itemTotal - (cart.getPrice() * discountRate);
-			}
-			// 할인된 총 비용
-			payHistoryDTO.setPayAmount(finalAmount);
-			// payHistory 테이블에 값 저장
-			userReserveDAO.insertPayHistory(payHistoryDTO);
-			// 쿠폰 사용하면 개수 1개 차감
-			userReserveDAO.updateCouponStock(reserveDTO.getCouponId());
-			
-			// 결제 성공 후 카트 비우기
-			userReserveDAO.deleteCart(userId);
-		}
-		// 예약 등록하고 인원이 가득찼으면 reserved를 1로 변경
-		if (getTimeTotPeople(reserveDTO.getStoreId(),reserveDTO.getReserveTime()) == getMaxPeople(reserveDTO.getStoreId())) {
-			updateReserved(reserveDTO.getStoreId(), reserveDTO.getReserveTime());
-		}
+	    // 예약 등록
+	    userReserveDAO.insertReserve(userId, reserveDTO);
+
+	    // 카트 조회
+	    List<CartDTO> cartList = userReserveDAO.getCartCheck(userId); // 사용자 ID로 카트 목록 조회
+	    
+	    for (CartDTO cart : cartList) {
+	        PayHistoryDTO payHistoryDTO = new PayHistoryDTO();
+	        payHistoryDTO.setReserveId(reserveDTO.getReserveId());
+	        payHistoryDTO.setStoreId(cart.getStoreId());
+	        payHistoryDTO.setMenuId(cart.getMenuId());
+	        payHistoryDTO.setMenuName(cart.getMenuName());
+	        payHistoryDTO.setStock(cart.getStock());
+	        payHistoryDTO.setStockPerPrice(cart.getPrice());
+
+	        double itemTotal = cart.getPrice() * cart.getStock();
+	        payHistoryDTO.setTotalPrice(itemTotal);
+
+	        double finalAmount;
+	        
+	        // 쿠폰이 있는 경우와 없는 경우 처리
+	        if (reserveDTO.getCouponId() != null && reserveDTO.getCouponId() > 0) {
+	            Integer discount = userReserveDAO.getCouponDiscount(reserveDTO.getCouponId());
+	            discount = (discount == null) ? 0 : discount;
+
+	            LocalDateTime currentDateTime = LocalDateTime.now();
+	            LocalDateTime startTime = userReserveDAO.getCouponStartTime(reserveDTO.getCouponId());
+	            LocalDateTime endTime = userReserveDAO.getCouponEndTime(reserveDTO.getCouponId());
+
+	            // 쿠폰의 상점아이디랑 예약하려는 상점의 아이디가 일치하는지 확인
+	            Integer couponStoreId = userReserveDAO.getCouponStoreId(reserveDTO.getCouponId());
+	            if (couponStoreId == null || !couponStoreId.equals(reserveDTO.getStoreId())) {
+	                throw new IllegalArgumentException("해당 쿠폰은 선택한 매장에 쿠폰이 아닙니다.");
+	            }
+	            
+	            
+	            // 쿠폰 유효성 확인
+	            Integer stock = userReserveDAO.getCouponStockCheck(reserveDTO.getCouponId());
+	            if (stock == null || stock <= 0) {
+	                throw new IllegalArgumentException("유효하지 않은 쿠폰입니다.");
+	            }
+
+	            if ((startTime != null && currentDateTime.isBefore(startTime)) || 
+	                (endTime != null && currentDateTime.isAfter(endTime))) {
+	                throw new IllegalArgumentException("유효하지 않은 쿠폰입니다. 사용기간을 확인해 주세요.");
+	            }
+
+	            // 할인 계산
+	            if (discount >= 100) { // 고정할인
+	                finalAmount = itemTotal - discount;
+	                finalAmount = Math.max(finalAmount, 0);
+	            } else { // 퍼센트 할인
+	                finalAmount = itemTotal - (itemTotal * discount * 0.01);
+	            }
+
+	            // 할인된 금액 및 쿠폰 사용 여부 설정
+	            payHistoryDTO.setCouponId(reserveDTO.getCouponId());
+	            payHistoryDTO.setCouponYN(1);
+	            payHistoryDTO.setPayAmount(finalAmount);
+
+	            // 쿠폰 사용 처리
+	            userReserveDAO.updateCouponStock(reserveDTO.getCouponId());
+	        } else {
+	            // 쿠폰이 없는 경우에는 기본 금액으로 결제
+	            payHistoryDTO.setCouponId(0);
+	            payHistoryDTO.setCouponYN(0);
+	            payHistoryDTO.setPayAmount(itemTotal);
+	        }
+
+	        // 결제 기록 저장
+	        userReserveDAO.insertPayHistory(payHistoryDTO);
+	    }
+	    
+	    // 결제 성공 후 카트 비우기
+	    userReserveDAO.deleteCart(userId);
+
+	    // 예약 등록 후 인원이 가득 차면 reserved를 1로 변경
+	    if (getTimeTotPeople(reserveDTO.getStoreId(), reserveDTO.getReserveTime()) == getMaxPeople(reserveDTO.getStoreId())) {
+	        updateReserved(reserveDTO.getStoreId(), reserveDTO.getReserveTime());
+	    }
 	}
 
 	// 예약 인원 확인
@@ -105,7 +129,6 @@ public class UserReserveServiceImpl implements UserReserveService {
 		for (CartDTO cart : cartList) {
 			// 가게의 메뉴 정보
 			List<MenuDTO> storeMenuList = userReserveDAO.getStoreMenuById(cart.getMenuId(), reserveDTO.getStoreId());
-
 			// 메뉴가 존재하지 않거나 가격이 일치하지 않으면 오류
 			if (storeMenuList == null || storeMenuList.isEmpty()) {
 				throw new IllegalArgumentException("해당 메뉴가 존재하지 않습니다.");
@@ -121,8 +144,8 @@ public class UserReserveServiceImpl implements UserReserveService {
 				throw new IllegalArgumentException("담긴 메뉴에 오류가 있습니다. 삭제하고 다시 담아주세요.");
 			}
 		}
-		if (userReserveDAO.getSlotCheck(reserveDTO.getStoreId(), reserveDTO.getReserveTime()) == 1) {
-			throw new IllegalArgumentException("예약이 닫혀있습니다. 식당에 문의해주세요.");
+		if (Integer.valueOf(1).equals(userReserveDAO.getSlotCheck(reserveDTO.getStoreId(), reserveDTO.getReserveTime()))) {
+		    throw new IllegalArgumentException("예약이 닫혀있습니다. 식당에 문의해주세요.");
 		}
 	}
 

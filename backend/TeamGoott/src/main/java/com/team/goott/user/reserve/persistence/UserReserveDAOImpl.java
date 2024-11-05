@@ -106,12 +106,18 @@ public class UserReserveDAOImpl implements UserReserveDAO {
 	}
 
 	@Override
-	public int getSlotCheck(int storeId, LocalDateTime reserveTime) throws Exception {
-		Map<String, Object> params = new HashMap<>();
-		params.put("storeId", storeId);
-		params.put("reserveTime", reserveTime);
-		return ses.selectOne(ns+"getSlotCheck",params);
-	}
+	public Integer getSlotCheck(int storeId, LocalDateTime reserveTime)throws Exception {
+		 if (reserveTime == null) {
+		        log.error("예약 시간(reserveTime)이 null입니다.");
+		        return 0; // 기본값으로 예약 가능 상태를 반환
+		    }
+		    Map<String, Object> params = new HashMap<>();
+		    params.put("storeId", storeId);
+		    params.put("reserveTime", reserveTime);
+		    
+		    Integer result = ses.selectOne(ns + "getSlotCheck", params);
+		    return result != null ? result : 0;
+		}
 
 	@Override
 	public int getCouponStockCheck(int couponId) {
@@ -150,6 +156,11 @@ public class UserReserveDAOImpl implements UserReserveDAO {
 		params.put("reserveTime", reserveTime);
 		params.put("storeId", storeId);
 		return ses.update(ns+"getUpdateReserveSlotReserved",params);
+	}
+
+	@Override
+	public Integer getCouponStoreId(Integer couponId) throws Exception {
+		return ses.selectOne(ns+"getCouponStoreId", couponId);
 	}
 
 

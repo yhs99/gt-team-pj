@@ -2,22 +2,22 @@
 <html lang="ko">
   <head>
       <meta charset="utf-8">
-      <title>메인</title>
+      <title>스마트한 예약 경험</title>
       <meta content="width=device-width, initial-scale=1.0" name="viewport">
       <meta content="" name="keywords">
       <meta content="" name="description">
-      
-      <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-      <!-- CSS -->
-      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+      <link rel="icon" type="image/png" href="/assets/mainIcon.png" />
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css" type="text/css"/>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
       <link href="/node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
       <link href="/css/user/animate/animate.min.css" rel="stylesheet">
       <link href="/css/user/lightbox/css/lightbox.min.css" rel="stylesheet">
       <link href="/css/user/owlcarousel/owl.carousel.min.css" rel="stylesheet">
       <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-      <link href="/css/user/main.css" rel="stylesheet">
-      
+      <link href="/css/user/mainlogo.css" rel="stylesheet">
       <!-- 자바스크립트 -->
+       <script src="https://kit.fontawesome.com/9ebc532cee.js" crossorigin="anonymous"></script>
       <script src="/node_modules/jquery/dist/jquery.min.js"></script>
       <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
       <script src="/js/user/lib/wow/wow.min.js"></script>
@@ -27,48 +27,87 @@
       <script src="/js/user/lib/lightbox/js/lightbox.min.js"></script>
       <script src="/js/user/lib/owlcarousel/owl.carousel.min.js"></script>
       <script src="/node_modules/vue/dist/vue.min.js"></script>
+      <script src="https://cdn.rawgit.com/rikmms/progress-bar-4-axios/0a3acf92/dist/index.js"></script>
       <script src="/node_modules/axios/dist/axios.min.js"></script>
       <script src="/js/user/lib/main.js"></script>
-      <script src="/js/user/lib/index.js"></script>
   </head>
   <script>
   </script>
   <body>
-    <!-- Navbar start -->
-    <div class="container-fluid nav-bar">
-      <div class="container">
-        <nav class="navbar navbar-light navbar-expand-lg py-4">
-          <a href="index.html" class="navbar-brand">
-            <h1 class="text-primary fw-bold mb-0">
-              구트 예약<span class="text-dark"> 서비스</span>
-            </h1>
-          </a>
-        </nav>
-      </div>
+    
+  <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+    <div class="spinner-grow text-warning" role="status"></div>
+  </div>
+<div id="app" class="bg-light">
+  <div class="container-fluid bg-light">
+    <div class="container p-3 mb-3">
+      <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand fs-3 text-warning fw-bold" href="#"><img src="/assets/mainIcon.png"> SmartReserve</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            </ul>
+            <div v-if="loginYN==true">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item dropdown">
+                  <img v-bind:src="`${profileImageUrl}`" width="40px" height="40px" class="dropdown-toggle rounded-circle border"
+                  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <ul class="dropdown-menu text-center">
+                    <li class="dropdown-item" role="button" @click="logout">
+                      <p>로그아웃</p>
+                    </li>
+                    <li class="dropdown-item" role="button">
+                      <a href="/view/user/myPage">내 정보</a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="nav-item">
+                    {{ userName }}님 환영합니다!
+                </li>
+            </ul>
+            </div>
+            <div v-else>
+              <button class="btn btn-outline-warning m-2" type="button" onclick="location.href = '/view/user/userLogin'">로그인</button>
+              <button class="btn btn-outline-warning m-2" type="button" onclick="location.href = '/view/user/userRegister'">회원가입</button>
+            </div>
+          </div>
+        </div>
+      </nav>
     </div>
-    <!-- Navbar End -->
-
+  </div>
    <!-- Hero Start -->
-   <div class="container-fluid bg-light py-6 my-6 mt-0">
+   <div class="container-fluid bg-light">
     <div class="container">
         <div class="row g-5 align-items-center">
             <div class="col-lg-7 col-md-12">
-                <small class="d-inline-block fw-bold text-dark text-uppercase bg-light border border-primary rounded-pill px-4 py-1 mb-4 animated bounceInDown">환영합니다</small>
-                <h1 class class="display-1 mb-4 animated bounceInDown">예약을 <br></class><span class="text-primary">더</span> 빠르고 </br><span class="text-primary">더 </span>알뜰하게</h1>
-                <a href="" class="btn btn-primary border-0 rounded-pill py-3 px-4 px-md-5 me-4 animated bounceInLeft">식당보러가자</a>
-                <a href="../view/user/userLogin.html" class="btn btn-primary border-0 rounded-pill py-3 px-4 px-md-5 animated bounceInLeft">로그인 바로가기</a>
+                <small class="d-inline-block fw-bold text-dark text-uppercase bg-light border border-warning rounded-pill px-4 py-1 mb-4 animated bounceInDown">환영합니다</small>
+                <h1 class class="display-1 mb-4 animated bounceInDown">예약을 <br></class><span class="text-warning">더</span> 빠르고 </br><span class="text-warning">더 </span>알뜰하게</h1>
+                <a href="/view/user/stores" class="btn btn-warning border-0 rounded-pill py-3 px-4 px-md-5 me-4 animated bounceInLeft fw-bold">식당 둘러보기</a>
+                <a v-if="loginYN==false" href="/view/user/userLogin" class="btn btn-warning border-0 rounded-pill py-3 px-4 px-md-5 animated bounceInLeft fw-bold">
+                  로그인 하러가기
+                </a>
             </div>
             <div class="col-lg-5 col-md-12">
                 <img src="/assets/user/img/hero.png" class="img-fluid rounded animated zoomIn" alt="">
             </div>
         </div>
     </div>
+  </div>
+  <div class="container-fluid footer">
+    <div class="container">
+      <footer class="py-3 my-4">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+         </ul>
+         <p class="text-center text-body-secondary">문의 : tnwksqhdlf22@gmail.com</p>
+        <p class="text-center text-body-secondary">© 2024 SmartReserve All rights reserved</p>
+      </footer>
+    </div>
+  </div>
 </div>
-<!-- Hero End -->
-    <!--
-    로그인 이 안되어 있다면 index 페이지 뷰 
-    로그인 이 되어 있다면 식당 페이지 리스트 전달   
--->
-    <div id="sessionTest"></div>
+
+    <script src="/js/user/lib/index.js"></script>
   </body>
 </html>

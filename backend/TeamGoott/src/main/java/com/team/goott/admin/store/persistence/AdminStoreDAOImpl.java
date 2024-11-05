@@ -1,5 +1,6 @@
 package com.team.goott.admin.store.persistence;
 
+import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,10 @@ import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.team.goott.admin.domain.RotationVO;
+import com.team.goott.admin.domain.StoresVO;
+import com.team.goott.admin.domain.SummaryTitleDTO;
+import com.team.goott.admin.domain.SummaryVO;
 import com.team.goott.owner.domain.ReserveSlotsDTO;
 import com.team.goott.owner.domain.ScheduleDTO;
 import com.team.goott.owner.domain.StoreDTO;
@@ -30,7 +35,7 @@ public class AdminStoreDAOImpl implements AdminStoreDAO {
 	}
 
 	@Override
-	public int getRotationCodeIdByStoreId(int storeId) {
+	public RotationVO getRotationCodeIdByStoreId(int storeId) {
 		return ses.selectOne(NS+"getRotationCodeIdByStoreId", storeId);
 	}
 
@@ -52,6 +57,54 @@ public class AdminStoreDAOImpl implements AdminStoreDAO {
 	@Override
 	public int batchInsertSlots(List<ReserveSlotsDTO> slots) {
 		return ses.insert(NS+"batchInsertSlots", slots);
+	}
+
+	@Override
+	public List<StoresVO> getStoresInfo(Map<String, Object> searchMap) {
+		return ses.selectList(NS+"getStoresInfo", searchMap);
+	}
+
+	@Override
+	public int isExistStore(Map<String, Integer> map) {
+		return ses.selectOne(NS+"isExistStore", map);
+	}
+
+	@Override
+	public int blockStore(int storeId) {
+		return ses.update(NS+"blockStore", storeId);
+	}
+
+	@Override
+	public int cancelBlock(int storeId) {
+		return ses.update(NS+"cancelBlock", storeId);
+	}
+
+	@Override
+	public SummaryTitleDTO getSummaryTitle(int storeId) {
+		return ses.selectOne(NS+"getSummaryTitle", storeId);
+	}
+
+	@Override
+	public List<SummaryVO> getDailySales(int storeId) {
+		return ses.selectList(NS+"getDailySales", storeId);
+	}
+
+	@Override
+	public List<SummaryVO> getMonthlySales(int storeId) {
+		return ses.selectList(NS+"getMonthlySales", storeId);
+	}
+
+	@Override
+	public StoresVO getStoreInfoForUpdate(Map<String, Object> map) {
+		List<StoresVO> storeInfo = new ArrayList<StoresVO>();
+		storeInfo = ses.selectList(NS+"getStoresInfo", map);
+		log.info(storeInfo.size() + "");
+		return storeInfo.get(0);
+	}
+
+	@Override
+	public LocalDate getLastReserveSlot(int storeId) {
+		return ses.selectOne(NS+"getLastReserveSlot", storeId);
 	}
 
 }

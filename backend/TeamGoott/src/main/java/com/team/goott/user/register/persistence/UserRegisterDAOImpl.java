@@ -23,4 +23,14 @@ public class UserRegisterDAOImpl implements UserRegisterDAO {
 		return ses.insert(NS + "userRegisterProcess", user);
 	}
 
+	@Override
+	public UserDTO userInfo(int userId) {
+		return ses.selectOne(NS+"myUserInfo", userId);
+	}
+
+	@Override
+	public int userUpdateProcess(UserDTO userDTO) {
+		return ses.update(NS + "userUpdateProcess", userDTO);
+	}
+
 }

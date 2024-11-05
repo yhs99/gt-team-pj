@@ -2,17 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.user.cart.userCartMapper">
 
-	<select id="getAllCart" resultType="com.team.goott.user.domain.CartDTO">
-	select * from cart where userId = #{userId}
+	<select id="getAllCart"
+		resultType="com.team.goott.user.domain.CartDTO">
+		select * from cart where userId = #{userId}
 	</select>
-	
+
 	<insert id="addToCart">
-	insert into cart(storeId,menuId,menuName,stock,price,totalPrice,userId) 
-	VALUES(#{storeId},#{menuId},#{menuName},#{stock},#{price},#{totalPrice},#{userId})
+		insert into
+		cart(storeId,menuId,menuName,stock,price,totalPrice,userId)
+		VALUES(#{storeId},#{menuId},#{menuName},#{stock},#{price},#{totalPrice},#{userId})
 	</insert>
 
 	<delete id="deleteFromCart">
-	delete from cart where cartId = #{cartId} AND userId = #{userId}
+		delete from cart where cartId = #{cartId} AND userId
+		= #{userId}
 	</delete>
+
+	<select id="getMenuCart"
+		resultType="com.team.goott.user.domain.MenuDTO">
+		select * from menu where menuId = #{menuId}
+	</select>
+
+	<select id="getUserCartById"
+		resultType="com.team.goott.user.domain.ExtendedCartDTO">
+		select c.*,m.menuImageUrl,m.description,s.storeName from
+		cart c
+		join menu m on c.menuId = m.menuId
+		join store s on m.storeId = s.storeId
+		where userId = #{userId};
+	</select>
+	<select id="getCartStoreList" resultType="int">
+		select DISTINCT storeId from cart where userId = #{userId}
+	</select>
 	
+
 </mapper>

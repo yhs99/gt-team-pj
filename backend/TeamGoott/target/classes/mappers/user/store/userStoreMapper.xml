@@ -1,9 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.user.store.userStoreMapper">
+	<select id="getAllStores"
+		resultType="com.team.goott.user.domain.StoreDTO">
+		select * from store
+	</select>
+  
+	<select id="getStoreById"
+		resultType="com.team.goott.user.domain.StoreDTO">
+		select * from store where storeId = #{stordId}
+	</select>
+  
+	<select id="getStoresByCategory" resultType="com.team.goott.user.domain.StoreDTO">
+    SELECT s.*
+    FROM store s
+    JOIN storeCategory sc ON s.storeId = sc.storeId
+    WHERE 1 = 1
+    <if test="categoryCodeIds != null and categoryCodeIds.size() > 0">
+        AND sc.categoryCodeId IN
+        <foreach item="categoryCodeId" collection="categoryCodeIds" open="(" separator="," close=")">
+            #{categoryCodeId}
+        </foreach>
+    </if>
+    <if test="sidoCodeIds != null and sidoCodeIds.size() > 0">
+        AND s.sidoCodeId IN
+        <foreach item="sidoCodeId" collection="sidoCodeIds" open="(" separator="," close=")">
+            #{sidoCodeId}
+        </foreach>
+    </if>
+</select>
+
  <select id="ownerLoginInfo" parameterType="map"
 		resultType="com.team.goott.owner.domain.StoreDTO">
 		SELECT s.* FROM store s	JOIN owner o ON s.ownerId = o.ownerId
 		WHERE o.id = #{id} AND o.password = SHA2(#{pw}, 256)
+	</select>
+
+	<select id="getStoreFiltersCategory" resultType="com.team.goott.owner.domain.CategoryCodeVO">
+		SELECT categoryCodeId, categoryName
+		FROM categoryCode
+	</select>
+	
+	<select id="getStoreFiltersSidoCode" resultType="com.team.goott.owner.domain.sidoCodeVO">
+		SELECT sidoCodeId, sidoName
+		FROM sidoCode
+	</select> 
+	
+	<select id="getStoreFiltersFacilityCode" resultType="com.team.goott.owner.domain.FacilityCodeVO">
+		SELECT facilityCode, facilityName
+		FROM facilityCode
+	</select> 
+		<select id="getStoreFiltersRotationCode" resultType="com.team.goott.owner.domain.RotationCodeVO">
+		SELECT rotationCodeId, rotation
+		FROM rotationCode
 	</select> 
 </mapper>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta content="" name="description" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css" type="text/css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="/node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="/css/owner/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+    <link href="/css/owner/lib/tempusdominus/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+    <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/owner/style.css" rel="stylesheet" />
+    <link href="/css/owner/mainlogo.css" rel="stylesheet">
+
+    <!-- JavaScript Libraries -->
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="/js/user/lib/wow/wow.min.js"></script>
+    <script src="/js/owner/lib/chart/chart.min.js"></script>
+    <script src="/js/owner/lib/easing/easing.min.js"></script>
+    <script src="/js/user/lib/counterup/counterup.min.js"></script>
+    <script src="/js/user/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/node_modules/vue/dist/vue.min.js"></script>
+    <script src="/node_modules/axios/dist/axios.min.js"></script>
+    <script src="/js/owner/lib/waypoints/waypoints.min.js"></script>
+    <script src="/js/owner/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="/node_modules/fullcalendar/index.global.min.js"></script>
+    <!-- Template Javascript -->
+    <script type="module" src="/js/admin/chart.js"></script>
+    <script src="/js/admin/axiosSetting.js"></script>
+  </head>
+
+  <body>
+  <div id="app">
+    <div class="container-xxl position-relative bg-white d-flex p-0">
+      <!-- Spinner Start -->
+      <spinner-component></spinner-component>
+      <!-- Spinner End -->
+
+      <!-- Sidebar Start -->
+      <div id="sidebar" class="sidebar pe-4 pb-3">
+        <sidebar-component></sidebar-component>
+        </div>
+      </div>
+      <!-- Sidebar End -->
+
+      <!-- Content Start -->
+      <div class="content">
+        <!-- Navbar Start -->
+        <navbar-component></navbar-component>
+        <!-- Navbar End -->
+
+        <!-- Sale & Revenue Start -->
+         <!-- Sales Chart Start -->
+        <div class="container-fluid pt-4 px-4">
+          <div class="row g-4">
+            <div class="col-sm-12 col-xl-6">
+              <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <h6 class="mb-0">최근 6개월 매출 통계</h6>
+                </div>
+                <canvas id="worldwide-sales"></canvas>
+              </div>
+            </div>
+            <div class="col-sm-12 col-xl-6">
+              <div class="row g-4 h-100">
+                <div class="col-sm-6 col-xl-6">
+                  <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100">
+                    <i class="fa fa-chart-line fa-3x text-primary"></i>
+                    <div class="ms-3">
+                      <p class="mb-2">총 매출액</p>
+                      <h6 class="mb-0">{{ Number(summaryTitle.totalSales).toLocaleString() }}원</h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-xl-6">
+                  <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100">
+                    <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                    <div class="ms-3">
+                      <p class="mb-2">금일 매출액</p>
+                      <h6 class="mb-0">{{ Number(summaryTitle.todaySales).toLocaleString() }}원</h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-xl-6">
+                  <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100">
+                    <i class="fa fa-chart-area fa-3x text-primary"></i>
+                    <div class="ms-3">
+                      <p class="mb-2">총 예약 건수</p>
+                      <h6 class="mb-0">{{ Number(summaryTitle.totalReserveCnt).toLocaleString() }} 건</h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-xl-6">
+                  <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100">
+                    <i class="fa fa-chart-pie fa-3x text-primary"></i>
+                    <div class="ms-3">
+                      <p class="mb-2">금일 예약 건수</p>
+                      <h6 class="mb-0">{{ Number(summaryTitle.todayReserveCnt).toLocaleString() }} 건</h6>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Sales Chart End -->
+         
+        <div class="container-fluid pt-4 px-4">
+          <div class="row g-4">
+          </div>
+        </div>
+        <!-- Sale & Revenue End -->
+
+        <div class="container-fluid pt-4 px-4">
+          <div class="row g-4">
+            <div class="col-sm-12 col-xl-12">
+              <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <h6 class="mb-0">일별 매출액</h6>
+                  <a href="">전체 보기</a>
+                </div>
+                <div id="reserve-calendar"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="reviewLists" class="container-fluid pt-4 px-4">
+          <div class="bg-light text-center rounded p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+              <h6 class="mb-0">최근 삭제 요청 리뷰</h6>
+              <a href="">전체 보기</a>
+            </div>
+            <div class="table-responsive">
+              <table class="table text-start table-responsive align-middle table-bordered table-hover mb-0">
+                <thead>
+                  <tr class="text-dark">
+                    <th scope="col" class="col">리뷰 ID</th>
+                    <th scope="col" class="col">별점</th>
+                    <th scope="col" class="col-2">가게명</th>
+                    <th scope="col" class="col">유저명</th>
+                    <th scope="col" class="col-5">내용</th>
+                    <th scope="col" class="col">작성 날짜</th>
+                    <th scope="col" class="col">삭제</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- 최대 5개만 보여줌 -->
+                  <tr v-if="deleteReqReviewsCnt > 0" v-for="(review, index) in deleteReqReviews.slice(0, 5)" :key="deleteReqReviews.reviewId">
+                  <!-- <tr v-for="(review, index) in reviews" :key="review.reviewId"> 전체 리뷰 for문 -->
+                    <td>{{ review.reviewId }}</td>
+                    <td><span v-for="(scoreCount, index) in review.score">★</span></td>
+                    <td>{{ review.storeName }}</td>
+                    <td>{{ review.name }}</td>
+                    <td>{{ review.content }}</td>
+                    <td>{{ review.dateTime }}</td>
+                    <td>
+                      <div class="row">
+                        <button class="col m-2 btn btn-primary btn-block" @click="deleteReview(review.reviewId)">승인</button>
+                        <button class="col m-2 btn btn-danger btn-block" @click="cancelDeleteReview(review.reviewId)">거절</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr v-if="deleteReqReviewsCnt == 0">
+                    <td colspan="7">
+                      삭제요청된 리뷰가 없습니다.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        
+
+
+        <!-- Widgets Start
+        <div class="container-fluid pt-4 px-4">
+          <div class="row g-4">
+            <div class="col-sm-12 col-md-6 col-xl-4">
+              <div class="h-100 bg-light rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <h6 class="mb-0">메세지</h6>
+                  <a href="">전체 보기</a>
+                </div>
+                <div class="d-flex align-items-center border-bottom py-3">
+                  <img class="rounded-circle flex-shrink-0" src="" alt="" style="width: 40px; height: 40px" />
+                  <div class="w-100 ms-3">
+                    <div class="d-flex w-100 justify-content-between">
+                      <h6 class="mb-0">bca@abc.com</h6>
+                      <small>~ 분 전</small>
+                    </div>
+                    <span>홍길동 님이 ~분 전에 가게 예약을 요청하였습니다</span>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center border-bottom py-3">
+                  <img class="rounded-circle flex-shrink-0" src="" alt="" style="width: 40px; height: 40px" />
+                  <div class="w-100 ms-3">
+                    <div class="d-flex w-100 justify-content-between">
+                      <h6 class="mb-0">bcd@abc.com</h6>
+                      <small>~분 전</small>
+                    </div>
+                    <span>홍길북 님의 가게 요청을 승인해주세요</span>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center border-bottom py-3">
+                  <img class="rounded-circle flex-shrink-0" src="" alt="" style="width: 40px; height: 40px" />
+                  <div class="w-100 ms-3">
+                    <div class="d-flex w-100 justify-content-between">
+                      <h6 class="mb-0">baca@abc.com</h6>
+                      <small>~분 전</small>
+                    </div>
+                    <span>홍길순 님이 ~분 전에 가게 예약을 취소하였습니다</span>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center pt-3">
+                  <img class="rounded-circle flex-shrink-0" src="" alt="" style="width: 40px; height: 40px" />
+                  <div class="w-100 ms-3">
+                    <div class="d-flex w-100 justify-content-between">
+                      <h6 class="mb-0">bca12@abc.com</h6>
+                      <small>~분 전</small>
+                    </div>
+                    <span>홍길남 님의 결제가 완료되었습니다</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-xl-4">
+              <div class="h-100 bg-light rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <h6 class="mb-0">날짜</h6>
+                  <a href="">전체 보기</a>
+                </div>
+                <div id="calender"></div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-xl-4">
+              <div class="h-100 bg-light rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <h6 class="mb-0">할일</h6>
+                  <a href="">전체 보기</a>
+                </div>
+                <div class="d-flex mb-2">
+                  <input class="form-control bg-transparent" type="text" placeholder="검색어를 입력하세요" />
+                  <button type="button" class="btn btn-primary ms-2">search</button>
+                </div>
+                <div class="d-flex align-items-center border-bottom py-2">
+                  <input class="form-check-input m-0" type="checkbox" />
+                  <div class="w-100 ms-3">
+                    <div class="d-flex w-100 align-items-center justify-content-between">
+                      <span>고래고래</span>
+                      <button class="btn btn-sm"><i class="fa fa-times"></i></button>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center border-bottom py-2">
+                  <input class="form-check-input m-0" type="checkbox" />
+                  <div class="w-100 ms-3">
+                    <div class="d-flex w-100 align-items-center justify-content-between">
+                      <span>소리지르기</span>
+                      <button class="btn btn-sm"><i class="fa fa-times"></i></button>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center border-bottom py-2">
+                  <input class="form-check-input m-0" type="checkbox" checked />
+                  <div class="w-100 ms-3">
+                    <div class="d-flex w-100 align-items-center justify-content-between">
+                      <span><del>고함지르기</del></span>
+                      <button class="btn btn-sm text-primary"><i class="fa fa-times"></i></button>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center border-bottom py-2">
+                  <input class="form-check-input m-0" type="checkbox" />
+                  <div class="w-100 ms-3">
+                    <div class="d-flex w-100 align-items-center justify-content-between">
+                      <span>윽박지르기</span>
+                      <button class="btn btn-sm"><i class="fa fa-times"></i></button>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center pt-2">
+                  <input class="form-check-input m-0" type="checkbox" />
+                  <div class="w-100 ms-3">
+                    <div class="d-flex w-100 align-items-center justify-content-between">
+                      <span>심호흡하기</span>
+                      <button class="btn btn-sm"><i class="fa fa-times"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+        <!-- Widgets End -->
+
+        <!-- Footer Start -->
+        <footer-component></footer-component>
+        <!-- Footer End -->
+      </div>
+      <!-- Content End -->
+
+      <!-- Back to Top -->
+      <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+    <script src="/js/admin/component.js"></script>
+    <script src="/js/admin/index.js"></script>
+  </div>
+  </body>
+</html>

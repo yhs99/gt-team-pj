@@ -11,10 +11,8 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team.goott.admin.domain.AdminDTO;
@@ -42,36 +40,43 @@ public class UserUsersController {
 
 	// 로그인 상태 체크
 	@GetMapping("/status")
-	public ResponseEntity<Object> checkStatus(@CookieValue(value = "JSESSIONID", required = false) String sessionId,
-			HttpServletRequest request) {
-
-		if (sessionId == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션 ID가 없습니다.");
-		}
-
-		// 세션 ID를 이용해 로그인 상태를 확인하는 로직을 추가합니다.
-		boolean isLoggedIn = checkLoginStatus(sessionId, request);
-		log.info("세션 체크 여부: " + isLoggedIn);
-		if (isLoggedIn) {
-			return ResponseEntity.ok("로그인 상태입니다.");
-		} else {
+	public ResponseEntity<Object> checkStatus(HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		if(session == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 되어있지 않습니다.");
 		}
 
-	}
-
-	// 세션 체크 메서드
-	private boolean checkLoginStatus(String sessionId, HttpServletRequest request) {
-		HttpSession session = request.getSession(false);
-		log.info("서버에 있는 세션 아이디값 : {}", session.getId());
-		log.info("쿠기에 저장된 세션 아이디값 : {}", sessionId);
-		if (session != null && sessionId.equals(session.getId())) {
-			return true;
-		} else {
-			return false;
+		Object sessionData = null;
+		Map<String, String> map = new HashMap<String, String>();
+		
+		if(session.getAttribute("user") != null) {
+			sessionData = (UserDTO) session.getAttribute("user");
+		}else if(session.getAttribute("store") != null) {
+			sessionData = (StoreDTO) session.getAttribute("store");
+		}else if(session.getAttribute("admin") != null) {
+			sessionData = (AdminDTO) session.getAttribute("admin");
 		}
+		
+		if(sessionData instanceof UserDTO) {
+			map.put("name", ((UserDTO) sessionData).getName());
+			map.put("profileImageUrl", ((UserDTO) sessionData).getProfileImageUrl());
+			map.put("loginType", "user");
+		}else if(sessionData instanceof StoreDTO) {
+			map.put("name", ((StoreDTO) sessionData).getStoreName());
+			if (map.get("name") == null) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("권한이 없습니다");
+			}
+			map.put("loginType", "store");
+		}else if(sessionData instanceof AdminDTO) {
+			map.put("name", ((AdminDTO) sessionData).getId());
+			map.put("loginType", "admin");
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 되어있지 않습니다.");
+		}
+		
+		return ResponseEntity.ok(map);
+		
 	}
-
 	// 통합 로그인
 	@PostMapping("/login")
 	public ResponseEntity<Object> userLoginRequest(LoginDTO loginDTO, HttpSession session,
@@ -90,6 +95,13 @@ public class UserUsersController {
 		} else {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("잘못된 로그인 그룹입니다.");
 		}
+	}
+	
+	@PostMapping("/logout")
+	public ResponseEntity<Object> userLogout(HttpSession session) {
+		session.invalidate();
+		
+		return ResponseEntity.ok("로그아웃 완료");
 	}
 
 	// 회원 로그인 메서드
@@ -117,27 +129,43 @@ public class UserUsersController {
 
 	// 점주 로그인 메서드
 	private ResponseEntity<Object> handleOwnerLogin(String id, String password, HttpSession session,
-			HttpServletResponse response, Map<String, String> loginResponse) {
-		StoreDTO storeInfo = ownerService.login(id, password);
+	        HttpServletResponse response, Map<String, String> loginResponse) {
 
-		if (storeInfo != null) {
+	    // 로그인 시도
+	    StoreDTO storeInfo = ownerService.login(id, password);
+	    
+	    if (storeInfo == null) {
+	        // 로그인 실패: 잘못된 아이디 또는 비밀번호
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("잘못된 아이디 또는 비밀번호입니다.");
+	    }
 
-			loginResponse.put("loginSuccess", "" + storeInfo.getStoreId());
+	    // 로그인 성공 후, ownerId를 참조하는 store 정보 가져오기
+	    StoreDTO loginStore = ownerService.getStoreByOwnerId(storeInfo.getOwnerId());
+	    log.info("로그인시 store정보 : " + loginStore);
 
-			session.setAttribute("store", storeInfo);
+	    if (loginStore == null || loginStore.getStoreId() == 0) {
+	        // 가게가 등록되지 않았지만 로그인은 성공
+	        loginResponse.put("loginSuccess", "" + storeInfo.getOwnerId());
+	        session.setAttribute("store", storeInfo);
+	        log.info("가게가 등록되지 않음. 로그인 성공 세션 생성 : {}", session.getAttribute("store"));
+	        log.info("로그인 성공 세션 아이디 : {}", session.getId());
+	        return ResponseEntity.status(HttpStatus.ACCEPTED).body("가게 정보 등록이 필요합니다.");
+	    } else {
+	        // 로그인 및 가게 등록 성공
+	        loginResponse.put("loginSuccess", "" + loginStore.getStoreId());
+	        session.setAttribute("store", loginStore);
+	        log.info("로그인 성공 세션 생성 : {}", session.getAttribute("store"));
+	        log.info("로그인 성공 세션 아이디 : {}", session.getId());
+	    }
 
-			log.info("로그인 성공 세션 생성 : {}", session.getAttribute("store"));
-			log.info("로그인 성공 세션 아이디 : {}", session.getId());
+	    // 세션 쿠키 생성 및 설정
+	    Cookie cookie = new Cookie("JSESSIONID", session.getId());
+	    cookie.setMaxAge(1800); // 30분 = 1800초
+	    cookie.setPath("/");
+	    response.addCookie(cookie);
 
-			Cookie cookie = new Cookie("JSESSIONID", session.getId());
-			cookie.setMaxAge(1800); // 30분 = 1800초
-			cookie.setPath("/");
-			response.addCookie(cookie);
-
-			return ResponseEntity.ok(loginResponse);
-		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("잘못된 아이디 또는 비밀번호입니다.");
-		}
+	    // 로그인 성공 응답
+	    return ResponseEntity.ok(loginResponse);
 	}
 
 	// 관리자 로그인 메서드

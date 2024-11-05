@@ -11,6 +11,7 @@ import javax.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -19,7 +20,8 @@ import com.team.goott.infra.RegisterValidator;
 import com.team.goott.infra.S3ImageManager;
 import com.team.goott.infra.UserNotFoundException;
 import com.team.goott.infra.UserNotMatchException;
-import com.team.goott.user.domain.UserDTO;
+import com.team.goott.admin.domain.UserDTO;
+import com.team.goott.admin.domain.UserSearchFilter;
 import com.team.goott.user.register.domain.UserRegisterDTO;
 
 import com.team.goott.admin.domain.AdminDTO;
@@ -40,8 +42,8 @@ public class AdminUsersServiceImpl implements AdminUsersService {
 	private String bucketName;
 	
 	@Override
-	public Map<String, Object> getAllUsers() {
-		List<UserDTO> userLists = dao.getAllUsers();
+	public Map<String, Object> getAllUsers(@ModelAttribute UserSearchFilter filter) {
+		List<UserDTO> userLists = dao.getAllUsers(filter);
 		Map<String, Object> returnMap = new HashMap<String, Object>();
 		returnMap.put("userCount", userLists.size());
 		returnMap.put("userLists", userLists);
@@ -65,7 +67,12 @@ public class AdminUsersServiceImpl implements AdminUsersService {
 		updateData.put("userId", userData.getUserId()+"");
 		if(!userData.getEmail().equals(userUpdateData.getEmail()))
 			updateData.put("email", userUpdateData.getEmail());
-
+		
+		if(userUpdateData.getPassword() != null) {
+			updateData.put("password", userUpdateData.getPassword());
+		}else {
+			updateData.put("password", null);
+		}
 		if(!userData.getName().equals(userUpdateData.getName()))
 			updateData.put("name", userUpdateData.getName());
 			
@@ -117,8 +124,10 @@ public class AdminUsersServiceImpl implements AdminUsersService {
 	public boolean deleteBeforeImageObj(String fileName) {
 		boolean result = false;
 		try {
-			result = new S3ImageManager(s3Client, bucketName, fileName).deleteImage();
-			if(result) log.info("삭제한 파일명 :: {}", fileName);
+			if(!fileName.equals("defaultUser.jpg") || !fileName.equals("/defaultUser.jpg")) {
+				result = new S3ImageManager(s3Client, bucketName, fileName).deleteImage();
+				if(result) log.info("삭제한 파일명 :: {}", fileName);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

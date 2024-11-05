@@ -1,6 +1,7 @@
 package com.team.goott.infra;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -67,12 +68,14 @@ public class S3ImageManager {
 	public Map<String, String> uploadImage() throws Exception, IOException {
 		if(this.multipartImageFile != null) {
 			try {
+				log.info(fileName + " ::: " + bucketName);
 				s3Client.putObject(new PutObjectRequest(bucketName, fileName, this.multipartImageFile.getInputStream() , this.metaData));
 				Map<String, String> returnObj = new HashMap<String, String>();
-				returnObj.put("imageUrl", s3Client.getUrl(bucketName, fileName)+"");
+				returnObj.put("imageUrl", URLDecoder.decode(s3Client.getUrl(bucketName+"/", fileName.replaceAll("/", ""))+"", "UTF-8"));
 				returnObj.put("imageFileName", this.fileName);
 				return returnObj;
 			} catch(SdkClientException | IOException e) {
+				e.printStackTrace();
 				throw new ImageUploadFailedException();
 			}
 		} else {
@@ -83,7 +86,9 @@ public class S3ImageManager {
 	public boolean deleteImage() throws Exception {
 		try {
 			s3Client.deleteObject(bucketName, this.fileName);
+			log.info("{} 객체 삭제 완료.", this.fileName);
 		} catch(SdkClientException ase) {
+			ase.printStackTrace();
 			throw new ImageUploadFailedException();
 		}
 		return true;

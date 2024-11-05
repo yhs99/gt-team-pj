@@ -94,6 +94,24 @@ new Vue({
         timeFormat = `오전 ${dateFormat.getHours()==12?12:dateFormat.getHours()}시 ${dateFormat.getMinutes()}분`;
       }
       return `${dateFormat.getFullYear()}.${dateFormat.getMonth()+1}.${dateFormat.getDate()} (${day[dateFormat.getDay()]}) ${timeFormat}`
+    },
+    updateStatus: async function(statusCodeId) {
+      if(this.checkedReserveIds.length > 0) {
+        const formData = new FormData();
+        formData.append('reserveId', this.checkedReserveIds);
+        formData.append('statusCodeId', statusCodeId);
+        await axios.patch('/api/admin/reserve', formData)
+        .then(response => {
+          alert(response.data.data);
+          this.fetchReserveLists();
+        })
+        .catch(error => {
+          alert('오류발생');
+          console.error(error);
+        })
+      }else {
+        alert('수정할 매장을 하나 이상 선택하세요.');
+      }
     }
   },
   computed: {

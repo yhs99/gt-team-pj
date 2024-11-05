@@ -7,4 +7,5 @@ import com.team.goott.admin.domain.ReservesVO;
 
 public interface AdminReserveService {
 	List<ReservesVO> getReserveLists(Map<String, Object> filters);
+	int updateReserveStatusCode(List<Integer> reserveId, int statusCodeId);
 }

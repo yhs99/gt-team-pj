@@ -31,4 +31,9 @@ public class AdminReserveDAOImpl implements AdminReserveDAO {
 		return ses.selectList(NS + "getReserveStatusCodeFilters");
 	}
 
+	@Override
+	public int updateStatus(Map<String, Object> map) {
+		return ses.update(NS + "updateStatus", map);
+	}
+
 }

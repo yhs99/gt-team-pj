@@ -9,4 +9,5 @@ import com.team.goott.admin.domain.ReservesVO;
 public interface AdminReserveDAO {
 	List<ReservesVO> getReserveLists(Map<String, Object> filters);
 	List<ReserveStatusCodeFilter> getReserveStatusCodeFilters();
+	int updateStatus(Map<String, Object> map);
 }

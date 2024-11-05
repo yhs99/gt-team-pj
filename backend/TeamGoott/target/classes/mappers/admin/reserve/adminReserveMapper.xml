@@ -79,4 +79,12 @@
 SELECT *
 FROM statusCode;
 </select>
+<update id="updateStatus" parameterType="map">
+	UPDATE reserve
+    SET statusCodeId = #{statusCodeId}
+    WHERE reserveId IN
+    <foreach item="reserveId" collection="reserveIds" open="(" separator="," close=")">
+        #{reserveId}
+    </foreach>
+</update>
 </mapper>

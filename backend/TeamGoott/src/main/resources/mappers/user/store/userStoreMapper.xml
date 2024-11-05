@@ -50,4 +50,8 @@
 		SELECT facilityCode, facilityName
 		FROM facilityCode
 	</select> 
+		<select id="getStoreFiltersRotationCode" resultType="com.team.goott.owner.domain.RotationCodeVO">
+		SELECT rotationCodeId, rotation
+		FROM rotationCode
+	</select> 
 </mapper>

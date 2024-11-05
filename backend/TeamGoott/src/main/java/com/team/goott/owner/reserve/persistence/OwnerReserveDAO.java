@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.team.goott.owner.domain.NotificationDTO;
+import com.team.goott.owner.domain.NotificationType;
 import com.team.goott.owner.domain.ReserveSlotsDTO;
 import com.team.goott.owner.domain.StoreVO;
 import com.team.goott.user.domain.ReserveDTO;
@@ -29,7 +30,7 @@ public interface OwnerReserveDAO {
 
 	int setNotification(NotificationDTO notification);
 
-	List<NotificationDTO> getNotification(int userId);
+	List<NotificationDTO> getNotification(int storeId, NotificationType type);
 
 	int updateNotification(int alarmId);
 

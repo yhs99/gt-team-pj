@@ -135,6 +135,7 @@ public class UserReserveServiceImpl implements UserReserveService {
 		for (CartDTO cart : cartList) {
 			// 가게의 메뉴 정보
 			List<MenuDTO> storeMenuList = userReserveDAO.getStoreMenuById(cart.getMenuId(), reserveDTO.getStoreId());
+
 			// 메뉴가 존재하지 않거나 가격이 일치하지 않으면 오류
 			if (storeMenuList == null || storeMenuList.isEmpty()) {
 				throw new IllegalArgumentException("해당 메뉴가 존재하지 않습니다.");

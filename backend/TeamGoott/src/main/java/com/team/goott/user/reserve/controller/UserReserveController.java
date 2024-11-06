@@ -34,7 +34,6 @@ public class UserReserveController {
 		if (userSession == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
 		}
-		
 		try {
 			// 예약 생성 서비스 호출
 			userReserveService.createReserve(userSession.getUserId(), reserveDTO);
@@ -48,7 +47,6 @@ public class UserReserveController {
 			// 기타 예외 처리
 			log.error("예약 생성 중 서버 오류: {}", e.getMessage(), e);
 			e.getStackTrace();
-			
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약 처리 중 오류가 발생했습니다. 다시 시도해 주세요.");
 		}
 	}

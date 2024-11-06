@@ -16,10 +16,10 @@ new Vue({
   },
 
   computed: {
-    //예약 완료 상태는 보여주지 않음
+    //예약 대기 상태만 보여줌
     filteredReserves() {
       return this.reserves
-        .filter((reserve) => reserve.statusCodeId !== 4)
+        .filter((reserve) => reserve.statusCodeId == 1)
         .slice(0, 5);
     },
     //리뷰 요청 삭제 된거는 보여주지 않음

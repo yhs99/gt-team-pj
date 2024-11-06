@@ -41,6 +41,7 @@
 
     <!-- Template Stylesheet -->
     <link href="/css/owner/style.css" rel="stylesheet" />
+    <link href="/css/owner/mainlogo.css" rel="stylesheet" />
     <link href="/css/owner/review.css" rel="stylesheet" />
 
     <!-- JavaScript Libraries -->
@@ -58,181 +59,24 @@
     <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
     <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-    <script src="/node_modules/fullcalendar/index.global.min.js"></script>
     <!-- Template Javascript -->
     <script type="module" src="/js/owner/main.js"></script>
-    <script type="module" src="/js/owner/review.js"></script>
-
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <script src="/js/owner/component.js"></script>
   </head>
 
   <body>
-    <div
-      id="vueApp"
-      class="container-fluid position-relative bg-white d-flex p-0"
-    >
-      <!-- Spinner Start -->
-      <div
-        id="spinner"
-        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center"
-      >
-        <div
-          class="spinner-border text-primary"
-          style="width: 3rem; height: 3rem"
-          role="status"
-        >
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
-      <!-- Spinner End -->
-
-      <!-- Sidebar Start -->
-      <div class="sidebar pe-4 pb-3">
-        <nav class="navbar bg-light navbar-light">
-          <a href="index" class="navbar-brand mx-4 mb-3">
-            <h3 class="text-primary">
-              <i class="fa fa-hashtag me-2"></i>smart reserve
-            </h3>
-          </a>
-          <div class="d-flex align-items-center ms-4 mb-4">
-            <div class="position-relative">
-              <img
-                class="rounded-circle"
-                src=""
-                alt=""
-                style="width: 40px; height: 40px"
-              />
-              <div
-                class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"
-              ></div>
-            </div>
-            <div class="ms-3">
-              <h6 class="mb-0">사용자 이름</h6>
-              <span>(가게이름) 점주님</span>
-            </div>
-          </div>
-          <div class="navbar-nav w-100">
-            <a href="index.html" class="nav-item nav-link active"
-              ><i class="fa fa-tachometer-alt me-2"></i>대시보드</a
-            >
-            <div class="nav-item dropdown">
-              <a
-                href="#"
-                class="nav-link dropdown-toggle"
-                data-bs-toggle="dropdown"
-                ><i class="fa fa-laptop me-2"></i>구성</a
-              >
-              <div class="dropdown-menu bg-transparent border-0">
-                <a href="/view/owner/button.html" class="dropdown-item">버튼</a>
-                <a href="typography.html" class="dropdown-item">문자디자인</a>
-                <a href="element.html" class="dropdown-item">기타 항목</a>
-              </div>
-            </div>
-            <a href="widget.html" class="nav-item nav-link"
-              ><i class="fa fa-th me-2"></i>위젯</a
-            >
-            <a href="form.html" class="nav-item nav-link"
-              ><i class="fa fa-keyboard me-2"></i>폼</a
-            >
-            <a href="table.html" class="nav-item nav-link"
-              ><i class="fa fa-table me-2"></i>테이블</a
-            >
-            <a href="/view/owner/chart.html" class="nav-item nav-link"
-              ><i class="fa fa-chart-bar me-2"></i>차트</a
-            >
-            <div class="nav-item dropdown">
-              <a
-                href="#"
-                class="nav-link dropdown-toggle"
-                data-bs-toggle="dropdown"
-                ><i class="far fa-file-alt me-2"></i>페이지</a
-              >
-              <div class="dropdown-menu bg-transparent border-0">
-                <a href="signin.html" class="dropdown-item">로그인</a>
-                <a href="signup.html" class="dropdown-item">계정 생성하기</a>
-                <a href="404.html" class="dropdown-item">에러 페이지</a>
-                <a href="blank.html" class="dropdown-item">빈 페이지</a>
-              </div>
-            </div>
-          </div>
-        </nav>
+    <div id="vueApp">
+      <div class="container-xxl position-relative bg-white d-flex p-0">
+        <spinner-component></spinner-component>
+        <!-- Sidebar Start -->
+        <sidebar-component></sidebar-component>
       </div>
       <!-- Sidebar End -->
 
       <!-- Content Start -->
       <div class="content">
         <!-- Navbar Start -->
-        <nav
-          class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0"
-        >
-          <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
-            <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-          </a>
-          <a href="#" class="sidebar-toggler flex-shrink-0">
-            <i class="fa fa-bars"></i>
-          </a>
-
-          <div class="navbar-nav align-items-center ms-auto">
-            <div class="nav-item dropdown">
-              <a
-                href="#"
-                class="nav-link dropdown-toggle"
-                data-bs-toggle="dropdown"
-              >
-                <i class="fa fa-bell me-lg-2"></i>
-                <span class="d-none d-lg-inline-flex">알림</span>
-              </a>
-              <div
-                class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0"
-              >
-                <a href="#" class="dropdown-item">
-                  <h6 class="fw-normal mb-0">프로필 업데이트</h6>
-                  <small>15 minutes ago</small>
-                </a>
-                <hr class="dropdown-divider" />
-                <a href="#" class="dropdown-item">
-                  <h6 class="fw-normal mb-0">홍길북 님의 예약요청</h6>
-                  <small>15 minutes ago</small>
-                </a>
-                <hr class="dropdown-divider" />
-                <a href="#" class="dropdown-item">
-                  <h6 class="fw-normal mb-0">홍길순님이 예약을 취소했습니다</h6>
-                  <small>15 minutes ago</small>
-                </a>
-                <hr class="dropdown-divider" />
-                <a href="#" class="dropdown-item text-center"
-                  >모든 알림메세지 확인하기</a
-                >
-              </div>
-            </div>
-            <div class="nav-item dropdown">
-              <a
-                href="#"
-                class="nav-link dropdown-toggle"
-                data-bs-toggle="dropdown"
-              >
-                <img
-                  class="rounded-circle me-lg-2"
-                  src=""
-                  alt=""
-                  style="width: 40px; height: 40px"
-                />
-                <span class="d-none d-lg-inline-flex">사용자 이름</span>
-              </a>
-              <div
-                class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0"
-              >
-                <a href="#" class="dropdown-item">내 계정</a>
-                <a href="#" class="dropdown-item">세팅</a>
-                <a href="#" class="dropdown-item">로그아웃</a>
-              </div>
-            </div>
-          </div>
-        </nav>
+        <navbar-component></navbar-component>
         <!-- Navbar End -->
 
         <!-- Sale & Revenue Start -->
@@ -452,26 +296,13 @@
         </div>
       </div>
       <!-- Content End -->
+      <!-- Back to Top -->
+      <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"
+        ><i class="bi bi-arrow-up"></i
+      ></a>
     </div>
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"
-      ><i class="bi bi-arrow-up"></i
-    ></a>
-
-    <script src="/js/user/lib/wow/wow.min.js"></script>
-    <script src="/js/owner/lib/chart/chart.min.js"></script>
-    <script src="/js/owner/lib/easing/easing.min.js"></script>
-    <script src="/js/user/lib/counterup/counterup.min.js"></script>
-    <script src="/js/user/lib/lightbox/js/lightbox.min.js"></script>
-    <script src="/node_modules/vue/dist/vue.min.js"></script>
-    <script src="/node_modules/axios/dist/axios.min.js"></script>
-    <script src="/js/owner/lib/waypoints/waypoints.min.js"></script>
-    <script src="/js/owner/lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
-    <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
     <!-- Template Javascript -->
-    <script type="module" src="/js/owner/main.js"></script>
+    <script type="module" src="/js/owner/review.js"></script>
   </body>
 </html>

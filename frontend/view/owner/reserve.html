@@ -36,11 +36,6 @@
     <link href="/css/owner/mainlogo.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/owner/index.css" />
 
-    <!-- fullcalenda CDN -->
-    <script src="
-    https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js
-    "></script>
-
     <!-- JavaScript Libraries -->
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
@@ -74,16 +69,43 @@
         <!-- Navbar Start -->
         <navbar-component></navbar-component>
         <!-- Navbar End -->
-        <!-- Sale & Revenue Start -->
+
+        <!-- 에약 데이터 -->
         <div class="container-fluid pt-4 px-4 mb-4">
-          <!-- 최근 예약 -->
+          <!-- <div class="container-fluid row g-4"> -->
+          <div class="container-fluid pt-4 px-4 mb-4">
+            <div
+              class="bg-light rounded d-flex align-items-center justify-content-between p-4"
+            >
+              <i class="fa fa-chart-line fa-3x text-primary"></i>
+              <div class="ms-3">
+                <p class="mb-2">오늘 예약 수</p>
+                <h6 class="mb-0">{{totalTodayReserve}}개</h6>
+              </div>
+
+              <i class="fa fa-chart-bar fa-3x text-primary"></i>
+              <div class="ms-3">
+                <p class="mb-2">전체 예약 수</p>
+                <h6 class="mb-0">{{totalReserve}}개</h6>
+              </div>
+            </div>
+          </div>
+
+          <!-- single-bar chart -->
+          <div class="container-fluid pt-4 px-4 mb-4">
+            <div class="bg-light rounded h-100 p-4">
+              <h6 class="mb-4">최근 6개월 예약 수</h6>
+              <canvas id="reserve-chart"></canvas>
+            </div>
+          </div>
+
+          <!-- 예약 목록 테이블 -->
           <div id="reviewLists" class="container-fluid pt-4 px-4 mb-4">
             <div class="bg-light text-center rounded p-4">
               <div
                 class="d-flex align-items-center justify-content-between mb-4"
               >
-                <h6 class="mb-0">승인 대기중인 예약</h6>
-                <a href="/view/owner/reserve">전체 보기</a>
+                <h6 class="mb-0">전체 예약 목록</h6>
               </div>
               <div class="table-responsive">
                 <table
@@ -105,7 +127,7 @@
                   <tbody>
                     <!-- 최대 5개만 보여줌 -->
                     <tr
-                      v-for="(reserve, index) in filteredReserves"
+                      v-for="(reserve, index) in paginatedReserves"
                       :key="reserve.reserveId"
                     >
                       <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
@@ -123,155 +145,68 @@
                       </td>
                       <td class="status-button">
                         <button
+                          v-if="reserve.statusCodeId === 1"
                           class="btn btn-success btn-block"
-                          @click="updateReserveStatus(reserve.reserveId, 2)"
+                          @click="updateReserveStatus(reserve.reserveId, 2, index)"
                         >
                           예약 승인
                         </button>
                         <button
+                          v-if="reserve.statusCodeId === 1"
                           class="btn btn-danger btn-block"
-                          @click="updateReserveStatus(reserve.reserveId, 3)"
+                          @click="updateReserveStatus(reserve.reserveId, 3, index)"
                         >
                           예약 취소
+                        </button>
+                        <button
+                          v-if="reserve.statusCodeId !== 1"
+                          class="btn btn-outline-danger btn-block"
+                          diabled
+                        >
+                          예약 상태 업데이트 완료
                         </button>
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-            </div>
-          </div>
 
-          <div class="container-fluid row g-4">
-            <div class="col-sm-6 col-xl-3">
-              <div
-                class="bg-light rounded d-flex align-items-center justify-content-between p-4"
-              >
-                <i class="fa fa-chart-line fa-3x text-primary"></i>
-                <div class="ms-3">
-                  <p class="mb-2">오늘 판매 수익</p>
-                  <h6 class="mb-0">{{todayTotalSales.toLocaleString()}}원</h6>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
-              <div
-                class="bg-light rounded d-flex align-items-center justify-content-between p-4"
-              >
-                <i class="fa fa-chart-bar fa-3x text-primary"></i>
-                <div class="ms-3">
-                  <p class="mb-2">총 판매 수익</p>
-                  <h6 class="mb-0">{{totalSales.toLocaleString()}}원</h6>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
-              <div
-                class="bg-light rounded d-flex align-items-center justify-content-between p-4"
-              >
-                <i class="fa fa-chart-area fa-3x text-primary"></i>
-                <div class="ms-3">
-                  <p class="mb-2">오늘 결제 수</p>
-                  <h6 class="mb-0">{{todayTotalSalesCount}}개</h6>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
-              <div
-                class="bg-light rounded d-flex align-items-center justify-content-between p-4"
-              >
-                <i class="fa fa-chart-pie fa-3x text-primary"></i>
-                <div class="ms-3">
-                  <p class="mb-2">총 결제 수</p>
-                  <h6 class="mb-0">{{totalSalesCount}}개</h6>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Sale & Revenue End -->
-        <!-- Sales Chart Start -->
-        <div class="container-fluid pt-4 px-4 mb-4">
-          <div class="row g-4">
-            <div class="col-sm-12 col-xl-6">
-              <div class="bg-light text-center rounded p-4">
-                <div
-                  class="d-flex align-items-center justify-content-between mb-4"
-                >
-                  <h6 class="mb-0">최근 6개월 매출 추이</h6>
-                </div>
-                <canvas id="sales-chart"></canvas>
-              </div>
-            </div>
-            <div class="col-sm-12 col-xl-6">
-              <div class="bg-light text-center rounded p-4">
-                <div
-                  class="d-flex align-items-center justify-content-between mb-4"
-                >
-                  <h6 class="mb-0">최근 6개월 결제 수 추이</h6>
-                </div>
-                <canvas id="salesCount-chart"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Sales Chart End -->
-
-        <!-- Calendar -->
-        <div id="calendar"></div>
-
-        <!-- 최근 리뷰 -->
-        <div id="reviewLists" class="container-fluid pt-4 px-4">
-          <div class="bg-light text-center rounded p-4">
-            <div class="d-flex align-items-center justify-content-between mb-4">
-              <h6 class="mb-0">최근 리뷰</h6>
-              <a href="/view/owner/review">전체 보기</a>
-            </div>
-            <div class="table-responsive">
-              <table
-                class="table text-start align-middle table-bordered table-hover mb-0"
-              >
-                <thead>
-                  <tr class="text-dark">
-                    <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
-                    <th scope="col">리뷰 ID</th>
-                    <th scope="col">가게 ID</th>
-                    <th scope="col">유저 ID</th>
-                    <th scope="col">점수</th>
-                    <th scope="col">내용</th>
-                    <th scope="col">작성 날짜</th>
-                    <th scope="col">삭제 요청</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- 최대 5개만 보여줌 -->
-                  <tr
-                    v-for="(review, index) in filteredReviews"
-                    :key="review.reviewId"
+              <!-- pagination -->
+              <div id="pagination text-center">
+                <ul class="pagination justify-content-center">
+                  <li
+                    class="page-item"
+                    v-if="currentPage > 1"
+                    @click="changePage(currentPage - 1)"
                   >
-                    <!-- <tr v-for="(review, index) in reviews" :key="review.reviewId"> 전체 리뷰 for문 -->
-                    <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
-                    <td>{{ review.reviewId }}</td>
-                    <td>{{ review.storeId }}</td>
-                    <td>{{ review.userId }}</td>
-                    <td>{{ review.score }}</td>
-                    <td>{{ review.content }}</td>
-                    <td>{{ formatDate(review.createAt) }}</td>
-                    <!-- vue js에서 작성한 함수 -->
-                    <td>
-                      <button
-                        class="btn btn-danger btn-block"
-                        @click="deleteReq(review.reviewId)"
-                      >
-                        삭제 요청</button
-                      >({{ review.deleteReq }})
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                    <a class="page-link" href="#" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <li
+                    class="page-item"
+                    v-for="page in totalPages"
+                    :key="page"
+                    @click="changePage(page)"
+                  >
+                    <a class="page-link" href="#">{{page}}</a>
+                  </li>
+                  <li
+                    class="page-item"
+                    v-if="currentPage < totalPages"
+                    @click="changePage(currentPage + 1)"
+                  >
+                    <a class="page-link" href="#" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
+        <!-- 예약 데이터 끝 -->
+        <!-- Sales Chart Start -->
 
         <!-- Footer Start -->
         <div class="container-fluid pt-4 px-4">
@@ -292,6 +227,7 @@
         ><i class="bi bi-arrow-up"></i
       ></a>
     </div>
+
+    <script src="/js/owner/reserve.js"></script>
   </body>
-  <script src="/js/owner/index.js"></script>
 </html>

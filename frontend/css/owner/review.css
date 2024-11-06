@@ -1,16 +1,14 @@
-
 body {
-    font-family: 'Apple SD Gothic Neo';
-  }
-
-.reviewList{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  font-family: "Apple SD Gothic Neo", sans-serif;
 }
 
+.reviewList {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-.orderMethods{
-    display: flex;
-    gap: 10px;
+.orderMethods {
+  display: flex;
+  gap: 10px;
 }

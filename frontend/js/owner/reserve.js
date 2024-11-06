@@ -3,6 +3,10 @@ new Vue({
   data: {
     reserves: [],
     monthlyTotalReserve: [],
+    searchReserveList: [],
+    searchCustomerName: "",
+    searchStartDate: "",
+    searchEndDate: "",
     totalReserve: 0,
     totalTodayReserve: 0,
     currentPage: 1,
@@ -21,6 +25,9 @@ new Vue({
         this.totalReserve = response.data.data.totalReserve;
         this.totalTodayReserve = response.data.data.totalTodayReserve;
         this.totalPages = Math.ceil(this.totalReserve / this.pageSize);
+        this.monthlyTotalReserve = response.data.data.monthlyTotalReserve;
+
+        this.searchReserveList = this.reserves;
 
         this.createChart();
       });
@@ -44,6 +51,25 @@ new Vue({
 
     changePage: function (page) {
       this.currentPage = page;
+    },
+    searchReserves() {
+      this.searchReserveList = this.reserves.filter((reserve) => {
+        const matchesName = reserve.name.includes(this.searchCustomerName);
+
+        let matchesDateRange = true;
+        if (this.searchStartDate) {
+          let startDate = new Date(this.searchStartDate);
+          startDate.setHours(0, 0, 0, 0);
+          matchesDateRange = new Date(reserve.reserveTime) >= startDate;
+        }
+        if (this.searchEndDate) {
+          let endDate = new Date(this.searchEndDate);
+          startDate.setHours(23, 59, 59, 999);
+          matchesDateRange = new Date(reserve.reserveTime) <= endDate;
+        }
+
+        return matchesName && matchesDateRange;
+      });
     },
     createChart() {
       //Single Bar Chart
@@ -85,7 +111,7 @@ new Vue({
     paginatedReserves() {
       const start = (this.currentPage - 1) * this.pageSize;
       const end = start + this.pageSize;
-      return this.reserves.slice(start, end);
+      return this.searchReserveList.slice(start, end);
     },
   },
 });

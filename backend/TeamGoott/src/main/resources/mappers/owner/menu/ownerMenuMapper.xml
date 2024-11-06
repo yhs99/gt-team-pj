@@ -24,5 +24,11 @@
 		menuImageName = #{menuImageName} , description = #{description}, isMain = #{isMain} where menuId = #{menuId};
 	</update>
 	
+	<update id="updateMenuWithoutFile">
+		update menu 
+		set menuName = #{menuName}, price = #{price}, 
+	    description = #{description}, isMain = #{isMain} where menuId = #{menuId};
+	</update>
+	
 
 </mapper>

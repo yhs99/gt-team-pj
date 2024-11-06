@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>DASHMIN - Bootstrap Admin Template</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta content="" name="description" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css"
+      type="text/css"
+    />
+
+    <!-- Icon Font Stylesheet -->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+    />
+    <link
+      href="/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <!-- Libraries Stylesheet -->
+    <link
+      href="/css/owner/lib/owlcarousel/assets/owl.carousel.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/css/owner/lib/tempusdominus/tempusdominus-bootstrap-4.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link
+      href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Template Stylesheet -->
+    <link href="/css/owner/style.css" rel="stylesheet" />
+    <link href="/css/owner/mainlogo.css" rel="stylesheet" />
+    <link href="/css/owner/review.css" rel="stylesheet" />
+
+    <!-- JavaScript Libraries -->
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="/js/user/lib/wow/wow.min.js"></script>
+    <script src="/js/owner/lib/chart/chart.min.js"></script>
+    <script src="/js/owner/lib/easing/easing.min.js"></script>
+    <script src="/js/user/lib/counterup/counterup.min.js"></script>
+    <script src="/js/user/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/node_modules/vue/dist/vue.min.js"></script>
+    <script src="/node_modules/axios/dist/axios.min.js"></script>
+    <script src="/js/owner/lib/waypoints/waypoints.min.js"></script>
+    <script src="/js/owner/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <!-- Template Javascript -->
+    <script type="module" src="/js/owner/main.js"></script>
+    <script src="/js/owner/component.js"></script>
+  </head>
+
+  <body>
+    <div id="vueApp">
+      <div class="container-xxl position-relative bg-white d-flex p-0">
+        <spinner-component></spinner-component>
+        <!-- Sidebar Start -->
+        <sidebar-component></sidebar-component>
+      </div>
+      <!-- Sidebar End -->
+
+      <!-- Content Start -->
+      <div class="content">
+        <!-- Navbar Start -->
+        <navbar-component></navbar-component>
+        <!-- Navbar End -->
+        <div class="container-fluid pt-4 px-4">
+          <div class="container-fluid pt-4 px-4 mb-4">
+            <div
+              class="bg-light rounded d-flex align-items-center justify-content-between p-4"
+            >
+              <i class="fa fa-chart-line fa-3x text-primary"></i>
+              <div class="ms-3">
+                <p class="mb-2">전체 메뉴 수</p>
+                <h6 class="mb-0">{{numOfAllMenu}}개</h6>
+              </div>
+
+              <i class="fa fa-chart-bar fa-3x text-primary"></i>
+              <div class="ms-3">
+                <p class="mb-2">메인 메뉴 수</p>
+                <h6 class="mb-0">{{numOfMainMenu}}개</h6>
+              </div>
+
+              <i class="fa fa-chart-bar fa-3x text-primary"></i>
+              <div class="ms-3">
+                <p class="mb-2">사이드 메뉴 수</p>
+                <h6 class="mb-0">{{numOfSideMenu}}개</h6>
+              </div>
+            </div>
+          </div>
+          <div
+            class="container-fluid pt-4 px-4 mb-2 d-flex justify-content-end"
+          >
+            <button
+              v-if=""
+              class="btn btn-primary btn-block btn-lg"
+              style="width: 200px"
+              @click="showAddMenuModal()"
+            >
+              메뉴 추가하기
+            </button>
+          </div>
+
+          <div class="bg-light rounded h-100 p-4">
+            <h6 class="mb-4 reviewList">
+              메뉴 목록
+              <div class="orderMethods">
+                <a @click="showAllMenu();">전체 메뉴 보기</a>
+                <a @click="showMainMenu();">메인 메뉴 보기</a>
+                <a @click="showSideMenu();">사이드 메뉴 보기</a>
+              </div>
+            </h6>
+            <div class="table-responsive">
+              <table
+                class="table text-start align-middle table-bordered table-hover mb-0"
+              >
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">메뉴 ID</th>
+                    <th scope="col">가게 ID</th>
+                    <th scope="col">메뉴명</th>
+                    <th scope="col">가격</th>
+                    <th scope="col">메뉴 사진</th>
+                    <th scope="col">메뉴 설명</th>
+                    <th scope="col">메뉴 수정 또는 삭제</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(menu,index) in filteredMenu" :key="menu.menuId">
+                    <th scope="row">{{index + 1}}</th>
+                    <td>{{menu.menuId}}</td>
+                    <td>{{menu.storeId}}</td>
+                    <td>{{menu.menuName}}</td>
+                    <td>{{menu.price}}</td>
+                    <td>
+                      <img
+                        :src="menu.menuImageUrl"
+                        style="width: 150px; height: 150px"
+                      />
+                    </td>
+                    <td>
+                      {{menu.description != null ? menu.description : ""}}
+                    </td>
+                    <td>
+                      <button
+                        class="btn btn-success btn-block"
+                        @click="showModifyMenuModal(menu.menuId)"
+                      >
+                        메뉴 수정
+                      </button>
+                      <button
+                        class="btn btn-danger btn-block"
+                        @click="showDeleteMenuModal(menu.menuId)"
+                      >
+                        메뉴 삭제
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- 
+            <div id="pagination text-center">
+              <ul class="pagination justify-content-center">
+                <li
+                  class="page-item"
+                  v-if="currentPage > 1"
+                  @click="changePage(currentPage - 1)"
+                >
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                <li
+                  class="page-item"
+                  v-for="page in totalPages"
+                  :key="page"
+                  @click="changePage(page)"
+                >
+                  <a class="page-link" href="#">{{page}}</a>
+                </li>
+                <li
+                  class="page-item"
+                  v-if="currentPage < totalPages"
+                  @click="changePage(currentPage + 1)"
+                >
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              </ul>
+            </div> -->
+          </div>
+        </div>
+
+        <!-- Footer Start -->
+        <div class="container-fluid pt-4 px-4">
+          <div class="bg-light rounded-top p-4">
+            <div class="row">
+              <div class="col-12 col-sm-6 text-center text-sm-start">
+                &copy; <a href="#">smartreserve.store</a>, All Right Reserved.
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Footer End -->
+        <!-- Content End -->
+      </div>
+
+      <!-- Content End -->
+      <!-- Back to Top -->
+      <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"
+        ><i class="bi bi-arrow-up"></i
+      ></a>
+
+      <!-- 메뉴 추가 Modal -->
+      <div v-if="showAddModal" class="modal fade show" style="display: block">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">메뉴 추가</h4>
+              <button
+                type="button"
+                class="btn-close"
+                @click="showAddModal = false"
+              ></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+              <form @submit.prevent="addMenu">
+                <div class="mb-3">
+                  <label for="menuName" class="form-label">메뉴 이름</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    v-model="newMenu.menuName"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="price" class="form-label">메뉴 가격</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    v-model="newMenu.price"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="menuImage" class="form-label">메뉴 사진</label>
+                  <input
+                    type="file"
+                    class="form-control"
+                    @change="fileChange"
+                    required
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="description" class="form-label">메뉴 설명</label>
+                  <textarea
+                    class="form-control"
+                    v-model="newMenu.description"
+                    rows="3"
+                  ></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="menuType" class="form-label">메뉴 타입</label>
+                  <select class="form-select" v-model="newMenu.main">
+                    <option :value="true">메인 메뉴</option>
+                    <option :value="false">사이드 메뉴</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary">추가</button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  @click="showAddModal = false"
+                >
+                  취소
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 메뉴 추가 Modal 끝-->
+      <!-- 메뉴 수정 Modal -->
+      <div
+        v-if="showModifyModal"
+        class="modal fade show"
+        style="display: block"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">메뉴 수정</h4>
+              <button
+                type="button"
+                class="btn-close"
+                @click="showModifyModal = false"
+              ></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+              <form @submit.prevent="modifyMenu(modifyMenuId)">
+                <div class="mb-3">
+                  <label for="menuName" class="form-label">메뉴 이름</label>
+                  <input
+                    type="text"
+                    id="menuName"
+                    class="form-control"
+                    v-model="modifyMenuList.menuName"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="price" class="form-label">메뉴 가격</label>
+                  <input
+                    type="number"
+                    id="price"
+                    class="form-control"
+                    v-model="modifyMenuList.price"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    @click="showMenuImageInput = !showMenuImageInput"
+                  >
+                    메뉴 사진 수정
+                  </button>
+                </div>
+                <div v-if="showMenuImageInput" class="mb-3">
+                  <label for="menuImage" class="form-label">메뉴 사진</label>
+                  <input
+                    type="file"
+                    id="menuImage"
+                    class="form-control"
+                    @change="fileChange"
+                    required
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="description" class="form-label">메뉴 설명</label>
+                  <textarea
+                    id="description"
+                    class="form-control"
+                    v-model="modifyMenuList.description"
+                    rows="3"
+                  ></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="menuType" class="form-label">메뉴 타입</label>
+                  <select
+                    id="menuType"
+                    class="form-select"
+                    v-model="modifyMenuList.main"
+                  >
+                    <option :value="true">메인 메뉴</option>
+                    <option :value="false">사이드 메뉴</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary">수정</button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  @click="showModifyModal = false"
+                >
+                  취소
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 메뉴 수정 Modal 끝 -->
+
+      <!-- 메뉴 삭제 모달  -->
+      <div
+        v-if="showDeleteModal"
+        class="modal fade show"
+        style="display: block"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">메뉴 삭제</h4>
+              <button
+                type="button"
+                class="btn-close"
+                @click="showDeleteModal = false"
+              ></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">해당 메뉴를 삭제 하시겠습니까?</div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-danger"
+                @click="deleteMenu()"
+              >
+                삭제
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                @click="showDeleteModal = false"
+              >
+                취소
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 메뉴 삭제 모달  끝-->
+    </div>
+
+    <!-- Template Javascript -->
+    <script src="/js/owner/menu.js"></script>
+  </body>
+</html>

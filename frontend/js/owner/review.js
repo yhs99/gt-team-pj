@@ -9,6 +9,10 @@ new Vue({
     totalAvgTodayScore: 0,
     countMonthlyReview: [],
     countScore: [],
+    searchCustomerName: "",
+    searchStartDate: "",
+    searchEndDate: "",
+    searchReviewList: [],
     showModal: false,
     selectedReviewId: 0,
     currentPage: 1, //현재 페이지
@@ -44,10 +48,39 @@ new Vue({
           this.countMonthlyReview = response.data.data.countMonthlyReview;
           this.countScore = response.data.data.countScore;
           this.totalPages = Math.ceil(this.totalReviewCount / this.pageSize);
+          this.searchReviewList = this.searchReviews(orderMethod);
         })
         .catch((error) => {
           console.error(error);
         });
+    },
+    searchReviews(orderMethod) {
+      this.searchReviewList = this.getAllReviewList.filter((review) => {
+        const matchesName = review.userName.includes(this.searchCustomerName);
+
+        let matchesDateRange = true;
+        if (this.searchStartDate) {
+          let startDate = new Date(this.searchStartDate);
+          startDate.setHours(0, 0, 0, 0);
+          matchesDateRange = new Date(review.createAt) >= startDate;
+        }
+        if (this.searchEndDate) {
+          let endDate = new Date(this.searchEndDate);
+          endDate.setHours(23, 59, 59, 999);
+          matchesDateRange =
+            matchesDateRange && new Date(review.createAt) <= endDate;
+        }
+
+        return matchesName && matchesDateRange;
+      });
+
+      if (orderMethod === "newest") {
+        return this.searchReviewList.sort(
+          (a, b) => new Date(b.createAt) - new Date(a.createAt)
+        );
+      } else if (orderMethod === "score") {
+        return this.searchReviewList.sort((a, b) => b.score - a.score);
+      }
     },
 
     changePage: function (page) {
@@ -139,7 +172,7 @@ new Vue({
     paginatedReviews() {
       const start = (this.currentPage - 1) * this.pageSize;
       const end = start + this.pageSize;
-      return this.getAllReviewList.slice(start, end);
+      return this.searchReviewList.slice(start, end);
     },
   },
 });

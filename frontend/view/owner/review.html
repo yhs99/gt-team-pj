@@ -151,10 +151,44 @@
             <h6 class="mb-4 reviewList">
               리뷰 목록
               <div class="orderMethods">
-                <a @click="getAllReviews('newest')">최신순</a>
-                <a @click="getAllReviews('score')">별점순</a>
+                <a @click.prevent="getAllReviews('newest')">최신순</a>
+                <a @click.prevent="getAllReviews('score')">별점순</a>
               </div>
             </h6>
+
+            <div class="mb-3 d-flex">
+              <input
+                v-model="searchCustomerName"
+                class="form-control me-2"
+                type="text"
+                placeholder="고객명으로 검색"
+              />
+            </div>
+            <div class="mb-3 d-flex">
+              <input
+                v-model="searchStartDate"
+                class="form-control"
+                type="date"
+                placeholder="시작일"
+              />
+
+              <input
+                v-model="searchEndDate"
+                class="form-control"
+                type="date"
+                placeholder="종료일"
+              />
+            </div>
+            <div class="mb-3 d-flex justify-content-end">
+              <button
+                class="btn btn-primary ms-2"
+                style="width: 200px"
+                @click="searchReviews"
+              >
+                검색
+              </button>
+            </div>
+
             <div class="table-responsive">
               <table
                 class="table text-start align-middle table-bordered table-hover mb-0"
@@ -255,6 +289,10 @@
         <!-- Footer End -->
         <!-- Content End -->
       </div>
+      <!-- Back to Top -->
+      <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"
+        ><i class="bi bi-arrow-up"></i
+      ></a>
 
       <!-- Modal -->
       <div v-if="showModal" class="modal fade show" style="display: block">
@@ -296,13 +334,9 @@
         </div>
       </div>
       <!-- Content End -->
-      <!-- Back to Top -->
-      <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"
-        ><i class="bi bi-arrow-up"></i
-      ></a>
     </div>
 
     <!-- Template Javascript -->
-    <script type="module" src="/js/owner/review.js"></script>
+    <script src="/js/owner/review.js"></script>
   </body>
 </html>

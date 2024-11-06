@@ -12,7 +12,7 @@ public interface OwnerReserveService {
 
 	ReserveInfoVO getAllReserveInfo(int storeId, String sortMethod);
 
-	int updateStatus(int reserveId, int statusCode);
+	int updateStatus(int reserveId, int statusCode, int storeId);
 
 	ReserveDTO getReserve(int reserveId);
 

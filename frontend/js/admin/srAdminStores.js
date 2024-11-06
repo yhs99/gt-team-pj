@@ -138,11 +138,10 @@ new Vue({
         this.updateFlag = true;
       }
     },
-    async submitUpdate() {
+    async submitUpdate() { // 가게정보 수정 요청
       try {
         const selectedCategoryForm = [];
         const selectedFacilityForm = [];
-        this.spinnerShow(true);
         this.updateStoreData.storeId = this.storeInfo.storeId;
         this.updateStoreData.ownerId = this.storeInfo.ownerId;
         this.updateStoreData.rotationId = this.storeInfo.rotationId;
@@ -178,13 +177,11 @@ new Vue({
         formData.append('facilityDTO', new Blob([JSON.stringify(selectedFacilityForm)], { type: 'application/json' }));
         formData.append('scheduleDTO', new Blob([JSON.stringify(changedSchedule)], { type: 'application/json' }));
         
-        this.storeModal.hide();
         const response = await axios.put(`/api/admin/store/${this.updateStoreData.storeId}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
         if(response.status === 200) {
           alert(response.data.data);
-          this.storeModal.hide();
         }
       } catch(error) {
         if(error.status === 404) {
@@ -198,7 +195,38 @@ new Vue({
         this.spinnerShow(false);
       }
     },
-    spinnerShow(bool) {
+    storeBlock(storeId, block) { // 0 차단해제, 1 차단
+      if(block === 1) {
+        axios.delete(`/api/admin/store/${storeId}`)
+        .then(response => {
+          if(response.status === 200) {
+            alert(response.data.data);
+          }
+        })
+        .catch(error => {
+          alert('블럭처리중 에러가 발생했습니다.');
+        })
+        .finally(() => {
+          this.fetchStores();
+        })
+      }else if(block === 0) {
+        axios.patch(`/api/admin/store/${storeId}`)
+        .then(response => {
+          if(response.status === 200) {
+            alert(response.data.data);
+          }else {
+            alert("해제 처리중 에러발생");
+          }
+        })
+        .catch(error => {
+          alert('해제 처리중 에러가 발생했습니다.');
+        })
+        .finally(() => {
+          this.fetchStores();
+        })
+      }
+    },
+    spinnerShow(bool) { // true 표시 , false 숨김
       bool ? $('#spinner').addClass('show') : $('#spinner').removeClass('show');
     },
     getUpdatedSchedules(existingSchedules, newSchedules) {

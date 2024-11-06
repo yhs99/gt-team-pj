@@ -16,13 +16,14 @@ import lombok.ToString;
 public class PayHistoryDTO {
 	private int payHistoryId;
 	private int reserveId;
+	private int storeId;
 	private int menuId;
 	private String menuName;
 	private int stock;
-	private int stockPerPrice;
+	private double stockPerPrice;
 	private int stockTotal;
-	private int totalPrice;
-	private boolean couponYN;
+	private double totalPrice;
+	private int couponYN;
 	private int couponId;
-	private int payAmount;
+	private double payAmount;
 }

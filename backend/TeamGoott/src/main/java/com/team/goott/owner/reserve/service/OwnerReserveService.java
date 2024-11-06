@@ -12,13 +12,13 @@ public interface OwnerReserveService {
 
 	ReserveInfoVO getAllReserveInfo(int storeId, String sortMethod);
 
-	int updateStatus(int reserveId, int statusCode);
+	int updateStatus(int reserveId, int statusCode, int storeId);
 
 	ReserveDTO getReserve(int reserveId);
 
 	ReserveSlotsDTO getReserveSlots(int storeId, LocalDateTime reserveTime);
 
-	List<NotificationDTO> getNotification(int userId);
+	List<NotificationDTO> getNotification(int storeId);
 
 	int updateNotification(int alarmId);
 

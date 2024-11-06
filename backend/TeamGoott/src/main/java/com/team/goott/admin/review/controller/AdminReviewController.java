@@ -62,6 +62,8 @@ public class AdminReviewController {
 											  @PathVariable(name = "reviewId") int reviewId) {
 		try {
 			adminReviewService.deleteReview(reviewId);
+		}catch(IllegalArgumentException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

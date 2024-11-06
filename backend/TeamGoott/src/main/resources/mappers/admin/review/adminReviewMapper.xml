@@ -9,11 +9,11 @@
 		ON r.storeId = s.storeId
     <where>
         <choose>
-            <when test="searchBy == 'storeId'">
-                r.storeId = #{searchValue}
+            <when test="searchBy == 'storeName'">
+                s.storeName LIKE CONCAT('%', #{searchValue}, '%')
             </when>
-            <when test="searchBy == 'userId'">
-                r.userId = #{searchValue}
+            <when test="searchBy == 'userName'">
+                u.userName LIKE CONCAT('%', #searchValue}, '%')
             </when>
             <otherwise>
                 1=1
@@ -51,9 +51,7 @@
             </otherwise>
         </choose>
     </if>
-    <if test="sortBy == null or sortBy == ''">
         ORDER BY r.createAt DESC
-    </if>
 	</select>
 	
 	<select id="getAllReviewImages" parameterType="map" resultType="com.team.goott.admin.domain.ReviewImagesDTO">

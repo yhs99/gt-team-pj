@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>DASHMIN - Bootstrap Admin Template</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta content="" name="description" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css"
+      type="text/css"
+    />
+
+    <!-- Icon Font Stylesheet -->
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+    />
+    <link
+      href="/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <!-- Libraries Stylesheet -->
+    <link
+      href="/css/owner/lib/owlcarousel/assets/owl.carousel.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/css/owner/lib/tempusdominus/tempusdominus-bootstrap-4.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link
+      href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Template Stylesheet -->
+    <link href="/css/owner/style.css" rel="stylesheet" />
+    <link href="/css/owner/mainlogo.css" rel="stylesheet" />
+    <link href="/css/owner/review.css" rel="stylesheet" />
+
+    <!-- JavaScript Libraries -->
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="/js/user/lib/wow/wow.min.js"></script>
+    <script src="/js/owner/lib/chart/chart.min.js"></script>
+    <script src="/js/owner/lib/easing/easing.min.js"></script>
+    <script src="/js/user/lib/counterup/counterup.min.js"></script>
+    <script src="/js/user/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/node_modules/vue/dist/vue.min.js"></script>
+    <script src="/node_modules/axios/dist/axios.min.js"></script>
+    <script src="/js/owner/lib/waypoints/waypoints.min.js"></script>
+    <script src="/js/owner/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <!-- Template Javascript -->
+    <script type="module" src="/js/owner/main.js"></script>
+    <script src="/js/owner/component.js"></script>
+  </head>
+
+  <body>
+    <div id="vueApp">
+      <div class="container-xxl position-relative bg-white d-flex p-0">
+        <spinner-component></spinner-component>
+        <!-- Sidebar Start -->
+        <sidebar-component></sidebar-component>
+      </div>
+      <!-- Sidebar End -->
+
+      <!-- Content Start -->
+      <div class="content">
+        <!-- Navbar Start -->
+        <navbar-component></navbar-component>
+        <!-- Navbar End -->
+        <div class="container-fluid pt-4 px-4">
+          <div class="bg-light rounded h-100 p-4">
+            <h6 class="mb-4 reviewList">
+              리뷰 목록
+              <div class="orderMethods">
+                <a @click="">최신순</a>
+                <a @click="">별점순</a>
+              </div>
+            </h6>
+            <div class="table-responsive">
+              <table
+                class="table text-start align-middle table-bordered table-hover mb-0"
+              >
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">메뉴 ID</th>
+                    <th scope="col">가게 ID</th>
+                    <th scope="col">메뉴명</th>
+                    <th scope="col">가격</th>
+                    <th scope="col">메뉴 사진</th>
+                    <th scope="col">메뉴 설명</th>
+                    <th scope="col">메뉴 수정 또는 삭제</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(menu,index) in allMenu" :key="menu.menuId">
+                    <th scope="row">{{index + 1}}</th>
+                    <td>{{menu.menuId}}</td>
+                    <td>{{menu.storeId}}</td>
+                    <td>{{menu.menuName}}</td>
+                    <td>{{menu.price}}</td>
+                    <td>{{menu.menuImageUrl}}</td>
+                    <td>{{menu.main}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- 
+            <div id="pagination text-center">
+              <ul class="pagination justify-content-center">
+                <li
+                  class="page-item"
+                  v-if="currentPage > 1"
+                  @click="changePage(currentPage - 1)"
+                >
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                <li
+                  class="page-item"
+                  v-for="page in totalPages"
+                  :key="page"
+                  @click="changePage(page)"
+                >
+                  <a class="page-link" href="#">{{page}}</a>
+                </li>
+                <li
+                  class="page-item"
+                  v-if="currentPage < totalPages"
+                  @click="changePage(currentPage + 1)"
+                >
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              </ul>
+            </div> -->
+          </div>
+        </div>
+
+        <!-- Footer Start -->
+        <div class="container-fluid pt-4 px-4">
+          <div class="bg-light rounded-top p-4">
+            <div class="row">
+              <div class="col-12 col-sm-6 text-center text-sm-start">
+                &copy; <a href="#">smartreserve.store</a>, All Right Reserved.
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Footer End -->
+        <!-- Content End -->
+      </div>
+
+      <!-- Content End -->
+      <!-- Back to Top -->
+      <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"
+        ><i class="bi bi-arrow-up"></i
+      ></a>
+    </div>
+
+    <!-- Template Javascript -->
+    <script src="/js/owner/menu.js"></script>
+  </body>
+</html>

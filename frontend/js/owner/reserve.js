@@ -21,6 +21,7 @@ new Vue({
         this.totalReserve = response.data.data.totalReserve;
         this.totalTodayReserve = response.data.data.totalTodayReserve;
         this.totalPages = Math.ceil(this.totalReserve / this.pageSize);
+        this.monthlyTotalReserve = response.data.data.monthlyTotalReserve;
 
         this.createChart();
       });

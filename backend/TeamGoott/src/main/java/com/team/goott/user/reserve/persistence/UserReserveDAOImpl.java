@@ -106,12 +106,13 @@ public class UserReserveDAOImpl implements UserReserveDAO {
 	}
 
 	@Override
-	public int getSlotCheck(int storeId, LocalDateTime reserveTime) throws Exception {
-		Map<String, Object> params = new HashMap<>();
-		params.put("storeId", storeId);
-		params.put("reserveTime", reserveTime);
-		return ses.selectOne(ns+"getSlotCheck",params);
-	}
+	public Integer getSlotCheck(int storeId, LocalDateTime reserveTime)throws Exception {
+		    Map<String, Object> params = new HashMap<>();
+		    params.put("storeId", storeId);
+		    params.put("reserveTime", reserveTime);
+		    return ses.selectOne(ns + "getSlotCheck", params);
+		   
+		}
 
 	@Override
 	public int getCouponStockCheck(int couponId) {
@@ -152,6 +153,10 @@ public class UserReserveDAOImpl implements UserReserveDAO {
 		return ses.update(ns+"getUpdateReserveSlotReserved",params);
 	}
 
+	@Override
+	public Integer getCouponStoreId(Integer couponId) throws Exception {
+		return ses.selectOne(ns+"getCouponStoreId", couponId);
+	}
 
 
 

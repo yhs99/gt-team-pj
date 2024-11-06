@@ -21,7 +21,7 @@ public class ReserveDTO {
 	private int reserveId;
 	private int storeId;
 	private int userId;
-	private int couponId;
+	private Integer couponId;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime reserveTime;
 	private String name;

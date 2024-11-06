@@ -96,5 +96,21 @@ public class OwnerReserveDAOImpl implements OwnerReserveDAO {
 		return session.update(ns+"updateNotification", alarmId);
 	}
 
+	@Override
+	public Boolean getIsReserved(LocalDateTime reserveTime, int storeId) {
+		Map<String, Object> args = new HashMap<String, Object>();
+		args.put("reserveTime", reserveTime);
+		args.put("storeId", storeId);
+		return session.selectOne(ns+"getIsReserved", args);
+	}
+
+	@Override
+	public int updateReserveSlot(LocalDateTime reserveTime, int storeId) {
+		Map<String, Object> args = new HashMap<String, Object>();
+		args.put("reserveTime", reserveTime);
+		args.put("storeId", storeId);
+		return session.update(ns+"updateReserveSlot", args);
+	}
+
 
 }

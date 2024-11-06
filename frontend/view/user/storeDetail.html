@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <title>식당 상세 정보</title>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ae7f9510119596f0c0ff9416ba9caf07"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="/js/user/storeDetail.js"></script>
+    <link rel="stylesheet" href="/css/user/storeDetail.css">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <div class="details_container">
+        <div class="restaurant-header">
+            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                </div>
+                <div class="carousel-inner">
+                  <div class="caroPic carousel-item active">
+                    <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" class="d-block w-100" alt="storeImages.url(1)">
+                  </div>
+                  <div class="caroPic carousel-item">
+                    <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" class="d-block w-100" alt="storeImages.url(2)">
+                  </div>
+                  <div class="caroPic carousel-item">
+                    <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" class="d-block w-100" alt="storeImages.url(3)">
+                  </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
+            </div>
+        
+            <h1 class="restaurant-name">store.storeName</h1>
+            <div class="rating">
+                <span class="stars">⭐️⭐️⭐️⭐️⭐️avg(review.score) <span class="review-count">리뷰수(count(review))</span><span class="arrow" onclick="goToPage(review.html)">></span></span>
+                
+            </div>
+            <p class="description">상세정보 store.description</p>
+            <p class="address">주소 store.address</p>
+            <p class="mainPrice">평균가격 avg(menu.price.isMain)</p>
+            <p class="hours">오늘(월dayOfWeek) 영업시간: 17:00 - 23:00 schedule.open.close</p>
+            <p class="fold">(foldable)상세 영업시간 schedule.dayCodeId.open.close
+                휴무일 </p>
+            <p class="facility">웰컴키즈존 facilityCode-facility</p>
+        </div>
+            
+        <div class="square_section">
+            <div class="cButton-container">
+                <div class="cButton">홈</div>
+                <div class="cButton">메뉴</div>
+                <div class="cButton">사진</div>
+                <div class="cButton">리뷰</div>
+                <div class="cButton">매장정보</div>
+            </div>
+            <div class="long_button" id="coupon">쿠폰정보 coupon.couponName</div>
+        
+
+            <h2 class="my_title">예약하기</h2>
+            <p>날짜.인원.시간</p>
+            <div>calendar</div>
+            <div id='calendar'></div>
+            <p>인원수(1명~store.maxPplPerReserve)</p>
+            <p>reserveSlots  reserved=0인 시간대</p>
+        </div>
+
+        <div class="square_section">
+            <h2 class="my_title">편의시설</h2>
+            <ul>
+                <li>주차 가능</li>
+                <li>Wi-Fi 제공</li>
+                <li>포장 가능</li>
+            </ul>
+        </div>
+
+        <div class="square_section">
+            <h2 class="my_title">메뉴</h2>
+            <button class="small_button">식사류</button>
+            <button class="small_button">사이드</button>
+            <div class="menu-item">
+                <input type="checkbox"/>
+                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="삼겹살" class="menu-image">
+                <div class="menu-details">
+                    <h3>삼겹살</h3>
+                    <p>가격: 22,000원</p>
+                </div>
+            </div>
+            <div class="menu-item">
+                <input type="checkbox"/>
+                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="갈비" class="menu-image">
+                <div class="menu-details">
+                    <h3>갈비</h3>
+                    <p>가격: 32,000원</p>
+                </div>
+            </div>
+            <div class="menu-item">
+                <input type="checkbox"/>
+                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="소고기" class="menu-image">
+                <div class="menu-details">
+                    <h3>소고기</h3>
+                    <p>가격: 42,000원</p>
+                </div>
+            </div>
+            <button class="long_button more"> 메뉴 전체 보기 &gt;</button>
+        </div>
+
+        <div class="square_section">
+            <h2 class="my_title">사진</h2>
+            <div class="photo-gallery">
+                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="사진 1" class="photo">
+                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="사진 2" class="photo">
+                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="사진 3" class="photo">
+                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="사진 4" class="photo">
+                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="사진 5" class="photo">
+            </div>
+            <button class="long_button more">사진 15개 전체보기 &gt;</button>
+        </div>
+        
+        <div class="square_section">
+            <h2 class="r_title">추천 리뷰</h2>
+          
+                <span class="star">⭐️⭐️⭐️⭐️⭐️</span>
+                <span class="score">4.9 (44)</span>
+       
+            <div class="restaurants_whole">
+            <div class="restaurant-card">
+                <div class="restaurant_image_box">
+                    <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="광안리 다이치" class="restaurant-image">
+                </div>
+                    <p class="restaurant-details">남들이조와</p>
+                    <span class="review-date">2024.10.13</span>
+                    <span class="review-rating">5.0</span>
+                    <p class="review-text">친구가 같이 가자구 해서 다녀왔는데 다들 넘 친...</p>
+            </div>
+            <div class="restaurant-card">
+                <div class="restaurant_image_box">
+                    <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="광안리 다이치" class="restaurant-image">
+                    </div>
+                    <p class="restaurant-details">즐거운 맛사냥꾼</p>
+                    <span class="review-date">2024.10.13</span>
+                    <p class="review-text">광안리 사는 친구구 오랜만에...</p>
+            </div>
+            </div>
+            <button class="long_button more">리뷰 전체보기 &gt;</button>
+        </div>
+        <div class="square_section">
+            <h2 class="my_title">지도</h2>
+            <div id="map" style="width:100%;height:350px;"></div>
+           
+            <div>store.directionGuide</div>
+        </div>
+        <div class="square_section">
+            <h2 class="my_title">상세정보</h2>
+            <p class="info-label">전화번호</p>
+            <p class="info-content">📞 010-5507-8740</p>
+            <p class="info-label">정기 휴무</p>
+            <p class="info-content">연중 무휴입니다. 부득이한 상황으로 휴무를 하게될 시 공지 하겠습니다.</p>
+            <button class="long_button more">매장정보 전체보기 &gt;</button>
+        </div>
+        <div class="square_section">
+            <h2 class="my_title">비슷한 레스토랑 추천</h2>
+            <div class="restaurants_whole">
+            <div class="restaurant-card">
+                <div class="restaurant_image_box">
+                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="광안리 다이치" class="restaurant-image">
+                </div>
+                <div class="restaurant-info">
+                    <span class="rating">⭐️ 4.9</span>
+                    <span class="restaurant-name">광안리 다이치</span>
+                    <p class="restaurant-details">육류, 고기리 | 부산 광안리</p>
+                </div>
+            </div>
+            <div class="restaurant-card">
+                <div class="restaurant_image_box">
+                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="아키토리 신세츠" class="restaurant-image">
+                </div>
+                <div class="restaurant-info">
+                    <span class="rating">⭐️ 4.9</span>
+                    <span class="restaurant-name">아키토리 신세츠</span>
+                    <p class="restaurant-details">아키토리 | 부산 광안리</p>
+                </div>
+            </div>
+            <div class="restaurant-card">
+                <div class="restaurant_image_box">
+                    <img src="https://img.siksinhot.com/place/1675994382900282.jpg" alt="너버원" class="restaurant-image">
+                </div>
+                <div class="restaurant-info">
+                    <span class="rating">⭐️ 4.8</span>
+                    <span class="restaurant-name">너버원</span>
+                    <p class="restaurant-details">부산 광안리</p>
+                </div>
+            </div>
+            </div>
+            <button class="long_button more">전체보기 &gt;</button>
+        </div>
+
+
+
+
+
+
+
+        <button class="order"> 예약하기</button>
+    </div>
+</body>
+</html>

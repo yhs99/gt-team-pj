@@ -107,16 +107,11 @@ public class UserReserveDAOImpl implements UserReserveDAO {
 
 	@Override
 	public Integer getSlotCheck(int storeId, LocalDateTime reserveTime)throws Exception {
-		 if (reserveTime == null) {
-		        log.error("예약 시간(reserveTime)이 null입니다.");
-		        return 0; // 기본값으로 예약 가능 상태를 반환
-		    }
 		    Map<String, Object> params = new HashMap<>();
 		    params.put("storeId", storeId);
 		    params.put("reserveTime", reserveTime);
-		    
-		    Integer result = ses.selectOne(ns + "getSlotCheck", params);
-		    return result != null ? result : 0;
+		    return ses.selectOne(ns + "getSlotCheck", params);
+		   
 		}
 
 	@Override

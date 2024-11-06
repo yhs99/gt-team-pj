@@ -30,14 +30,14 @@ public class UserReserveController {
 	@PostMapping()
 	public ResponseEntity<String> createReserve(HttpSession session, @RequestBody ReserveDTO reserveDTO) {
 		 //로그인 확인
-//		UserDTO userSession = (UserDTO) session.getAttribute("user");
-//		if (userSession == null) {
-//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
-//		}
+		UserDTO userSession = (UserDTO) session.getAttribute("user");
+		if (userSession == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
+		}
 		
 		try {
 			// 예약 생성 서비스 호출
-			userReserveService.createReserve(2, reserveDTO);
+			userReserveService.createReserve(userSession.getUserId(), reserveDTO);
 			return ResponseEntity.ok("예약해주셔서 감사합니다.");
 		} catch (IllegalArgumentException e) {
 			// 유효성 검증 실패 시
@@ -58,14 +58,13 @@ public class UserReserveController {
 	@DeleteMapping("/{reserveId}")
 	public ResponseEntity<String> removeReserve(@PathVariable int reserveId, HttpSession session){
 		// 로그인 확인
-//		UserDTO userSession = (UserDTO) session.getAttribute("user");
-//		if (userSession == null) {
-//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
-//			}
+		UserDTO userSession = (UserDTO) session.getAttribute("user");
+		if (userSession == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
+			}
 		
-		// userSession.getUserId()
 		try {
-			int result = userReserveService.updateReserve(reserveId,1);
+			int result = userReserveService.updateReserve(reserveId, userSession.getUserId());
 			if(result > 0) {
 				return ResponseEntity.ok("예약이 성공적으로 취소되었습니다.");
 			}else {

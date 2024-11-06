@@ -28,14 +28,20 @@ public class UserReserveServiceImpl implements UserReserveService {
 	@Override
 	@Transactional (isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class) // 트랜잭션 적용
 	public void createReserve(int userId, ReserveDTO reserveDTO) throws Exception {
+		// 카트 조회
+		List<CartDTO> cartList = userReserveDAO.getCartCheck(userId); // 사용자 ID로 카트 목록 조회
+		// 카트에 메뉴가 담겼는지 확인
+		if (cartList.isEmpty()) {
+			throw new IllegalArgumentException("카트가 비어 있습니다.");
+		}
+		int storeId = cartList.get(0).getStoreId();
+		reserveDTO.setStoreId(storeId);
 	    // 유효성 체크 (예약 인원 수, 메뉴 확인 등)
 	    validateReservation(userId, reserveDTO);
-
+	    
 	    // 예약 등록
 	    userReserveDAO.insertReserve(userId, reserveDTO);
 
-	    // 카트 조회
-	    List<CartDTO> cartList = userReserveDAO.getCartCheck(userId); // 사용자 ID로 카트 목록 조회
 	    
 	    for (CartDTO cart : cartList) {
 	        PayHistoryDTO payHistoryDTO = new PayHistoryDTO();
@@ -116,6 +122,8 @@ public class UserReserveServiceImpl implements UserReserveService {
 	// 예약 인원 확인
 	private void validateReservation(int userId, ReserveDTO reserveDTO) throws Exception {
 		List<CartDTO> cartList = getCartCheck(userId);
+		int storeId = cartList.get(0).getStoreId();
+		reserveDTO.setStoreId(storeId);
 		if (reserveDTO.getPeople() + getTimeTotPeople(reserveDTO.getStoreId(), reserveDTO.getReserveTime()) > getMaxPeople(reserveDTO.getStoreId())) {
 			throw new IllegalArgumentException("예약 인원이 초과합니다.");
 			// 예약할 때 기본인원을 1명으로 해서 0명이 나오지 않게
@@ -123,9 +131,7 @@ public class UserReserveServiceImpl implements UserReserveService {
 		if (reserveDTO.getPeople() > getMaxPeoplePerReserve(reserveDTO.getStoreId())) {
 			throw new IllegalArgumentException("예약 인원이 한 예약당 최대 인원을 초과합니다.");
 		}
-		if (getCartCheck(userId).isEmpty()) {
-			throw new IllegalArgumentException("카트가 비어 있습니다.");
-		}
+		
 		for (CartDTO cart : cartList) {
 			// 가게의 메뉴 정보
 			List<MenuDTO> storeMenuList = userReserveDAO.getStoreMenuById(cart.getMenuId(), reserveDTO.getStoreId());
@@ -143,6 +149,9 @@ public class UserReserveServiceImpl implements UserReserveService {
 			if (!isValidMenu) {
 				throw new IllegalArgumentException("담긴 메뉴에 오류가 있습니다. 삭제하고 다시 담아주세요.");
 			}
+		}
+		if(userReserveDAO.getSlotCheck(reserveDTO.getStoreId(), reserveDTO.getReserveTime()) == null) {
+			throw new IllegalArgumentException("현재 예약하려는 시간이 존재하지 않습니다 다시 확인해주세요.");
 		}
 		if (Integer.valueOf(1).equals(userReserveDAO.getSlotCheck(reserveDTO.getStoreId(), reserveDTO.getReserveTime()))) {
 		    throw new IllegalArgumentException("예약이 닫혀있습니다. 식당에 문의해주세요.");

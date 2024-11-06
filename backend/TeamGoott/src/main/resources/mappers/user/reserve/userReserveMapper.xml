@@ -65,7 +65,7 @@
 		payHistory(reserveId,storeId,menuId,menuName,stock,stockPerPrice,totalPrice,couponYN,couponId,payAmount)
 		values(#{reserveId},#{storeId},#{menuId},#{menuName},#{stock},#{stockPerPrice},#{totalPrice},#{couponYN},#{couponId},#{payAmount})
 	</insert>
-	<select id="getSlotCheck" resultType="int">
+	<select id="getSlotCheck" resultType="Integer">
 		select reserved from
 		reserveSlots where storeId = #{storeId} AND slotDatetime =
 		#{reserveTime}

@@ -69,7 +69,7 @@ public class OwnerReserveController {
 			//승인 할 에약의 storeId와 로그인 한 점주의 storeId가 같을 시
 			if(storeId == reserve.getStoreId()) {
 				// 예약 상태 업데이트
-				result = service.updateStatus(reserveId,statusCode);				
+				result = service.updateStatus(reserveId,statusCode,storeId);				
 			} else {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("해당 예약에 대한 권한이 없습니다.");
 			}

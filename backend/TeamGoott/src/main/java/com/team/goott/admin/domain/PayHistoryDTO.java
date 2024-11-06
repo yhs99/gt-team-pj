@@ -1,4 +1,4 @@
-package com.team.goott.user.domain;
+package com.team.goott.admin.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,15 +15,12 @@ import lombok.ToString;
 @Builder
 public class PayHistoryDTO {
 	private int payHistoryId;
-	private int reserveId;
-	private int storeId;
 	private int menuId;
 	private String menuName;
 	private int stock;
-	private double stockPerPrice;
-	private int stockTotal;
-	private double totalPrice;
-	private int couponYN;
+	private Double stockPerPrice;
+	private Double totalPrice;
+	private boolean couponYN;
 	private int couponId;
-	private double payAmount;
+	private int payAmount;
 }

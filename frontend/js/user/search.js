@@ -5,6 +5,7 @@ new Vue({
     sidoCodes: [],
     selectedCategoryCodes: [],
     selectSidoCodes: [],
+    searchQuery: "",
   },
   created() {
     this.fetchCategories();
@@ -68,6 +69,9 @@ new Vue({
 
       const categoryCodes = this.selectedCategoryCodes.join(",");
       const sidoCodes = this.selectSidoCodes.join(",");
+      const searchQuery = this.searchQuery.trim()
+        ? encodeURIComponent(this.searchQuery.trim())
+        : "";
 
       let newUrl = "stores/filter";
       if (categoryCodes) {
@@ -77,6 +81,9 @@ new Vue({
       }
       if (sidoCodes) {
         newUrl += `${newUrl.includes("?") ? "&" : "?"}sidoCodeIds=${sidoCodes}`;
+      }
+      if (searchQuery) {
+        newUrl += `${newUrl.includes("?") ? "&" : "?"}search=${searchQuery}}`;
       }
       window.location.href = newUrl;
     },

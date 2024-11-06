@@ -48,3 +48,13 @@ a {
 .menu-price {
   white-space: nowrap; /* 가격 텍스트 줄바꿈 방지 */
 }
+
+.thumbnail_image {
+  width: 250px;
+  height: 180px;
+  margin:10px;
+}
+.thumbnail-container {
+  overflow-x: auto;          /* 가로 스크롤 허용 */
+  white-space: nowrap;        /* 한 줄에 이미지 나열 */
+}

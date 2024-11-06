@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.team.goott.owner.domain.CategoryCodeVO;
 import com.team.goott.owner.domain.FacilityCodeVO;
+import com.team.goott.owner.domain.RotationCodeVO;
 import com.team.goott.owner.domain.sidoCodeVO;
 import com.team.goott.user.domain.StoreDTO;
 import com.team.goott.user.domain.StoreFiltersVO;
@@ -21,4 +22,6 @@ public interface UserStoreDAO {
 	List<sidoCodeVO> getStoreFiltersSidoCode();
 
 	List<FacilityCodeVO> getStoreFiltersFacilityCode();
+	
+	List<RotationCodeVO> getStoreFiltersRotationCode();
 }

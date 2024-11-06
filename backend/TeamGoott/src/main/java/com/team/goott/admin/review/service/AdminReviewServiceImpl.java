@@ -16,7 +16,7 @@ import com.team.goott.admin.domain.ReviewVO;
 import com.team.goott.admin.review.persistence.AdminReviewDAO;
 import com.team.goott.infra.ImageDeleteFailedException;
 import com.team.goott.infra.S3ImageManager;
-import com.team.goott.user.domain.ReviewImagesDTO;
+import com.team.goott.admin.domain.ReviewImagesDTO;
 
 import lombok.extern.slf4j.Slf4j;
 

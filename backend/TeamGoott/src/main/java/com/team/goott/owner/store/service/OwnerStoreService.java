@@ -1,12 +1,12 @@
 package com.team.goott.owner.store.service;
 
-import com.team.goott.owner.domain.OwnerDTO;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team.goott.owner.domain.FacilityDTO;
 import com.team.goott.owner.domain.FacilityVO;
+import com.team.goott.owner.domain.OwnerDTO;
 import com.team.goott.owner.domain.ScheduleDTO;
 import com.team.goott.owner.domain.ScheduleVO;
 import com.team.goott.owner.domain.StoreCategoryDTO;
@@ -38,9 +38,14 @@ public interface OwnerStoreService {
 	// 가게 정보를 수정하는 메서드
 	int updateStore(int storeId, StoreDTO store, List<ScheduleDTO> schedules, List<StoreCategoryDTO> category,
 	List<FacilityDTO> facility, List<MultipartFile> updatefiles, List<String> deleteImages) throws Exception;
-	
+
 	StoreDTO login(String id, String pw);
 
 	boolean register(OwnerDTO ownerDTO);
+
+	// 로그인 성공시 ownerId로 store정보 가져오기
+	StoreDTO getStoreByOwnerId(int ownerId) ;
+
+
 
 }

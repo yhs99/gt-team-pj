@@ -87,5 +87,4 @@ public class UserCartDAOImpl implements UserCartDAO {
 		return ses.update(ns+"updateCart",existingCart);
 	}
 
-
 }

@@ -31,144 +31,107 @@
     <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
     <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="/node_modules/fullcalendar/index.global.min.js"></script>
     <!-- Template Javascript -->
-    <script type="module" src="/js/owner/main.js"></script>
+    <script type="module" src="/js/admin/chart.js"></script>
+    <script src="/js/admin/axiosSetting.js"></script>
   </head>
 
   <body>
   <div id="app">
     <div class="container-xxl position-relative bg-white d-flex p-0">
       <!-- Spinner Start -->
-      <div
-        id="spinner"
-        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
+      <spinner-component></spinner-component>
       <!-- Spinner End -->
 
       <!-- Sidebar Start -->
-      <div class="sidebar pe-4 pb-3">
-        <nav class="navbar bg-light navbar-light">
-          <a href="index" class="navbar-brand mx-4 mb-3">
-            <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>SmartReserve</h3>
-          </a>
-          <div class="navbar-nav w-100">
-            <a href="index.html" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>대시보드</a>
-            <div class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
-                ><i class="fa fa-laptop me-2"></i>구성</a
-              >
-              <div class="dropdown-menu bg-transparent border-0">
-                <a href="/view/owner/button.html" class="dropdown-item">버튼</a>
-                <a href="typography.html" class="dropdown-item">문자디자인</a>
-                <a href="element.html" class="dropdown-item">기타 항목</a>
-              </div>
-            </div>
-            <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>위젯</a>
-            <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>폼</a>
-            <a href="table.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>테이블</a>
-            <a href="/view/owner/review.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>리뷰</a>
-            </div>
-          </div>
-        </nav>
+      <div id="sidebar" class="sidebar pe-4 pb-3">
+        <sidebar-component></sidebar-component>
+        </div>
       </div>
       <!-- Sidebar End -->
 
       <!-- Content Start -->
       <div class="content">
         <!-- Navbar Start -->
-        <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-          <a href="/view/owner/index" class="navbar-brand d-flex d-lg-none me-4">
-            <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-          </a>
-          <a href="#" class="sidebar-toggler flex-shrink-0">
-            <i class="fa fa-bars"></i>
-          </a>
-          <form class="d-none d-md-flex ms-4">
-            <input class="form-control border-0" type="search" placeholder="검색" />
-          </form>
-          <div class="navbar-nav align-items-center ms-auto">
-            <div class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <i class="fa fa-bell me-lg-2"></i>
-                <span class="d-none d-lg-inline-flex">알림</span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                <a href="#" class="dropdown-item" role="button">
-                  <h6 class="fw-normal mb-0">프로필 업데이트</h6>
-                  <small>15 minutes ago</small>
-                </a>
-                <hr class="dropdown-divider" />
-                <a href="#" class="dropdown-item">
-                  <h6 class="fw-normal mb-0">홍길북 님의 예약요청</h6>
-                  <small>15 minutes ago</small>
-                </a>
-                <hr class="dropdown-divider" />
-                <a href="#" class="dropdown-item">
-                  <h6 class="fw-normal mb-0">홍길순님이 예약을 취소했습니다</h6>
-                  <small>15 minutes ago</small>
-                </a>
-                <hr class="dropdown-divider" />
-                <a href="#" class="dropdown-item text-center">모든 알림메세지 확인하기</a>
-              </div>
-            </div>
-            <div class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <span class="d-none d-lg-inline-flex">관리자</span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                <a @click="logoutProcess" href="#" class="dropdown-item">로그아웃</a>
-              </div>
-            </div>
-          </div>
-        </nav>
+        <navbar-component></navbar-component>
         <!-- Navbar End -->
 
         <!-- Sale & Revenue Start -->
+         <!-- Sales Chart Start -->
         <div class="container-fluid pt-4 px-4">
           <div class="row g-4">
-            <div class="col-sm-6 col-xl-3">
-              <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-line fa-3x text-primary"></i>
-                <div class="ms-3">
-                  <p class="mb-2">오늘 판매 수익</p>
-                  <h6 class="mb-0">12,345원</h6>
+            <div class="col-sm-12 col-xl-6">
+              <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <h6 class="mb-0">최근 6개월 매출 통계</h6>
                 </div>
+                <canvas id="worldwide-sales"></canvas>
               </div>
             </div>
-            <div class="col-sm-6 col-xl-3">
-              <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-bar fa-3x text-primary"></i>
-                <div class="ms-3">
-                  <p class="mb-2">총 판매 수익</p>
-                  <h6 class="mb-0">45,678원</h6>
+            <div class="col-sm-12 col-xl-6">
+              <div class="row g-4 h-100">
+                <div class="col-sm-6 col-xl-6">
+                  <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100">
+                    <i class="fa fa-chart-line fa-3x text-primary"></i>
+                    <div class="ms-3">
+                      <p class="mb-2">총 매출액</p>
+                      <h6 class="mb-0">{{ Number(summaryTitle.totalSales).toLocaleString() }}원</h6>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
-              <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-area fa-3x text-primary"></i>
-                <div class="ms-3">
-                  <p class="mb-2">오늘 수익</p>
-                  <h6 class="mb-0">0원</h6>
+                <div class="col-sm-6 col-xl-6">
+                  <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100">
+                    <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                    <div class="ms-3">
+                      <p class="mb-2">금일 매출액</p>
+                      <h6 class="mb-0">{{ Number(summaryTitle.todaySales).toLocaleString() }}원</h6>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div class="col-sm-6 col-xl-3">
-              <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                <i class="fa fa-chart-pie fa-3x text-primary"></i>
-                <div class="ms-3">
-                  <p class="mb-2">총 수익</p>
-                  <h6 class="mb-0">0원</h6>
+                <div class="col-sm-6 col-xl-6">
+                  <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100">
+                    <i class="fa fa-chart-area fa-3x text-primary"></i>
+                    <div class="ms-3">
+                      <p class="mb-2">총 예약 건수</p>
+                      <h6 class="mb-0">{{ Number(summaryTitle.totalReserveCnt).toLocaleString() }} 건</h6>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-xl-6">
+                  <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 h-100">
+                    <i class="fa fa-chart-pie fa-3x text-primary"></i>
+                    <div class="ms-3">
+                      <p class="mb-2">금일 예약 건수</p>
+                      <h6 class="mb-0">{{ Number(summaryTitle.todayReserveCnt).toLocaleString() }} 건</h6>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <!-- Sales Chart End -->
+         
+        <div class="container-fluid pt-4 px-4">
+          <div class="row g-4">
+          </div>
+        </div>
         <!-- Sale & Revenue End -->
 
+        <div class="container-fluid pt-4 px-4">
+          <div class="row g-4">
+            <div class="col-sm-12 col-xl-12">
+              <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <h6 class="mb-0">일별 매출액</h6>
+                  <a href="">전체 보기</a>
+                </div>
+                <div id="reserve-calendar"></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div id="reviewLists" class="container-fluid pt-4 px-4">
           <div class="bg-light text-center rounded p-4">
@@ -176,22 +139,22 @@
               <h6 class="mb-0">최근 삭제 요청 리뷰</h6>
               <a href="">전체 보기</a>
             </div>
-            <div class="table-responsive">
-              <table class="table text-start table-responsive align-middle table-bordered table-hover mb-0">
+            <div>
+              <table class="table table-responsive text-start align-middle table-bordered table-hover mb-0">
                 <thead>
                   <tr class="text-dark">
-                    <th scope="col" class="col">리뷰 ID</th>
-                    <th scope="col" class="col">별점</th>
-                    <th scope="col" class="col-2">가게명</th>
-                    <th scope="col" class="col">유저명</th>
-                    <th scope="col" class="col-5">내용</th>
-                    <th scope="col" class="col">작성 날짜</th>
-                    <th scope="col" class="col">삭제</th>
+                    <th>리뷰 ID</th>
+                    <th>별점</th>
+                    <th>가게명</th>
+                    <th>유저명</th>
+                    <th>내용</th>
+                    <th>작성 날짜</th>
+                    <th>삭제</th>
                   </tr>
                 </thead>
                 <tbody>
                   <!-- 최대 5개만 보여줌 -->
-                  <tr v-for="(review, index) in deleteReqReviews.slice(0, 5)" :key="deleteReqReviews.reviewId">
+                  <tr v-if="deleteReqReviewsCnt > 0" v-for="(review, index) in deleteReqReviews.slice(0, 5)" :key="deleteReqReviews.reviewId">
                   <!-- <tr v-for="(review, index) in reviews" :key="review.reviewId"> 전체 리뷰 for문 -->
                     <td>{{ review.reviewId }}</td>
                     <td><span v-for="(scoreCount, index) in review.score">★</span></td>
@@ -206,40 +169,21 @@
                       </div>
                     </td>
                   </tr>
+                  <tr v-if="deleteReqReviewsCnt == 0">
+                    <td colspan="7">
+                      삭제요청된 리뷰가 없습니다.
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
           </div>
         </div>
+
         
 
-        <!-- Sales Chart Start -->
-        <div class="container-fluid pt-4 px-4">
-          <div class="row g-4">
-            <div class="col-sm-12 col-xl-6">
-              <div class="bg-light text-center rounded p-4">
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                  <h6 class="mb-0">전 세계 판매 수익</h6>
-                  <a href="">전체 보기</a>
-                </div>
-                <canvas id="worldwide-sales"></canvas>
-              </div>
-            </div>
-            <div class="col-sm-12 col-xl-6">
-              <div class="bg-light text-center rounded p-4">
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                  <h6 class="mb-0">판매 및 수익</h6>
-                  <a href="">전체 보기</a>
-                </div>
-                <canvas id="salse-revenue"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Sales Chart End -->
 
-
-        <!-- Widgets Start -->
+        <!-- Widgets Start
         <div class="container-fluid pt-4 px-4">
           <div class="row g-4">
             <div class="col-sm-12 col-md-6 col-xl-4">
@@ -357,19 +301,11 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
         <!-- Widgets End -->
 
         <!-- Footer Start -->
-        <div class="container-fluid pt-4 px-4">
-          <div class="bg-light rounded-top p-4">
-            <div class="row">
-              <div class="col-12 col-sm-6 text-center text-sm-start">
-                &copy; <a href="#">smartreserve.store</a>, All Right Reserved.
-              </div>
-            </div>
-          </div>
-        </div>
+        <footer-component></footer-component>
         <!-- Footer End -->
       </div>
       <!-- Content End -->
@@ -377,6 +313,7 @@
       <!-- Back to Top -->
       <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
+    <script src="/js/admin/component.js"></script>
     <script src="/js/admin/index.js"></script>
   </div>
   </body>

@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.team.goott.admin.domain.StoresVO;
+import com.team.goott.admin.domain.SummaryDTO;
+import com.team.goott.admin.domain.SummaryTitleDTO;
+import com.team.goott.admin.domain.SummaryVO;
 import com.team.goott.admin.store.persistence.AdminStoreDAO;
 import com.team.goott.infra.StoreNotFoundException;
 
@@ -59,6 +62,29 @@ public class AdminStoreServiceImpl implements AdminStoreService {
 		}else {
 			return dao.cancelBlock(storeId);
 		}
+	}
+
+	@Override
+	public SummaryDTO getSummary(int storeId) {
+		SummaryTitleDTO summaryTitle = dao.getSummaryTitle(storeId);
+		List<SummaryVO> dailySales = dao.getDailySales(storeId);
+		List<SummaryVO> monthlySales = dao.getMonthlySales(storeId);
+		return SummaryDTO.builder()
+				.summaryTitle(summaryTitle)
+				.dailySales(dailySales)
+				.monthlySales(monthlySales)
+				.build();
+	}
+
+	@Override
+	public StoresVO getStoreInfoForUpdate(int storeId) {
+		Map<String, Object> searchQuery = new HashMap<String, Object>();
+		searchQuery.put("categoryId", null);
+		searchQuery.put("sidoCodeId", null);
+		searchQuery.put("searchParam", "");
+		searchQuery.put("showBlock", "");
+		searchQuery.put("storeId", storeId);
+		return dao.getStoreInfoForUpdate(searchQuery);
 	}
 	
 }

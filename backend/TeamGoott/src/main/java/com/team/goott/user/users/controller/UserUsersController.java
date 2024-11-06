@@ -63,6 +63,9 @@ public class UserUsersController {
 			map.put("loginType", "user");
 		}else if(sessionData instanceof StoreDTO) {
 			map.put("name", ((StoreDTO) sessionData).getStoreName());
+			if (map.get("name") == null) {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("권한이 없습니다");
+			}
 			map.put("loginType", "store");
 		}else if(sessionData instanceof AdminDTO) {
 			map.put("name", ((AdminDTO) sessionData).getId());
@@ -126,27 +129,43 @@ public class UserUsersController {
 
 	// 점주 로그인 메서드
 	private ResponseEntity<Object> handleOwnerLogin(String id, String password, HttpSession session,
-			HttpServletResponse response, Map<String, String> loginResponse) {
-		StoreDTO storeInfo = ownerService.login(id, password);
+	        HttpServletResponse response, Map<String, String> loginResponse) {
 
-		if (storeInfo != null) {
+	    // 로그인 시도
+	    StoreDTO storeInfo = ownerService.login(id, password);
+	    
+	    if (storeInfo == null) {
+	        // 로그인 실패: 잘못된 아이디 또는 비밀번호
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("잘못된 아이디 또는 비밀번호입니다.");
+	    }
 
-			loginResponse.put("loginSuccess", "" + storeInfo.getStoreId());
+	    // 로그인 성공 후, ownerId를 참조하는 store 정보 가져오기
+	    StoreDTO loginStore = ownerService.getStoreByOwnerId(storeInfo.getOwnerId());
+	    log.info("로그인시 store정보 : " + loginStore);
 
-			session.setAttribute("store", storeInfo);
+	    if (loginStore == null || loginStore.getStoreId() == 0) {
+	        // 가게가 등록되지 않았지만 로그인은 성공
+	        loginResponse.put("loginSuccess", "" + storeInfo.getOwnerId());
+	        session.setAttribute("store", storeInfo);
+	        log.info("가게가 등록되지 않음. 로그인 성공 세션 생성 : {}", session.getAttribute("store"));
+	        log.info("로그인 성공 세션 아이디 : {}", session.getId());
+	        return ResponseEntity.status(HttpStatus.ACCEPTED).body("가게 정보 등록이 필요합니다.");
+	    } else {
+	        // 로그인 및 가게 등록 성공
+	        loginResponse.put("loginSuccess", "" + loginStore.getStoreId());
+	        session.setAttribute("store", loginStore);
+	        log.info("로그인 성공 세션 생성 : {}", session.getAttribute("store"));
+	        log.info("로그인 성공 세션 아이디 : {}", session.getId());
+	    }
 
-			log.info("로그인 성공 세션 생성 : {}", session.getAttribute("store"));
-			log.info("로그인 성공 세션 아이디 : {}", session.getId());
+	    // 세션 쿠키 생성 및 설정
+	    Cookie cookie = new Cookie("JSESSIONID", session.getId());
+	    cookie.setMaxAge(1800); // 30분 = 1800초
+	    cookie.setPath("/");
+	    response.addCookie(cookie);
 
-			Cookie cookie = new Cookie("JSESSIONID", session.getId());
-			cookie.setMaxAge(1800); // 30분 = 1800초
-			cookie.setPath("/");
-			response.addCookie(cookie);
-
-			return ResponseEntity.ok(loginResponse);
-		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("잘못된 아이디 또는 비밀번호입니다.");
-		}
+	    // 로그인 성공 응답
+	    return ResponseEntity.ok(loginResponse);
 	}
 
 	// 관리자 로그인 메서드

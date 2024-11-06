@@ -1,4 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.owner.reserve.ownerReserveMapper">
+	
+	<select id="getAllReserve" resultType="com.team.goott.user.domain.ReserveDTO">
+		select * from reserve where storeId = #{storeId}
+		<choose>
+			<when test="sortMethod == 'newest'">
+				order by reserveTime desc
+			</when>
+			<when test="sortMethod == 'oldest'">
+				order by reserveTime asc
+			</when>
+		</choose>
+	</select>
+	
+	<select id="getTotalReserve" resultType="int">
+		select count(*) from reserve where storeId = #{storeId}
+	</select>
+	
+	<select id="getTotalTodayReserve" resultType="int">
+		select count(*) from reserve where storeId = #{storeId} and date_format(reserveTime, "%Y-%m-%d") = curdate()
+	</select>
+	
+	<select id="getReserve" resultType="com.team.goott.user.domain.ReserveDTO">
+		select * from reserve where reserveId = #{reserveId}
+	</select>
+	
+	<select id="getReserveSlot" resultType="com.team.goott.owner.domain.ReserveSlotsDTO">
+		select * from reserveSlots where storeId = #{storeId} and slotDatetime = #{reserveTime}
+	</select>
+	
+	<select id="getUser" resultType="com.team.goott.user.domain.UserDTO">
+		select * from user where userId = #{userId}
+	</select>
+	
+	<select id="getStore" resultType="com.team.goott.owner.domain.StoreVO">
+		select * from store where storeId = #{storeId}
+	</select>
+	
+	<insert id="insertNotification">
+		insert into notification(userId, message, storeId, notificationType, reserveId) values(#{userId}, #{message}, #{storeId}, #{notificationType}, #{reserveId})
+	</insert>
+	
+	<select id="getNotification" resultType="com.team.goott.owner.domain.NotificationDTO">
+		select * from notification where storeId = #{storeId} and notificationType = #{notificationType}
+	</select>
+	
+	<update id="updateStatus">
+		update reserve set statusCodeId = #{statusCode} where reserveId = #{reserveId}
+	</update>
+	
+	<update id="updateNotification">
+		update notification set isRead = true where alarmId = #{alarmId}
+	</update>
 </mapper>

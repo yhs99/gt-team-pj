@@ -28,5 +28,4 @@ public class ReserveDTO {
 	private int people;
 	private int statusCodeId;
 	private String memo;
-	private int charge;
 }

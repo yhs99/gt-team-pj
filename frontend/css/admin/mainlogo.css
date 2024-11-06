@@ -24,3 +24,27 @@ a {
 .filter-menu .filter-li label {
   cursor: pointer;
 }
+
+.menu-list {
+  list-style-type: none; /* 기본 목록 스타일 제거 */
+  padding: 0; /* 기본 패딩 제거 */
+}
+
+.menu-item {
+  display: flex; /* Flexbox 사용 */
+  justify-content: space-between; /* 양 끝 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+  padding: 8px 0; /* 상하 여백 추가 */
+}
+
+.separator {
+  margin: 0 10px; /* 구분자 양옆 여백 */
+}
+
+.menu-name {
+  flex-grow: 1; /* 이름을 가능한 넓게 늘려줌 */
+}
+
+.menu-price {
+  white-space: nowrap; /* 가격 텍스트 줄바꿈 방지 */
+}

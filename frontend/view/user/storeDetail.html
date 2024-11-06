@@ -8,14 +8,15 @@
     <title>식당 상세 정보</title>
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ae7f9510119596f0c0ff9416ba9caf07"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-    <script src="/js/user/storeDetail.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/user/storeDetail.js" defer></script>
     <link rel="stylesheet" href="/css/user/storeDetail.css">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 
 <body>
-    <div class="details_container">
+    <div  id="app">
+    <div id="app" class="details_container">
         <div class="restaurant-header">
             <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-indicators">
@@ -44,14 +45,16 @@
                 </button>
               </div>
             </div>
-        
-            <h1 class="restaurant-name">store.storeName</h1>
+            <h1 class="restaurant-name" v-if="restaurantData.data && restaurantData.data.length > 0">
+                {{ restaurantData.data[0].storeName}}</h1>
             <div class="rating">
                 <span class="stars">⭐️⭐️⭐️⭐️⭐️avg(review.score) <span class="review-count">리뷰수(count(review))</span><span class="arrow" onclick="goToPage(review.html)">></span></span>
                 
             </div>
-            <p class="description">상세정보 store.description</p>
-            <p class="address">주소 store.address</p>
+            <p class="description" v-if="restaurantData.data && restaurantData.data.length > 0">
+                {{ restaurantData.data[0].description}}</p>
+            <p class="address" v-if="restaurantData.data && restaurantData.data.length > 0">
+                {{ restaurantData.data[0].address}}</p>
             <p class="mainPrice">평균가격 avg(menu.price.isMain)</p>
             <p class="hours">오늘(월dayOfWeek) 영업시간: 17:00 - 23:00 schedule.open.close</p>
             <p class="fold">(foldable)상세 영업시간 schedule.dayCodeId.open.close
@@ -159,14 +162,16 @@
         </div>
         <div class="square_section">
             <h2 class="my_title">지도</h2>
-            <div id="map" style="width:100%;height:350px;"></div>
-           
-            <div>store.directionGuide</div>
+            <div id="map" style="width:100%;height:350px;" v-if="restaurantData.data && restaurantData.data.length > 0"></div>
+            <div v-if="restaurantData.data && restaurantData.data.length > 0">
+                {{ restaurantData.data[0].directionGuide }}
+            </div>
         </div>
         <div class="square_section">
             <h2 class="my_title">상세정보</h2>
             <p class="info-label">전화번호</p>
-            <p class="info-content">📞 010-5507-8740</p>
+            <p class="info-content" v-if="restaurantData.data && restaurantData.data.length > 0">
+                📞 {{ restaurantData.data[0].tel }}</p>
             <p class="info-label">정기 휴무</p>
             <p class="info-content">연중 무휴입니다. 부득이한 상황으로 휴무를 하게될 시 공지 하겠습니다.</p>
             <button class="long_button more">매장정보 전체보기 &gt;</button>
@@ -209,12 +214,10 @@
         </div>
 
 
-
-
-
-
-
         <button class="order"> 예약하기</button>
     </div>
+</div>
+
+  
 </body>
 </html>

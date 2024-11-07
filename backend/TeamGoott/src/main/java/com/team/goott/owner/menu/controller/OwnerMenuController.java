@@ -86,7 +86,7 @@ public class OwnerMenuController {
 	
 	//메뉴 수정
 	@PutMapping("/menu/{menuId}")
-	public ResponseEntity<Object> modifyMenu(@PathVariable("menuId") int menuId, @RequestPart("menu") MenuDTO updateMenu, @RequestPart("file")MultipartFile file ,  HttpSession session){
+	public ResponseEntity<Object> modifyMenu(@PathVariable("menuId") int menuId, @RequestPart("menu") MenuDTO updateMenu, @RequestPart(value ="file" ,required = false)MultipartFile file ,  HttpSession session){
 		int result = 0;
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
 		
@@ -94,7 +94,11 @@ public class OwnerMenuController {
 			int storeId = storeSession.getStoreId();
 			MenuDTO originMenu = service.getMenu(menuId);
 			if(storeId == originMenu.getStoreId()) {
-				result = service.updateMenu(menuId, updateMenu, file, originMenu);
+				if(file != null && !file.getOriginalFilename().isEmpty()) {
+					result = service.updateMenu(menuId, updateMenu, file, originMenu);
+				} else {
+					result = service.updateMenuWithoutFile(menuId, updateMenu, originMenu);
+				}
 			} else {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("해당 메뉴에 대한 권한이 없습니다");
 			}

@@ -16,4 +16,6 @@ public interface OwnerMenuDAO {
 
 	int updateMenu(int menuId, MenuDTO menu);
 
+	int updateMenuWithoutFile(int menuId, MenuDTO menu);
+
 }

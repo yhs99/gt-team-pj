@@ -35,12 +35,11 @@ public class OwnerMenuServiceImpl implements OwnerMenuService {
 		List<MenuDTO> dishes = menuDAO.getAllMenu(storeId);
 		int numOfMain = 0;
 		int numOfSide = 0;
+		allMenuInfo.put("menu", dishes);
 		for(MenuDTO dish : dishes) {
 			if(dish.isMain()) {
-				allMenuInfo.put("main", dish);
 				numOfMain++;
 			}else {
-				allMenuInfo.put("side", dish);
 				numOfSide++;
 			}
 		}

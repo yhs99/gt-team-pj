@@ -1,4 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.admin.reserve.adminReserveMapper">
+<resultMap type="com.team.goott.admin.domain.ReservesVO" id="reserveResultMap">
+	<id property="reserveId" column="reserveId"/>
+	<result property="storeId" column="storeId"/>
+	<result property="userId" column="userId"/>
+	<result property="couponId" column="couponId"/>
+	<result property="createAt" column="createAt"/>
+	<result property="reserveTime" column="reserveTime"/>
+	<result property="name" column="name"/>
+	<result property="people" column="people"/>
+	<result property="statusCodeId" column="statusCodeId"/>
+	<result property="memo" column="memo"/>
+	<result property="userName" column="userName"/>
+	<result property="storeName" column="storeName"/>
+	<collection property="payHistories" ofType="com.team.goott.admin.domain.PayHistoryDTO">
+		<id property="payHistoryId" column="payHistoryId"/>
+		<result property="menuId" column="menuId"/>
+		<result property="menuName" column="menuName"/>
+		<result property="stock" column="stock"/>
+		<result property="stockPerPrice" column="stockPerPrice"/>
+		<result property="totalPrice" column="totalPrice"/>
+		<result property="couponYN" column="couponYN"/>
+		<result property="couponId" column="couponId"/>
+		<result property="payAmount" column="payAmount"/>
+	</collection>
+</resultMap>
+
+<select id="getReserveLists" parameterType="map" resultMap="reserveResultMap">
+	SELECT
+	r.reserveId,
+	r.storeId,
+	r.userId,
+	r.couponId,
+	r.createAt,
+	r.reserveTime,
+	r.name,
+	r.people,
+	r.statusCodeId,
+	r.memo,
+	u.name as userName,
+	s.storeName,
+	p.payHistoryId,
+	p.menuId,
+	p.menuName,
+	p.stock,
+	p.stockPerPrice,
+	p.totalPrice,
+	p.couponYN,
+	p.couponId,
+	p.payAmount
+	FROM reserve r
+	LEFT JOIN payHistory p
+	ON r.reserveId = p.reserveId
+	LEFT JOIN user u
+	ON r.userId = u.userId
+	LEFT JOIN store s
+	ON r.storeId = s.storeId
+	WHERE 1=1
+	<if test="storeName != null and storeName != ''">
+		AND s.storeName LIKE CONCAT(#{storeName}, '%')
+	</if>
+	<if test="reserveId != null and reserveId != '' and reserveId > 0">
+		AND r.reserveId = #{reserveId}
+	</if>
+	<if test="userName != null and userName != ''">
+		AND u.name LIKE CONCAT(#{userName}, '%')
+	</if>
+	<if test="statusCodeId != null and statusCodeId.size > 0">
+		AND statusCodeId IN 
+		<foreach collection="statusCodeId" item="statusCode" open="(" close=")" separator=",">
+		#{statusCode}
+		</foreach>
+	</if>
+	ORDER BY r.createAt DESC
+</select>
+
+<select id="getReserveStatusCodeFilters" resultType="com.team.goott.admin.domain.ReserveStatusCodeFilter">
+SELECT *
+FROM statusCode;
+</select>
+<update id="updateStatus" parameterType="map">
+	UPDATE reserve
+    SET statusCodeId = #{statusCodeId}
+    WHERE reserveId IN
+    <foreach item="reserveId" collection="reserveIds" open="(" separator="," close=")">
+        #{reserveId}
+    </foreach>
+</update>
 </mapper>

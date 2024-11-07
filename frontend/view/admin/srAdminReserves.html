@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta content="" name="description" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css" type="text/css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="/node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="/css/owner/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+    <link href="/css/owner/lib/tempusdominus/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+    <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/admin/style.css" rel="stylesheet" />
+    <link href="/css/admin/mainlogo.css" rel="stylesheet">
+
+    <!-- JavaScript Libraries -->
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="/js/user/lib/wow/wow.min.js"></script>
+    <script src="/js/owner/lib/chart/chart.min.js"></script>
+    <script src="/js/owner/lib/easing/easing.min.js"></script>
+    <script src="/js/user/lib/counterup/counterup.min.js"></script>
+    <script src="/js/user/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/node_modules/vue/dist/vue.min.js"></script>
+    <script src="/node_modules/axios/dist/axios.min.js"></script>
+    <script src="/js/owner/lib/waypoints/waypoints.min.js"></script>
+    <script src="/js/owner/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <!-- Template Javascript -->
+    <script type="module" src="/js/owner/main.js"></script>
+    <script src="/js/admin/axiosSetting.js"></script>
+  </head>
+
+  <body>
+  <div id="app">
+    <div class="container-xxl position-relative bg-white d-flex p-0">
+      <!-- Spinner Start -->
+      <spinner-component></spinner-component>
+      <!-- Spinner End -->
+
+      <!-- Sidebar Start -->
+      <div id="sidebar" class="sidebar pe-4 pb-3">
+        <sidebar-component></sidebar-component>
+        </div>
+      </div>
+      <!-- Sidebar End -->
+
+      <!-- Content Start -->
+      <div class="content">
+        <!-- Navbar Start -->
+        <navbar-component></navbar-component>
+        <!-- Navbar End -->
+
+        <div class="container-fluid pt-4 px-4">
+          <div class="row g-4" v-if="reserveLists">
+            <div class="col-sm-12 col-xl-12">
+              <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <h6 class="mb-0">예약 내역 조회</h6>
+                </div>
+                <div class="py-2 my-3 border rounded">예약 현황별 검색
+                  <div class="d-flex justify-content-around">
+                    <div v-for="(filter, index) in reserveStatusFilters" :key="filter.statusCodeId">
+                      <input type="checkbox" class="btn-check" :id="'btn-filter'+index" autocomplete="off" :value="filter.statusCodeId" v-model="selectedFilter.statusCodeId" @change="fetchReserveLists">
+                      <label class="btn btn-outline-primary" :for="'btn-filter'+index">{{filter.status}}</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="py-2 my-3 border rounded d-flex justify-content-center">
+                  <div class="w-50 input-group">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">{{ selectedFilterId }}</button>
+                    <ul class="dropdown-menu filter-menu">
+                      <li class="filter-li">
+                        <input type="radio" id="storeName" value="가게명" v-model="selectedFilterId" autocomplete="off">
+                        <label class="p-2" for="storeName">가게명</label>
+                      </li>
+                      <li class="filter-li">
+                        <input type="radio" id="userName" value="회원명" v-model="selectedFilterId" autocomplete="off">
+                        <label class="p-2" for="userName">회원명</label>
+                      </li>
+                    </ul>
+                    <input class="form-control" type="text" v-model="selectedFilter.searchQuery" @keyup.enter="fetchReserveLists">
+                    <button class="btn btn-success" @click="fetchReserveLists">검색</button>
+                  </div>
+                </div>
+                
+                <div class="py-2 my-3 border rounded">선택 예약 일괄 변경
+                  <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-outline-secondary mx-2" @click="updateStatus(1)">대기 상태로</button>
+                    <button type="button" class="btn btn-outline-success mx-2" @click="updateStatus(2)">승인처리</button>
+                    <button type="button" class="btn btn-outline-danger mx-2" @click="updateStatus(3)">취소처리</button>
+                    <button type="button" class="btn btn-outline-primary mx-2" @click="updateStatus(4)">완료처리</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-xl-12">
+              <div class="bg-light rounded p-4">
+                
+                <div class="row">
+                  <div class="col text-start">
+                    <span>검색된 예약수 : {{ reserveCount }}</span>
+                  </div>
+                  <div class="col text-center">
+                    <div id="pagination text-center">
+                      <ul class="pagination justify-content-center">
+                        <li class="page-item" v-if="currentPage > 1" @click="changePage(currentPage - 1)">
+                          <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                          </a>
+                        </li>
+                        <li class="page-item" v-for="page in totalPages" :key="page" @click="changePage(page)"><a class="page-link" href="#">{{ page }}</a></li>
+                        <li class="page-item" v-if="currentPage < totalPages" @click="changePage(currentPage + 1)">
+                          <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="col text-end">
+                    <span>페이지당 갯수</span>
+                    <select v-model="pageSize" @change="fetchReserveLists" name="pageSize">
+                      <option value="5">5</option>
+                      <option value="10" selected>10</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col text-start">
+                    <label class="list-group-item px-3 py-2">
+                    <input class="form-check-input me-1" type="checkbox" value="all" v-model="selectAll" @change="toggleSelectAll" style="width:20px; height: 20px;"> 모두 체크</label>
+                  </div>
+                </div>
+                <div class="card mb-3" v-for="(reserve, index) in paginatedReserves" :key="reserve.reserveId">
+                  <div class="card-header">
+                    <label class="list-group-item">
+                      <input class="form-check-input me-1 reserveCheckbox" name="reserveCheckbox" type="checkbox" v-model="checkedReserveIds" :value="reserve.reserveId" style="width: 20px; height: 20px;">
+                      예약번호 {{ reserve.reserveId}}. {{ reserve.storeName }} ({{ reserve.storeId }})
+                    </label>
+                    <!-- <h3><p :class="['badge', badge(reserve)]">{{ reserve.statusCodeType }}</p></h3> -->
+                  </div>
+                  <div class="card-body">
+                    <blockquote class="blockquote mb-0">
+                      <div class="row">
+                        <div class="col">
+                          <table class="table table-borderless">
+                            <tbody>
+                              <tr>
+                                <td>예약자명</td>
+                                <td>{{ reserve.userName }}</td>
+                              </tr>
+                              <tr>
+                                <td>예약 회원명</td>
+                                <td>{{ reserve.name }}</td>
+                              </tr>
+                              <tr>
+                                <td>요청사항</td>
+                                <td>{{ reserve.memo }}</td>
+                              </tr>
+                              <tr>
+                                <td colspan="2" class="text-warning">{{ dateFormat(reserve.reserveTime) }} · {{ reserve.people }} 명</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <ul>
+                            <li>{{ menuSummary(reserve.payHistories) }}</li>
+                          </ul>
+                        </div>
+                        <div class="col text-end">
+                          <td colspan="2"><p :class="['badge', badge(reserve)]">{{ reserve.statusCodeType }}</p></td>
+                        </div>
+                      </div>
+                      <footer class="text-end blockquote-footer"><cite title="예약시기">{{ reserve.createAt }}</cite></footer>
+                    </blockquote>
+                    <div class="accordion accordion-flush" :id="reserve.reserveId">
+                      <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" :data-bs-target="'#collapse'+reserve.reserveId" aria-expanded="false" :aria-controls="'collapse'+reserve.reserveId">
+                            <p class="text-primary">예약내역 메뉴 자세히보기</p>
+                          </button>
+                        </h2>
+                      </div>
+                    </div>
+                    
+                    <!-- 숨겨진 내용 -->
+                    <div class="collapse mt-3" :id="'collapse'+reserve.reserveId">
+                      <div class="card card-body">
+                        <p><strong>메뉴</strong></p>
+                        <ul>
+                          <li v-for="menu in reserve.payHistories" :key="menu.payHistoryId" class="menu-item">
+                            <span>{{ menu.menuName }} {{ menu.stock }}개 </span>
+                            <span>·············</span>
+                            <span>{{ menu.totalPrice }}원</span>
+                          </li>
+                        </ul>
+                        <p><strong>총 금액:</strong>{{ reserve.totalPriceBeforeDiscount }}원</p>
+                        <p v-if="reserve.payHistories[0].couponYN" class="text-danger"><strong>할인 금액:</strong><span> - {{ reserve.totalDiscountPrice }}원</span></p>
+                        <p v-if="reserve.payHistories[0].couponYN"><strong>할인 후 결제 금액:</strong>{{ reserve.totalPriceAfterDiscount }}원</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-else>
+            <p>로딩중</p>
+          </div>
+        </div>
+
+        <!-- Footer Start -->
+        <footer-component></footer-component>
+        <!-- Footer End -->
+      </div>
+      <!-- Content End -->
+      <!-- Back to Top -->
+      <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+
+    <script src="/js/admin/component.js"></script>
+    <script src="/js/admin/srAdminReserves.js"></script>
+  </div>
+  </body>
+</html>

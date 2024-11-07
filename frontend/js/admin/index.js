@@ -24,7 +24,7 @@ new Vue({
         this.deleteReqReviewsCnt = response.data.data.reviewCount;
       })
       .catch(error => {
-        console.log(error);
+        alert(error.response.data.message);
       })
     },
     deleteReview: function(reviewId) { // 삭제 요청 리뷰 삭제처리
@@ -35,8 +35,7 @@ new Vue({
         }
       })
       .catch(error => {
-        alert("에러발생");
-        console.log(error);
+        alert(error.response.data.message);
       })
       .finally(() => {
         this.fetchAllDeleteRequestReviews();
@@ -50,7 +49,7 @@ new Vue({
         }
       })
       .catch(error => {
-        alert("서버 오류로 인해 요청이 처리되지 않았습니다.");
+        alert(error.response.data.message);
       })
       .finally(() => {
         this.fetchAllDeleteRequestReviews();
@@ -72,7 +71,7 @@ new Vue({
         this.fetchReserveInfoCalendar();
       })
       .catch(error => {
-        console.log("서버오류로 인해 요청이 처리 되지 않았습니다.");
+        console.log("서버오류로 인해 요약 데이터를 받아오지 못했습니다.");
       })
     },
     fetchReserveInfoCalendar: function() {

@@ -4,18 +4,159 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>모든 식당</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      href="/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link href="/css/user/animate/animate.min.css" rel="stylesheet" />
+    <link href="/css/user/lightbox/css/lightbox.min.css" rel="stylesheet" />
+    <link href="/css/user/owlcarousel/owl.carousel.min.css" rel="stylesheet" />
+    <link
+      href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link href="/css/user/store.css" rel="stylesheet" />
     <link href="/css/user/header.css" rel="stylesheet" />
   </head>
   <body>
     <div id="app">
-      <h1>헤더는 왜 안나올까</h1>
       <header-component></header-component>
-    </div>
+      <div style="text-align: center; margin-top: 80px">
+        <img
+          src="/assets/user/img/흑백요리사.jpg"
+          alt="흑백요리사"
+          width="65%"
+          height="360"
+        />
+      </div>
+      <div class="container">
+        <div class="slider-heading">식당을 구경하자</div>
+      </div>
+      <!-- 첫 번째 슬라이더 -->
+      <div class="container slider">
+        <span class="arrow-btn arrow-left" @click="scrollLeft('main')">‹</span>
+        <div class="card-container" ref="mainCardContainer">
+          <div v-for="store in stores" :key="store.storeId" class="card">
+            <img
+              :src="(store.storeImages && store.storeImages.length > 0 && store.storeImages[0].url) 
+              ? store.storeImages[0].url 
+              : '/assets/user/img/준비중.png'"
+              alt="식당 이미지"
+              class="store-image"
+            />
+            <div class="card-content">
+              <p class="card-title">{{ store.storeName }}</p>
+              <p class="cart-review">
+                <i class="fas fa-star" style="color: gold; font-size: 24px"></i>
+                {{ store.averageScore }} ({{ store.reviewCount }})
+              </p>
+              <div class="card-overlay">{{ store.description }}</div>
+            </div>
+          </div>
+          <div class="card more-card" @click="showMore">
+            <p class="more-text">원하는 식당이 없으시다면 Click!</p>
+          </div>
+        </div>
+        <span class="arrow-btn arrow-right" @click="scrollRight('main')"
+          >›</span
+        >
+      </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+      <div class="container">
+        <p class="slider-groupHeading">단체라면 여기가 딱 !</p>
+      </div>
+
+      <!-- 두 번째 슬라이더 -->
+      <div class="container slider">
+        <span class="arrow-btn arrow-left" @click="scrollLeft('group')">‹</span>
+        <div class="card-container" ref="groupCardContainer">
+          <div
+            v-for="groupStore in groupStores"
+            :key="groupStore.storeId"
+            class="card"
+          >
+            <img
+              :src="(groupStore.storeImages && groupStore.storeImages.length > 0 && groupStore.storeImages[0].url) 
+              ? groupStore.storeImages[0].url 
+              : '/assets/user/img/준비중.png'"
+              alt="식당 이미지"
+              class="store-image"
+            />
+            <div class="card-content">
+              <p class="card-title">{{ groupStore.storeName }}</p>
+              <p class="cart-review">
+                <i class="fas fa-star" style="color: gold; font-size: 24px"></i>
+                {{ groupStore.averageScore }} ({{ groupStore.reviewCount }})
+              </p>
+              <div class="card-overlay">{{ groupStore.description }}</div>
+            </div>
+          </div>
+          <div class="card more-card" @click="showMore">
+            <p class="more-text">원하는 식당이 없으시다면 Click!</p>
+          </div>
+        </div>
+        <span class="arrow-btn arrow-right" @click="scrollRight('group')"
+          >›</span
+        >
+      </div>
+      <div class="container">
+        <p class="slider-groupHeading">후기가 많은 식당</p>
+      </div>
+
+      <!-- 두 번째 슬라이더 -->
+      <div class="container slider">
+        <span class="arrow-btn arrow-left" @click="scrollLeft('group')">‹</span>
+        <div class="card-container" ref="groupCardContainer">
+          <div
+            v-for="groupStore in groupStores"
+            :key="groupStore.storeId"
+            class="card"
+          >
+            <img
+              :src="(groupStore.storeImages && groupStore.storeImages.length > 0 && groupStore.storeImages[0].url) 
+              ? groupStore.storeImages[0].url 
+              : '/assets/user/img/준비중.png'"
+              alt="식당 이미지"
+              class="store-image"
+            />
+            <div class="card-content">
+              <p class="card-title">{{ groupStore.storeName }}</p>
+              <p class="cart-review">
+                <i class="fas fa-star" style="color: gold; font-size: 24px"></i>
+                {{ groupStore.averageScore }} ({{ groupStore.reviewCount }})
+              </p>
+              <div class="card-overlay">{{ groupStore.description }}</div>
+            </div>
+          </div>
+          <div class="card more-card" @click="showMore">
+            <p class="more-text">원하는 식당이 없으시다면 Click!</p>
+          </div>
+        </div>
+        <span class="arrow-btn arrow-right" @click="scrollRight('group')"
+          >›</span
+        >
+      </div>
+      <footer-component></footer-component>
+    </div>
+    <script src="/js/Footer.js"></script>
+    <script src="/js/user/store.js"></script>
     <script src="/js/Header.js"></script>
-    <!-- 컴포넌트 등록 파일 -->
-    <script src="/js/your-main-vue-instance.js"></script>
-    <!-- Vue 인스턴스 생성 파일 -->
   </body>
 </html>

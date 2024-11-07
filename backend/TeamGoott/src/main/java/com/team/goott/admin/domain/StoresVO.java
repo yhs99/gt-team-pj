@@ -36,4 +36,6 @@ public class StoresVO {
 	private List<FacilityDTO> facilities;
 	private List<StoreCategoryVO> storeCategories;
 	private List<StoreScheduleVO> storeSchedules;
+	private int reviewCount;
+	private double averageScore;
 }

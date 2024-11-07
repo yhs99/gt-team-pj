@@ -20,20 +20,21 @@
         <div class="restaurant-header">
             <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-indicators">
-                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    <button 
+                    type="button" 
+                    v-for="(image, index) in restaurantData.data.storeImages" 
+                    :class="{ active: index === 0 }" 
+                    :key="index" 
+                    :data-bs-target="'#carouselExampleIndicators'" 
+                    :data-bs-slide-to="index" 
+                    :aria-current="index === 0" 
+                    :aria-label="'Slide ' + (index + 1)">
+                </button>
                 </div>
                 <div class="carousel-inner">
-                  <div class="caroPic carousel-item active">
-                    <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" class="d-block w-100" alt="storeImages.url(1)">
-                  </div>
-                  <div class="caroPic carousel-item">
-                    <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" class="d-block w-100" alt="storeImages.url(2)">
-                  </div>
-                  <div class="caroPic carousel-item">
-                    <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" class="d-block w-100" alt="storeImages.url(3)">
-                  </div>
+                    <div class="caroPic carousel-item" v-for="(image, index) in restaurantData.data.storeImages" :class="{ active: index === 0 }" :key="index">
+                        <img :src="image.url" class="d-block w-100" :alt="'storeImages.url(' + (index + 1) + ')'">
+                    </div>
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
                   <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -45,21 +46,30 @@
                 </button>
               </div>
             </div>
-            <h1 class="restaurant-name" v-if="restaurantData.data && restaurantData.data.length > 0">
-                {{ restaurantData.data[0].storeName}}</h1>
+            <h1 class="restaurant-name" v-if="restaurantData && restaurantData.data">
+                {{ restaurantData.data.storeName}}</h1>
             <div class="rating">
                 <span class="stars">⭐️⭐️⭐️⭐️⭐️avg(review.score) <span class="review-count">리뷰수(count(review))</span><span class="arrow" onclick="goToPage(review.html)">></span></span>
                 
             </div>
-            <p class="description" v-if="restaurantData.data && restaurantData.data.length > 0">
-                {{ restaurantData.data[0].description}}</p>
-            <p class="address" v-if="restaurantData.data && restaurantData.data.length > 0">
-                {{ restaurantData.data[0].address}}</p>
+            <p class="description" v-if="restaurantData && restaurantData.data">
+                {{ restaurantData.data.description}}</p>
+            <p class="address" v-if="restaurantData && restaurantData.data">
+                {{ restaurantData.data.address}}</p>
             <p class="mainPrice">평균가격 avg(menu.price.isMain)</p>
-            <p class="hours">오늘(월dayOfWeek) 영업시간: 17:00 - 23:00 schedule.open.close</p>
-            <p class="fold">(foldable)상세 영업시간 schedule.dayCodeId.open.close
-                휴무일 </p>
-            <p class="facility">웰컴키즈존 facilityCode-facility</p>
+            <p v-if="todayOperation.closeDay">오늘은 휴무입니다<span @click="isOpen = !isOpen" style="cursor: pointer;">{{ isOpen ? '▲' : '▼' }}</span></p>
+            
+            <p v-else class="hours">{{ todayDay}} 영업시간: {{todayOperation.open}} - {{todayOperation.close}}<span @click="isOpen = !isOpen" style="cursor: pointer;">{{ isOpen ? '▲' : '▼' }}</span></p>
+         
+            <ul class="foldable" v-if="isOpen">
+                <li v-for="(schedule, index) in schedules" :key="index">
+                    <span v-if="schedule.closeDay">{{ schedule.dayOfWeek }} 휴무</span>
+                    <span v-else> {{ schedule.dayOfWeek }}: {{ schedule.open }} - {{ schedule.close }} </span>
+                </li>
+            </ul>
+            <li v-for="(facility, index) in restaurantData.data.facilities" :key="index">
+                  {{ facility.facilityName }}
+                </li>
         </div>
             
         <div class="square_section">
@@ -83,42 +93,28 @@
 
         <div class="square_section">
             <h2 class="my_title">편의시설</h2>
-            <ul>
-                <li>주차 가능</li>
-                <li>Wi-Fi 제공</li>
-                <li>포장 가능</li>
-            </ul>
+            <li v-for="(facility, index) in restaurantData.data.facilities" :key="index">
+                {{ facility.facilityName }}
+              </li>
         </div>
 
         <div class="square_section">
             <h2 class="my_title">메뉴</h2>
-            <button class="small_button">식사류</button>
-            <button class="small_button">사이드</button>
-            <div class="menu-item">
+         
+
+            <div v-for="(menu, index) in filteredMenus" :key="index" class="menu-item">
                 <input type="checkbox"/>
-                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="삼겹살" class="menu-image">
                 <div class="menu-details">
-                    <h3>삼겹살</h3>
-                    <p>가격: 22,000원</p>
+                    <h3>{{ menu.menuName }}</h3>
+                    <span>가격: {{ menu.price }} 원</span>
+                </div>
+                <div class="img_container">
+                    <img :src="menu.menuImageUrl" :alt="menu.menuImageName" class="menu-image" 
+                         @error="setDefaultImage($event)">
                 </div>
             </div>
-            <div class="menu-item">
-                <input type="checkbox"/>
-                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="갈비" class="menu-image">
-                <div class="menu-details">
-                    <h3>갈비</h3>
-                    <p>가격: 32,000원</p>
-                </div>
-            </div>
-            <div class="menu-item">
-                <input type="checkbox"/>
-                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="소고기" class="menu-image">
-                <div class="menu-details">
-                    <h3>소고기</h3>
-                    <p>가격: 42,000원</p>
-                </div>
-            </div>
-            <button class="long_button more"> 메뉴 전체 보기 &gt;</button>
+
+            <button class="long_button more" @click="goToPage('storeDetail_menu')"> 메뉴 전체 보기 &gt;</button>
         </div>
 
         <div class="square_section">
@@ -162,18 +158,22 @@
         </div>
         <div class="square_section">
             <h2 class="my_title">지도</h2>
-            <div id="map" style="width:100%;height:350px;" v-if="restaurantData.data && restaurantData.data.length > 0"></div>
-            <div v-if="restaurantData.data && restaurantData.data.length > 0">
-                {{ restaurantData.data[0].directionGuide }}
+            <div id="map" style="width:100%;height:350px;" v-if="restaurantData && restaurantData.data"></div>
+            <div v-if="restaurantData && restaurantData.data">
+                {{ restaurantData.data.directionGuide }}
             </div>
         </div>
         <div class="square_section">
             <h2 class="my_title">상세정보</h2>
             <p class="info-label">전화번호</p>
-            <p class="info-content" v-if="restaurantData.data && restaurantData.data.length > 0">
-                📞 {{ restaurantData.data[0].tel }}</p>
+            <p class="info-content" v-if="restaurantData && restaurantData.data">
+                📞 {{ restaurantData.data.tel }}</p>
             <p class="info-label">정기 휴무</p>
-            <p class="info-content">연중 무휴입니다. 부득이한 상황으로 휴무를 하게될 시 공지 하겠습니다.</p>
+
+            <p class="info-content" v-if="allSchedulesOpen">연중 무휴입니다.</p>
+            <ul>
+                <li v-for="(day, index) in getClosedDays()" :key="index">{{ day }}</li>
+            </ul>
             <button class="long_button more">매장정보 전체보기 &gt;</button>
         </div>
         <div class="square_section">

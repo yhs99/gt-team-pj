@@ -2,13 +2,16 @@ new Vue({
   el: '#app', // Vue 인스턴스가 연결될 HTML 요소
   data: {
       restaurantData: {
-          data: [] // 초기값을 빈 배열로 설정
+          data: {
+            storeImages:[]
+          }
       },
       todayDay:"",
       todayOperation:{},
       schedules: [],
       isOpen: false,
-      menuData:[]
+      menuData:[],
+      reviewData:[]
   },
   computed:{
     allSchedulesOpen() {
@@ -32,6 +35,27 @@ new Vue({
             const remainingMenus = this.menuData.menu.filter(menu => !menu.main);
             return [...mainMenus, ...remainingMenus].slice(0, 5);
         }
+    },
+    combinedImages() {
+        // storeImages와 reviewImages를 합치기
+        const reviewImages = this.reviewData.flatMap(review => review.reviewImages);
+        return [...this.restaurantData.data.storeImages, ...reviewImages];
+    },
+    calculateReviewScore(){
+        let scoreSum = 0;
+        let scoreAvg = 0;
+        for (let review of this.reviewData){
+            scoreSum +=review.score;
+        }
+        if (this.reviewData.length > 0) {
+            scoreAvg = scoreSum / this.reviewData.length;
+        }
+        return scoreAvg;
+    },
+    filteredReviews() {
+        return this.reviewData
+            .filter(review => review.score >= 4) // score가 4 이상인 리뷰만 필터링
+            .sort((a, b) => b.score - a.score); // score가 높은 순으로 정렬
     }
   },
   methods: {
@@ -92,7 +116,6 @@ new Vue({
     },
   
       fetchRestaurantData() {
-          // REST API 호출
           axios.get('http://localhost/api/stores/store/146') // API URL을 입력하세요
               .then(response => {
                   this.restaurantData = response.data; // 응답 데이터를 restaurantData에 저장
@@ -105,6 +128,7 @@ new Vue({
                     this.operationTodayDay();
                       this.$nextTick(() => {
                         this.fetchMenuData();
+                        this.fetchReviewData();
                         this.kakaoMap(); // 데이터가 로드된 후 DOM 업데이트가 완료된 후 지도를 초기화
                     });
                   } else {
@@ -133,20 +157,36 @@ new Vue({
             .map(schedule => schedule.dayOfWeek);
     },
      fetchMenuData() {
-        console.log(1);
-     axios.get('http://localhost/api/stores/menu/30')
-         .then(response => {
-             this.menuData = response.data.data;
-             console.log("menuData:", this.menuData);
-             console.log("mm",this.menuData.data);
-         })
-         .catch(error => {
-             console.error('Error fetching MenuData',error);
-         })
+        axios.get('http://localhost/api/stores/menu/30')
+            .then(response => {
+                this.menuData = response.data.data;
+                console.log("menuData:", this.menuData);
+            })
+            .catch(error => {
+                console.error('Error fetching MenuData',error);
+            })
     },
     setDefaultImage(event) {
         event.target.src = 'https://goott-bucket.s3.ap-northeast-2.amazonaws.com//noImage.jpg';
     },
+    fetchReviewData(){
+        axios.get('http://localhost/api/review/store/146')
+        .then(response => {
+            this.reviewData = response.data.data;
+            console.log("reviewData:", this.reviewData);
+        })
+        .catch(error => {
+            console.error('Error fetching ReviewData',error);
+        })
+    },
+    formatDate(dateString) {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1; // 월은 0부터 시작하므로 +1
+        const day = date.getDate();
+
+        return `${year}.${month}.${day}`;
+    }
         
   },
   created: function() {

@@ -9,31 +9,36 @@ import com.team.goott.user.domain.ReviewImagesDTO;
 
 public interface UserReviewDAO {
 
-	List<ReviewDTO> getAllReviews(ReviewPageDTO paging);
 
-	ReviewDTO reviewByNo(int reviewId);
+List<ReviewDTO> getAllReviews(ReviewPageDTO paging);
 
-	int insertReview(ReviewDTO reviewDTO);
+ReviewDTO reviewByNo(int reviewId);
 
-	int delReview(int reviewId);
+int insertReview(ReviewDTO reviewDTO);
 
-	int insertImgs(ReviewImagesDTO reviewImg);
+int delReview(int reviewId);
 
-	List<ReviewImagesDTO> filesByNo(int reviewId);
+int insertImgs(ReviewImagesDTO reviewImg);
 
-	int delFiles(int reviewId);
+List<ReviewImagesDTO> filesByNo(int reviewId);
 
-	int updateReview(ReviewDTO reviewDTO);
+int delFiles(int reviewId);
 
-	void deleteImgs(int imageId);
+int updateReview(ReviewDTO reviewDTO);
 
-	List<ReviewDTO> getMyReviews(ReviewPageDTO paging);
+void deleteImgs(int imageId);
 
-	List<ReserveDTO> getReserveByUserId(int UserId);
+List<ReviewDTO> getMyReviews(ReviewPageDTO paging);
 
-	List<ReviewDTO> getUserReviews(int userId);
+List<ReserveDTO> getReserveByUserId(int UserId);
 
-	ReserveDTO getReserveInfo(int reserveId);
+List<ReviewDTO> getUserReviews(int userId);
+
+ReserveDTO getReserveInfo(int reserveId);
+
+int checkIfImageExist(int imageId);
+
+int changeStatusCodeId(int reserveId, int statusCode);
 
 
 

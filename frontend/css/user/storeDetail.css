@@ -107,11 +107,6 @@ h2 {
     height: 80px;
 }
 
-.order {
-    background-color: orange; /* 예약하기 버튼 색상 */
-
-}
-
 /* automaic-carousel */
 
 #carouselExampleIndicators {
@@ -150,17 +145,26 @@ h2 {
 } 
 /* 섹션 버튼 */
 
-.order {
+.reserve {
+    max-width: 800px;
     display: block;
     background-color: orange; /* 예약하기 버튼 색상 */
-    padding: .375rem .75rem;
+    margin-left:auto ;
+    margin-right: auto;
+    padding: 15px .375rem 14px .75rem;
     box-sizing: border-box;
     max-width: 800px;
     width: 100%;
     font-size: 1rem;
-    border: 1px solid black;
+    border: none;
     border-radius: .25rem;
     margin: auto;
+    position: fixed;
+    bottom: 0px; 
+    left: 50%; /* 화면의 중앙에 위치 */
+    transform: translateX(-50%); /* 중앙 정렬을 위한 변환 */
+    cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+    z-index: 1000; /* 다른 요소 위에 표시되도록 z-index 설정 */
 }
 
 .long_button {
@@ -214,17 +218,27 @@ h2 {
 
 
 /* 사진 */
-.photo-gallery {
+.photo_gallery {
     display: flex;
     flex-wrap: wrap;
     gap: 10px; /* 이미지 간격 */
+    width: 670px;
+    height: 330px;
+    margin: 0 auto;
+}
+.photo_frame{
+    width: 160px;
+    height: 160px;
+    border-radius: 5px;
+ 
 }
 
-.photo {
-    width: 80px; /* 이미지 너비 */
-    height: auto; /* 비율 유지 */
-    border-radius: 5px; /* 둥근 모서리 */
-    object-fit: cover; /* 이미지 비율 유지 */
+img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   border-radius: 5px;
+
 }
 
 /* 쿠폰 */

@@ -49,7 +49,7 @@
             <h1 class="restaurant-name" v-if="restaurantData && restaurantData.data">
                 {{ restaurantData.data.storeName}}</h1>
             <div class="rating">
-                <span class="stars">⭐️⭐️⭐️⭐️⭐️avg(review.score) <span class="review-count">리뷰수(count(review))</span><span class="arrow" onclick="goToPage(review.html)">></span></span>
+                <span class="stars">⭐️ {{ calculateReviewScore.toFixed(1) }} <span class="review-count">리뷰수( {{ reviewData.length }})</span><span class="arrow" onclick="goToPage(review.html)">></span></span>
                 
             </div>
             <p class="description" v-if="restaurantData && restaurantData.data">
@@ -119,40 +119,33 @@
 
         <div class="square_section">
             <h2 class="my_title">사진</h2>
-            <div class="photo-gallery">
-                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="사진 1" class="photo">
-                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="사진 2" class="photo">
-                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="사진 3" class="photo">
-                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="사진 4" class="photo">
-                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="사진 5" class="photo">
+            <template>
+            <div class="photo_gallery">
+                <div class="photo_frame" v-for="(image, index) in combinedImages.slice(0, 8)" :key="'combinedImage-' + index">
+                    <img :src="image.url" class="d-block w-100" :alt="'combinedImages.url(' + (index + 1) + ')'">
+                </div>
             </div>
-            <button class="long_button more">사진 15개 전체보기 &gt;</button>
+        </template>
+            <button class="long_button more">사진 {{combinedImages.length}}개 전체보기 &gt;</button>
         </div>
         
         <div class="square_section">
             <h2 class="r_title">추천 리뷰</h2>
           
-                <span class="star">⭐️⭐️⭐️⭐️⭐️</span>
-                <span class="score">4.9 (44)</span>
+                <span class="star">⭐️</span>
+                <span class="score"> {{ calculateReviewScore.toFixed(1) }} ({{ reviewData.length }})</span>
        
             <div class="restaurants_whole">
-            <div class="restaurant-card">
+            <div class="restaurant-card" v-for="(review,index) in filteredReviews" :key="'review-' + index">
                 <div class="restaurant_image_box">
-                    <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="광안리 다이치" class="restaurant-image">
+                    <img :src="review.reviewImages[0].url" alt="광안리 다이치" class="restaurant-image">
                 </div>
-                    <p class="restaurant-details">남들이조와</p>
-                    <span class="review-date">2024.10.13</span>
-                    <span class="review-rating">5.0</span>
-                    <p class="review-text">친구가 같이 가자구 해서 다녀왔는데 다들 넘 친...</p>
+                    <span class="restaurant-details">남들이조와</span>
+                    <span class="review-rating">⭐️{{ review.score.toFixed(1) }}</span>
+                    <p class="review-date">{{ formatDate(review.createAtLocalDateTime) }}</p>
+                    <p class="review-text">{{ review.content }}</p>
             </div>
-            <div class="restaurant-card">
-                <div class="restaurant_image_box">
-                    <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="광안리 다이치" class="restaurant-image">
-                    </div>
-                    <p class="restaurant-details">즐거운 맛사냥꾼</p>
-                    <span class="review-date">2024.10.13</span>
-                    <p class="review-text">광안리 사는 친구구 오랜만에...</p>
-            </div>
+           
             </div>
             <button class="long_button more">리뷰 전체보기 &gt;</button>
         </div>
@@ -214,7 +207,7 @@
         </div>
 
 
-        <button class="order"> 예약하기</button>
+        <button class="reserve"> 예약하기</button>
     </div>
 </div>
 

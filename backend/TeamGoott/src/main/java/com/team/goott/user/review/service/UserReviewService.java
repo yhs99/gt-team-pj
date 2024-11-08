@@ -11,28 +11,29 @@ import com.team.goott.user.domain.ReviewImagesDTO;
 
 public interface UserReviewService {
 
-	List<ReviewDTO> getAllReviews(int storeId, int page, int size);
+List<ReviewDTO> getAllReviews(int storeId, int page, int size);
 
-	ReviewDTO reviewByNo(int reviewId);
+ReviewDTO reviewByNo(int reviewId);
 
-	boolean addReviewPics(ReviewDTO reviewDTO);
+boolean addReviewPics(ReviewDTO reviewDTO);
 
-	ReviewImagesDTO imageIntoDTO(int reviewId, MultipartFile file) throws IOException, Exception;
+ReviewImagesDTO imageIntoDTO(int reviewId, MultipartFile file) throws IOException, Exception;
 
-	boolean deleteReviewNFile(int reviewId, List<ReviewImagesDTO> imgDtoList);
+boolean deleteReviewNFile(int reviewId, int reserveId, List<ReviewImagesDTO> imgDtoList);
 
-	boolean updateReview(ReviewDTO reviewDTO);
+boolean updateReview(ReviewDTO reviewDTO);
 
-	List<ReviewDTO> getMyReview(int userId, int page, int size);
+List<ReviewDTO> getMyReview(int userId, int page, int size);
 
-	List<ReserveDTO> getStatusByUserId(int userId);
+List<ReserveDTO> getStatusByUserId(int userId);
 
-	List<ReviewDTO> getUserReview(int userId);
+List<ReviewDTO> getUserReview(int userId);
 
-	ReserveDTO getReserveInfoByReserveId(int reservationId);
-	
-	List<ReviewImagesDTO> selectReviewImagesByReviewId(int reviewId);
+ReserveDTO getReserveInfoByReserveId(int reservationId);
 
+List<ReviewImagesDTO> selectReviewImagesByReviewId(int reviewId);
+
+int checkImageExist(int imageId);
 
 
 }

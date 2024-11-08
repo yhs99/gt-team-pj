@@ -4,6 +4,7 @@ Vue.component("header-component", {
       loginYN: false,
       userName: "",
       profileImageUrl: "",
+      userId: null,
     };
   },
   template: `
@@ -62,6 +63,9 @@ Vue.component("header-component", {
       </div>
     </header>
   `,
+  created() {
+    this.checkLoginStatus();
+  },
   methods: {
     goToSearch() {
       window.location.href = "search";
@@ -78,9 +82,9 @@ Vue.component("header-component", {
         .then((response) => {
           if (response.status === 200) {
             this.loginYN = true;
-            this.response = response.data.data;
             this.userName = response.data.data.name;
             this.profileImageUrl = response.data.data.profileImageUrl;
+            this.userId = response.data.data.userId;
             console.log(response);
           }
         })
@@ -98,8 +102,5 @@ Vue.component("header-component", {
         alert("로그아웃 실패");
       }
     },
-  },
-  mounted() {
-    this.checkLoginStatus();
   },
 });

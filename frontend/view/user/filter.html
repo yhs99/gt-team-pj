@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>필터링 후 식당</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      href="/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link href="/css/user/animate/animate.min.css" rel="stylesheet" />
+    <link href="/css/user/lightbox/css/lightbox.min.css" rel="stylesheet" />
+    <link href="/css/user/owlcarousel/owl.carousel.min.css" rel="stylesheet" />
+    <link
+      href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link href="/css/user/filter.css" rel="stylesheet" />
+    <link href="/css/user/header.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="app">
+      <header-component></header-component>
+      <div class="container">
+        <table class="table">
+          <tbody>
+            <tr v-for="store in stores" :key="store.storeId">
+              <td>
+                <div class="storeTitle">{{ store.storeName }}</div>
+                <div class="storeAddress">
+                  {{store.address}}
+                  <i
+                    class="fas fa-star"
+                    style="color: gold; font-size: 15px"
+                  ></i>
+                  {{ store.averageScore }} ({{ store.reviewCount }})
+                </div>
+                <div class="storeImg">
+                  <img
+                    :src="(store.storeImages && store.storeImages.length > 0 && store.storeImages[0].url) 
+                    ? store.storeImages[0].url 
+                    : '/assets/user/img/준비중.png'"
+                    alt="식당 이미지"
+                    class="store-image"
+                  />
+                  <button @click="toggleScheduleVisibility">
+                    영업 시간 보기
+                  </button>
+
+                  <div v-if="showSchedule">
+                    <table class="schedule-table">
+                      <thead>
+                        <tr>
+                          <th>요일</th>
+                          <th>오픈</th>
+                          <th>클로즈</th>
+                          <th>상태</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          v-for="schedule in scheduleLists"
+                          :key="schedule.dayCodeId"
+                          :class="{ 'closed-today': isToday(schedule.dayOfWeek) }"
+                        >
+                          <td>{{ schedule.dayOfWeek }}</td>
+                          <td>{{ schedule.open }}</td>
+                          <td>{{ schedule.close }}</td>
+                          <td>
+                            {{ isToday(schedule.dayOfWeek) ? "영업마감" :
+                            "영업중" }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </td>
+              <td><i class="fa-regular fa-heart"></i></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <footer-component></footer-component>
+    </div>
+    <script src="/js/Footer.js"></script>
+    <script src="/js/Header.js"></script>
+    <script src="/js/user/filter.js"></script>
+  </body>
+</html>

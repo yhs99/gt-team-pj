@@ -60,6 +60,7 @@
     <result property="locationLonY" column="locationLonY"/>
     <result property="reviewCount" column="reviewCount"/>
     <result property="averageScore" column="averageScore"/>
+    <result property="couponCount" column="couponCount"/>
     
     <collection property="storeImages" ofType="com.team.goott.admin.domain.StoreImagesVO">
         <id property="imageId" column="imageId"/>
@@ -117,7 +118,13 @@
         ss.close,
         ss.closeDay,
         (SELECT COUNT(*) FROM review WHERE review.storeId = s.storeId) AS reviewCount,
-		(SELECT IFNULL(ROUND(AVG(score), 1), 0) FROM review WHERE review.storeId = s.storeId) AS averageScore
+		(SELECT IFNULL(ROUND(AVG(score), 1), 0) FROM review WHERE review.storeId = s.storeId) AS averageScore,
+		(SELECT COUNT(*) 
+         FROM coupon 
+         WHERE coupon.storeId = s.storeId 
+         AND stock &gt; 0 
+         AND (start IS NULL OR start &lt;= CURRENT_DATE) 
+         AND (end IS NULL OR end &gt;= CURRENT_DATE)) AS couponCount
 
     FROM store s
     LEFT JOIN storeImages si ON s.storeId = si.storeId

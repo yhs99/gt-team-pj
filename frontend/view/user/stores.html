@@ -40,7 +40,7 @@
       <header-component></header-component>
       <div style="text-align: center; margin-top: 80px">
         <img
-          src="/assets/user/img/흑백요리사.jpg"
+          src="/assets/user/img/welcome.png"
           alt="흑백요리사"
           width="65%"
           height="360"
@@ -51,9 +51,23 @@
       </div>
       <!-- 첫 번째 슬라이더 -->
       <div class="container slider">
-        <span class="arrow-btn arrow-left" @click="scrollLeft('main')">‹</span>
+        <span
+          class="arrow-btn arrow-left"
+          @click="scrollLeft('mainCardContainer')"
+          >‹</span
+        >
         <div class="card-container" ref="mainCardContainer">
-          <div v-for="store in stores" :key="store.storeId" class="card">
+          <div
+            v-for="store in stores"
+            :key="store.storeId"
+            class="card"
+            @click="goToStore(store.storeId)"
+          >
+            <div class="favorite-icon" @click.stop="toggleFavorite(store)">
+              <i
+                :class="store.isFavorite ? 'fas fa-heart' : 'far fa-heart'"
+              ></i>
+            </div>
             <img
               :src="(store.storeImages && store.storeImages.length > 0 && store.storeImages[0].url) 
               ? store.storeImages[0].url 
@@ -64,8 +78,11 @@
             <div class="card-content">
               <p class="card-title">{{ store.storeName }}</p>
               <p class="cart-review">
-                <i class="fas fa-star" style="color: gold; font-size: 24px"></i>
+                <i class="fas fa-star" style="color: gold; font-size: 15px"></i>
                 {{ store.averageScore }} ({{ store.reviewCount }})
+                <span v-if="store.couponCount > 0" class="coupon-event"
+                  >할인 행사 중</span
+                >
               </p>
               <div class="card-overlay">{{ store.description }}</div>
             </div>
@@ -74,7 +91,9 @@
             <p class="more-text">원하는 식당이 없으시다면 Click!</p>
           </div>
         </div>
-        <span class="arrow-btn arrow-right" @click="scrollRight('main')"
+        <span
+          class="arrow-btn arrow-right"
+          @click="scrollRight('mainCardContainer')"
           >›</span
         >
       </div>
@@ -85,13 +104,22 @@
 
       <!-- 두 번째 슬라이더 -->
       <div class="container slider">
-        <span class="arrow-btn arrow-left" @click="scrollLeft('group')">‹</span>
-        <div class="card-container" ref="groupCardContainer">
+        <span
+          class="arrow-btn arrow-left"
+          @click="scrollLeft('groupCardContainer1')"
+          >‹</span
+        >
+        <div class="card-container" ref="groupCardContainer1">
           <div
             v-for="groupStore in groupStores"
             :key="groupStore.storeId"
             class="card"
+            @click="goToStore(groupStore.storeId)"
           >
+            <div
+              class="favorite-icon"
+              @click.stop="toggleFavorite(groupStore)"
+            ></div>
             <img
               :src="(groupStore.storeImages && groupStore.storeImages.length > 0 && groupStore.storeImages[0].url) 
               ? groupStore.storeImages[0].url 
@@ -102,8 +130,11 @@
             <div class="card-content">
               <p class="card-title">{{ groupStore.storeName }}</p>
               <p class="cart-review">
-                <i class="fas fa-star" style="color: gold; font-size: 24px"></i>
-                {{ groupStore.averageScore }} ({{ groupStore.reviewCount }})
+                <i class="fas fa-star" style="color: gold; font-size: 15px"></i>
+                {{ groupStore.averageScore }} ({{ groupStore.reviewCount
+                }})<span v-if="groupStore.couponCount > 0" class="coupon-event"
+                  >할인 행사 중</span
+                >
               </p>
               <div class="card-overlay">{{ groupStore.description }}</div>
             </div>
@@ -112,7 +143,9 @@
             <p class="more-text">원하는 식당이 없으시다면 Click!</p>
           </div>
         </div>
-        <span class="arrow-btn arrow-right" @click="scrollRight('group')"
+        <span
+          class="arrow-btn arrow-right"
+          @click="scrollRight('groupCardContainer1')"
           >›</span
         >
       </div>
@@ -120,43 +153,153 @@
         <p class="slider-groupHeading">후기가 많은 식당</p>
       </div>
 
-      <!-- 두 번째 슬라이더 -->
+      <!-- 세 번째 슬라이더 -->
       <div class="container slider">
-        <span class="arrow-btn arrow-left" @click="scrollLeft('group')">‹</span>
-        <div class="card-container" ref="groupCardContainer">
+        <span
+          class="arrow-btn arrow-left"
+          @click="scrollLeft('groupCardContainer2')"
+          >‹</span
+        >
+        <div class="card-container" ref="groupCardContainer2">
           <div
-            v-for="groupStore in groupStores"
-            :key="groupStore.storeId"
+            v-for="topReviewStore in topReviewStores"
+            :key="topReviewStore.storeId"
             class="card"
+            @click="goToStore(topReviewStore.storeId)"
           >
+            <div
+              class="favorite-icon"
+              @click.stop="toggleFavorite(topReviewStore)"
+            ></div>
             <img
-              :src="(groupStore.storeImages && groupStore.storeImages.length > 0 && groupStore.storeImages[0].url) 
-              ? groupStore.storeImages[0].url 
+              :src="(topReviewStore.storeImages && topReviewStore.storeImages.length > 0 && topReviewStore.storeImages[0].url) 
+              ? topReviewStore.storeImages[0].url 
               : '/assets/user/img/준비중.png'"
               alt="식당 이미지"
               class="store-image"
             />
             <div class="card-content">
-              <p class="card-title">{{ groupStore.storeName }}</p>
+              <p class="card-title">{{ topReviewStore.storeName }}</p>
               <p class="cart-review">
-                <i class="fas fa-star" style="color: gold; font-size: 24px"></i>
-                {{ groupStore.averageScore }} ({{ groupStore.reviewCount }})
+                <i class="fas fa-star" style="color: gold; font-size: 15px"></i>
+                {{ topReviewStore.averageScore }} ({{ topReviewStore.reviewCount
+                }})<span
+                  v-if="topReviewStore.couponCount > 0"
+                  class="coupon-event"
+                  >할인 행사 중</span
+                >
               </p>
-              <div class="card-overlay">{{ groupStore.description }}</div>
+              <div class="card-overlay">{{ topReviewStore.description }}</div>
             </div>
           </div>
           <div class="card more-card" @click="showMore">
             <p class="more-text">원하는 식당이 없으시다면 Click!</p>
           </div>
         </div>
-        <span class="arrow-btn arrow-right" @click="scrollRight('group')"
+        <span
+          class="arrow-btn arrow-right"
+          @click="scrollRight('groupCardContainer2')"
           >›</span
         >
       </div>
+      <div class="container">
+        <p class="slider-groupHeading">EVENT (할인 쿠폰을 확인해보세요)</p>
+      </div>
+
+      <!-- 네 번째 슬라이더 -->
+      <div class="container slider">
+        <span
+          class="arrow-btn arrow-left"
+          @click="scrollLeft('groupCardContainer3')"
+          >‹</span
+        >
+        <div class="card-container" ref="groupCardContainer3">
+          <div
+            v-for="eventStore in eventStores"
+            :key="eventStore.storeId"
+            class="card"
+            @click="goToStore(eventStore.storeId)"
+          >
+            <div
+              class="favorite-icon"
+              @click.stop="toggleFavorite(eventStore)"
+            ></div>
+            <img
+              :src="(eventStore.storeImages && eventStore.storeImages.length > 0 && eventStore.storeImages[0].url) 
+              ? eventStore.storeImages[0].url 
+              : '/assets/user/img/준비중.png'"
+              alt="식당 이미지"
+              class="store-image"
+            />
+            <div class="card-content">
+              <p class="card-title">{{ eventStore.storeName }}</p>
+              <p class="cart-review">
+                <i class="fas fa-star" style="color: gold; font-size: 15px"></i>
+                {{ eventStore.averageScore }} ({{ eventStore.reviewCount
+                }})<span v-if="eventStore.couponCount > 0" class="coupon-event"
+                  >할인 행사 중</span
+                >
+              </p>
+              <p class="card-storeSchedules">{{storeSchedules}}</p>
+              <div class="card-overlay">{{ eventStore.description }}</div>
+            </div>
+          </div>
+          <div class="card more-card" @click="showMore">
+            <p class="more-text">원하는 식당이 없으시다면 Click!</p>
+          </div>
+        </div>
+        <span
+          class="arrow-btn arrow-right"
+          @click="scrollRight('groupCardContainer3')"
+          >›</span
+        >
+      </div>
+      <div class="container category-title">
+        <p class="slider-groupHeading">추천카테고리</p>
+        <button @click="showMore">더 많은 카테고리 보러가기</button>
+      </div>
+
+      <div class="container category-container">
+        <div
+          class="image-container"
+          :style="{ backgroundImage: `url(${currentImage})` }"
+        ></div>
+        <div class="category">
+          <div
+            class="category-item"
+            @click="navigateTo('C1')"
+            @mouseover="changeImage('/assets/user/img/한식.png')"
+          >
+            한식
+          </div>
+          <div
+            class="category-item"
+            @click="navigateTo('C2')"
+            @mouseover="changeImage('/assets/user/img/일식.png')"
+          >
+            일식
+          </div>
+          <div
+            class="category-item"
+            @click="navigateTo('C7')"
+            @mouseover="changeImage('/assets/user/img/육류.png')"
+          >
+            육류
+          </div>
+          <div
+            class="category-item"
+            @click="navigateTo('C5')"
+            @mouseover="changeImage('/assets/user/img/서양식.png')"
+          >
+            서양식
+          </div>
+        </div>
+      </div>
+
       <footer-component></footer-component>
     </div>
     <script src="/js/Footer.js"></script>
-    <script src="/js/user/store.js"></script>
     <script src="/js/Header.js"></script>
+    <script src="/js/user/store.js"></script>
   </body>
 </html>

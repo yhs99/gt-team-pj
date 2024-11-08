@@ -20,11 +20,12 @@
   position: relative;
   width: 100%;
   padding: 10px;
+  scroll-behavior: smooth;
 }
 .card {
-  min-width: 150px;
-  max-width: 150px;
-  height: 200px;
+  min-width: 200px;
+  max-width: 200px;
+  height: 270px;
   margin-right: 10px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -105,7 +106,7 @@
   text-align: center;
   cursor: pointer;
   width: 150px;
-  height: 200px;
+  height: 270px;
   margin-right: 10px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -123,4 +124,97 @@
 .more-card:hover {
   transform: scale(1.05);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+.category-container {
+  display: flex;
+  align-items: stretch; /* 높이를 동일하게 맞춤 */
+  gap: 20px; /* 이미지와 메뉴 간의 간격 */
+  max-width: 1000px;
+}
+
+.image-container {
+  flex: 2;
+  position: relative;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 400px;
+}
+
+.image-overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  font-weight: bold;
+}
+.category {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.category-item {
+  padding: 29px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.category-item:hover {
+  background-color: #e0e0e0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.category-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+.category-title button {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.category-title button:hover {
+  background-color: #e0e0e0; /* 호버 시 배경색 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 */
+}
+.coupon-event {
+  color: red;
+  font-weight: bold;
+  margin-left: 5px;
+}
+.favorite-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #ccc; /* 기본 상태 */
+  opacity: 1; /* 기본적으로 표시 */
+  transition: color 0.3s ease;
+  z-index: 2;
+}
+
+.favorite-icon .fas {
+  color: red; /* 즐겨찾기된 상태 */
+}
+
+.favorite-icon .far {
+  color: #ccc; /* 즐겨찾기되지 않은 상태 */
+}
+.card:hover .favorite-icon {
+  color: red; /* 호버 시 강조 */
 }

@@ -1,0 +1,19 @@
+.table {
+  padding: 30px;
+}
+.container {
+  margin-top: 90px;
+}
+.storeTitle {
+  font-weight: bold;
+}
+.fa-regular {
+  margin-top: 15px;
+  margin-left: auto;
+  font-size: 30px;
+}
+.store-image {
+  max-width: 280px;
+  width: 280px;
+  height: 180px;
+}

@@ -108,7 +108,7 @@ Vue.component("navbar-component", {
               >
                 <i class="fa fa-bell me-lg-2 position-relative">
                   <span
-                    v-if="filteredNotifications.some(notification => !notification.read)"
+                    v-if="notifications.some(notification => !notification.read)"
                     class="position-absolute top-0 start-100 translate-middle p-1 bg-danger rounded-circle"
                     style="width: 8px; height: 8px;"
                   ></span>
@@ -118,17 +118,16 @@ Vue.component("navbar-component", {
               </a>
               <div
                 class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0"
+                style="max-height: 300px; overflow-y: auto;"
               >
-              <div  v-for ="(notification, index) in filteredNotifications" :key="notification.alarmId">
+              <div  v-for ="(notification, index) in notifications" :key="notification.alarmId">
                 <a class="dropdown-item" role="button" @click="readNotification(notification.alarmId, index)" :style="{'color': notification.read ? '#888' : 'initial'}" >
                   <h6 class="fw-normal mb-0">{{notification.message}}</h6>
                   <small>{{notification.createAt}}</small>
                 </a>
                 <hr class="dropdown-divider" />
               </div>
-                <a href="/view/owner/notification" class="dropdown-item text-center"
-                  >모든 알림메세지 확인하기</a
-                >
+               
               </div>
             </div>
             <div class="nav-item dropdown">

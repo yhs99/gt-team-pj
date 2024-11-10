@@ -55,7 +55,6 @@ new Vue({
     searchReserves() {
       this.searchReserveList = this.reserves.filter((reserve) => {
         const matchesName = reserve.name.includes(this.searchCustomerName);
-
         let matchesDateRange = true;
         if (this.searchStartDate) {
           let startDate = new Date(this.searchStartDate);
@@ -70,6 +69,11 @@ new Vue({
 
         return matchesName && matchesDateRange;
       });
+
+      //검색결과에 맞춘 페이지네이션
+      this.totalPages = Math.ceil(
+        this.searchReserveList.length / this.pageSize
+      );
     },
     createChart() {
       //Single Bar Chart

@@ -6,6 +6,7 @@ new Vue({
     reviews: [],
     reserves: [],
     sales: [],
+    salesByDate: [],
     notifications: [],
     countMonthlySalesCount: [],
     countMonthlySales: [],
@@ -26,19 +27,13 @@ new Vue({
     filteredReviews() {
       return this.reviews.filter((review) => !review.deleteReq).slice(0, 5);
     },
-
-    //읽은 알림은 보여주지 않음
-    filteredNotifications() {
-      return this.notifications.slice(0, 5);
-    },
   },
   created: function () {
     this.fetchUserData(); // Vue 인스턴스 생성 시 데이터 요청
     this.fetchReviews();
-    this.getFullCalendar();
     this.fetchReserves();
     this.getNotification();
-    this.getSalesInfo();
+    // this.getSalesInfo();
   },
 
   methods: {
@@ -108,7 +103,7 @@ new Vue({
     //알림 목록 받아오기
     getNotification() {
       axios.get("/api/owner/reserve/notification").then((response) => {
-        console.log(response);
+        console.log("알림 목록 api", response);
         this.notifications = response.data.data;
       });
     },
@@ -116,31 +111,52 @@ new Vue({
     //결제,매출 정보
     getSalesInfo() {
       axios.get("/api/owner/sales").then((response) => {
-        console.log(response);
+        console.log("결제 매출 정보 api ", response);
         this.totalSales = response.data.data.totalSales;
         this.totalSalesCount = response.data.data.totalSalesCount;
         this.todayTotalSales = response.data.data.todayTotalSales;
         this.todayTotalSalesCount = response.data.data.todayTotalSalesCount;
         this.countMonthlySalesCount = response.data.data.countMonthlySalesCount;
         this.countMonthlySales = response.data.data.countMonthlySales;
+        this.salesByDate = response.data.data.salesByDate;
 
+        console.log("salesBy date 정보11", this.salesByDate);
         this.createChart();
+        this.getFullCalendar();
       });
     },
 
     getFullCalendar() {
-      document.addEventListener("DOMContentLoaded", function () {
-        var calendarEl = document.getElementById("calendar");
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: "dayGridMonth",
-        });
-        calendar.render();
+      const events = this.salesByDate.map((sale, index) => ({
+        id: "sale" + index,
+        title: "일일 매출 : " + sale.total.toLocaleString() + "원",
+        start: sale.date,
+        end: sale.date,
+      }));
+      console.log("salesBy date 정보", this.salesByDate);
+      console.log("달력 이벤트 : ", events);
+      var calendarEl = document.getElementById("calendar");
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        locale: "ko",
+        buttonText: {
+          today: "이번달",
+          month: "월별",
+          week: "주간별",
+          day: "일별",
+        },
+        headerToolbar: {
+          start: "prev next today",
+          center: "title",
+          end: "",
+        },
+        events: events,
       });
+      calendar.render();
     },
 
     fetchReserves: function () {
       axios.get("/api/owner/reserve").then((response) => {
-        console.log(response);
+        console.log("예약목록 api", response);
         this.reserves = response.data.data.reservations;
       });
     },
@@ -152,7 +168,7 @@ new Vue({
       axios
         .post("/api/owner/reserve/" + reserveId, null, { params })
         .then((response) => {
-          console.log(response);
+          console.log("예약상태 업데이트", response);
           if (statusCode == 2) {
             alert(reserveId + "의 예약 승인요청이 완료 되었습니다.");
           } else if (statusCode == 3) {
@@ -165,7 +181,7 @@ new Vue({
       axios
         .get("/api/status") // 서버에 /api/status 요청
         .then((response) => {
-          console.log(response);
+          console.log("로그인", response);
           if (response.data.data.loginType == "store") {
             this.name = response.data.data.name;
             this.loginYN = true;
@@ -194,7 +210,7 @@ new Vue({
       axios
         .get("/api/owner/review")
         .then((response) => {
-          console.log(response);
+          console.log("리뷰api", response);
           this.reviews = response.data.data.reviews;
         })
         .catch((error) => {
@@ -221,5 +237,7 @@ new Vue({
     },
   },
 
-  mounted() {},
+  mounted() {
+    this.getSalesInfo();
+  },
 });

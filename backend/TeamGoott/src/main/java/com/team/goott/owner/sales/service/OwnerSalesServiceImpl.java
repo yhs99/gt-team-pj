@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
+import com.team.goott.owner.domain.SalesByDateVO;
 import com.team.goott.owner.domain.SalesInfoVO;
 import com.team.goott.owner.domain.SalesVO;
 import com.team.goott.owner.sales.persistence.OwnerSalesDAO;
@@ -28,6 +29,7 @@ public class OwnerSalesServiceImpl implements OwnerSalesService {
 		int todayTotalSales = dao.getTodayTotalSales(storeId);
 		int todayTotalSalesCount = dao.getTodayTotalSalesCount(storeId);
 		List<SalesVO> sales = dao.getSales(storeId);
+		List<SalesByDateVO> salesByDate = dao.getSalesByDate(storeId);
 		int[] countMonthlySales = new int[6]; // 최근 6개월 결제 금액
 		int[] countMonthlySalesCount = new int[6]; // 최근 6개월 결제 수
 		
@@ -67,6 +69,7 @@ public class OwnerSalesServiceImpl implements OwnerSalesService {
 				todayTotalSalesCount(todayTotalSalesCount).
 				countMonthlySales(countMonthlySales).
 				countMonthlySalesCount(countMonthlySalesCount).
+				salesByDate(salesByDate).
 				sales(sales).build();
 		
 		return salesInfo;

@@ -73,6 +73,8 @@ new Vue({
 
         return matchesName && matchesDateRange;
       });
+      //검색결과에 맞춘 페이지네이션
+      this.totalPages = Math.ceil(this.searchReviewList.length / this.pageSize);
 
       if (orderMethod === "newest") {
         return this.searchReviewList.sort(

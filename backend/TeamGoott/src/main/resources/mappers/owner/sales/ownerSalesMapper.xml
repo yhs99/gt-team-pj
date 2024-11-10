@@ -45,4 +45,13 @@
 		ON p.reserveId = r.reserveId
 		WHERE p.storeID = #{storeId} and date_format(r.reserveTime, "%Y-%m-%d") = curdate();
 	</select>
+	
+	<select id="getSalesByDate" resultType="com.team.goott.owner.domain.SalesByDateVO">
+		SELECT DATE(r.reserveTime) as date, sum(p.payAmount) as total
+		FROM reserve r inner join payHistory p
+		ON r.reserveId = p.reserveId
+		WHERE r.statusCodeId IN (2,4,5)
+		AND r.storeId = #{storeId}
+		GROUP BY date; 
+	</select>
 </mapper>

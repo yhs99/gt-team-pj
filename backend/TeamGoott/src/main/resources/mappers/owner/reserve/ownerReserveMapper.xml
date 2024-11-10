@@ -48,7 +48,9 @@
 	</insert>
 	
 	<select id="getNotification" resultType="com.team.goott.owner.domain.NotificationDTO">
-		select * from notification where storeId = #{storeId} and notificationType = #{notificationType}
+		select * from notification 
+		where storeId = #{storeId} and notificationType = #{notificationType}
+		order by createAt desc
 	</select>
 	
 	<update id="updateStatus">

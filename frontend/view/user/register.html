@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+      <meta charset="utf-8">
+      <title>스마트한 예약 경험 | 로그인</title>
+      <meta content="width=device-width, initial-scale=1.0" name="viewport">
+      <meta content="" name="keywords">
+      <meta content="" name="description">
+      <link rel="icon" type="image/png" href="/assets/mainIcon.png" />
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css" type="text/css"/>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+      <link href="/node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+      <link href="/css/user/animate/animate.min.css" rel="stylesheet">
+      <link href="/css/user/lightbox/css/lightbox.min.css" rel="stylesheet">
+      <link href="/css/user/owlcarousel/owl.carousel.min.css" rel="stylesheet">
+      <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+      <link href="/css/user/mainlogo.css" rel="stylesheet">
+      <link href="/css/user/userLogin.css" rel="stylesheet">
+      <!-- 자바스크립트 -->
+      <script src="https://kit.fontawesome.com/9ebc532cee.js" crossorigin="anonymous"></script>
+      <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+      <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+      <script src="/js/user/lib/wow/wow.min.js"></script>
+      <script src="/js/user/lib/easing/easing.min.js"></script>
+      <script src="/js/user/lib/waypoints/waypoints.min.js"></script>
+      <script src="/js/user/lib/counterup/counterup.min.js"></script>
+      <script src="/js/user/lib/lightbox/js/lightbox.min.js"></script>
+      <script src="/js/user/lib/owlcarousel/owl.carousel.min.js"></script>
+      <script src="/node_modules/vue/dist/vue.min.js"></script>
+      <script src="https://cdn.rawgit.com/rikmms/progress-bar-4-axios/0a3acf92/dist/index.js"></script>
+      <script src="/node_modules/axios/dist/axios.min.js"></script>
+      <script src="/js/axiosSetting.js"></script>
+      <script src="/js/user/main.js"></script>
+  </head>
+  <script>
+  </script>
+<body>
+  <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+    <div class="spinner-grow text-warning" role="status"></div>
+  </div>
+  <div id="app" class="bg-white">
+    <div class="container mt-5 mb-5 text-center">
+      <a class="navbar-brand fs-3 text-warning fw-bold" href="/"><img src="/assets/mainIcon.png"> SmartReserve</a>
+      <div class="text-right">
+        "지금 가입하고 '예약을 더 빠르고,
+        더 알뜰하게' 경험하세요! 식당 예약과 선결제 혜택을 놓치지 마세요!"
+      </div>
+    </div>
+    <div class="container mt-5 mb-5 d-flex justify-content-center">
+      <div class="card m-3 p-2 bg-white px-1 py-4 border">
+        <div class="text-center">
+          <small><a href="/view/user/userLogin" class="terms">로그인 하러가기</a></small>
+        </div>
+        <form>
+          <div class="card-body">
+            <div class="row">
+              <div class="form-group">
+                <div class="col-sm-12 mb-3">
+                  <label for="email" class="form-label">이메일 <span class="text-warning">*</span></label>
+                  <input class="form-control was-validated" type="email" placeholder="example@smartreserve.com" id="email" name="email" v-model="formDatas.email" aria-describedby="emailHelp" required>
+                  <p v-if="errorMsg.errorCode.includes('email')" class="text-danger"> {{ errorMsg.errorMsg[errorMsg.errorCode.indexOf('email')] }}</p>
+                </div>
+                <div class="col-sm-12 mb-3">
+                  <label for="email" class="form-label">비밀번호 <span class="text-warning">*</span></label>
+                  <input class="form-control" type="password" placeholder="비밀번호" id="password" name="password" v-model="formDatas.password" aria-describedby="passwordHelp" required>
+                  <p v-if="errorMsg.errorCode.includes('password')" class="text-danger"> {{ errorMsg.errorMsg[errorMsg.errorCode.indexOf('password')] }}</p>
+                </div>
+                <div class="col-sm-12 mb-3">
+                  <input class="form-control" type="password" placeholder="비밀번호 확인" id="password_re" name="password_re" v-model="formDatas.password_re" aria-describedby="passwordHelp" required>
+                  <p v-if="errorMsg.errorCode.includes('password_re')" class="text-danger"> {{ errorMsg.errorMsg[errorMsg.errorCode.indexOf('password_re')] }}</p>
+                </div>
+                <div class="col-sm-12 mb-3">
+                  <label for="name" class="form-label">이름 <span class="text-warning">*</span></label>
+                  <input class="form-control" type="name" placeholder="이름" id="name" name="name" v-model="formDatas.name" aria-describedby="nameHelp" required>
+                  <div v-if="!errorMsg.errorCode.includes('name')"  id="nameHelp" class="form-text">식당 예약시 자동으로 입력하신 이름으로 예약됩니다.</div>
+                  <p v-if="errorMsg.errorCode.includes('name')" class="text-danger"> {{ errorMsg.errorMsg[errorMsg.errorCode.indexOf('name')] }}</p>
+                </div>
+                <div class="col-sm-12 mb-3">
+                  <label for="mobile" class="form-label">휴대폰 번호</label>
+                  <input class="form-control" type="text" placeholder="010-1234-5678" id="mobile" name="mobile" v-model="formDatas.mobile" required>
+                  <p v-if="errorMsg.errorCode.includes('mobile')" class="text-danger"> {{ errorMsg.errorMsg[errorMsg.errorCode.indexOf('mobile')] }}</p>
+                </div>
+                <div class="col-sm-12 mb-3">
+                  <input class="form-check-input" type="radio" id="gender_M" name="gender" v-model="formDatas.gender" value="M">
+                  <label for="gender_M" class="form-label">남자</label>
+                  <input class="form-check-input" type="radio" id="gender_W" name="gender" v-model="formDatas.gender" value="W"> 
+                  <label for="gender_W" class="form-label">여자</label>
+                </div>
+                <div class="col-sm-12">
+                  <label for="imageFile" class="preview">
+                    <img :src="previewImage" class="img-thumbnail rounded-circle" alt="..." style="width: 60px; height: 60px;"> 프로필 이미지 설정하기
+                    <p v-if="errorMsg.errorCode.includes('image')" class="text-danger"> {{ errorMsg.errorMsg[errorMsg.errorCode.indexOf('image')] }}</p>
+                  </label>
+                </div>
+                <input type="file" class="invisible" id="imageFile" name="imageFile" accept="image/jpg, image/png, image/jpeg" @change="onFileChange">
+                <div class=" d-flex flex-column text-center px-5 mt-3 mb-3">
+                  <button class="btn btn-outline-warning btn-block confirm-button" @click.prevent="register">회원가입</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid mt-5 border-top bg-light">
+    <div class="container">
+      <footer class="py-1 my-2">
+        <p class="text-center text-body-secondary">문의 : tnwksqhdlf22@gmail.com</p>
+        <p class="text-center text-body-secondary">© 2024 SmartReserve All rights reserved</p>
+      </footer>
+    </div>
+  </div>
+<script src="/js/user/userRegister.js"></script>
+</body>
+</html>

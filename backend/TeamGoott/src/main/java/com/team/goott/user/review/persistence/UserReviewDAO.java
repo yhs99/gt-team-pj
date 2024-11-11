@@ -35,6 +35,10 @@ public interface UserReviewDAO {
 
 	ReserveDTO getReserveInfo(int reserveId);
 
+	int checkIfImageExist(int imageId);
+
+	int changeStatusCodeId(int reserveId, int statusCode);
+
 
 
 }

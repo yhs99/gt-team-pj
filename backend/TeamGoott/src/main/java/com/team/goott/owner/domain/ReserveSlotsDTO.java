@@ -1,6 +1,7 @@
 package com.team.goott.owner.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -23,6 +24,5 @@ public class ReserveSlotsDTO {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime slotDatetime;
 	private boolean reserved;
-	private int userId;
-	
+	private int leftCount;
 }

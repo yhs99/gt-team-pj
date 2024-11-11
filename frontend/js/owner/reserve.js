@@ -4,9 +4,11 @@ new Vue({
     reserves: [],
     monthlyTotalReserve: [],
     searchReserveList: [],
+    searchReserveSlots: [],
     searchCustomerName: "",
     searchStartDate: "",
     searchEndDate: "",
+    searchAvailableReserveDate: "",
     totalReserve: 0,
     totalTodayReserve: 0,
     currentPage: 1,
@@ -74,6 +76,23 @@ new Vue({
       this.totalPages = Math.ceil(
         this.searchReserveList.length / this.pageSize
       );
+    },
+    searchAvailableDate() {
+      if (this.searchAvailableReserveDate) {
+        const dateObject = new Date(this.searchAvailableReserveDate);
+        const formattedDate = dateObject.toISOString().split("T")[0];
+
+        const params = { reserveTime: formattedDate };
+        console.log(params);
+        axios
+          .get("/api/owner/reserve/available", { params })
+          .then((response) => {
+            console.log(response);
+            this.searchReserveSlots = response.data.data;
+          });
+      } else {
+        alert("날짜를 입력해주세요");
+      }
     },
     createChart() {
       //Single Bar Chart

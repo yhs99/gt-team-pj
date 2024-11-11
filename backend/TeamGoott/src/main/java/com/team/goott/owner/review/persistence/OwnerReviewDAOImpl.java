@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.team.goott.owner.domain.ReviewByDateVO;
 import com.team.goott.owner.domain.ReviewVO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +62,11 @@ public class OwnerReviewDAOImpl implements OwnerReviewDAO {
 	@Override
 	public float getTotalTodayScore(int storeId) {
 		return ses.selectOne(ns+"getTotalTodayScore", storeId) != null ? ses.selectOne(ns+"getTotalTodayScore", storeId) : 0;
+	}
+
+	@Override
+	public List<ReviewByDateVO> reviewByDate(int storeId) {
+		return ses.selectList(ns+"getReviewByDate", storeId);
 	}
 
 }

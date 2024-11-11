@@ -168,12 +168,17 @@
                       <td>{{ reserve.name }}</td>
                       <td>{{ reserve.people }}</td>
                       <td>{{ reserve.memo }}</td>
-                      <td>{{ reserve.reserveTime }}</td>
+                      <td>
+                        {{ new Date(reserve.reserveTime).toLocaleString() }}
+                      </td>
                       <td>
                         <span v-if="reserve.statusCodeId === 1">대기</span>
                         <span v-else-if="reserve.statusCodeId === 2">승인</span>
                         <span v-else-if="reserve.statusCodeId === 3">취소</span>
                         <span v-else-if="reserve.statusCodeId === 4">완료</span>
+                        <span v-else-if="reserve.statusCodeId === 5"
+                          >리뷰 작성 완료</span
+                        >
                       </td>
                       <td class="status-button">
                         <button
@@ -233,6 +238,62 @@
                     </a>
                   </li>
                 </ul>
+              </div>
+            </div>
+          </div>
+          <!-- 예약 가능한 특정시간대 리스트 -->
+          <div id="availableReviewList" class="container-fluid pt-4 px-4 mb-4">
+            <div class="bg-light text-center rounded p-4">
+              <div
+                class="d-flex align-items-center justify-content-between mb-4"
+              >
+                <h6 class="mb-0">특정 날짜 예약 가능 상태</h6>
+              </div>
+
+              <div class="mb-3 d-flex">
+                <input
+                  v-model="searchAvailableReserveDate"
+                  class="form-control"
+                  type="date"
+                />
+              </div>
+              <div class="mb-3 d-flex justify-content-end">
+                <button
+                  class="btn btn-primary ms-2"
+                  style="width: 200px"
+                  @click="searchAvailableDate();"
+                >
+                  검색
+                </button>
+              </div>
+              <div class="table-responsive">
+                <table
+                  class="table text-start align-middle table-bordered table-hover mb-0"
+                >
+                  <thead>
+                    <tr class="text-dark">
+                      <th scope="col">슬롯 ID</th>
+                      <th scope="col">시간</th>
+                      <th scope="col">예약 상태</th>
+                      <th scope="col">예약 가능 인원 수</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="(reserveSlot, index) in searchReserveSlots"
+                      :key="reserveSlot.reserveSlotId"
+                    >
+                      <td>{{ reserveSlot.reserveSlotId }}</td>
+                      <td>
+                        {{ new Date(reserveSlot.slotDatetime).toLocaleString()
+                        }}
+                      </td>
+                      <td v-if="reserveSlot.reserved">예약 불가</td>
+                      <td v-else>예약 가능</td>
+                      <td>{{reserveSlot.leftCount}}명</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

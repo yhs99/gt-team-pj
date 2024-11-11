@@ -1,5 +1,6 @@
 package com.team.goott.owner.reserve.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -93,13 +94,16 @@ public class OwnerReserveController {
 	}
 	
 	//예약 가능 여부 확인 
-	@GetMapping("/reserve/available/{storeId}")
-	public ResponseEntity<Object> checkAvailableReserve(@PathVariable("storeId") int storeId,@RequestParam("reserveTime") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime reserveTime, HttpSession session){
-		log.info("{}, {}", storeId, reserveTime);
+	@GetMapping("/reserve/available")
+	public ResponseEntity<Object> checkAvailableReserve(@RequestParam("reserveTime") String reserveTime, HttpSession session){
 		StoreDTO storeSession = (StoreDTO)session.getAttribute("store");
-		ReserveSlotsDTO reserveSlot = null;
+		int storeId = storeSession.getStoreId();
+		log.info("{}, {}", storeId, reserveTime);
+		LocalDate localDate = null;
+		localDate = LocalDate.parse(reserveTime);
+		List<ReserveSlotsDTO>  reserveSlot = null;
 		if(storeSession != null) {
-			reserveSlot = service.getReserveSlots(storeId, reserveTime);
+			reserveSlot = service.getReserveSlots(storeId, localDate);
 		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
 		}

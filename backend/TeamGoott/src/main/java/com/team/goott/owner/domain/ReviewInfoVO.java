@@ -24,4 +24,5 @@ public class ReviewInfoVO {
 	private int[] countScore;
 	private int[] countMonthlyReview;
 	private List<ReviewVO> reviews;
+	private List<ReviewByDateVO> reviewByDate;
 }

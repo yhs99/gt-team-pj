@@ -7,6 +7,8 @@ new Vue({
     reserves: [],
     sales: [],
     salesByDate: [],
+    reserveByDate: [],
+    reviewByDate: [],
     notifications: [],
     countMonthlySalesCount: [],
     countMonthlySales: [],
@@ -33,7 +35,6 @@ new Vue({
     this.fetchReviews();
     this.fetchReserves();
     this.getNotification();
-    // this.getSalesInfo();
   },
 
   methods: {
@@ -45,6 +46,28 @@ new Vue({
         .put("/api/owner/reserve/notification", null, { params })
         .then((response) => {
           console.log(response);
+        });
+    },
+
+    fetchReserves: function () {
+      axios.get("/api/owner/reserve").then((response) => {
+        console.log("예약목록 api", response);
+        this.reserves = response.data.data.reservations;
+        this.reserveByDate = response.data.data.reserveByDate;
+      });
+    },
+
+    fetchReviews: function () {
+      axios
+        .get("/api/owner/review")
+        .then((response) => {
+          console.log("리뷰api", response);
+          this.reviews = response.data.data.reviews;
+          this.reviewByDate = response.data.data.reviewByDate;
+          this.getFullCalendar();
+        })
+        .catch((error) => {
+          console.log(error);
         });
     },
 
@@ -127,14 +150,6 @@ new Vue({
     },
 
     getFullCalendar() {
-      const events = this.salesByDate.map((sale, index) => ({
-        id: "sale" + index,
-        title: "일일 매출 : " + sale.total.toLocaleString() + "원",
-        start: sale.date,
-        end: sale.date,
-      }));
-      console.log("salesBy date 정보", this.salesByDate);
-      console.log("달력 이벤트 : ", events);
       var calendarEl = document.getElementById("calendar");
       var calendar = new FullCalendar.Calendar(calendarEl, {
         locale: "ko",
@@ -149,16 +164,41 @@ new Vue({
           center: "title",
           end: "",
         },
-        events: events,
+        // events: events,
       });
-      calendar.render();
-    },
+      this.salesByDate.forEach((sale, index) => {
+        calendar.addEvent({
+          id: "sale" + index,
+          title: "일일 매출 : " + sale.total.toLocaleString() + "원",
+          start: sale.date,
+          end: sale.date,
+        });
+      });
 
-    fetchReserves: function () {
-      axios.get("/api/owner/reserve").then((response) => {
-        console.log("예약목록 api", response);
-        this.reserves = response.data.data.reservations;
+      this.reserveByDate.forEach((reserve, index) => {
+        calendar.addEvent({
+          id: "reserve" + index,
+          title: "일일 예약 수 : " + reserve.total,
+          start: reserve.date,
+          end: reserve.date,
+          backgroundColor: "#4CAF50",
+          borderColor: "#4CAF50",
+        });
       });
+      console.log("리뷰 : ", this.reviewByDate);
+
+      this.reviewByDate.forEach((review, index) => {
+        calendar.addEvent({
+          id: "review" + index,
+          title: "작성된 리뷰 수 : " + review.total,
+          start: review.date,
+          end: review.date,
+          backgroundColor: "#FF9800",
+          borderColor: "#FF9800",
+        });
+      });
+
+      calendar.render();
     },
 
     //예약 상태 업데이트
@@ -206,17 +246,7 @@ new Vue({
           console.error(error);
         });
     },
-    fetchReviews: function () {
-      axios
-        .get("/api/owner/review")
-        .then((response) => {
-          console.log("리뷰api", response);
-          this.reviews = response.data.data.reviews;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
+
     deleteReq: function (reviewId) {
       axios
         .delete("/api/owner/review/" + reviewId)

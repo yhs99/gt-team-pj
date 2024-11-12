@@ -6,14 +6,42 @@
 }
 .storeTitle {
   font-weight: bold;
+  font-size: 22px;
 }
-.fa-regular {
+.favorite-icon {
   margin-top: 15px;
   margin-left: auto;
-  font-size: 30px;
+  font-size: 20px;
 }
 .store-image {
   max-width: 280px;
   width: 280px;
   height: 180px;
+  padding: 3px;
+}
+.storeAddress {
+  font-weight: bold;
+  color: gray;
+}
+.coupon-event {
+  color: red;
+  font-weight: bold;
+  margin-left: 5px;
+}
+.facilities-list {
+  display: flex;
+  gap: 10px;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.facilities-list li {
+  padding: 5px 12px;
+  background-color: #f0f0f0;
+  color: #333;
+  border-radius: 15px;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
 }

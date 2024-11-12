@@ -21,6 +21,7 @@ import com.team.goott.admin.domain.AdminDTO;
 import com.team.goott.admin.domain.StoresVO;
 import com.team.goott.admin.store.service.AdminStoreService;
 import com.team.goott.infra.StoreNotFoundException;
+import com.team.goott.user.domain.UserDTO;
 
 import lombok.extern.slf4j.Slf4j;
 

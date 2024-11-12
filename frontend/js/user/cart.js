@@ -3,6 +3,10 @@ new Vue({
   data: {
     carts: [],
     checkedCarts: [],
+    reservationName: "",
+    peopleCount: 1,
+    note: "",
+    isModalOpen: false,
   },
   computed: {
     groupedCarts() {
@@ -35,16 +39,20 @@ new Vue({
         .get("/api/cart")
         .then((response) => {
           this.carts = response.data.data;
-          console.log(this.carts); // 확인용
+          console.log("응답 데이터", this.carts);
         })
         .catch((error) => {
           if (error.response && error.response.status === 401) {
-            alert("로그인이 필요한 서비스입니다."); // 401 오류일 경우
-            window.location.href = "userLogin"; // 로그인 페이지로 리디렉션
+            alert("로그인이 필요한 서비스입니다.");
+            window.location.href = "userLogin";
           } else {
             console.error("데이터 요청 실패:", error);
           }
         });
+    },
+    getStoreImage(urlArray) {
+      if (!Array.isArray(urlArray)) return null;
+      return urlArray[0] || urlArray[1] || urlArray[2] || null;
     },
     async removeSelectedItems() {
       try {
@@ -53,20 +61,35 @@ new Vue({
             axios.delete(`/api/cart/${cart.cartId}`)
           )
         );
-        // 삭제가 완료되면 `carts` 배열에서 선택된 항목 제거
         this.carts = this.carts.filter(
           (cart) => !this.checkedCarts.includes(cart)
         );
-        this.checkedCarts = []; // 선택된 항목 초기화
+        this.checkedCarts = [];
         alert("선택된 항목이 삭제되었습니다.");
       } catch (error) {
         console.error("삭제 요청 실패:", error);
         alert("삭제 중 오류가 발생했습니다.");
       }
     },
+    openReservationModal() {
+      this.isModalOpen = true;
+    },
+    closeReservationModal() {
+      this.isModalOpen = false;
+    },
     makeReservation() {
-      // 예약 처리 로직
+      const reservationData = {
+        name: this.reservationName,
+        peopleCount: this.peopleCount,
+        note: this.note,
+        items: this.checkedCarts,
+      };
+      console.log("예약 정보:", reservationData);
       alert("예약이 완료되었습니다!");
+      this.reservationName = "";
+      this.peopleCount = 1;
+      this.note = "";
+      this.closeReservationModal();
     },
   },
 });

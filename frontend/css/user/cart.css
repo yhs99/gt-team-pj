@@ -16,6 +16,11 @@ h1 {
   text-align: left;
   margin-bottom: 20px;
 }
+.store-image {
+  border-radius: 10px;
+  max-width: 100px;
+  max-height: 80px;
+}
 .store-section {
   margin-bottom: 30px;
 }
@@ -39,8 +44,8 @@ h1 {
   border-bottom: none;
 }
 .cart-item img {
-  width: 80px;
-  height: 80px;
+  width: 150px;
+  height: 100px;
   margin-right: 15px;
   border-radius: 5px;
 }
@@ -101,4 +106,77 @@ h1 {
 }
 .navbar-brand img {
   margin-right: 8px;
+}
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* 반투명 배경 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* 모달 콘텐츠 */
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+  font-family: "AppleSDGothicNeo", sans-serif;
+}
+
+/* 닫기 버튼 */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* 모달 제목 스타일 */
+.modal-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin-bottom: 15px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #333;
+}
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  font-family: "AppleSDGothicNeo", sans-serif;
+}
+button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #0056b3;
 }

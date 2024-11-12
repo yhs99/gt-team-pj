@@ -32,9 +32,11 @@ new Vue({
           // 후기가 많은 식당 가져오기
           this.filterTopReviewStores();
 
-          this.storeSchedules =
-            this.response.data.data.storeLists.storeSchedules;
+          this.storeSchedules = response.data.data.storeLists
+            .map((store) => store.storeSchedules)
+            .flat();
 
+          console.log(this.storeSchedules);
           console.log(this.stores);
           console.log(this.groupStores);
           console.log("리뷰많은식당", this.topReviewStores);
@@ -58,7 +60,7 @@ new Vue({
     },
 
     truncatedDescription(description) {
-      const maxLength = 60;
+      const maxLength = 100;
       description = description || "";
       return description.length > maxLength
         ? description.substring(0, maxLength) + "..."
@@ -149,10 +151,7 @@ new Vue({
 
       try {
         store.isFavorite = !store.isFavorite;
-        await axios.post("/api/bookmark", {
-          storeId: store.storeId,
-          userId: userId,
-        });
+        await axios.post(`/api/bookmark/${store.storeId}`);
         console.log(
           `즐겨찾기 상태가 ${store.isFavorite ? "추가" : "제거"}되었습니다.`
         );
@@ -163,6 +162,50 @@ new Vue({
     },
     navigateTo(categoryCode) {
       window.location.href = `filter?categoryCode=${categoryCode}`;
+    },
+    getStoreStatus(store) {
+      const today = new Date().getDay();
+      const now = new Date();
+
+      const todaySchedule = store.storeSchedules.find(
+        (schedule) => schedule.dayCodeId === today
+      );
+
+      if (todaySchedule) {
+        if (todaySchedule.closeDay) {
+          return "영업마감";
+        }
+        const [openHour, openMinute] = todaySchedule.open
+          .split(":")
+          .map(Number);
+        const [closeHour, closeMinute] = todaySchedule.close
+          .split(":")
+          .map(Number);
+
+        const openTime = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+          openHour,
+          openMinute
+        );
+        const closeTime = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+          closeHour,
+          closeMinute
+        );
+
+        if (now < openTime) {
+          return `영업 준비 중 open:${todaySchedule.open}`;
+        } else if (now >= openTime && now < closeTime) {
+          return `영업중 open:${todaySchedule.open} close:${todaySchedule.close}`;
+        } else {
+          return `영업마감 close:${todaySchedule.close}`;
+        }
+      }
+      return "영업 정보 없음";
     },
   },
 });

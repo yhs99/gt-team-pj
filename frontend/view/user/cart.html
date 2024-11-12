@@ -4,10 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>장바구니</title>
-
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css"
@@ -31,7 +29,6 @@
       href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-
     <link href="/css/user/cart.css" rel="stylesheet" />
     <link href="/css/user/header.css" rel="stylesheet" />
   </head>
@@ -51,43 +48,48 @@
           </button>
         </div>
 
-        <div
-          v-for="(items, storeName) in groupedCarts"
-          :key="storeName"
-          class="store-section"
-        >
-          <div class="store-name">{{ storeName }}</div>
-
+        <div v-for="(items, storeName) in groupedCarts" :key="storeName" class="store-section">
+          
+          <div class="store-name"> <img
+            :src="getStoreImage(items[0].url)"
+            alt="상점 이미지"
+            class="store-image"
+            v-if="getStoreImage(items[0].url)"
+            />  {{ storeName }}</div>
+            
+        
           <div class="cart-list">
             <div class="cart-item" v-for="cart in items" :key="cart.cartId">
               <div class="cart-image-wrapper">
                 <div class="cart-menuName">
-                  <input
-                    type="checkbox"
-                    v-model="checkedCarts"
-                    :value="cart"
-                    :disabled="cart.stock === 0"
-                  />
+                  <input type="checkbox" v-model="checkedCarts" :value="cart" :disabled="cart.stock === 0" />
                   {{ cart.menuName }}
                 </div>
+                
+                <!-- 메뉴 이미지 표시 -->
                 <img
                   :src="cart.menuImageUrl"
-                  alt="상품 이미지"
+                  alt="메뉴 이미지"
                   class="cart-image"
                 />
               </div>
-              <div class="cart-details">
-                <div class="cart-price">{{ cart.price.toLocaleString()}}원</div>
-                <div class="cart-stock">개수: {{ cart.stock}}</div>
+              <div class="cart-details"><div v-if="items[0].availableCoupons.length" class="coupon-section">
+                <span>쿠폰 선택:</span>
+                <select v-model="selectedCoupon" @change="applyDiscount">
+                  <option v-for="coupon in items[0].availableCoupons" :key="coupon.couponId" :value="coupon">
+                    {{ coupon.couponName }}
+                  </option>
+                </select>
+              </div>
+                <div class="cart-price">{{ cart.price.toLocaleString() }}원</div>
+                <div class="cart-stock">개수: {{ cart.stock }}</div>
                 <div class="cart-totalPrice">
                   합계: {{ cart.totalPrice.toLocaleString() }}원
                 </div>
+                
               </div>
-
               <div class="cart-status">
-                <span v-if="cart.stock === 0" class="sold-out"
-                  >장바구니가 비었습니다. 메뉴를 담아주세요</span
-                >
+                <span v-if="cart.stock === 0" class="sold-out">장바구니가 비었습니다. 메뉴를 담아주세요</span>
               </div>
             </div>
           </div>
@@ -101,7 +103,7 @@
         </div>
         <div class="reservation-button">
           <button
-            @click="makeReservation"
+            @click="openReservationModal"
             class="btn btn-primary btn-lg"
             :disabled="!isReservationEnabled"
           >
@@ -109,6 +111,33 @@
           </button>
         </div>
       </div>
+
+      <!-- 예약 모달 창 -->
+    
+    
+        <div v-if="isModalOpen" class="modal-backdrop">
+          <div class="modal-content">
+            <h5 class="modal-title">예약 정보 입력</h5>
+            <button @click="closeReservationModal" class="close-button">&times;</button>
+            <form @submit.prevent="makeReservation">
+              <div class="form-group">
+                <label for="name">예약자명</label>
+                <input type="text" v-model="reservationName" required />
+              </div>
+              <div class="form-group">
+                <label for="peopleCount">인원수</label>
+                <input type="number" v-model="peopleCount" min="1" required />
+              </div>
+              <div class="form-group">
+                <label for="note">메모</label>
+                <textarea v-model="note" rows="3"></textarea>
+              </div>
+              <button type="submit">예약</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
       <footer-component></footer-component>
     </div>
     <script src="/js/Footer.js"></script>

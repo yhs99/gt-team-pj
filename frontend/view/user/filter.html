@@ -40,59 +40,70 @@
       <div class="container">
         <table class="table">
           <tbody>
-            <tr v-for="store in stores" :key="store.storeId">
+            <tr
+              v-for="store in stores"
+              :key="store.storeId"
+              @click="goToStore(store.storeId)"
+            >
               <td>
-                <div class="storeTitle">{{ store.storeName }}</div>
+                <div class="storeTitle">
+                  {{ store.storeName }}
+                  <span v-if="store.couponCount > 0" class="coupon-event">
+                    할인 행사 진행중 <i class="fa-solid fa-tags"></i>
+                  </span>
+                </div>
                 <div class="storeAddress">
-                  {{store.address}}
                   <i
                     class="fas fa-star"
                     style="color: gold; font-size: 15px"
                   ></i>
                   {{ store.averageScore }} ({{ store.reviewCount }})
+                  {{store.address}}
+                </div>
+                <div class="store-tel">
+                  <i class="fa-solid fa-phone"></i> tel: {{ store.tel }}
                 </div>
                 <div class="storeImg">
-                  <img
-                    :src="(store.storeImages && store.storeImages.length > 0 && store.storeImages[0].url) 
-                    ? store.storeImages[0].url 
-                    : '/assets/user/img/준비중.png'"
-                    alt="식당 이미지"
-                    class="store-image"
-                  />
-                  <button @click="toggleScheduleVisibility">
-                    영업 시간 보기
-                  </button>
-
-                  <div v-if="showSchedule">
-                    <table class="schedule-table">
-                      <thead>
-                        <tr>
-                          <th>요일</th>
-                          <th>오픈</th>
-                          <th>클로즈</th>
-                          <th>상태</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr
-                          v-for="schedule in scheduleLists"
-                          :key="schedule.dayCodeId"
-                          :class="{ 'closed-today': isToday(schedule.dayOfWeek) }"
-                        >
-                          <td>{{ schedule.dayOfWeek }}</td>
-                          <td>{{ schedule.open }}</td>
-                          <td>{{ schedule.close }}</td>
-                          <td>
-                            {{ isToday(schedule.dayOfWeek) ? "영업마감" :
-                            "영업중" }}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                  <div v-if="store.storeImages && store.storeImages.length > 0">
+                    <img
+                      v-for="(image, index) in store.storeImages.slice(0, 3)"
+                      :key="index"
+                      :src="image.url"
+                      alt="식당 이미지"
+                      class="store-image"
+                    />
                   </div>
+                  <div v-else>
+                    <img
+                      src="/assets/user/img/준비중.png"
+                      alt="준비중 이미지"
+                      class="store-image"
+                    />
+                  </div>
+                  <p class="store-status">
+                    <i class="fa-solid fa-clock"></i> {{ getStoreStatus(store)
+                    }}
+                  </p>
+                  <ul
+                    class="facilities-list"
+                    v-if="store.facilities && store.facilities.length > 0"
+                  >
+                    <li
+                      v-for="(facility, index) in store.facilities"
+                      :key="index"
+                    >
+                      {{ facility.facilityName }}
+                    </li>
+                  </ul>
                 </div>
               </td>
-              <td><i class="fa-regular fa-heart"></i></td>
+              <td>
+                <div class="favorite-icon" @click.stop="toggleFavorite(store)">
+                  <i
+                    :class="store.isFavorite ? 'fas fa-heart' : 'far fa-heart'"
+                  ></i>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>

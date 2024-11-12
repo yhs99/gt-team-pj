@@ -69,14 +69,14 @@
               ></i>
             </div>
             <img
-              :src="(store.storeImages && store.storeImages.length > 0 && store.storeImages[0].url) 
-              ? store.storeImages[0].url 
-              : '/assets/user/img/준비중.png'"
+              :src="store.storeImages?.[0]?.url || '/assets/user/img/준비중.png'"
+              @error="this.src='/assets/user/img/준비중.png'"
               alt="식당 이미지"
               class="store-image"
             />
             <div class="card-content">
               <p class="card-title">{{ store.storeName }}</p>
+              <p class="store-status">{{ getStoreStatus(store)}}</p>
               <p class="cart-review">
                 <i class="fas fa-star" style="color: gold; font-size: 15px"></i>
                 {{ store.averageScore }} ({{ store.reviewCount }})
@@ -116,25 +116,26 @@
             class="card"
             @click="goToStore(groupStore.storeId)"
           >
-            <div
-              class="favorite-icon"
-              @click.stop="toggleFavorite(groupStore)"
-            ></div>
+            <div class="favorite-icon" @click.stop="toggleFavorite(groupStore)">
+              <i
+                :class="groupStore.isFavorite ? 'fas fa-heart' : 'far fa-heart'"
+              ></i>
+            </div>
             <img
-              :src="(groupStore.storeImages && groupStore.storeImages.length > 0 && groupStore.storeImages[0].url) 
-              ? groupStore.storeImages[0].url 
-              : '/assets/user/img/준비중.png'"
+              :src="groupStore.storeImages?.[0]?.url || '/assets/user/img/준비중.png'"
+              @error="this.src='/assets/user/img/준비중.png'"
               alt="식당 이미지"
               class="store-image"
             />
             <div class="card-content">
               <p class="card-title">{{ groupStore.storeName }}</p>
+              <p class="store-status">{{ getStoreStatus(groupStore)}}</p>
               <p class="cart-review">
                 <i class="fas fa-star" style="color: gold; font-size: 15px"></i>
                 {{ groupStore.averageScore }} ({{ groupStore.reviewCount
                 }})<span v-if="groupStore.couponCount > 0" class="coupon-event"
-                  >할인 행사 중</span
-                >
+                  >할인 행사 중
+                </span>
               </p>
               <div class="card-overlay">{{ groupStore.description }}</div>
             </div>
@@ -170,16 +171,20 @@
             <div
               class="favorite-icon"
               @click.stop="toggleFavorite(topReviewStore)"
-            ></div>
+            >
+              <i
+                :class="topReviewStore.isFavorite ? 'fas fa-heart' : 'far fa-heart'"
+              ></i>
+            </div>
             <img
-              :src="(topReviewStore.storeImages && topReviewStore.storeImages.length > 0 && topReviewStore.storeImages[0].url) 
-              ? topReviewStore.storeImages[0].url 
-              : '/assets/user/img/준비중.png'"
+              :src="topReviewStore.storeImages?.[0]?.url || '/assets/user/img/준비중.png'"
+              @error="this.src='/assets/user/img/준비중.png'"
               alt="식당 이미지"
               class="store-image"
             />
             <div class="card-content">
               <p class="card-title">{{ topReviewStore.storeName }}</p>
+              <p class="store-status">{{ getStoreStatus(topReviewStore)}}</p>
               <p class="cart-review">
                 <i class="fas fa-star" style="color: gold; font-size: 15px"></i>
                 {{ topReviewStore.averageScore }} ({{ topReviewStore.reviewCount
@@ -220,19 +225,20 @@
             class="card"
             @click="goToStore(eventStore.storeId)"
           >
-            <div
-              class="favorite-icon"
-              @click.stop="toggleFavorite(eventStore)"
-            ></div>
+            <div class="favorite-icon" @click.stop="toggleFavorite(eventStore)">
+              <i
+                :class="eventStore.isFavorite ? 'fas fa-heart' : 'far fa-heart'"
+              ></i>
+            </div>
             <img
-              :src="(eventStore.storeImages && eventStore.storeImages.length > 0 && eventStore.storeImages[0].url) 
-              ? eventStore.storeImages[0].url 
-              : '/assets/user/img/준비중.png'"
+              :src="eventStore.storeImages?.[0]?.url || '/assets/user/img/준비중.png'"
+              @error="this.src='/assets/user/img/준비중.png'"
               alt="식당 이미지"
               class="store-image"
             />
             <div class="card-content">
               <p class="card-title">{{ eventStore.storeName }}</p>
+              <p class="store-status">{{ getStoreStatus(eventStore)}}</p>
               <p class="cart-review">
                 <i class="fas fa-star" style="color: gold; font-size: 15px"></i>
                 {{ eventStore.averageScore }} ({{ eventStore.reviewCount
@@ -240,7 +246,6 @@
                   >할인 행사 중</span
                 >
               </p>
-              <p class="card-storeSchedules">{{storeSchedules}}</p>
               <div class="card-overlay">{{ eventStore.description }}</div>
             </div>
           </div>

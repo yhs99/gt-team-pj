@@ -94,7 +94,7 @@
   justify-content: center;
 }
 .cart-review {
-  margin-left: 10px;
+  margin-left: 2px;
   font-size: 15px;
 }
 .more-card {
@@ -217,4 +217,13 @@
 }
 .card:hover .favorite-icon {
   color: red; /* 호버 시 강조 */
+}
+.store-status {
+  font-weight: bold;
+  color: gray;
+  font-size: 12px;
+}
+.category-item {
+  font-size: 20px;
+  font-weight: bold;
 }

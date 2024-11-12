@@ -73,7 +73,7 @@ new Vue({
         ? encodeURIComponent(this.searchQuery.trim())
         : "";
 
-      let newUrl = "stores/filter";
+      let newUrl = "filter";
       if (categoryCodes) {
         newUrl +=
           (newUrl.includes("?") ? "&" : "?") +

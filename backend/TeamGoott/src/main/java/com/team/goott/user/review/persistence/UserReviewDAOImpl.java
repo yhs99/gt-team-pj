@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.team.goott.owner.domain.NotificationDTO;
 import com.team.goott.user.domain.ReserveDTO;
 import com.team.goott.user.domain.ReviewDTO;
 import com.team.goott.user.domain.ReviewPageDTO;
@@ -116,6 +117,11 @@ public class UserReviewDAOImpl implements UserReviewDAO {
 		reserveMap.put("reserveId", reserveId);
 		reserveMap.put("statusCodeId", newStatusCode);
 		return ses.update(ns+"updateStatusCode",reserveMap);
+	}
+
+	@Override
+	public int setNotification(NotificationDTO notification) {
+		return ses.insert(ns+"setNotification", notification);
 	}
 
 	

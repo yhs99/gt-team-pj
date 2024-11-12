@@ -67,4 +67,9 @@ select count(*) from reviewImages where imageId = #{imageId}
  update reserve set statusCodeId = #{statusCodeId} where reserveId = #{reserveId} 
 </update>
 
+<insert id="setNotification">
+	insert into notification(userId , message, storeId, notificationType, reserveId) 
+	values(#{userId}, #{message}, #{storeId}, #{notificationType}, #{reserveId})
+</insert>
+
 </mapper>

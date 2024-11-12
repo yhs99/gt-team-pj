@@ -98,5 +98,16 @@
 	<select id="getCouponStoreId" resultType="int">
 		select storeId FROM coupon WHERE couponId = #{couponId}
 	</select>
+	
+	<select id="getReserve" resultType="com.team.goott.user.domain.ReserveDTO">
+		SELECT * 
+		FROM reserve 
+		WHERE storeId = #{storeId} and userId = #{userId} and reserveTime = #{reserveTime}
+	</select>
+	
+	<insert id="setNotification">
+		insert into notification(userId, message, storeId, notificationType, reserveId) 
+		values(#{userId}, #{message}, #{storeId}, #{notificationType}, #{reserveId})
+	</insert>
 
 </mapper>

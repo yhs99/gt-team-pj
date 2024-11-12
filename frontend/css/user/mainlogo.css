@@ -35,3 +35,25 @@ a {
   position: absolute;
   bottom: 0;
 }
+
+.nav-link {
+  color: black !important;
+}
+.nav-link.active {
+  background-color: #ffc107 !important; /* warning 색상 */
+  color: #fff !important; /* 텍스트 색상 */
+}
+.dropdown-item.active {
+  background-color: #ffc107 !important; /* warning 색상 */
+  color: #fff !important; /* 텍스트 색상 */
+}
+
+.dropdown-item:hover {
+  background-color: #ffc107 !important; /* warning 색상 */
+  color: #fff !important; /* 텍스트 색상 */
+}
+
+.dropdown-item:active {
+  background-color: #ffc107 !important; /* warning 색상 */
+  color: #fff !important; /* 텍스트 색상 */
+}

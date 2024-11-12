@@ -1,17 +1,14 @@
 package com.team.goott.user.bookmark.controller;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
-import org.apache.ibatis.exceptions.PersistenceException;
 import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team.goott.user.bookmark.service.UserBookmarkService;
-import com.team.goott.user.domain.BookmarkDTO;
 import com.team.goott.user.domain.BookmarkInfoDTO;
 import com.team.goott.user.domain.UserDTO;
 

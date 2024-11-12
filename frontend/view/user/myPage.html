@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+      <meta charset="utf-8">
+      <title>스마트한 예약 경험 | 내 정보</title>
+      <meta content="width=device-width, initial-scale=1.0" name="viewport">
+      <meta content="" name="keywords">
+      <meta content="" name="description">
+      <link rel="icon" type="image/png" href="/assets/mainIcon.png" />
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css" type="text/css"/>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+      <link href="/node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+      <link href="/css/user/animate/animate.min.css" rel="stylesheet">
+      <link href="/css/user/lightbox/css/lightbox.min.css" rel="stylesheet">
+      <link href="/css/user/owlcarousel/owl.carousel.min.css" rel="stylesheet">
+      <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+      <link href="/css/user/mainlogo.css" rel="stylesheet">
+      <link href="/css/user/userLogin.css" rel="stylesheet">
+      <!-- 자바스크립트 -->
+       <script src="https://kit.fontawesome.com/9ebc532cee.js" crossorigin="anonymous"></script>
+      <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+      <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+      <script src="/js/user/lib/wow/wow.min.js"></script>
+      <script src="/js/user/lib/easing/easing.min.js"></script>
+      <script src="/js/user/lib/waypoints/waypoints.min.js"></script>
+      <script src="/js/user/lib/counterup/counterup.min.js"></script>
+      <script src="/js/user/lib/lightbox/js/lightbox.min.js"></script>
+      <script src="/js/user/lib/owlcarousel/owl.carousel.min.js"></script>
+      <script src="/node_modules/vue/dist/vue.min.js"></script>
+      <script src="https://cdn.rawgit.com/rikmms/progress-bar-4-axios/0a3acf92/dist/index.js"></script>
+      <script src="/node_modules/axios/dist/axios.min.js"></script>
+      <script src="/js/axiosSetting.js"></script>
+      <script src="/js/user/main.js"></script>
+  </head>
+  <script>
+  </script>
+<body>
+  <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+    <div class="spinner-grow text-warning" role="status"></div>
+  </div>
+  <div id="app" class="bg-light">
+    <div class="container-fluid bg-light">
+      <!-- navbar -->
+      <header-navbar></header-navbar>
+      
+      <div class="container p-3 mb-3">
+        <div class="row">
+        <!-- Sidebar -->
+          <div class="col-md-4 col-lg-4 d-md-block sidebar">
+            <div class="position-sticky pt-3">
+              <h5 class="px-3">계정 설정</h5>
+              <ul class="nav nav-pills flex-column w-50">
+                <li class="nav-item">
+                  <a :class="['nav-link', isActive('myInfo')]" href="#" @click="changeTab('myInfo')">
+                    <i class="bi bi-person-fill"></i> 내 정보
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a :class="['nav-link', isActive('reserveHistory')]" href="#" id="reservation" @click="changeTab('reserveHistory')">
+                    <i class="bi bi-calendar-check-fill"></i> 내 예약 내역 조회
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a :class="['nav-link', isActive('bookMark')]" href="#" @click="changeTab('bookMark')">
+                    <i class="bi bi-star-fill"></i> 즐겨찾기 목록
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a :class="['nav-link', isActive('reviewHistory')]" href="#" @click="changeTab('reviewHistory')">
+                    <i class="bi bi-chat-text-fill"></i> 리뷰 내역 조회
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- 내정보 시작 -->
+          <div class="col" v-if="currentPage == 'myInfo'">
+            <h3>내 정보</h3>
+            <div class="row">
+              <div class="col-2 text-center">
+                <img :src="previewImage" class="dropdown-toggle rounded-circle border w-100">
+                <label for="imageFile" class="btn btn-light border mt-2">프로필 변경
+                </label>
+                <input type="file" class="invisible" id="imageFile" name="imageFile" accept="image/jpg, image/png, image/jpeg" @change="onFileChange">
+              </div>
+              <div class="col border p-5">
+                <div class="mb-3">
+                  <label for="name" class="form-label">이름</label>
+                  <input type="text" class="form-control" id="name" v-model="myInfoData.name">
+                </div>
+                <div class="mb-3">
+                  <label for="password" class="form-label">비밀번호</label>
+                  <input type="password" class="form-control" id="password" v-model="myInfoData.password" placeholder="비밀번호 변경">
+                  <input type="password" class="form-control" id="password_re" v-model="myInfoData.password_re" placeholder="비밀번호 확인">
+                </div>
+                <div class="mb-3">
+                  <label for="mobile" class="form-label">전화번호</label>
+                  <input type="text" class="form-control" id="mobile" v-model="myInfoData.mobile">
+                </div>
+                <div class="mb-3 form-check form-check-inline">
+                  <input type="radio" class="form-check-input" id="gender_M" v-model="myInfoData.gender" value="M">
+                  <label for="gender_M" class="form-check-label">남자</label>
+                </div>
+                <div class="mb-3 form-check form-check-inline">
+                  <input type="radio" class="form-check-input" id="gender_W" v-model="myInfoData.gender" value="W">
+                  <label for="gender_W" class="form-check-label">여자</label>
+                </div>
+                <div class="d-flex justify-content-center">
+                  <small class="text-danger" v-if="errorMsg != ''">{{ errorMsg }}</small>
+                </div>
+                <div class="d-flex justify-content-center">
+                  <div>
+                    <button class="btn btn-warning" @click="updateUserInfo">변경하기</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 내정보 종료 -->
+          <!-- 예약 내역 시작 -->
+          <div class="col" v-if="currentPage == 'reserveHistory'">
+            <h3>예약 내역</h3>
+            <div class="row">
+              <div class="col-2 text-center">
+                <img src="/assets/defaultUser.jpg" class="dropdown-toggle rounded-circle border w-100">
+                <button class="btn btn-light border mt-2">프로필 변경</button>
+              </div>
+              <div class="col">
+
+              </div>
+            </div>
+          </div>
+          <!-- 예약 내역 종료 -->
+          <!-- 내정보 시작 -->
+          <div class="col" v-if="currentPage == 'bookMark'">
+            <h3>즐겨찾는 매장</h3>
+            <div class="row">
+              <div class="col-2 text-center">
+                <img src="/assets/defaultUser.jpg" class="dropdown-toggle rounded-circle border w-100">
+                <button class="btn btn-light border mt-2">프로필 변경</button>
+              </div>
+              <div class="col">
+
+              </div>
+            </div>
+          </div>
+          
+          <div class="col" v-if="currentPage == 'reviewHistory'">
+            <h3>리뷰 내역</h3>
+            <div class="row">
+              <div class="col-2 text-center">
+                <img src="/assets/defaultUser.jpg" class="dropdown-toggle rounded-circle border w-100">
+                <button class="btn btn-light border mt-2">프로필 변경</button>
+              </div>
+              <div class="col">
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer-component></footer-component>
+  </div>
+<script src="/js/user/component.js"></script>
+<script src="/js/user/myPage.js"></script>
+</body>
+</html>

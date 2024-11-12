@@ -91,7 +91,6 @@
                 >
                   <thead>
                     <tr class="text-dark">
-                      <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
                       <th scope="col">예약 ID</th>
                       <th scope="col">가게 ID</th>
                       <th scope="col">고객명</th>
@@ -108,7 +107,6 @@
                       v-for="(reserve, index) in filteredReserves"
                       :key="reserve.reserveId"
                     >
-                      <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
                       <td>{{ reserve.reserveId }}</td>
                       <td>{{ reserve.storeId }}</td>
                       <td>{{ reserve.name }}</td>
@@ -120,7 +118,9 @@
                         <span v-else-if="reserve.statusCodeId === 2">승인</span>
                         <span v-else-if="reserve.statusCodeId === 3">취소</span>
                         <span v-else-if="reserve.statusCodeId === 4">완료</span>
-                        <span v-else-if="reserve.statusCodeId === 5">리뷰 작성 완료</span>
+                        <span v-else-if="reserve.statusCodeId === 5"
+                          >리뷰 작성 완료</span
+                        >
                       </td>
                       <td class="status-button">
                         <button
@@ -143,7 +143,7 @@
             </div>
           </div>
 
-          <div class="container-fluid row g-4">
+          <div class="container-fluid row g-4 mb-2">
             <div class="col-sm-6 col-xl-3">
               <div
                 class="bg-light rounded d-flex align-items-center justify-content-between p-4"
@@ -185,6 +185,23 @@
                 <div class="ms-3">
                   <p class="mb-2">총 결제 수</p>
                   <h6 class="mb-0">{{totalSalesCount}}개</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="container-fluid row g-4">
+            <div
+              class="col-sm-6 col-xl-3"
+              v-for="(sale, quarter) in quarters"
+              :key="quarter"
+            >
+              <div
+                class="bg-light rounded d-flex align-items-center justify-content-between p-4"
+              >
+                <i class="fa fa-solid fa-coins fa-3x text-primary"></i>
+                <div class="ms-3">
+                  <p class="mb-2">{{quarter}}분기 수익</p>
+                  <h6 class="mb-0">{{sale.toLocaleString()}}원</h6>
                 </div>
               </div>
             </div>
@@ -234,7 +251,6 @@
               >
                 <thead>
                   <tr class="text-dark">
-                    <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
                     <th scope="col">리뷰 ID</th>
                     <th scope="col">가게 ID</th>
                     <th scope="col">유저 ID</th>
@@ -250,22 +266,19 @@
                     v-for="(review, index) in filteredReviews"
                     :key="review.reviewId"
                   >
-                    <!-- <tr v-for="(review, index) in reviews" :key="review.reviewId"> 전체 리뷰 for문 -->
-                    <!-- <th scope="col"><input class="form-check-input" type="checkbox" /></th> -->
                     <td>{{ review.reviewId }}</td>
                     <td>{{ review.storeId }}</td>
                     <td>{{ review.userId }}</td>
                     <td>{{ review.score }}</td>
                     <td>{{ review.content }}</td>
                     <td>{{ formatDate(review.createAt) }}</td>
-                    <!-- vue js에서 작성한 함수 -->
                     <td>
                       <button
                         class="btn btn-danger btn-block"
                         @click="deleteReq(review.reviewId)"
                       >
-                        삭제 요청</button
-                      >({{ review.deleteReq }})
+                        삭제 요청
+                      </button>
                     </td>
                   </tr>
                 </tbody>

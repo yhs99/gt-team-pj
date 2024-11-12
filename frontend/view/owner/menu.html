@@ -89,13 +89,13 @@
                 <h6 class="mb-0">{{numOfAllMenu}}개</h6>
               </div>
 
-              <i class="fa fa-chart-bar fa-3x text-primary"></i>
+              <i class="fa fa-solid fa-utensils fa-3x text-primary"></i>
               <div class="ms-3">
                 <p class="mb-2">메인 메뉴 수</p>
                 <h6 class="mb-0">{{numOfMainMenu}}개</h6>
               </div>
 
-              <i class="fa fa-chart-bar fa-3x text-primary"></i>
+              <i class="fa fa-regular fa-bread-slice fa-3x text-primary"></i>
               <div class="ms-3">
                 <p class="mb-2">사이드 메뉴 수</p>
                 <h6 class="mb-0">{{numOfSideMenu}}개</h6>
@@ -174,37 +174,6 @@
                 </tbody>
               </table>
             </div>
-            <!-- 
-            <div id="pagination text-center">
-              <ul class="pagination justify-content-center">
-                <li
-                  class="page-item"
-                  v-if="currentPage > 1"
-                  @click="changePage(currentPage - 1)"
-                >
-                  <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                  </a>
-                </li>
-                <li
-                  class="page-item"
-                  v-for="page in totalPages"
-                  :key="page"
-                  @click="changePage(page)"
-                >
-                  <a class="page-link" href="#">{{page}}</a>
-                </li>
-                <li
-                  class="page-item"
-                  v-if="currentPage < totalPages"
-                  @click="changePage(currentPage + 1)"
-                >
-                  <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                  </a>
-                </li>
-              </ul>
-            </div> -->
           </div>
         </div>
 

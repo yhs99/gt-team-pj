@@ -42,4 +42,6 @@ public interface OwnerReserveDAO {
 
 	List<ReserveByDateVO> getReserveByDate(int storeId);
 
+	int deleteNotification(int storeId);
+
 }

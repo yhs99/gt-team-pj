@@ -200,7 +200,7 @@ Vue.component("navbar-component", {
           } else {
             alert("서버 오류로 인해 정보를 확인할 수 없습니다.");
           }
-          location.href = "/view/user/login";
+          location.href = "/view/user/userLogin";
         });
     },
     logoutProcess: function () {

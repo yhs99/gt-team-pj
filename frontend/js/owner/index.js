@@ -12,6 +12,7 @@ new Vue({
     notifications: [],
     countMonthlySalesCount: [],
     countMonthlySales: [],
+    quarters: {},
     totalSales: 0,
     todayTotalSales: 0,
     todayTotalSalesCount: 0,
@@ -146,7 +147,26 @@ new Vue({
         console.log("salesBy date 정보11", this.salesByDate);
         this.createChart();
         this.getFullCalendar();
+        this.calcuateQuarterSale();
       });
+    },
+
+    calcuateQuarterSale() {
+      const sales = { Q1: 0, Q2: 0, Q3: 0, Q4: 0 };
+      this.salesByDate.forEach((sale) => {
+        const month = new Date(sale.date).getMonth() + 1;
+        if (month >= 1 && month <= 3) {
+          sales.Q1 += sale.total;
+        } else if (month >= 4 && month <= 6) {
+          sales.Q2 += sale.total;
+        } else if (month >= 7 && month <= 9) {
+          sales.Q3 += sale.total;
+        } else if (month >= 10 && month <= 12) {
+          sales.Q4 += sale.total;
+        }
+      });
+
+      this.quarters = sales;
     },
 
     getFullCalendar() {
@@ -164,7 +184,6 @@ new Vue({
           center: "title",
           end: "",
         },
-        // events: events,
       });
       this.salesByDate.forEach((sale, index) => {
         calendar.addEvent({
@@ -211,8 +230,10 @@ new Vue({
           console.log("예약상태 업데이트", response);
           if (statusCode == 2) {
             alert(reserveId + "의 예약 승인요청이 완료 되었습니다.");
+            location.reload();
           } else if (statusCode == 3) {
             alert(reserveId + "의 예약 취소요청이 완료 되었습니다.");
+            location.reload();
           }
         });
     },
@@ -253,6 +274,7 @@ new Vue({
         .then((response) => {
           if (response.status === 200) {
             alert(reviewId + "의 삭제 요청이 완료되었습니다.");
+            location.reload();
           }
         })
         .catch((error) => {

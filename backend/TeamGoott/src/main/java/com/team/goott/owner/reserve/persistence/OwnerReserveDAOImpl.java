@@ -119,5 +119,10 @@ public class OwnerReserveDAOImpl implements OwnerReserveDAO {
 		return session.selectList(ns+"getReserveByDate", storeId);
 	}
 
+	@Override
+	public int deleteNotification(int storeId) {
+		return session.delete(ns+"deleteNotifications", storeId);
+	}
+
 
 }

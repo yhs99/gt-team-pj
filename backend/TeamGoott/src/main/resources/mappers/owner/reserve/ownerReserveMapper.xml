@@ -88,4 +88,9 @@
  		 set reserved = false 
  		 where slotDatetime = #{reserveTime} and storeId = #{storeId}
 	</update>
+	
+	<delete id="deleteNotifications">
+		DELETE FROM notification
+		WHERE storeId = #{storeId} and notificationType = 'CUSTOMER_TO_OWNER'
+	</delete>
 </mapper>

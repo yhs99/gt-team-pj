@@ -21,33 +21,33 @@
 		SELECT p.*, r.reserveTime 
 		FROM payHistory p inner join reserve r
 		ON p.reserveId = r.reserveId
-		WHERE p.storeId = #{storeId} and r.statusCodeId IN(4,5);      
+		WHERE r.storeId = #{storeId} and r.statusCodeId IN(4,5);      
 	</select>
 
 	<select id="getTotalSales" resultType="int">
 		SELECT IFNULL(SUM(p.payAmount),0) 
 		FROM payHistory p inner join reserve r
 		ON p.reserveId = r.reserveId 
-		WHERE p.storeId = #{storeId} and r.statusCodeId IN(4,5);   
+		WHERE r.storeId = #{storeId} and r.statusCodeId IN(4,5);   
 	</select>
 	
 	<select id="getTotalSalesCount" resultType="int">
 		SELECT count(*) 
 		FROM payHistory p inner join reserve r
 		ON p.reserveId = r.reserveId
-		WHERE p.storeId = #{storeId} and r.statusCodeId IN (4,5)
+		WHERE r.storeId = #{storeId} and r.statusCodeId IN (4,5)
 	</select>
 	
 	<select id="getTodayTotalSales" resultType="int">
 		SELECT IFNULL(SUM(p.payAmount),0) from payHistory p inner join reserve r
 		ON p.reserveId = r.reserveId
-		WHERE p.storeID = #{storeId} and date_format(r.reserveTime, "%Y-%m-%d") = curdate() and r.statusCodeId IN (4,5)
+		WHERE r.storeID = #{storeId} and date_format(r.reserveTime, "%Y-%m-%d") = curdate() and r.statusCodeId IN (4,5)
 	</select>
 	
 	<select id="getTodayTotalSalesCount" resultType="int">
 		SELECT count(*) from payHistory p inner join reserve r
 		ON p.reserveId = r.reserveId
-		WHERE p.storeID = #{storeId} and date_format(r.reserveTime, "%Y-%m-%d") = curdate() and r.statusCodeId IN (4,5)
+		WHERE r.storeID = #{storeId} and date_format(r.reserveTime, "%Y-%m-%d") = curdate() and r.statusCodeId IN (4,5)
 	</select>
 	
 	<select id="getSalesByDate" resultType="com.team.goott.owner.domain.SalesByDateVO">

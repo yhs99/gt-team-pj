@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +30,7 @@ public class OwnerReserveServiceImpl implements OwnerReserveService {
 	@Inject
 	OwnerReserveDAO reserveDAO;
 	
+	private int ownerStoreId;
 	
 	@Override
 	public ReserveInfoVO getAllReserveInfo(int storeId, String sortMethod) {
@@ -177,15 +177,25 @@ public class OwnerReserveServiceImpl implements OwnerReserveService {
 
 
 	@Override
+	@Transactional
 	public List<NotificationDTO> getNotification(int storeId) {
+		this.ownerStoreId = storeId;
 		NotificationType type = NotificationType.CUSTOMER_TO_OWNER;
-		log.info(type.toString());
-		return reserveDAO.getNotification(storeId, type);
+		List<NotificationDTO> notifications = reserveDAO.getNotification(storeId, type);
+		return notifications;
 	}
 
 
 	@Override
 	public int updateNotification(int alarmId) {
 		return reserveDAO.updateNotification(alarmId);
+	}
+	
+	//매주 월요일 마다 알림 데이터 삭제
+	public void deleteNotifications() {
+		int result = reserveDAO.deleteNotification(this.ownerStoreId);
+		if(result == 1) {
+			log.info("알림데이터 삭제 완료");
+		}
 	}
 }

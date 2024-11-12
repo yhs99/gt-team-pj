@@ -39,9 +39,8 @@ public interface UserReviewDAO {
 	int checkIfImageExist(int imageId);
 
 	int changeStatusCodeId(int reserveId, int statusCode);
-
+  
 	int setNotification(NotificationDTO notification);
-
 
 
 }

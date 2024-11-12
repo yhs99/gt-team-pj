@@ -31,7 +31,7 @@
       <script src="https://cdn.rawgit.com/rikmms/progress-bar-4-axios/0a3acf92/dist/index.js"></script>
       <script src="/node_modules/axios/dist/axios.min.js"></script>
       <script src="/js/axiosSetting.js"></script>
-      <script src="/js/user/lib/main.js"></script>
+      <script src="/js/user/main.js"></script>
   </head>
   <script>
   </script>
@@ -41,9 +41,9 @@
   </div>
   <div id="app" class="bg-white">
     <div class="container mt-5 mb-5 text-center">
-      <a class="navbar-brand fs-3 text-warning fw-bold" href="#"><img src="/assets/mainIcon.png"> SmartReserve</a>
+      <a class="navbar-brand fs-3 text-warning fw-bold" href="/"><img src="/assets/mainIcon.png"> SmartReserve</a>
       <div class="text-right">
-        "지금 가입하고 '예약을 더 빠르고,
+        "지금 로그인하고 '예약을 더 빠르고,
         더 알뜰하게' 경험하세요! 식당 예약과 선결제 혜택을 놓치지 마세요!"
       </div>
     </div>
@@ -96,18 +96,18 @@
                 </div>
                 <div v-if="loginGroup == 0" class=" d-flex flex-column text-center px-5 mt-3 mb-3">
                   <small class="agree-text">아직 저희 회원이 아니신가요?</small>
-                  <p><a href="#" class="terms">회원가입 하러가기</a></p>
+                  <p><a href="/view/user/register" class="terms">회원가입 하러가기</a></p>
                 </div>
                 <div v-if="loginGroup == 1" class=" d-flex flex-column text-center px-5 mt-3 mb-3">
                   <small class="agree-text">아직 저희 점주님이 아니신가요?</small>
-                  <p><a href="#" class="terms">점주등록 하러가기</a></p>
+                  <p><a href="/view/owner/register" class="terms">점주등록 하러가기</a></p>
                 </div>
               <div class=" d-flex flex-column text-center px-5 mt-3 mb-3">
                 <button class="btn btn-outline-warning btn-block confirm-button" @click.prevent="login">로그인</button>
               </div>
               <div class=" d-flex flex-column text-center px-5 mt-3 mb-3"> 
                 <a href="#" class="confirm-button">
-                  <img src="/assets/user/img/kakao_login_medium_wide.png" style="width: 100%; height:40px;">
+                  <img src="/assets/user/img/kakao_login_medium_wide.png" style="width: 100%; height:45px;">
                 </a>
               </div>
           </div>
@@ -124,6 +124,6 @@
     </div>
   </div>
 </div>
-<script src="/js/user/lib/userLogin.js"></script>
+<script src="/js/user/userLogin.js"></script>
 </body>
 </html>

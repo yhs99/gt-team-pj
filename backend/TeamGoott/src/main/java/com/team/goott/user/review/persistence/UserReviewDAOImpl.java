@@ -119,6 +119,7 @@ public class UserReviewDAOImpl implements UserReviewDAO {
 		return ses.update(ns+"updateStatusCode",reserveMap);
 	}
 
+
 	@Override
 	public int setNotification(NotificationDTO notification) {
 		return ses.insert(ns+"setNotification", notification);

@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.team.goott.owner.domain.NotificationDTO;
 import com.team.goott.user.domain.CartDTO;
 import com.team.goott.user.domain.MenuDTO;
 import com.team.goott.user.domain.PayHistoryDTO;
@@ -50,6 +51,10 @@ public interface UserReserveDAO {
 	int getUpdateReserveSlotReserved(LocalDateTime reserveTime, int storeId) throws Exception;
 
 	Integer getCouponStoreId(Integer couponId) throws Exception;
+
+	ReserveDTO getReserve(int storeId, int userId, LocalDateTime reserveTime);
+
+	int setNotification(NotificationDTO notification);
 
 
 }

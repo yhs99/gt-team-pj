@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.team.goott.owner.domain.NotificationDTO;
 import com.team.goott.user.domain.CartDTO;
 import com.team.goott.user.domain.MenuDTO;
 import com.team.goott.user.domain.PayHistoryDTO;
@@ -156,6 +157,20 @@ public class UserReserveDAOImpl implements UserReserveDAO {
 	@Override
 	public Integer getCouponStoreId(Integer couponId) throws Exception {
 		return ses.selectOne(ns+"getCouponStoreId", couponId);
+	}
+
+	@Override
+	public ReserveDTO getReserve(int storeId, int userId, LocalDateTime reserveTime) {
+		Map<String,Object> params = new HashMap<String, Object>();
+		params.put("storeId", storeId);
+		params.put("userId", userId);
+		params.put("reserveTime", reserveTime);
+		return ses.selectOne(ns+"getReserve", params);
+	}
+
+	@Override
+	public int setNotification(NotificationDTO notification) {
+		return ses.insert(ns+"setNotification", notification);
 	}
 
 

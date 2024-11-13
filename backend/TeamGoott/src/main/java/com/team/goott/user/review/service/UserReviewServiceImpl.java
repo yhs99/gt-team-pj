@@ -203,10 +203,8 @@ public class UserReviewServiceImpl implements UserReviewService {
 	@Override
 	public List<ReviewDTO> getMyReview(int userId,int page, int size) {
 		ReviewPageDTO paging = ReviewPageDTO.builder().userId(userId).page(page).size(size).build();
+		log.info(paging.toString());
 		List<ReviewDTO> lst = revDAO.getMyReviews(paging);
-		for(ReviewDTO list : lst) {
-			log.info("{}",list.getCreateAtLocalDateTime().toString());
-		}
 		
 		return lst;
 	}

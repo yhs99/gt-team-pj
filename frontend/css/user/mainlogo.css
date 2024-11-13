@@ -40,20 +40,30 @@ a {
   color: black !important;
 }
 .nav-link.active {
-  background-color: #ffc107 !important; /* warning 색상 */
-  color: #fff !important; /* 텍스트 색상 */
+  background-color: #ffc107 !important;
+  color: #fff !important;
 }
 .dropdown-item.active {
-  background-color: #ffc107 !important; /* warning 색상 */
-  color: #fff !important; /* 텍스트 색상 */
+  background-color: #ffc107 !important;
+  color: #fff !important;
 }
 
 .dropdown-item:hover {
-  background-color: #ffc107 !important; /* warning 색상 */
-  color: #fff !important; /* 텍스트 색상 */
+  background-color: #ffc107 !important;
+  color: #fff !important;
 }
 
 .dropdown-item:active {
-  background-color: #ffc107 !important; /* warning 색상 */
-  color: #fff !important; /* 텍스트 색상 */
+  background-color: #ffc107 !important;
+  color: #fff !important;
+}
+
+.thumbnail_image {
+  width: 250px;
+  height: 180px;
+  margin:10px;
+}
+.thumbnail-container {
+  overflow-x: auto;
+  white-space: nowrap;
 }

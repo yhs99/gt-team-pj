@@ -15,6 +15,7 @@ import com.team.goott.user.domain.CartDTO;
 import com.team.goott.user.domain.MenuDTO;
 import com.team.goott.user.domain.PayHistoryDTO;
 import com.team.goott.user.domain.ReserveDTO;
+import com.team.goott.user.domain.ReserveListsVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -156,6 +157,14 @@ public class UserReserveDAOImpl implements UserReserveDAO {
 	@Override
 	public Integer getCouponStoreId(Integer couponId) throws Exception {
 		return ses.selectOne(ns+"getCouponStoreId", couponId);
+	}
+
+	@Override
+	public List<ReserveListsVO> getUserReserveLists(int userId, String reserveType) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("userId", userId);
+		map.put("reserveType", reserveType);
+		return ses.selectList(ns+"getUserReserveLists", map);
 	}
 
 

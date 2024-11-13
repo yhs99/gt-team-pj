@@ -1,27 +1,51 @@
 new Vue({
   el: '#app', // Vue 인스턴스를 '#app'에 바인딩
   data: {
-    currentPage: 'myInfo',
+    currentPage: 'reserveHistory',
     myInfoData: {
       password:''
     },
     reserveHistoryData: [],
     bookMarkData: [],
     reviewHistoryData: [],
+    reviewHistoryCount: 0,
     uploadImageFile : null,
     previewImage : '',
     errorMsg : '',
+    selectedReserveStatus: 'plan',
+    planReserveHistoryData : [],
+    completeReserveHistoryData : [],
+    cancelReserveHistoryData : [],
+    bookMarkListData: [],
+    bookMarkListCount: 0,
+    reviewImageLists: [{url:''}],currentImageIndex:0,
+    updateReviewData:{},
   },
   created: function() {
     this.checkLogin();
+    this.fetchReviewData();
+    this.fetchReserveHistories();
+    this.fetchBookMarkData();
   },
   methods: {
-    changeTab: function(tabName) {
+    changeTab: function(tabName, data) {
       this.currentPage = tabName;
       switch (tabName) {
         case 'myInfo':
           this.getUserInfoData();
           this.errorMsg='';
+          break;
+        case 'reserveHistory':
+          this.fetchReserveHistories();
+          break;
+        case 'bookMark':
+          this.fetchBookMarkData();
+          break;
+        case 'reviewHistory':
+          this.fetchReviewData();
+          break;
+        case 'reviewInsertOrUpdate':
+          this.updateReviewData = data;
           break;
       }
     },
@@ -111,7 +135,98 @@ new Vue({
           console.error(error);
         })
       }
-    }
+    },
     //======================== myInfo (유저 업데이트 끝) ===============================
+    //======================== reserveHistory 시작 ================================
+    fetchReserveHistories: async function() {
+      const plans = ['plan', 'complete', 'cancel'];
+      for(plan of plans) {
+        await axios.get(`/api/reserve?reserveType=${plan}`)
+        .then(response => {
+          if(plan === 'plan') {
+            this.planReserveHistoryData = response.data.data;
+          }else if(plan === 'complete') {
+            this.completeReserveHistoryData = response.data.data;
+          }else if(plan === 'cancel') {
+            this.cancelReserveHistoryData = response.data.data;
+          }
+        })
+        .catch(error => {
+          alert("예약 내역을 조회중 오류가 발생했습니다.");
+          console.log(error);
+        })
+      }
+    },
+    statusCodeValue: function(codeId) {
+      switch (codeId) {
+        case 1:
+          return `매장 승인 대기중`
+        case 2:
+          return `방문 예정`
+        case 3:
+          return `취소 완료`
+        case 4:
+          return `방문 완료`
+        case 5:
+          return `방문 완료`
+      }
+    },
+    dateFormat(date) {
+      let day = ['일', '월', '화', '수', '목', '금', '토'];
+
+      let dateFormat = new Date(date);
+      let timeFormat = '';
+      if(dateFormat.getHours() >= 12) {
+        timeFormat = `오후 ${dateFormat.getHours()==12?12:dateFormat.getHours()-12}시 ${dateFormat.getMinutes()}분`;
+      }else {
+        timeFormat = `오전 ${dateFormat.getHours()==12?12:dateFormat.getHours()}시 ${dateFormat.getMinutes()}분`;
+      }
+      return `${dateFormat.getFullYear()}.${dateFormat.getMonth()+1}.${dateFormat.getDate()} (${day[dateFormat.getDay()]}) ${timeFormat}`
+    },
+    // =================== reserveHistory 종료
+    //==================== bookMark 시작
+    fetchBookMarkData: async function() {
+      await axios.get('/api/bookmark')
+      .then(response => {
+        this.bookMarkListData = response.data.data;
+        this.bookMarkListCount = this.bookMarkListData.length;
+      })
+      .catch(error => {
+        alert('즐겨찾는 식당 정보 조회중 오류가 발생했습니다.');
+        console.error(error);
+      })
+    },
+    //=================== bookMark 종료
+    //=================== reviewHistory 시작
+    fetchReviewData: async function() {
+      await axios.get('/api/review')
+      .then(response => {
+        this.reviewHistoryData = response.data.data;
+        this.reviewHistoryCount = this.reviewHistoryData.reviewCount;
+        console.log(this.reviewHistoryData);
+      })
+      .catch(error => {
+        alert("리뷰 정보 조회중 오류가 발생했습니다.");
+        console.error(error);
+      })
+    },
+    openReviewModal(reviewImageLists, index) {
+      this.reviewImageLists = reviewImageLists;
+      this.currentImageIndex = index;
+      console.log(this.reviewImageLists);
+      console.log(this.currentImageIndex);
+    },
+    controlImages(command) {
+      if(command==='prev' && this.currentImageIndex > 0) {
+        this.currentImageIndex--;
+      }else if(command==='next' && this.currentImageIndex < this.reviewImageLists.length-1) {
+        this.currentImageIndex++;
+      }
+    },
+    currentImage() {
+      console.log(this.reviewImageLists[this.currentImageIndex].url)
+      return this.reviewImageLists[this.currentImageIndex].url;
+    }
+    //====================== reviewHistory 종료
   },
 });

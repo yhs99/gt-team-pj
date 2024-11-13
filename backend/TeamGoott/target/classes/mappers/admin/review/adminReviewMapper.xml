@@ -13,7 +13,10 @@
                 s.storeName LIKE CONCAT('%', #{searchValue}, '%')
             </when>
             <when test="searchBy == 'userName'">
-                u.userName LIKE CONCAT('%', #searchValue}, '%')
+                u.userName LIKE CONCAT('%', #{searchValue}, '%')
+            </when>
+            <when test="searchBy == 'userId'">
+                u.userId = #{searchValue}
             </when>
             <otherwise>
                 1=1

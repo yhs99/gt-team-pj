@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.team.goott.user.bookmark.service.UserBookmarkService;
 import com.team.goott.user.domain.BookmarkInfoDTO;
 import com.team.goott.user.domain.UserDTO;
+import com.team.goott.user.domain.UserOnly;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -93,18 +94,12 @@ public ResponseEntity<String> removeBookmark(@PathVariable("storeId") int storeI
     }
 }
 
-
-@GetMapping("/")
+@UserOnly
+@GetMapping
 public ResponseEntity<Object> getBookmark(HttpSession session) {
 	//즐겨찾기 조회
 	UserDTO user = (UserDTO) session.getAttribute("user");
-	
-	if(user == null) {
-		 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("권한이 없습니다.");
-	}
-	
 	int userId = user.getUserId();
-	
 	try {
 	        List<BookmarkInfoDTO> lst = service.getBookmarkInfoByUserId(userId);
 	        return ResponseEntity.ok(lst);

@@ -85,15 +85,15 @@ Vue.component('header-navbar', {
 
 Vue.component('footer-component',{
   template: `
-    <div class="container-fluid footer">
-    <div class="container">
-      <footer class="py-3 my-4">
-        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-         </ul>
-         <p class="text-center text-body-secondary">문의 : tnwksqhdlf22@gmail.com</p>
-        <p class="text-center text-body-secondary">© 2024 SmartReserve All rights reserved</p>
-      </footer>
+    <div class="container-fluid bg-light">
+      <div class="container">
+        <div class="py-3 my-4">
+          <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+          </ul>
+          <p class="text-center text-body-secondary">문의 : tnwksqhdlf22@gmail.com</p>
+          <p class="text-center text-body-secondary">© 2024 SmartReserve All rights reserved</p>
+        </div>
+      </div>
     </div>
-  </div>
   `
 })

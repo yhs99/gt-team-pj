@@ -10,10 +10,36 @@ order by createAt DESC LIMIT #{startRow},#{size}
 <select id="getBoardByNo" resultType="com.team.goott.user.domain.ReviewDTO">
 select * from review where reviewId= #{reviewId}
 </select>
-
-<select id="getMyReview" resultType="com.team.goott.user.domain.ReviewDTO">
-select * from review where userId= #{userId} and isDeleteReq = 0 
-order by createAt DESC LIMIT #{startRow},#{size}
+<resultMap type="com.team.goott.user.domain.ReviewDTO" id="reviewResultMap">
+	<id property="reviewId" column="reviewId"/>
+	<result property="storeId" column="storeId"/>
+	<result property="reserveId" column="reserveId"/>
+	<result property="score" column="score"/>
+	<result property="content" column="content"/>
+	<result property="createAt" column="createAt"/>
+	<collection property="reviewImages" ofType="com.team.goott.user.domain.ReviewImagesDTO">
+		<id property="imageId" column="imageId"/>
+		<result property="url" column="url"/>
+	</collection>
+</resultMap>
+<select id="getMyReview" resultMap="reviewResultMap">
+	SELECT 
+	rv.reviewId,
+	rv.storeId,
+	rv.reserveId,
+	rv.score,
+	rv.content,
+	rv.createAt,
+	ri.imageId,
+	ri.url
+	FROM review rv
+	LEFT JOIN reviewImages ri
+	ON rv.reviewId = ri.reviewId
+	WHERE userId = #{userId}
+	ORDER BY rv.createAt DESC
+	<if test="startRow != null and size != null">
+		LIMIT #{startRow}, #{size}
+	</if>
 </select>
 
 <insert id="insertReview" useGeneratedKeys="true" keyProperty="reviewId">

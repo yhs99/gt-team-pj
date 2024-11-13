@@ -8,6 +8,7 @@ import com.team.goott.user.domain.CartDTO;
 import com.team.goott.user.domain.MenuDTO;
 import com.team.goott.user.domain.PayHistoryDTO;
 import com.team.goott.user.domain.ReserveDTO;
+import com.team.goott.user.domain.ReserveListsVO;
 
 public interface UserReserveDAO {
 
@@ -51,5 +52,5 @@ public interface UserReserveDAO {
 
 	Integer getCouponStoreId(Integer couponId) throws Exception;
 
-
+	List<ReserveListsVO> getUserReserveLists(int userId, String reserveType);
 }

@@ -11,7 +11,7 @@
     <result property="totalPrice" column="totalPrice" />
     <result property="storeName" column="storeName" />
 	<result property="menuImageUrl" column="menuImageUrl" />
-	<result property="maxPeople" column="maxPeople" />
+	<result property="maxPeoplePerReserve" column="maxPeoplePerReserve" />
 
     <collection property="url" ofType="String">
         <result column="url" />

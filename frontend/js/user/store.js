@@ -122,7 +122,7 @@ new Vue({
       this.currentImage = imageUrl;
     },
     goToStore(storeId) {
-      window.location.href = `stores/${storeId}`;
+      window.location.href = `storeDetail?storeId=${storeId}`;
     },
     async checkLoginStatus() {
       try {
@@ -161,7 +161,7 @@ new Vue({
       }
     },
     navigateTo(categoryCode) {
-      window.location.href = `filter?categoryCode=${categoryCode}`;
+      window.location.href = `searchStores?categoryId=${categoryCode}`;
     },
     getStoreStatus(store) {
       const today = new Date().getDay();

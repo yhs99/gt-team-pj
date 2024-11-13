@@ -6,15 +6,56 @@ new Vue({
     page: 1,
     perPage: 10,
     scheduleLists: [],
+    selectedCategoryCodes: [],
+    selectSidoCodes: [],
+    searchQuery: "",
   },
   computed: {},
   created() {
+    const urlParams = new URLSearchParams(window.location.search);
+    this.selectedCategoryCodes = urlParams.get("categoryId")
+      ? urlParams.get("categoryId").split(",")
+      : [];
+    this.selectSidoCodes = urlParams.get("sidoCodeId")
+      ? urlParams.get("sidoCodeId").split(",")
+      : [];
+    this.searchQuery = urlParams.get("searchParam") || "";
+    this.showBlock = urlParams.get("showBlock") || "";
     this.fetchStore();
   },
   methods: {
     fetchStore() {
+      const categoryCodes = this.selectedCategoryCodes.join(",");
+      const sidoCodes = this.selectSidoCodes.join(",");
+      let searchQuery = this.searchQuery.trim();
+
+      // 끝에 붙은 '}'를 제거합니다.
+      if (searchQuery.endsWith("}")) {
+        searchQuery = searchQuery.slice(0, -1);
+      }
+
+      let url = "/api/searchStores";
+      let params = [];
+
+      // 카테고리와 시도 코드 파라미터 추가
+      if (categoryCodes) params.push(`categoryId=${categoryCodes}`);
+      if (sidoCodes) params.push(`sidoCodeId=${sidoCodes}`);
+
+      // 검색어가 있을 때만 인코딩하여 searchParam에 추가
+      if (searchQuery) {
+        params.push(`searchParam=${encodeURIComponent(searchQuery)}`);
+      }
+
+      // showBlock 파라미터 추가
+      params.push("showBlock=0");
+
+      // 최종 URL 생성
+      url += "?" + params.join("&");
+
+      // 요청 URL 로그 확인
+      console.log("요청 URL: ", url);
       axios
-        .get("/api/searchStores")
+        .get(url)
         .then((response) => {
           this.stores = response.data.data.storeLists;
           this.scheduleLists = response.data.data.storeLists.storeSchedules;
@@ -23,9 +64,6 @@ new Vue({
         .catch((error) => {
           console.error(error);
         });
-    },
-    toggleScheduleVisibility() {
-      this.showSchedule = !this.showSchedule;
     },
     getStoreStatus(store) {
       const today = new Date().getDay();
@@ -72,7 +110,7 @@ new Vue({
       return "영업 정보 없음";
     },
     goToStore(storeId) {
-      window.location.href = `stores/${storeId}`;
+      window.location.href = `storeDetail?storeId=${storeId}`;
     },
     async checkLoginStatus() {
       try {

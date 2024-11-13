@@ -73,17 +73,18 @@ new Vue({
         ? encodeURIComponent(this.searchQuery.trim())
         : "";
 
-      let newUrl = "filter";
+      let newUrl = "searchStores";
       if (categoryCodes) {
         newUrl +=
-          (newUrl.includes("?") ? "&" : "?") +
-          `categoryCodeIds=${categoryCodes}`;
+          (newUrl.includes("?") ? "&" : "?") + `categoryId=${categoryCodes}`;
       }
       if (sidoCodes) {
-        newUrl += `${newUrl.includes("?") ? "&" : "?"}sidoCodeIds=${sidoCodes}`;
+        newUrl += `${newUrl.includes("?") ? "&" : "?"}sidoCodeId=${sidoCodes}`;
       }
       if (searchQuery) {
-        newUrl += `${newUrl.includes("?") ? "&" : "?"}search=${searchQuery}}`;
+        newUrl += `${
+          newUrl.includes("?") ? "&" : "?"
+        }searchParam=${searchQuery}}`;
       }
       window.location.href = newUrl;
     },

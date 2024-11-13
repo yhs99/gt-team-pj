@@ -7,6 +7,11 @@ new Vue({
     peopleCount: 1,
     note: "",
     isModalOpen: false,
+    globalCoupons: [],
+    selectedCoupon: null,
+    discountAmount: 0,
+    maxPeoplePerReserve: 0,
+    selectedPayment: "",
   },
   computed: {
     groupedCarts() {
@@ -18,16 +23,15 @@ new Vue({
         return groups;
       }, {});
     },
-    totalCheckedCount() {
-      return this.checkedCarts.length;
-    },
-    totalCheckedPrice() {
-      return this.checkedCarts.reduce((total, cart) => {
-        return total + cart.totalPrice;
-      }, 0);
+    totalPrice() {
+      return this.carts.reduce((total, cart) => total + cart.totalPrice, 0);
     },
     isReservationEnabled() {
       return this.checkedCarts.length > 0;
+    },
+    finalTotalPrice() {
+      const discountedPrice = this.totalPrice - this.discountAmount;
+      return Math.max(discountedPrice, 0);
     },
   },
   created() {
@@ -40,6 +44,12 @@ new Vue({
         .then((response) => {
           this.carts = response.data.data;
           console.log("응답 데이터", this.carts);
+          if (this.carts.length > 0) {
+            this.maxPeoplePerReserve = this.carts[0].maxPeoplePerReserve || 0;
+            if (this.carts[0].availableCoupons) {
+              this.globalCoupons = this.carts[0].availableCoupons;
+            }
+          }
         })
         .catch((error) => {
           if (error.response && error.response.status === 401) {
@@ -49,6 +59,52 @@ new Vue({
             console.error("데이터 요청 실패:", error);
           }
         });
+    },
+    makeReservation() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const reserveTime = urlParams.get("reserveTime");
+
+      const reservationData = {
+        reserveTime: reserveTime,
+        name: this.reservationName,
+        people: this.peopleCount,
+        memo: this.note,
+      };
+
+      if (this.selectedCoupon && this.selectedCoupon.couponId !== null) {
+        reservationData.couponId = this.selectedCoupon.couponId;
+      }
+
+      console.log("/api/reserve", reservationData);
+
+      axios
+        .post("/api/reserve", reservationData, {
+          headers: { "Content-Type": "application/json" },
+        })
+        .then((response) => {
+          console.log("예약 성공:", response.data);
+          alert("예약이 완료되었습니다!");
+
+          window.location.href = "/";
+        })
+        .catch((error) => {
+          console.error("예약 요청 실패:", error);
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message
+          ) {
+            alert("오류 발생: " + error.response.data.message);
+          } else {
+            alert(
+              "예약 중 알 수 없는 오류가 발생했습니다. 다시 시도해 주세요."
+            );
+          }
+        });
+
+      this.reservationName = "";
+      this.peopleCount = 1;
+      this.note = "";
     },
     getStoreImage(urlArray) {
       if (!Array.isArray(urlArray)) return null;
@@ -77,19 +133,20 @@ new Vue({
     closeReservationModal() {
       this.isModalOpen = false;
     },
-    makeReservation() {
-      const reservationData = {
-        name: this.reservationName,
-        peopleCount: this.peopleCount,
-        note: this.note,
-        items: this.checkedCarts,
-      };
-      console.log("예약 정보:", reservationData);
-      alert("예약이 완료되었습니다!");
-      this.reservationName = "";
-      this.peopleCount = 1;
-      this.note = "";
-      this.closeReservationModal();
+
+    applyDiscount() {
+      if (this.selectedCoupon && this.selectedCoupon.couponId !== null) {
+        const discount = this.selectedCoupon.discount;
+        this.discountAmount =
+          discount < 100
+            ? Math.round(this.totalPrice * (discount / 100))
+            : discount;
+      } else {
+        this.discountAmount = 0;
+      }
+    },
+    selectPayment(method) {
+      this.selectedPayment = method;
     },
   },
 });

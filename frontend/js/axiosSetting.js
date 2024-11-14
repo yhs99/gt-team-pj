@@ -14,7 +14,9 @@ axios.interceptors.response.use(function (response) {
   document.getElementById('spinner').classList.remove('show');
   return response;
 }, function (error) {
-  if (error.response && error.response.status === 401) {
+  console.log("interceptor")
+  console.log(error)
+  if (error.status === 401) {
     alert(error.message);
     window.location.href = '/view/user/userLogin';
   }

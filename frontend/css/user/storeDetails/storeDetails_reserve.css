@@ -1,10 +1,8 @@
-.gap10 {
-    margin-top: 10px;
-}
+
 .details_container {
     max-width: 800px;
     margin: 20px auto;
-    padding: 40px;
+    padding: 20px;
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -13,35 +11,16 @@
 }
 
 .square_section {
-    max-width: 800px;
+    max-width: 800px; /* 최대 너비 설정 */
     background-color: white;
-    padding: 40px;
+    padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin: 20px auto;
+    margin: 10px auto; /* 중앙 정렬 */
     text-align: left;
-    
 }
-
-.square_section_last-child {
-    max-width: 800px;
-    background-color: white;
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-left:auto;
-    margin-right: auto;
-    text-align: left;
-    margin-bottom: 100px;
-}
-
-#app {
-    height: 100%;
-}
-
 
 .restaurant-header {
-    position: relative;
     text-align: center;
 }
 
@@ -59,7 +38,7 @@
 
 /* full-calendar */
 .fc-day-today {
-    background: lightgray !important;
+    background: gray !important;
     border: none !important;
   
 } 
@@ -78,15 +57,22 @@
     color: #777;
 }
 
+.actions {
+    margin-top: 15px;
+}
+
+
+.section {
+    margin-top: 20px;
+}
 
 h2 {
-    margin-left: 6px;
     margin-bottom: 6px;
     text-align: left;
 }
 /* menu 메뉴 */
 
-.menu-item {
+.menu_item {
   
     display: flex;
     align-items: center;
@@ -95,15 +81,15 @@ h2 {
     padding-bottom: 10px; /* 간격 설정 */
 }
 
-.menu-details {
-    
+.menu_details {
+  
     display: flex; /* Flexbox 사용 */
     flex-direction: row; /* 수평 방향으로 배치 */
     align-items: center; /* 세로 중앙 정렬 */
     flex-grow: 1; /* 남은 공간 차지 */
 }
 
-.menu-image {
+.menu_image {
     width: 100%;
     height: 100%;
     border-radius: 5px;
@@ -111,7 +97,7 @@ h2 {
     object-fit: cover;
 }
 
-.menu-details h3 {
+.menu_details h3 {
     margin-right: 20px; /* 메뉴 이름과 가격 간의 간격 설정 */
     margin-left: 10px;
 }
@@ -121,26 +107,6 @@ h2 {
     height: 80px;
 }
 
-/* 북마크 헤더 */
-.icon_header_sec {
-    position: absolute;
-    right: 10px;
-    padding: 5px;
-    border: none;
-    border-radius: 100%;
-    background-color: beige;
-    text-align: center;
-    margin-bottom: 50px;
-    width: 35px;
-    z-index: 1000;
-}
-
-
-
-.bookmarked_icon {
-    /* position: absolute; */
-    color: orangered !important;
-}
 /* automaic-carousel */
 
 #carouselExampleIndicators {
@@ -167,43 +133,33 @@ h2 {
 .cButton {
     flex: 1; /* 각 버튼이 같은 비율로 공간을 차지하도록 설정 */
     padding: 10px 0; /* 버튼 여백 */
-    border: none;
+    border: black 1px solid; /* 테두리 제거 */
     border-radius: 1px; /* 모서리 둥글게 */
     cursor: pointer; /* 커서를 포인터로 변경 */
     transition: background-color 0.3s; /* 배경색 변화 애니메이션 */
     text-align: center; /* 텍스트 가운데 정렬 */
-    color: #555;
 }
 
-.cButton.active {
-    border-bottom: lightgray 1px solid ;
-    color: black;
-    font-weight: bold;
+.cButton:hover {
+    background-color: orange; /* 호버 시 배경색 변화 */
 } 
 /* 섹션 버튼 */
 
-/* 쿠폰 */
-#coupon_sec {
-   margin-left: auto;    
-}
-
-/* reserve버튼 */
-
-.around_reserve {
-    display: inline-flex;
-    justify-content: space-around;
+.reserve {
     max-width: 800px;
-    background-color: white; /* 예약하기 버튼 색상 */
+    display: block;
+    background-color: orange; /* 예약하기 버튼 색상 */
     margin-left:auto ;
     margin-right: auto;
-    padding: 10px;
+    padding: 15px .375rem 14px .75rem;
     box-sizing: border-box;
+    max-width: 800px;
     width: 100%;
     font-size: 1rem;
-    border-top: lightgrey 1px solid;
-    /* margin: auto; */
+    border: none;
+    border-radius: .25rem;
+    margin: auto;
     position: fixed;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     bottom: 0px; 
     left: 50%; /* 화면의 중앙에 위치 */
     transform: translateX(-50%); /* 중앙 정렬을 위한 변환 */
@@ -212,23 +168,6 @@ h2 {
 }
 
 
-.reserve_button {
-    width: 50%;
-    max-width: 300em; 
-    font-weight: 400;
-    line-height: 1.5;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    border: none;
-    padding: .490rem .110rem;
-    width: 700px;
-    box-sizing: border-box;
-    font-size: 1rem;
-    border-radius: .25rem;
-    background-color: orangered;
-    margin-top: 0%;
-}
 
 .long_button {
 
@@ -238,7 +177,7 @@ h2 {
     color: #212529;
     text-align: center;
     text-decoration: none;
-    border: 1px solid #333;
+    border: 1px solid black;
     padding: .375rem .75rem;
     width: 85%;
     box-sizing: border-box;
@@ -265,33 +204,33 @@ a {
 }
 
 .small_button:hover {
-    background-color: #e0e0e0; 
+    background-color: #e0e0e0; /* 호버 시 배경색 변화 */
    
 }
 
 .slotBtns_sec {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); /* 최소 70px 너비의 열로 자동 생성 */
-    gap: 10px; /* 버튼 간의 간격 조정 */
-   
+    display: inline-block;
 }
 
 .slot_button {
-    padding: 3px 10px;
-    padding-bottom: 3px; 
+    
+    padding: 10px 10px; /* 상하, 좌우 여백 */
+    background-color:orange; /* 회색 배경색 */
     width: 60px;
-    color: #333; 
-    border: 1px solid #ccc; 
-    border-radius: 17%; 
-    font-size: 14px;
-    font-weight: bold; 
-    cursor: pointer; 
-    text-align: center; 
+    color: #333; /* 글자색 */
+    border: none; /* 테두리 제거 */
+    border-radius: 50%; /* 둥글게 만들기 */
+    font-size: 14px; /* 글자 크기 */
+    cursor: pointer; /* 커서를 포인터로 변경 */
+    text-align: center; /* 텍스트 센터 정렬 */
+    transition: background-color 0.3s; /* 배경색 변화 애니메이션 */
+    margin: 20px 5px;
+
 }
 
-.available_letters {
-    color: tomato;
-    font-size: 10px;
+.slot_button.active {
+    background-color: #c2eae7; /* 클릭된 슬롯의 배경색 */
+    color: white; /* 글자색 변경 */
 }
 
 .more {
@@ -313,7 +252,7 @@ a {
 .photo_gallery {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; 
+    gap: 10px; /* 이미지 간격 */
     width: 670px;
     height: 330px;
     margin: 0 auto;
@@ -336,7 +275,7 @@ a {
 .photo_column{
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; 
+    gap: 10px; /* 이미지 간격 */
     width: 670px;
     margin: 0 auto;
 }
@@ -353,13 +292,13 @@ a {
 
 /* 상세정보 */
 .info-label {
-    font-weight: bold;
-    margin-top: 15px; 
+    font-weight: bold; /* 라벨 강조 */
+    margin-top: 15px; /* 라벨과 이전 내용 간격 */
 }
 
 .info-content {
-    margin: 5px 0; 
-    color: #333; 
+    margin: 5px 0; /* 내용 간격 */
+    color: #333; /* 기본 글자색 */
 }
 
 /* 추천 레스토랑 */
@@ -369,14 +308,14 @@ a {
 
 .restaurant-card {
     width: 205px;
-    margin-right: 1px;
+    margin-right: 1px; /* 카드 간의 간격 */
     word-break: keep-all;
 }
 
 .restaurant_image_box{
     width: 200px;
     height: 180px;
-    border-radius: 5px; 
+    border-radius: 5px; /* 둥근 모서리 */
 }
 .restaurant_image_box img{
     width: 100%;
@@ -385,21 +324,27 @@ a {
 }
 
 .restaurant-info {
-    flex-grow: 1;
+    flex-grow: 1; /* 남은 공간 차지 */
 }
 
 .rating {
-    color: gold; 
-    margin-right: 5px; 
+    color: gold; /* 평점 색상 */
+    margin-right: 5px; /* 평점과 이름 간격 */
 }
 
 .restaurant-name {
     font-size: 20px;
-    font-weight: bold;
+    font-weight: bold; /* 레스토랑 이름 강조 */
 }
 
 .restaurant-details {
-    font-size: 12px; 
-    color: #777; 
+    font-size: 12px; /* 상세 정보 폰트 크기 */
+    color: #777; /* 상세 정보 색상 */
 }
 
+/* reserve */
+
+.menu_quantity {
+    width: 100px;
+    margin-left: 10px;
+}

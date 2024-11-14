@@ -1,8 +1,13 @@
 package com.team.goott.user.store.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
@@ -16,9 +21,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.team.goott.admin.domain.StoreCategoryVO;
+import com.team.goott.admin.domain.StoresVO;
 import com.team.goott.admin.store.service.AdminStoreService;
 import com.team.goott.infra.StoreNotFoundException;
+import com.team.goott.owner.domain.ReserveSlotsDTO;
 import com.team.goott.owner.menu.service.OwnerMenuService;
+import com.team.goott.user.domain.StoreCategoryDTO;
 import com.team.goott.user.domain.StoreDTO;
 import com.team.goott.user.store.service.UserStoreService;
 
@@ -112,4 +121,57 @@ public class UserStoreController {
 	
 		return ResponseEntity.ok(menu);
 	}
+	
+	//storeId로 쿠폰 이름 조회
+	@GetMapping("/coupon/{storeId}")
+	public ResponseEntity<Object> getcouponNameByStoreId(@PathVariable("storeId") int storeId){
+	    try {
+	    	List<String> couponNames= userStoreService.selectCouponName(storeId);
+            if (couponNames == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("쿠폰을 찾을 수 없습니다.");
+            }
+            return ResponseEntity.ok(couponNames);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");
+        }
+	}
+	
+	//storeId로 RecommendedStoreInfo 조회
+	@GetMapping("/storeInfo/{storeId}")
+	public ResponseEntity<Object> getStoreInfo( @PathVariable(required = true) int storeId) {
+		Set<Integer> storeIdSet = new HashSet<Integer>();
+		Set<StoresVO> recommendedStores = new HashSet<StoresVO>();
+		try {
+			List<StoreCategoryVO> storeCategories =  adminStoreService.getStoreInfoForUpdate(storeId).getStoreCategories();
+	 		for(StoreCategoryVO category : storeCategories) {
+				List<StoreCategoryDTO> storeList = userStoreService.getStoresByCategory(category.getCategoryCodeId());
+				for(StoreCategoryDTO store : storeList) {
+					storeIdSet.add(store.getStoreId());
+				}
+			}
+	 		storeIdSet.remove(storeId);
+	 		for(int idStore : storeIdSet) {
+	 			recommendedStores.add(adminStoreService.getStoreInfoForUpdate(idStore));
+	 		}
+	 		
+	
+			return ResponseEntity.ok(recommendedStores);
+		}catch(StoreNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 매장을 찾을 수 없습니다.");
+		}catch(Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");
+		}
+		}
+	
+	//storeId와 date로 reserveSlot가져오기
+	@GetMapping("/reserveSlots/{storeId}/{date}")
+	public ResponseEntity<Object> getReserveSlots(@PathVariable int storeId, @PathVariable String date){
+		List<ReserveSlotsDTO> slots =userStoreService.getAllReserveSlots(storeId, date);
+		return ResponseEntity.ok(slots);
+		
+	}
+			
+	
 }

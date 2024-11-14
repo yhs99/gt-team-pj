@@ -11,7 +11,7 @@ import com.team.goott.user.domain.ReviewImagesDTO;
 
 public interface UserReviewService {
 
-List<ReviewDTO> getAllReviews(int storeId, int page, int size);
+List<ReviewDTO> getAllReviews(int storeId, String sort, int page, int size);
 
 ReviewDTO reviewByNo(int reviewId);
 

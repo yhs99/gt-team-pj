@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/user/storeDetails/storeDetail_pictures.js" defer></script>
+    <link rel="stylesheet" href="/css/user/storeDetail.css">
+</head>
+<body>
+    <div  id="app">
+        <div id="app" class="details_container">
+            <div class="restaurant-header">
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <button 
+                        type="button" 
+                        v-for="(image, index) in restaurantData.data.storeImages" 
+                        :class="{ active: index === 0 }" 
+                        :key="index" 
+                        :data-bs-target="'#carouselExampleIndicators'" 
+                        :data-bs-slide-to="index" 
+                        :aria-current="index === 0" 
+                        :aria-label="'Slide ' + (index + 1)">
+                    </button>
+                    </div>
+                    <div class="carousel-inner">
+                        <div class="caroPic carousel-item" v-for="(image, index) in restaurantData.data.storeImages" :class="{ active: index === 0 }" :key="index">
+                            <img :src="image.url" class="d-block w-100" :alt="'storeImages.url(' + (index + 1) + ')'">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
+                  </div>
+                </div>
+  
+        <div class="cButton-container">
+            <div class="cButton">홈</div>
+            <div class="cButton">메뉴</div>
+            <div class="cButton">사진</div>
+            <div class="cButton">리뷰</div>
+            <div class="cButton">매장정보</div>
+        </div>
+    
+    <div class="square_section">
+    <div class="nav-tabs">
+       
+            <button class="small_button" :class="{ active: activeTab === '전체' }" @click="setActiveTab('전체')">전체</button>
+    
+       
+            <button class="small_button" :class="{ active: activeTab === '업체' }" @click="setActiveTab('업체')">업체</button>
+   
+      
+            <button class="small_button" :class="{ active: activeTab === '음식' }" @click="setActiveTab('음식')">음식</button>
+     
+            <button class="small_button" :class="{ active: activeTab === '메뉴' }" @click="setActiveTab('메뉴')">메뉴</button>
+     
+    </div>
+
+   
+        <!-- 전체 탭이 활성화 되었을 때만 combinedImages 표시 -->
+        <div v-if="activeTab === '전체'" class="photo_column">
+            <div class="photo_frame" v-for="(image, index) in combinedImages" :key="'combinedImage-' + index">
+                <img :src="image.url" class="d-block w-100" :alt="'combinedImages.url(' + (index + 1) + ')'">
+            </div>
+        </div>
+        <div v-if="activeTab === '업체'" class="photo_column">
+            <div class="photo_frame" v-for="(image, index) in restaurantData.data.storeImages" :key="'storeImage-' + index">
+                <img :src="image.url" class="d-block w-100" :alt="'storeImages.url(' + (index + 1) + ')'">
+            </div>
+        </div>
+        <div v-if="activeTab === '음식'" class="photo_column">
+            <div class="photo_frame" v-for="(image, index) in reviewImages" :key="'reviewImage-' + index">
+                <img :src="image.url" class="d-block w-100" :alt="'reviewImages.url(' + (index + 1) + ')'">
+            </div>
+        </div>
+        <div v-if="activeTab === '메뉴'" class="photo_column">
+            <div class="photo_frame" v-for="(menu, index) in menuData.menu" :key="'menuImage-' + index">
+                <img :src="menu.menuImageUrl" class="d-block w-100" :alt="'menuImages.url(' + (index + 1) + ')'">
+            </div>
+        </div>
+
+    </div> 
+    </div>
+
+</body>
+</html>

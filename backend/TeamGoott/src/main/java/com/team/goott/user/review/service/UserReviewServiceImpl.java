@@ -47,18 +47,25 @@ private final String bucketName = "goott-bucket";
 private UserReviewDAO revDAO;
 
 @Override
-public List<ReviewDTO> getAllReviews(int storeId, int page, int size) {
+public List<ReviewDTO> getAllReviews(int storeId, String sort, int page, int size) {
 	ReviewPageDTO paging = ReviewPageDTO.builder().storeId(storeId).page(page).size(size).build();
 	paging.setStartRow();
 	log.info(paging.toString());
-	List<ReviewDTO> lst = revDAO.getAllReviews(paging);
+	List<ReviewDTO> lst = revDAO.getAllReviews(paging , sort);
 	for(ReviewDTO list : lst) {
 		log.info("{}",list.getCreateAtLocalDateTime().toString());
 		List<ReviewImagesDTO> images = selectReviewImagesByReviewId(list.getReviewId());
 		list.setReviewImages(images);
+		ReviewDTO userInfo = revDAO.selectUserByUserId(list.getUserId());
+		System.out.println(userInfo.toString()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		String userName = userInfo.getName();
+		String profileUrl = userInfo.getProfileImageUrl();
+		list.setName(userName);
+		list.setProfileImageUrl(profileUrl);
 	}
 	return lst;
 }
+
 
 @Override
 public ReviewDTO reviewByNo(int reviewId) {

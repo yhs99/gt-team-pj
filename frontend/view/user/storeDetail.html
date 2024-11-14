@@ -3,64 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <title>식당 상세 정보</title>
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ae7f9510119596f0c0ff9416ba9caf07"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css" type="text/css"/>
+    <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/user/mainlogo.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/user/header.css">
+    <link rel="stylesheet" href="/css/user/storeDetail.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="/js/user/storeDetail.js" defer></script>
-    <link rel="stylesheet" href="/css/user/storeDetail.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ae7f9510119596f0c0ff9416ba9caf07"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    
+    <script src="/js/user/userHeader.js" defer></script>
+    <script src="/js/user/storeDetails/storeDetail.js" defer></script>
+
+    <script src="https://kit.fontawesome.com/aebc8a6fa8.js" crossorigin="anonymous"></script>
+
 </head>
 
 <body>
+
+    <header>
+        <div class="header_container">
+           <a class="navbar-brand fs-3 text-warning fw-bold" href="#"><img src="/assets/mainIcon.png"> SmartReserve</a>
+            <div class="search_container">
+            <i class="fa-solid fa-magnifying-glass search_icon"></i>
+            <input type="text" placeholder="찾고 있는 맛집이 있나요?" class="search_box">
+            <i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-bell"></i>
+            </div>
+         
+        </div>
+    </header>
+
+
+
     <div  id="app">
-    <div id="app" class="details_container">
-        <div class="restaurant-header">
-            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-indicators">
-                    <button 
-                    type="button" 
-                    v-for="(image, index) in restaurantData.data.storeImages" 
-                    :class="{ active: index === 0 }" 
-                    :key="index" 
-                    :data-bs-target="'#carouselExampleIndicators'" 
-                    :data-bs-slide-to="index" 
-                    :aria-current="index === 0" 
-                    :aria-label="'Slide ' + (index + 1)">
-                </button>
+        <div class="details_container">
+            <div class="restaurant-header">
+
+                <div class="icon_header_sec">
+                    <i v-if="isBookmarked" class="fa-solid fa-bookmark bookmarked_icon" @click="toggleBookmark()"></i>
+                    <i v-else class="fa-regular fa-bookmark" @click="toggleBookmark()"></i>
                 </div>
-                <div class="carousel-inner">
-                    <div class="caroPic carousel-item" v-for="(image, index) in restaurantData.data.storeImages" :class="{ active: index === 0 }" :key="index">
-                        <img :src="image.url" class="d-block w-100" :alt="'storeImages.url(' + (index + 1) + ')'">
+
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <button 
+                        type="button" 
+                        v-for="(image, index) in restaurantData.data.storeImages" 
+                        :class="{ active: index === 0 }" 
+                        :key="index" 
+                        :data-bs-target="'#carouselExampleIndicators'" 
+                        :data-bs-slide-to="index" 
+                        :aria-current="index === 0" 
+                        :aria-label="'Slide ' + (index + 1)">
+                        </button>
                     </div>
+                    <div class="carousel-inner">
+                        <div class="caroPic carousel-item" v-for="(image, index) in restaurantData.data.storeImages" :class="{ active: index === 0 }" :key="index">
+                            <img :src="image.url" class="d-block w-100" :alt="'storeImages.url(' + (index + 1) + ')'">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Next</span>
-                </button>
-              </div>
             </div>
             <h1 class="restaurant-name" v-if="restaurantData && restaurantData.data">
                 {{ restaurantData.data.storeName}}</h1>
             <div class="rating">
+                <a href="http://localhost/view/user/storeDetails/storeDetail_reviews">
                 <span class="stars">⭐️ {{ calculateReviewScore.toFixed(1) }} <span class="review-count">리뷰수( {{ reviewData.length }})</span><span class="arrow" onclick="goToPage(review.html)">></span></span>
-                
+                </a>
             </div>
             <p class="description" v-if="restaurantData && restaurantData.data">
                 {{ restaurantData.data.description}}</p>
             <p class="address" v-if="restaurantData && restaurantData.data">
                 {{ restaurantData.data.address}}</p>
-            <p class="mainPrice">평균가격 avg(menu.price.isMain)</p>
+            <p class="mainPrice">평균가격: {{ calculateMenuPriceAvg }}  </p>
             <p v-if="todayOperation.closeDay">오늘은 휴무입니다<span @click="isOpen = !isOpen" style="cursor: pointer;">{{ isOpen ? '▲' : '▼' }}</span></p>
             
             <p v-else class="hours">{{ todayDay}} 영업시간: {{todayOperation.open}} - {{todayOperation.close}}<span @click="isOpen = !isOpen" style="cursor: pointer;">{{ isOpen ? '▲' : '▼' }}</span></p>
-         
+            
             <ul class="foldable" v-if="isOpen">
                 <li v-for="(schedule, index) in schedules" :key="index">
                     <span v-if="schedule.closeDay">{{ schedule.dayOfWeek }} 휴무</span>
@@ -68,53 +101,71 @@
                 </li>
             </ul>
             <li v-for="(facility, index) in restaurantData.data.facilities" :key="index">
-                  {{ facility.facilityName }}
-                </li>
+                    {{ facility.facilityName }}
+            </li>
         </div>
             
         <div class="square_section">
             <div class="cButton-container">
-                <div class="cButton">홈</div>
-                <div class="cButton">메뉴</div>
-                <div class="cButton">사진</div>
-                <div class="cButton">리뷰</div>
-                <div class="cButton">매장정보</div>
+                <div class="cButton" v-for="(button, index) in buttons" 
+             :key="index" 
+             :class="{ active: activeButton === index }" 
+             @click="setActiveButton(index)">
+            {{ button }}
             </div>
-            <div class="long_button" id="coupon">쿠폰정보 coupon.couponName</div>
-        
-
-            <h2 class="my_title">예약하기</h2>
-            <p>날짜.인원.시간</p>
-            <div>calendar</div>
-            <div id='calendar'></div>
-            <p>인원수(1명~store.maxPplPerReserve)</p>
-            <p>reserveSlots  reserved=0인 시간대</p>
         </div>
 
+    
+
+        <!-- <div id="coupon_sec" v-if="couponData.length > 0" class="dropdown">
+            <button class="btn btn-secondary btn-lg dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                <span>{{ couponData[0] }}</span> 
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li v-for="(coupon, index) in couponData.slice(1)" class="dropdown-item" :key="index">
+                    {{ coupon }} 
+                </li>
+            </ul>
+        </div> -->
+            
+
+            <h2 class="my_title">예약하기</h2>
+        
+            <div id='calendar'></div>
+                
+            <div class="gap10">최대 예약인원 : {{restaurantData.data.maxPeoplePerReserve}}</div>
+            <template>
+                <div class="gap10 slotBtns_sec">
+                    <div v-for="(slot,index) in reserveSlots" :key="slot.slotDateTime">
+                        <div class="slot_button">{{ formatTime(slot.slotDatetime) }}
+                            <span class="available_letters">예약가능</span></div>
+                    </div>
+                </div>
+            </template>
+          </div>
+ 
         <div class="square_section">
             <h2 class="my_title">편의시설</h2>
             <li v-for="(facility, index) in restaurantData.data.facilities" :key="index">
                 {{ facility.facilityName }}
-              </li>
+            </li>
         </div>
 
         <div class="square_section">
             <h2 class="my_title">메뉴</h2>
-         
-
+            
             <div v-for="(menu, index) in filteredMenus" :key="index" class="menu-item">
-                <input type="checkbox"/>
                 <div class="menu-details">
                     <h3>{{ menu.menuName }}</h3>
                     <span>가격: {{ menu.price }} 원</span>
                 </div>
                 <div class="img_container">
                     <img :src="menu.menuImageUrl" :alt="menu.menuImageName" class="menu-image" 
-                         @error="setDefaultImage($event)">
+                            @error="setDefaultImage($event)">
                 </div>
             </div>
 
-            <button class="long_button more" @click="goToPage('storeDetail_menu')"> 메뉴 전체 보기 &gt;</button>
+            <button class="long_button more" @click="goToPage('storeDetails/storeDetail_menu')"> 메뉴 전체 보기 &gt;</button>
         </div>
 
         <div class="square_section">
@@ -125,29 +176,34 @@
                     <img :src="image.url" class="d-block w-100" :alt="'combinedImages.url(' + (index + 1) + ')'">
                 </div>
             </div>
-        </template>
-            <button class="long_button more">사진 {{combinedImages.length}}개 전체보기 &gt;</button>
-        </div>
+            </template>
+           
+                <button class="long_button more" @click="goToPage('storeDetails/storeDetail_pictures')">사진 {{combinedImages.length}}개 전체보기 &gt;</button>
         
+        </div>
+            
         <div class="square_section">
             <h2 class="r_title">추천 리뷰</h2>
-          
-                <span class="star">⭐️</span>
-                <span class="score"> {{ calculateReviewScore.toFixed(1) }} ({{ reviewData.length }})</span>
-       
+            
+            <span class="star">⭐️</span>
+            <span class="score"> {{ calculateReviewScore.toFixed(1) }} ({{ reviewData.length }})</span>
+        
             <div class="restaurants_whole">
-            <div class="restaurant-card" v-for="(review,index) in filteredReviews" :key="'review-' + index">
-                <div class="restaurant_image_box">
-                    <img :src="review.reviewImages[0].url" alt="광안리 다이치" class="restaurant-image">
-                </div>
-                    <span class="restaurant-details">남들이조와</span>
+                <div class="restaurant-card" v-for="(review,index) in filteredReviews" :key="'review-' + index">
+                    <div class="restaurant_image_box">
+                        <img :src="review.reviewImages[0].url" alt="reviewImage">
+                    </div>
+                    <span class="restaurant-details">{{review.name}}</span>
                     <span class="review-rating">⭐️{{ review.score.toFixed(1) }}</span>
                     <p class="review-date">{{ formatDate(review.createAtLocalDateTime) }}</p>
                     <p class="review-text">{{ review.content }}</p>
+                    
+                </div>
+            
             </div>
            
-            </div>
-            <button class="long_button more">리뷰 전체보기 &gt;</button>
+                <button class="long_button more" @click="goToPage('storeDetails/storeDetail_reviews')">리뷰 전체보기 &gt;</button>
+          
         </div>
         <div class="square_section">
             <h2 class="my_title">지도</h2>
@@ -167,50 +223,34 @@
             <ul>
                 <li v-for="(day, index) in getClosedDays()" :key="index">{{ day }}</li>
             </ul>
-            <button class="long_button more">매장정보 전체보기 &gt;</button>
+          
+            <button class="long_button more" @click="goToPage('storeDetails/storeDetail_storeInfo')">매장정보 전체보기 &gt;</button>
+       
         </div>
-        <div class="square_section">
+        <div class="square_section_last-child">
             <h2 class="my_title">비슷한 레스토랑 추천</h2>
-            <div class="restaurants_whole">
-            <div class="restaurant-card">
-                <div class="restaurant_image_box">
-                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="광안리 다이치" class="restaurant-image">
+            <div class="restaurants_whole" v-for="(recommend,index) in recommendData">
+                <div class="restaurant-card">
+                    <div class="restaurant_image_box">
+                        <img v-if="recommend.storeImages" src="recommend.storeImages" alt="storeImage" class="restaurant-image" @error="setDefaultImage($event)">
+                        <img v-else src="https://goott-bucket.s3.ap-northeast-2.amazonaws.com/noImage.jpg" alt="noImage" class="restaurant-image">
+                    </div>
+                    <div class="restaurant-info">
+                        <p class="restaurant-name">{{recommend.storeName}}</p>
+                        <span class="restaurant-details" v-for="(category,categoryIndex) in recommend.storeCategories">{{category.storeCategoryName}} </span>
+                    </div>
                 </div>
-                <div class="restaurant-info">
-                    <span class="rating">⭐️ 4.9</span>
-                    <span class="restaurant-name">광안리 다이치</span>
-                    <p class="restaurant-details">육류, 고기리 | 부산 광안리</p>
-                </div>
-            </div>
-            <div class="restaurant-card">
-                <div class="restaurant_image_box">
-                <img src="https://img.siksinhot.com/place/1675994382900282.jpg?w=540&h=436&c=Y" alt="아키토리 신세츠" class="restaurant-image">
-                </div>
-                <div class="restaurant-info">
-                    <span class="rating">⭐️ 4.9</span>
-                    <span class="restaurant-name">아키토리 신세츠</span>
-                    <p class="restaurant-details">아키토리 | 부산 광안리</p>
-                </div>
-            </div>
-            <div class="restaurant-card">
-                <div class="restaurant_image_box">
-                    <img src="https://img.siksinhot.com/place/1675994382900282.jpg" alt="너버원" class="restaurant-image">
-                </div>
-                <div class="restaurant-info">
-                    <span class="rating">⭐️ 4.8</span>
-                    <span class="restaurant-name">너버원</span>
-                    <p class="restaurant-details">부산 광안리</p>
-                </div>
-            </div>
             </div>
             <button class="long_button more">전체보기 &gt;</button>
         </div>
+        <div class="around_reserve">
+            <i v-if="isBookmarked" class="fa-solid fa-bookmark fa-2x bookmarked_icon" @click="toggleBookmark()"></i>
+            <i v-else class="fa-regular fa-bookmark fa-2x" @click="toggleBookmark()"></i>
+            
+            <button class="reserve_button" @click="goToPage('storeDetails/storeDetail_reserve')">예약하기</button>
+        </div>
 
-
-        <button class="reserve"> 예약하기</button>
     </div>
-</div>
 
-  
 </body>
 </html>

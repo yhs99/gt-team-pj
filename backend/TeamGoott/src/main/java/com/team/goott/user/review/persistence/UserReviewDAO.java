@@ -10,7 +10,7 @@ import com.team.goott.user.domain.ReviewImagesDTO;
 public interface UserReviewDAO {
 
 
-List<ReviewDTO> getAllReviews(ReviewPageDTO paging);
+List<ReviewDTO> getAllReviews(ReviewPageDTO paging , String sort);
 
 ReviewDTO reviewByNo(int reviewId);
 
@@ -39,6 +39,8 @@ ReserveDTO getReserveInfo(int reserveId);
 int checkIfImageExist(int imageId);
 
 int changeStatusCodeId(int reserveId, int statusCode);
+
+ReviewDTO selectUserByUserId(int userId);
 
 
 

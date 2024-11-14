@@ -27,8 +27,24 @@ private SqlSession ses;
 private static String ns="com.team.mappers.user.review.userReviewMapper.";
 
 @Override
-public List<ReviewDTO> getAllReviews(ReviewPageDTO paging){
+public List<ReviewDTO> getAllReviews(ReviewPageDTO paging, String sort){
 	// 리뷰 조회
+    String orderBy;
+    switch (sort) {
+        case "score_desc":
+            orderBy = "score DESC";
+            break;
+        case "score_asc":
+            orderBy = "score ASC";
+            break;
+        case "latest":
+            orderBy = "createAt DESC";
+            break;
+        default:
+            orderBy = "createAt DESC"; // 기본값
+    }
+    
+    paging.setOrderBy(orderBy);
 	return ses.selectList(ns+"getAllrevws",paging);
 }
 
@@ -117,6 +133,12 @@ public int changeStatusCodeId(int reserveId, int newStatusCode) {
 	reserveMap.put("reserveId", reserveId);
 	reserveMap.put("statusCodeId", newStatusCode);
 	return ses.update(ns+"updateStatusCode",reserveMap);
+}
+
+@Override
+public ReviewDTO selectUserByUserId(int userId) {
+	// userId로 userName&profileUrl을 가져온다
+	return ses.selectOne(ns+"selectUserName", userId);
 }
 
 

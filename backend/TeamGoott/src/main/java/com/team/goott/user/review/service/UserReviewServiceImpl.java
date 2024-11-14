@@ -22,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.team.goott.infra.S3ImageManager;
+import com.team.goott.owner.domain.NotificationDTO;
+import com.team.goott.owner.domain.NotificationType;
 import com.team.goott.user.domain.ReserveDTO;
 import com.team.goott.user.domain.ReviewDTO;
 import com.team.goott.user.domain.ReviewImagesDTO;
@@ -78,6 +80,11 @@ public class UserReviewServiceImpl implements UserReviewService {
 		log.info("REVIEW DETAIL :: {}", reviewDTO.toString());
 		if(revDAO.insertReview(reviewDTO)==1) {
 			int generatedId = reviewDTO.getReviewId();
+			//리뷰 등록시 해당 식당 점주에게 알림설정 
+			int sendNotification = sendNotificationsToOwner(reviewDTO);
+			if(sendNotification == 1) {
+				log.info("알림설정 완료");
+			}
 			if(reviewDTO.getReviewImages() != null) {
 				for(ReviewImagesDTO imgs : reviewDTO.getReviewImages()) {
 					imgs.setReviewId(generatedId);
@@ -99,6 +106,17 @@ public class UserReviewServiceImpl implements UserReviewService {
 	}
 
 
+
+	private int sendNotificationsToOwner(ReviewDTO reviewDTO) {
+		NotificationDTO notification = new NotificationDTO();
+		notification.setUserId(reviewDTO.getUserId());
+		notification.setStoreId(reviewDTO.getStoreId());
+		notification.setNotificationType(NotificationType.valueOf("CUSTOMER_TO_OWNER"));
+		notification.setReserveId(reviewDTO.getReserveId());
+		notification.setMessage("예약번호 : " + reviewDTO.getReserveId() +" 님께서 리뷰를 작성하셨습니다.");
+		
+		return revDAO.setNotification(notification);
+	}
 
 	@Override
 	public ReviewImagesDTO imageIntoDTO(int reviewId, MultipartFile file) throws IOException, Exception {

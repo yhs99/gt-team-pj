@@ -63,7 +63,62 @@ a {
   height: 180px;
   margin:10px;
 }
+.thumbnail_image_modify {
+  width: 200px;
+  height: auto;
+  margin:10px;
+}
 .thumbnail-container {
   overflow-x: auto;
   white-space: nowrap;
+}
+.modify-review-image-gallery {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  align-items: flex-start;
+}
+.modify-review-image-container {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 auto;
+}
+.review-image-delete {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+  padding: 0;
+}
+
+.review-delete {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: red;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 20px;
+  text-align: center;
+  padding: 0;
+}
+.score {
+  cursor: pointer;
+  font-size: 20px;
+}
+.pointer {
+  cursor: pointer;
 }

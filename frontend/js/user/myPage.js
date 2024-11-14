@@ -12,6 +12,7 @@ new Vue({
     uploadImageFile : null,
     previewImage : '',
     errorMsg : '',
+    reviewErrorMsg : '',
     selectedReserveStatus: 'plan',
     planReserveHistoryData : [],
     completeReserveHistoryData : [],
@@ -20,6 +21,12 @@ new Vue({
     bookMarkListCount: 0,
     reviewImageLists: [{url:''}],currentImageIndex:0,
     updateReviewData:{},
+    insertReviewData:{
+      content:'',
+      uploadReviewImageFiles:[],
+      score:0,
+      uploadedFiles:[]
+    }
   },
   created: function() {
     this.checkLogin();
@@ -28,8 +35,9 @@ new Vue({
     this.fetchBookMarkData();
   },
   methods: {
-    changeTab: function(tabName, data) {
+    changeTab: function(tabName, data, type, storeId) {
       this.currentPage = tabName;
+      this.insertReviewData.uploadedFiles = [];
       switch (tabName) {
         case 'myInfo':
           this.getUserInfoData();
@@ -45,7 +53,21 @@ new Vue({
           this.fetchReviewData();
           break;
         case 'reviewInsertOrUpdate':
-          this.updateReviewData = data;
+          this.updateReviewData = null;
+          this.insertReviewData = {
+            content:'',
+            uploadReviewImageFiles:[],
+            score:0,
+            uploadedFiles:[]
+          }
+          if(type === 0) {
+            this.insertReviewData.reserveId = data;
+            this.insertReviewData.storeId = storeId;
+          }else {
+            if(data) {
+              this.updateReviewData = data?data:null;
+            }
+          }
           break;
       }
     },
@@ -226,7 +248,150 @@ new Vue({
     currentImage() {
       console.log(this.reviewImageLists[this.currentImageIndex].url)
       return this.reviewImageLists[this.currentImageIndex].url;
-    }
+    },
+    deleteReview(reviewId) {
+      if(confirm("정말 삭제하시겠습니까? 삭제후 복구가 불가능합니다.")) {
+        axios.delete(`/api/review/${reviewId}`)
+        .then(response => {
+          if(response.status === 200) {
+            alert("삭제가 완료됐습니다.");
+            this.fetchReviewData();
+          }
+        })
+        .catch(error => {
+          alert("리뷰 삭제중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+          console.error(error);
+        })
+      }
+    },
     //====================== reviewHistory 종료
+    //====================== 리뷰수정, 작성 시작
+    deleteRequestImage(reviewId, imageId, index) {
+      if(confirm("이미지를 삭제하시겠습니까? 삭제 후 수정 취소시 이미지 복구가 가능합니다.")) {
+        axios.delete(`/api/review/${reviewId}/${imageId}`)
+        .then(response => {
+          if(response.status === 200) {
+            this.updateReviewData.reviewImages.splice(index, 1);
+          }
+        })
+        .catch(error => {
+          alert('이미지 삭제중 오류가 발생했습니다. 잠시후 다시 시도해주세요.');
+          console.error(error);
+        })
+      }
+    },
+    scoreEvent(e, v) { // 별점 선택시 별점 적용
+      v===1?this.updateReviewData.score=e.target.getAttribute('score-value'):this.insertReviewData.score=e.target.getAttribute('score-value');
+      document.querySelectorAll('.score').forEach(star => {
+        if (star.getAttribute('score-value') <= e.target.getAttribute('score-value')) {
+          star.classList.add('text-warning');
+        } else {
+            star.classList.remove('text-warning');
+        }
+      })
+    },
+    initScore(score) { // 별점 로드시 색깔 로드
+      return score <= this.updateReviewData.score ? 'text-warning' : '';
+    },
+    uploadImageFiles(event) {
+      const files = event.target.files;
+      for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          
+          // 이미지 미리보기 URL 생성
+          const imageUrl = URL.createObjectURL(file);
+
+          // reviewImages 배열에 추가
+        this.insertReviewData.uploadReviewImageFiles.push({
+            url: imageUrl,
+        });
+      }
+      this.insertReviewData.uploadedFiles = files;
+    },
+    uploadImageFilesForUpdate(event) {
+      const files = event.target.files;
+      const newImages = [];
+      for(const file of files) {
+        const imageUrl = URL.createObjectURL(file);
+        this.$set(this.updateReviewData.newImages, this.updateReviewData.newImages.length, imageUrl);
+      }
+      this.updateReviewData.uploadedFiles = files;
+    },
+    deleteInsertReviewImage(index, isUpdate) { // 리뷰 작성시 이미지 삭제
+      if(confirm("삭제하시겠습니까?")) {
+        if(isUpdate) {
+          this.updateReviewData.newImages.splice(index, 1);
+        }else {
+          this.insertReviewData.uploadReviewImageFiles.splice(index, 1);
+        }
+      }
+    },
+    async uploadReview() {
+      if(this.reviewValidate(this.insertReviewData)) {
+        const formData = new FormData();
+        const reviewData = {
+          reserveId: this.insertReviewData.reserveId,
+          storeId: this.insertReviewData.storeId,
+          score: Number(this.insertReviewData.score),
+          content: this.insertReviewData.content
+        }
+        formData.append(
+          'review',
+          new Blob([JSON.stringify(reviewData)], {type: 'application/json'})
+        )
+        if(this.insertReviewData.uploadedFiles.length > 0) {
+          for(file of this.insertReviewData.uploadedFiles) {
+            formData.append('file', file);
+          }
+        }
+        await axios.post(`/api/review/`, formData)
+        .then(response => {
+          alert("리뷰 작성 완료");
+          location.href = "/view/user/myPage";
+        })
+        .catch(error => {
+          alert(error.response.data.message);
+          console.error(error);
+        })
+      }
+    },
+    async updateReview() {
+      console.log(this.updateReviewData)
+      if(this.reviewValidate(this.updateReviewData)) {
+        const formData = new FormData();
+        const reviewData = {
+          content: this.updateReviewData.content,
+          score: Number(this.updateReviewData.score)
+        }
+        formData.append(
+          'review',
+          new Blob([JSON.stringify(reviewData)], {type: 'application/json'})
+        )
+        if(this.insertReviewData.uploadedFiles.length > 0) {
+          for(file of this.insertReviewData.uploadedFiles) {
+            formData.append('file', file);
+          }
+        }
+        await axios.put(`/api/review/${this.updateReviewData.reviewId}`, formData)
+        .then(response => {
+          alert("리뷰 수정 완료");
+          location.href = "/view/user/myPage";
+        })
+        .catch(error => {
+          alert(error.response.data.message);
+          console.error(error);
+        })
+      }
+    },
+    reviewValidate(data) {
+      if(data.content == '' || data.content == null) {
+        this.reviewErrorMsg = '리뷰 내용을 입력해주세요.';
+        return false;
+      }else if(data.score <= 0) {
+        this.reviewErrorMsg = '리뷰 별점을 선택해주세요.';
+        return false;
+      }
+      return true;
+    }
   },
 });

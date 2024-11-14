@@ -75,6 +75,7 @@ public class UserReviewServiceImpl implements UserReviewService {
 	public boolean addReviewPics(ReviewDTO reviewDTO) {
 		// 리뷰 추가
 		boolean result=false;
+		log.info("REVIEW DETAIL :: {}", reviewDTO.toString());
 		if(revDAO.insertReview(reviewDTO)==1) {
 			int generatedId = reviewDTO.getReviewId();
 			if(reviewDTO.getReviewImages() != null) {

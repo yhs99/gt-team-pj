@@ -177,6 +177,7 @@ public class UserReviewController {
 		 }
 	 
 		 int userId = user.getUserId();
+		 comingDTO.setUserId(userId);
 		 int reserveId = comingDTO.getReserveId();
 		 ReserveDTO reserveInfo = service.getReserveInfoByReserveId(reserveId);
 		 
@@ -270,6 +271,7 @@ public class UserReviewController {
 		 if(user == null) {
 			 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다"); //401
 		 }
+		reviewDTO.setUserId(user.getUserId());
 		 
 		 //사용자 일치 검증
 		 if(user.getUserId() != reviewDTO.getUserId()){
@@ -339,11 +341,9 @@ public class UserReviewController {
 
 
 	private void showModifyList() {
-		System.out.println("=============modifyList 목록=============");
 		for(ReviewImagesDTO img : modifyFileList) {
-			System.out.println(img.toString());
+			log.info(img.toString());
 		}
-		System.out.println("=======================================");
 	}
 	 
 	//리뷰 삭제 : db에서 사라지지 않고 isDelete 를 -1로 바꿔줌
@@ -364,10 +364,6 @@ public class UserReviewController {
 		 //사용자 일치 검증
 		 if(user.getUserId() != reviewDto.getUserId()){
 			 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("작성자와 사용자가 일치하지 않습니다.");
-		 }
-		 
-		 if(reviewDto.isDeleteReq()) {
-			 return ResponseEntity.status(HttpStatus.GONE).body("이미 삭제된 글입니다.");
 		 }
 		  
 		 List<ReviewImagesDTO> imgDtoList= reviewDto.getReviewImages();

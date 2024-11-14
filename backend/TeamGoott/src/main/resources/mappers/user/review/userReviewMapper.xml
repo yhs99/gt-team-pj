@@ -27,7 +27,7 @@ select last_insert_id()
 delete from review where reviewId = #{reviewId}
 </delete>
 
-<insert id="insertImgs!">
+<insert id="insertImgs">
 insert into reviewImages(reviewId, url, fileName, fileType) values (#{reviewId},#{url},#{fileName},#{fileType})
 </insert>
 

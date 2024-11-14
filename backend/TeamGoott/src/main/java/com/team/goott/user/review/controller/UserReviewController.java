@@ -68,6 +68,7 @@ public class UserReviewController {
 	    }
 	
 	//모든 리뷰 가져오기-마이페이지(페이지네이션)
+	 
 	 @GetMapping("/")
 	 public ResponseEntity<Object> getMyReview(HttpSession session,
 	 			@RequestParam(value = "page", defaultValue = "1") int page,

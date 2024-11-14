@@ -30,9 +30,6 @@ new Vue({
   },
   created: function() {
     this.checkLogin();
-    this.fetchReviewData();
-    this.fetchReserveHistories();
-    this.fetchBookMarkData();
   },
   methods: {
     changeTab: function(tabName, data, type, storeId) {
@@ -79,12 +76,12 @@ new Vue({
             location.href = response.data.data.redirect;
           }
           this.changeTab('myInfo');
+          this.fetchReviewData();
+          this.fetchReserveHistories();
+          this.fetchBookMarkData();
         })
         .catch((error) => {
-          if (error.status == 401) {
-            alert('로그인이 필요한 서비스입니다.');
-            location.href = '/view/user/userLogin';
-          }
+          this.errorHandler(error.status, '서버가 원활하지 않습니다.');
         });
     },
     isActive: function(tabName) { // 탭 변경 이벤트
@@ -97,8 +94,7 @@ new Vue({
         this.previewImage = this.myInfoData.profileImageUrl;
       })
       .catch(error => {
-        alert('유저정보 불러오는 중 에러 발생');
-        console.error(error);
+        this.errorHandler(error.status, '서버가 원활하지 않습니다.');
       })
     },
     onFileChange(event) { // 이미지 미리보기
@@ -153,8 +149,7 @@ new Vue({
           }
         })
         .catch(error => {
-          alert("수정중 오류가 발생했습니다.");
-          console.error(error);
+          this.errorHandler(error.status, '정보 수정중 오류가 발생했습니다.');
         })
       }
     },
@@ -174,8 +169,7 @@ new Vue({
           }
         })
         .catch(error => {
-          alert("예약 내역을 조회중 오류가 발생했습니다.");
-          console.log(error);
+          this.errorHandler(error.status, '예약내역 조회중 오류가 발생했습니다.');
         })
       }
     },
@@ -214,8 +208,7 @@ new Vue({
         this.bookMarkListCount = this.bookMarkListData.length;
       })
       .catch(error => {
-        alert('즐겨찾는 식당 정보 조회중 오류가 발생했습니다.');
-        console.error(error);
+        this.errorHandler(error.status, '즐겨찾는 식당 조회중 오류가 발생했습니다.');
       })
     },
     //=================== bookMark 종료
@@ -227,9 +220,7 @@ new Vue({
         this.reviewHistoryCount = this.reviewHistoryData.reviewCount;
       })
       .catch(error => {
-        if(error.status )
-        alert("리뷰 정보 조회중 오류가 발생했습니다.");
-        console.error(error);
+        this.errorHandler(error.status, '리뷰 정보 조회중 오류가 발생했습니다.');
       })
     },
     openReviewModal(reviewImageLists, index) {
@@ -257,8 +248,7 @@ new Vue({
           }
         })
         .catch(error => {
-          alert("리뷰 삭제중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
-          console.error(error);
+          this.errorHandler(error.status, '리뷰 삭제중 오류가 발생했습니다.');
         })
       }
     },
@@ -275,13 +265,11 @@ new Vue({
             }
           })
           .catch(error => {
-            alert('이미지 삭제중 오류가 발생했습니다. 잠시후 다시 시도해주세요.');
-            console.error(error);
+            this.errorHandler(error.status, '이미지 삭제중 오류가 발생했습니다.');
           })
         })
         .catch(error => {
-          alert('이미지 삭제중 오류가 발생했습니다. 잠시후 다시 시도해주세요.');
-          console.error(error);
+          this.errorHandler(error.status, '이미지 삭제중 오류가 발생했습니다.');
         })
       }
     },
@@ -355,8 +343,7 @@ new Vue({
           location.href = "/view/user/myPage";
         })
         .catch(error => {
-          alert(error.response.data.message);
-          console.error(error);
+          this.errorHandler(error.status, '리뷰 작성중 오류가 발생했습니다.');
         })
       }
     },
@@ -383,8 +370,7 @@ new Vue({
           location.href = "/view/user/myPage";
         })
         .catch(error => {
-          alert(error.response.data.message);
-          console.error(error);
+          this.errorHandler(error.status, '리뷰 수정중 오류가 발생했습니다.');
         })
       }
     },
@@ -397,6 +383,15 @@ new Vue({
         return false;
       }
       return true;
+    },
+    errorHandler(status, message) {
+      if(status === 401) {
+        alert("로그인이 필요한 서비스입니다.");
+        location.href='/view/user/userLogin';
+      }else {
+        alert(`${message}`);
+        location.href="/";
+      }
     }
   },
 });

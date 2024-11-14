@@ -37,7 +37,6 @@ public class S3ImageManager {
 		this.fileName = deleteFileName;
 	}
 		
-	// 유저 이메일을 받아와 암호화하여 객체생성
 	/**
 	 * @author yhs99
 	 * @param multipartImageFile 업로드 할 이미지 파일

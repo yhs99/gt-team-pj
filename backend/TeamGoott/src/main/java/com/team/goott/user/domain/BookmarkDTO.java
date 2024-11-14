@@ -23,9 +23,6 @@ public BookmarkDTO(int userId, int storeId) {
 	if (userId <= 0) {
         throw new IllegalArgumentException("유효한 userId를 입력해야 합니다.");
     }
-    if (storeId <= 0) {
-        throw new IllegalArgumentException("유효한 storeId를 입력해야 합니다.");
-    }
 	
 	this.userId =userId;
 	this.storeId = storeId;

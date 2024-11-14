@@ -1,5 +1,7 @@
 package com.team.goott.user.register.service;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.team.goott.infra.ValidationException;
@@ -11,5 +13,5 @@ public interface UserRegisterService {
 
 	public UserDTO userInfo(int userId);
 
-	public int userUpdate(UserDTO userDTO, MultipartFile imageFile) throws ValidationException, Exception;
+	public void userUpdate(UserDTO userDTO, MultipartFile imageFile, HttpSession session) throws ValidationException, Exception;
 }

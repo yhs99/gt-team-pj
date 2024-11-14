@@ -77,6 +77,7 @@ public class UserReviewServiceImpl implements UserReviewService {
 	public boolean addReviewPics(ReviewDTO reviewDTO) {
 		// 리뷰 추가
 		boolean result=false;
+		log.info("REVIEW DETAIL :: {}", reviewDTO.toString());
 		if(revDAO.insertReview(reviewDTO)==1) {
 			int generatedId = reviewDTO.getReviewId();
 			//리뷰 등록시 해당 식당 점주에게 알림설정 
@@ -221,10 +222,8 @@ public class UserReviewServiceImpl implements UserReviewService {
 	@Override
 	public List<ReviewDTO> getMyReview(int userId,int page, int size) {
 		ReviewPageDTO paging = ReviewPageDTO.builder().userId(userId).page(page).size(size).build();
+		log.info(paging.toString());
 		List<ReviewDTO> lst = revDAO.getMyReviews(paging);
-		for(ReviewDTO list : lst) {
-			log.info("{}",list.getCreateAtLocalDateTime().toString());
-		}
 		
 		return lst;
 	}

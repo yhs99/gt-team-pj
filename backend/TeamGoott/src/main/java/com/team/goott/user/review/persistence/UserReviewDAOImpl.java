@@ -56,9 +56,14 @@ public ReviewDTO reviewByNo(int reviewId) {
 
 @Override
 public int insertReview(ReviewDTO reviewDTO) {
-	// 리뷰 작성
-	return ses.insert(ns+"insertReview", reviewDTO);
+	//리뷰작성
+    try {
+        return ses.insert(ns + "insertReview", reviewDTO);
+    } catch (Exception e) {
+        throw new RuntimeException("리뷰 추가 중 오류 발생", e);
+    }
 }
+
 
 @Override
 public int delReview(int reviewId) {
@@ -69,7 +74,11 @@ public int delReview(int reviewId) {
 @Override
 public int insertImgs(ReviewImagesDTO reviewImg) {
 	// 이미지 첨부
-	return ses.insert(ns+"insertImgs", reviewImg);
+   try {
+        return ses.insert(ns + "insertImgs", reviewImg);
+    } catch (Exception e) {
+        throw new RuntimeException("이미지 추가 중 오류 발생", e);
+    }
 }
 
 @Override
@@ -132,7 +141,11 @@ public int changeStatusCodeId(int reserveId, int newStatusCode) {
 	Map<String, Object> reserveMap = new HashMap<String, Object>();
 	reserveMap.put("reserveId", reserveId);
 	reserveMap.put("statusCodeId", newStatusCode);
-	return ses.update(ns+"updateStatusCode",reserveMap);
+	 try {
+	        return ses.update(ns + "updateStatusCode", reserveMap);
+	    } catch (Exception e) {
+	        throw new RuntimeException("상태 코드 변경 중 오류 발생", e);
+	    }
 }
 
 @Override

@@ -1,19 +1,13 @@
 package com.team.goott.user.review.service;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -43,7 +37,7 @@ private AmazonS3 s3Client;
 
 private final String bucketName = "goott-bucket";
 
-@Inject
+@Autowired
 private UserReviewDAO revDAO;
 
 @Override
@@ -57,7 +51,6 @@ public List<ReviewDTO> getAllReviews(int storeId, String sort, int page, int siz
 		List<ReviewImagesDTO> images = selectReviewImagesByReviewId(list.getReviewId());
 		list.setReviewImages(images);
 		ReviewDTO userInfo = revDAO.selectUserByUserId(list.getUserId());
-		System.out.println(userInfo.toString()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		String userName = userInfo.getName();
 		String profileUrl = userInfo.getProfileImageUrl();
 		list.setName(userName);
@@ -79,31 +72,40 @@ public ReviewDTO reviewByNo(int reviewId) {
 }
 
 @Override
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, rollbackFor = Exception.class)
 public boolean addReviewPics(ReviewDTO reviewDTO) {
 	// 리뷰 추가
 	boolean result=false;
 	if(revDAO.insertReview(reviewDTO)==1) {
 		int generatedId = reviewDTO.getReviewId();
+		
 		if(reviewDTO.getReviewImages() != null) {
-			for(ReviewImagesDTO imgs : reviewDTO.getReviewImages()) {
-				imgs.setReviewId(generatedId);
-				revDAO.insertImgs(imgs);
+			try {
+				for(ReviewImagesDTO imgs : reviewDTO.getReviewImages()) {
+					imgs.setReviewId(generatedId);
+					revDAO.insertImgs(imgs);
+				}
+				log.info("이미지 저장 완료");
+			} catch (Exception e) {
+				log.info("이미지 저장 실패:",e);
+				throw new RuntimeException("리뷰 추가 중 오류 발생, 트랜잭션 롤백");
 			}
-			log.info("이미지 저장 완료");
 		}
-	}
 
-	if(revDAO.changeStatusCodeId(reviewDTO.getReserveId(), 5) > 0){
-
-	result = true;
-	log.info("리뷰 저장 완료");
-	}else {
+		if(revDAO.changeStatusCodeId(reviewDTO.getReserveId(), 5) > 0){
+		result = true;
+		log.info("리뷰 저장 완료");
+		}else {
+			log.error("리뷰 저장 실패: 리뷰 상태 코드 변경 실패");
+	        throw new RuntimeException("리뷰 상태 코드 변경 실패, 트랜잭션 롤백");
+		}
+		
+	} else {
 	    log.error("리뷰 저장 실패: 리뷰 추가에 실패했습니다.");
-
 	}
 	return result;
 }
+
 
 @Override
 public ReviewImagesDTO imageIntoDTO(int reviewId, MultipartFile file) throws IOException, Exception {

@@ -3,7 +3,7 @@
 <mapper namespace="com.team.mappers.user.review.userReviewMapper">
 
 <select id="getAllrevws" resultType="com.team.goott.user.domain.ReviewDTO">
-select * from review where storeId = #{storeId} and isDeleteReq = 0
+select * from review where storeId = #{storeId}
 order by ${orderBy} LIMIT #{startRow},#{size}
 </select>
 
@@ -12,7 +12,7 @@ select * from review where reviewId= #{reviewId}
 </select>
 
 <select id="getMyReview" resultType="com.team.goott.user.domain.ReviewDTO">
-select * from review where userId= #{userId} and isDeleteReq = 0
+select * from review where userId= #{userId}
 order by createAt DESC LIMIT #{startRow},#{size}
 </select>
 
@@ -23,11 +23,11 @@ select last_insert_id()
 </selectKey>
 </insert>
 
-<update id="deleteReview">
-update review set isDeleteReq = 1 where reviewId = #{reviewId}
-</update>
+<delete id="deleteReview">
+delete from review where reviewId = #{reviewId}
+</delete>
 
-<insert id="insertImgs">
+<insert id="insertImgs!">
 insert into reviewImages(reviewId, url, fileName, fileType) values (#{reviewId},#{url},#{fileName},#{fileType})
 </insert>
 
@@ -52,7 +52,7 @@ select * from reserve where userId = #{userId}
 </select>
 
 <select id="getUserReviews" resultType="com.team.goott.user.domain.ReviewDTO">
-select * from review where userId= #{userId} and isDeleteReq = 0
+select * from review where userId= #{userId}
 </select>
 
 <select id="getReserveByreserveId" resultType="com.team.goott.user.domain.ReserveDTO">

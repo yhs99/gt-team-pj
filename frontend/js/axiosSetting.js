@@ -14,12 +14,6 @@ axios.interceptors.response.use(function (response) {
   document.getElementById('spinner').classList.remove('show');
   return response;
 }, function (error) {
-  console.log("interceptor")
-  console.log(error)
-  if (error.status === 401) {
-    alert(error.message);
-    window.location.href = '/view/user/userLogin';
-  }
   // 응답에서 에러가 발생해도 스피너를 숨김
   document.getElementById('spinner').classList.remove('show');
   return Promise.reject(error);

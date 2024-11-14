@@ -225,9 +225,9 @@ new Vue({
       .then(response => {
         this.reviewHistoryData = response.data.data;
         this.reviewHistoryCount = this.reviewHistoryData.reviewCount;
-        console.log(this.reviewHistoryData);
       })
       .catch(error => {
+        if(error.status )
         alert("리뷰 정보 조회중 오류가 발생했습니다.");
         console.error(error);
       })
@@ -235,8 +235,6 @@ new Vue({
     openReviewModal(reviewImageLists, index) {
       this.reviewImageLists = reviewImageLists;
       this.currentImageIndex = index;
-      console.log(this.reviewImageLists);
-      console.log(this.currentImageIndex);
     },
     controlImages(command) {
       if(command==='prev' && this.currentImageIndex > 0) {
@@ -268,11 +266,18 @@ new Vue({
     //====================== 리뷰수정, 작성 시작
     deleteRequestImage(reviewId, imageId, index) {
       if(confirm("이미지를 삭제하시겠습니까? 삭제 후 수정 취소시 이미지 복구가 가능합니다.")) {
-        axios.delete(`/api/review/${reviewId}/${imageId}`)
+        axios.get(`/api/review/${reviewId}`)
         .then(response => {
-          if(response.status === 200) {
-            this.updateReviewData.reviewImages.splice(index, 1);
-          }
+          axios.delete(`/api/review/${reviewId}/${imageId}`)
+          .then(response => {
+            if(response.status === 200) {
+              this.updateReviewData.reviewImages.splice(index, 1);
+            }
+          })
+          .catch(error => {
+            alert('이미지 삭제중 오류가 발생했습니다. 잠시후 다시 시도해주세요.');
+            console.error(error);
+          })
         })
         .catch(error => {
           alert('이미지 삭제중 오류가 발생했습니다. 잠시후 다시 시도해주세요.');

@@ -1,0 +1,15 @@
+.modal-content {
+  background-color: transparent; /* 모달 배경을 투명으로 설정 */
+  border: none; /* 모달의 경계선 없애기 */
+}
+.modal-header {
+  border: none; /* 헤더의 경계선 없애기 */
+}
+.modal-body {
+  text-align: center; /* 이미지와 버튼을 가운데 정렬 */
+}
+.btn-custom {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  margin: 10px;
+}

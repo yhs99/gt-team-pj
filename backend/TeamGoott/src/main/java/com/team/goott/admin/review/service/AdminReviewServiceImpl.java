@@ -103,7 +103,7 @@ public class AdminReviewServiceImpl implements AdminReviewService {
 	public boolean deleteReview(int reviewId) throws ImageDeleteFailedException, Exception {
 		ReviewDTO targetReviewInfo = dao.getTargetReviewInfo(reviewId);
 		if(targetReviewInfo == null ) {
-			throw new Exception("유효하지 않은 리뷰이거나, 삭제 요청이 되지 않은 리뷰입니다.");
+			throw new IllegalArgumentException("유효하지 않은 리뷰이거나, 삭제 요청이 되지 않은 리뷰입니다.");
 		}
 		List<ReviewImagesDTO> targetReviewImageInfo = dao.getTargetReviewImages(reviewId);
 		if(targetReviewImageInfo != null && targetReviewImageInfo.size() > 0) {
@@ -115,6 +115,7 @@ public class AdminReviewServiceImpl implements AdminReviewService {
 										.deleteImage();
 					if(!result) throw new ImageDeleteFailedException("이미지 객체 삭제 실패", fileName);
 				} catch (Exception e) {
+					e.printStackTrace();
 					throw new Exception(e.getMessage());
 				}
 			}

@@ -47,7 +47,7 @@ public class UserRegisterServiceImpl implements UserRegisterService {
 		}
 		
 		// 유저 프로필 이미지 업로드 처리
-		if(!user.getImageFile().getOriginalFilename().isEmpty()) {
+		if(user.getImageFile() != null) {
 			S3ImageManager imageManager = new S3ImageManager(user.getImageFile(), s3Client, bucketName);
 			imageInfo = imageManager.uploadImage();
 		}
@@ -77,15 +77,16 @@ public class UserRegisterServiceImpl implements UserRegisterService {
 		Map<String, String> imageInfo = new HashMap<String, String>();
 		imageInfo.put("imageUrl", null);
 		imageInfo.put("imageFileName", null);
-		String ProfileImageName =userDTO.getProfileImageName();
+		String ProfileImageName = userDTO.getProfileImageName();
 		// 수정 정보 유효성 검사
-		String msg =new RegisterValidator().validateName(userDTO.getName());
-				if (msg.equals("success")) {
-					msg =new RegisterValidator().validatePhoneNumber(userDTO.getMobile());
-				}if (msg.equals("success")&&imageFile!=null) {
-					// 변경할 이미지 파일이 있을경우만 체크
-					msg =new RegisterValidator().validateImageFile(imageFile);
-				}
+		String msg = new RegisterValidator().validateName(userDTO.getName());
+		if (msg.equals("success")) {
+			msg = new RegisterValidator().validatePhoneNumber(userDTO.getMobile());
+		}
+		if (msg.equals("success")&&imageFile!=null) {
+			// 변경할 이미지 파일이 있을경우만 체크
+			msg = new RegisterValidator().validateImageFile(imageFile);
+		}
 		// 유저 회원정보 수정시 유효성검사  ValidationException 발생
 		if(!msg.equals("success")) {
 			throw new ValidationException(msg);

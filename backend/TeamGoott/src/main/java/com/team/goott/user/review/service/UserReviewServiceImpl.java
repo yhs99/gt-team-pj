@@ -22,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.team.goott.infra.S3ImageManager;
+import com.team.goott.owner.domain.NotificationDTO;
+import com.team.goott.owner.domain.NotificationType;
 import com.team.goott.user.domain.ReserveDTO;
 import com.team.goott.user.domain.ReviewDTO;
 import com.team.goott.user.domain.ReviewImagesDTO;
@@ -77,20 +79,43 @@ public class UserReviewServiceImpl implements UserReviewService {
 		boolean result=false;
 		if(revDAO.insertReview(reviewDTO)==1) {
 			int generatedId = reviewDTO.getReviewId();
+			//리뷰 등록시 해당 식당 점주에게 알림설정 
+			int sendNotification = sendNotificationsToOwner(reviewDTO);
+			if(sendNotification == 1) {
+				log.info("알림설정 완료");
+			}
 			if(reviewDTO.getReviewImages() != null) {
 				for(ReviewImagesDTO imgs : reviewDTO.getReviewImages()) {
 					imgs.setReviewId(generatedId);
 					revDAO.insertImgs(imgs);
 				}
+				log.info("이미지 저장 완료");
 			}
+		}
 			
-			log.info("리뷰 저장 완료");
-			result = true;
+		if(revDAO.changeStatusCodeId(reviewDTO.getReserveId(), 5) > 0){
+			
+		result = true;
+		log.info("리뷰 저장 완료");
+		}else {
+		    log.error("리뷰 저장 실패: 리뷰 추가에 실패했습니다.");
+				
 		}
 		return result;
 	}
 
 
+
+	private int sendNotificationsToOwner(ReviewDTO reviewDTO) {
+		NotificationDTO notification = new NotificationDTO();
+		notification.setUserId(reviewDTO.getUserId());
+		notification.setStoreId(reviewDTO.getStoreId());
+		notification.setNotificationType(NotificationType.valueOf("CUSTOMER_TO_OWNER"));
+		notification.setReserveId(reviewDTO.getReserveId());
+		notification.setMessage("예약번호 : " + reviewDTO.getReserveId() +" 님께서 리뷰를 작성하셨습니다.");
+		
+		return revDAO.setNotification(notification);
+	}
 
 	@Override
 	public ReviewImagesDTO imageIntoDTO(int reviewId, MultipartFile file) throws IOException, Exception {
@@ -121,7 +146,7 @@ public class UserReviewServiceImpl implements UserReviewService {
 
 	@Override
 	@Transactional
-	public boolean deleteReviewNFile(int reviewId, List<ReviewImagesDTO> list) {
+	public boolean deleteReviewNFile(int reviewId, int reserveId, List<ReviewImagesDTO> list) {
 		// 리뷰 삭제, 파일 삭제
 		boolean result = false;
 		System.out.println(list == null);
@@ -146,10 +171,16 @@ public class UserReviewServiceImpl implements UserReviewService {
 						}
 					}
 				   }else {
-					   result=true;
 					   log.info("삭제할 이미지가 없음, 리뷰만 삭제 완료");
 				   }
-			}
+			 if(revDAO.changeStatusCodeId(reserveId, 4) > 0){
+					
+				 	result=true;
+					log.info("statusCode 4변경 완료");
+					
+					}
+				}
+			
 			} catch (Exception e) {
 				 log.error("삭제 중 오류 발생: {}", e.getMessage());
 			}
@@ -221,6 +252,12 @@ public class UserReviewServiceImpl implements UserReviewService {
 	public List<ReviewImagesDTO> selectReviewImagesByReviewId(int reviewId) {
 		// reviewId에 따른 reviewImages
 		return revDAO.filesByNo(reviewId);
+	}
+
+	@Override
+	public int checkImageExist(int imageId) {
+		// 이미지 파일이 존재하는지 확인
+		return revDAO.checkIfImageExist(imageId);
 	}
 
 

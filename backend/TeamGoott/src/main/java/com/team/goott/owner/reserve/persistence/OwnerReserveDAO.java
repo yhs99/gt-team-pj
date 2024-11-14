@@ -34,4 +34,8 @@ public interface OwnerReserveDAO {
 
 	int updateNotification(int alarmId);
 
+	Boolean getIsReserved(LocalDateTime reserveTime, int storeId);
+
+	int updateReserveSlot(LocalDateTime reserveTime, int storeId);
+
 }

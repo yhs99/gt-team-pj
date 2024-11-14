@@ -9,7 +9,7 @@ import com.team.goott.user.domain.ExtendedCartDTO;
 public interface UserCartService {
 	List<CartDTO> getUserCart(int userId) throws Exception;
 
-	void addCart(CartDTO cartDTO) throws Exception;
+	void addCart(CartDTO cartDTO, int userId) throws Exception;
 
 	void deleteFromCart(int cartId, int userId) throws Exception;
 

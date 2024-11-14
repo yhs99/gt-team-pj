@@ -4,6 +4,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.context.annotation.Description;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ResponseAspect {
 	
+	@Order(2)
 	@Description("이 AOP는 REST API의 일관된 형식을 제공하기 위해 제작한 AOP입니다.")
 	@Around("execution(* com.team.goott..controller..*(..))")
     public Object wrapResponse(ProceedingJoinPoint joinPoint) throws Throwable {

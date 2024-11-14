@@ -29,7 +29,7 @@
       <script src="/node_modules/vue/dist/vue.min.js"></script>
       <script src="https://cdn.rawgit.com/rikmms/progress-bar-4-axios/0a3acf92/dist/index.js"></script>
       <script src="/node_modules/axios/dist/axios.min.js"></script>
-      <script src="/js/user/lib/main.js"></script>
+      <script src="/js/user/main.js"></script>
   </head>
   <script>
   </script>
@@ -43,7 +43,7 @@
     <div class="container p-3 mb-3">
       <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-          <a class="navbar-brand fs-3 text-warning fw-bold" href="#"><img src="/assets/mainIcon.png"> SmartReserve</a>
+          <a class="navbar-brand fs-3 text-warning fw-bold" href="/"><img src="/assets/mainIcon.png"> SmartReserve</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -71,7 +71,7 @@
             </div>
             <div v-else>
               <button class="btn btn-outline-warning m-2" type="button" onclick="location.href = '/view/user/userLogin'">로그인</button>
-              <button class="btn btn-outline-warning m-2" type="button" onclick="location.href = '/view/user/userRegister'">회원가입</button>
+              <button class="btn btn-outline-warning m-2" type="button" onclick="location.href = '/view/user/register'">회원가입</button>
             </div>
           </div>
         </div>
@@ -108,6 +108,6 @@
   </div>
 </div>
 
-    <script src="/js/user/lib/index.js"></script>
+    <script src="/js/user/index.js"></script>
   </body>
 </html>

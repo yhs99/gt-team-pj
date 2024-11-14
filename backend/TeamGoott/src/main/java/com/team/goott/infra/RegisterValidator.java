@@ -49,9 +49,9 @@ public class RegisterValidator {
 
     // 핸드폰 번호 형식 검증
     public String validatePhoneNumber(String phoneNumber) {
-    	if(phoneNumber != null && !"".equals(phoneNumber) ) {
+    	if(phoneNumber != null && !phoneNumber.equals("")) {
 	        String phoneRegex = "^\\d{3}-\\d{4}-\\d{4}$";
-	        if (!Pattern.matches(phoneRegex, phoneNumber) || phoneNumber == null) {
+	        if (!Pattern.matches(phoneRegex, phoneNumber)) {
 	            return "핸드폰 번호 형식은 ###-####-#### 이어야 합니다.";
 	        }
 	        return SUCCESS;
@@ -96,7 +96,9 @@ public class RegisterValidator {
     	if(errorMsg != SUCCESS) return errorMsg;
     	errorMsg = validateGender(user.getGender());
     	if(errorMsg != SUCCESS) return errorMsg;
-    	errorMsg = validateImageFile(user.getImageFile());
+    	if(user.getImageFile() != null) {
+    		errorMsg = validateImageFile(user.getImageFile());
+    	}
     	if(errorMsg != SUCCESS) return errorMsg;
     	errorMsg = validateName(user.getName());
     	if(errorMsg != SUCCESS) return errorMsg;

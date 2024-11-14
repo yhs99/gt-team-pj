@@ -24,7 +24,7 @@ insert into review (storeId,userId,reserveId, score,content) values (#{storeId},
 </insert>
 
 <update id="deleteReview">
-update review set isDeleteReq = 1 where reviewId = #{reviewId}
+update review set isDeleteReq = 1 where reviewId = #{reviewId} 
 </update>
 
 <insert id="insertImgs">
@@ -58,5 +58,19 @@ select * from review where userId= #{userId} and isDeleteReq = 0
 <select id="getReserveByreserveId" resultType="com.team.goott.user.domain.ReserveDTO">
 select * from reserve where reserveId = #{reserveId}
 </select>
+
+<select id="countImageId" resultType="int">
+select count(*) from reviewImages where imageId = #{imageId}
+</select>
+
+<update id="updateStatusCode">
+ update reserve set statusCodeId = #{statusCodeId} where reserveId = #{reserveId} 
+</update>
+
+
+<insert id="setNotification">
+	insert into notification(userId , message, storeId, notificationType, reserveId) 
+	values(#{userId}, #{message}, #{storeId}, #{notificationType}, #{reserveId})
+</insert>
 
 </mapper>

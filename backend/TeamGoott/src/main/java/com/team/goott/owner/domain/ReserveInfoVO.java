@@ -21,6 +21,7 @@ import lombok.ToString;
 public class ReserveInfoVO {
 	private int totalReserve;
 	private int totalTodayReserve;
+	private int[] MonthlyTotalReserve;
 	
 	private List<ReserveDTO> reservations; 
 }

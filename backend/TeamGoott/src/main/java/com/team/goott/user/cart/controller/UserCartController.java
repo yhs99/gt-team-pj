@@ -38,7 +38,6 @@ public class UserCartController {
 		}
 
 		try {
-			
 			cart = userCartService.getUserCartById(userSession.getUserId());
 			if (cart == null || cart.isEmpty()) {
 				return ResponseEntity.ok("");
@@ -59,16 +58,7 @@ public class UserCartController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
 		}
 		try {
-			cartDTO.setUserId(userSession.getUserId());
-			
-		    List<CartDTO> existingCartItems = userCartService.getUserCart(cartDTO.getUserId());
-		    
-		    for(CartDTO existingItem : existingCartItems) {
-		        if (existingItem.getStoreId() != cartDTO.getStoreId()) {
-		        	 return ResponseEntity.badRequest().body("장바구니에는 같은 식당 메뉴만 추가할 수 있습니다.");
-		        }
-		    }
-			userCartService.addCart(cartDTO);
+			userCartService.addCart(cartDTO,userSession.getUserId());
 			log.info("메뉴가 추가됐습니다 : {}", cartDTO);
 			return ResponseEntity.ok("메뉴가 장바구니에 담겼습니다.");
 		} catch (Exception e) {

@@ -15,6 +15,11 @@ import lombok.ToString;
 @Builder
 public class MenuDTO {
 	private int menuId;
-	private double price;
+	private int storeId;
 	private String menuName;
+	private int price;
+	private String menuImageUrl;
+	private String menumenuImageName;;
+	private String description;
+	private boolean isMain;
 }

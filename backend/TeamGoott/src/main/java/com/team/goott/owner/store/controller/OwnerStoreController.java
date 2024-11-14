@@ -143,7 +143,7 @@ public class OwnerStoreController {
 			@RequestPart("scheduleDTO") List<ScheduleDTO> schedules,
 			@RequestPart("storeCategoryDTO") List<StoreCategoryDTO> category,
 			@RequestPart("facilityDTO") List<FacilityDTO> facility,
-			@RequestPart(value = "file", required = false) List<MultipartFile> files) {
+			@RequestPart(value = "uploadedFiles", required = false) List<MultipartFile> files) {
 
 		// 세션에서 ownerId 가져오기
 		
@@ -183,7 +183,7 @@ public class OwnerStoreController {
             @RequestPart(value = "scheduleDTO", required = false) List<ScheduleDTO> schedules,
             @RequestPart(value = "storeCategoryDTO", required = false) List<StoreCategoryDTO> category,
             @RequestPart(value = "facilityDTO", required = false) List<FacilityDTO> facility,
-            @RequestPart(value = "file", required = false) List<MultipartFile> updateFiles,
+            @RequestPart(value = "uploadedFiles", required = false) List<MultipartFile> updateFiles,
             @RequestPart(value = "deletedImageUrls", required = false) List<Object> deleteImages) throws Exception {
     	
     	// 삭제 요청받은 fileName을 저장하는 리스트
@@ -233,6 +233,7 @@ public class OwnerStoreController {
             }
         } catch (Exception e) {
             log.error("가게 수정 중 오류 발생: {}", e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("가게 수정 중 오류가 발생하였습니다.");
         }
     }
@@ -262,13 +263,13 @@ public class OwnerStoreController {
 	// dayCodeId에 따라 요일 반환하는 메서드
 	private String getDayOfWeek(int dayCodeId) {
 	    switch (dayCodeId) {
-	        case 0: return "일요일";
 	        case 1: return "월요일";
 	        case 2: return "화요일";
 	        case 3: return "수요일";
 	        case 4: return "목요일";
 	        case 5: return "금요일";
 	        case 6: return "토요일";
+	        case 0: return "일요일";
 			default:
 				return "알 수 없는 요일";
 			}

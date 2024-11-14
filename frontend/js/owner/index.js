@@ -6,7 +6,13 @@ new Vue({
     reviews: [],
     reserves: [],
     store: [],
-    coupon: [],
+    coupon: [{
+      couponName: '',
+      discount: 0,
+      stock: 0,
+      start: '', // 빈 문자열로 초기화
+      end: '',   // 빈 문자열로 초기화
+    }],
     sales: [],
     notifications: [],
     countMonthlySalesCount: [],
@@ -18,6 +24,9 @@ new Vue({
   },
 
   computed: {
+    sortedCoupons() {
+      return this.coupon.sort((a, b) => b.couponId - a.couponId); // 쿠폰 번호 기준 내림차순 정렬
+    },
     // 예약 완료 상태는 보여주지 않음
     filteredReserves() {
       return this.reserves.filter(reserve => reserve.statusCodeId !== 4).slice(0, 5);
@@ -44,6 +53,7 @@ new Vue({
   },
 
   methods: {
+
     getFullCalendar() {
       document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
@@ -116,7 +126,7 @@ new Vue({
       });
     },
 
-    // 알림 목록 받아오기
+  // 알림 목록 받아오기
     getNotification() {
       axios.get("/api/owner/reserve/notification").then((response) => {
         console.log(response);
@@ -162,7 +172,7 @@ new Vue({
       axios.get('/api/coupon') // 쿠폰 데이터 요청
         .then(response => {
           console.log(response);
-          this.coupon = response.data.data.coupon; // 쿠폰 데이터를 저장
+          this.coupon = response.data.data; // 쿠폰 데이터를 저장
         })
         .catch(error => {
           console.error("쿠폰 데이터 로드 중 오류 발생:", error);
@@ -240,6 +250,11 @@ new Vue({
       // 밀리초 단위의 타임스탬프를 변환하여 날짜로 포맷
       const date = new Date(timestamp);
       return date.toLocaleString(); // 날짜와 시간을 로컬 형식으로 반환
+    },
+    formatDate(dateArray) {
+      // 배열을 날짜로 변환하고, yyyy-MM-dd 형식으로 반환
+      const date = new Date(dateArray[0], dateArray[1] - 1, dateArray[2]);
+      return date.toISOString().split('T')[0]; // yyyy-MM-dd 형식
     },
 
     mounted() {}

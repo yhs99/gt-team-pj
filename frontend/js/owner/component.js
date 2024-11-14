@@ -34,6 +34,7 @@ Vue.component('sidebar-component', {
             </div>
             <div class="navbar-nav w-100">
                 <a href="/view/owner/index" :class="['nav-item', 'nav-link', isActive('/view/owner/index')]"><i class="fa fa-tachometer-alt me-2"></i>대시보드</a>
+                <a href="/view/owner/storeModify" :class="['nav-item', 'nav-link', isActive('/view/owner/storeModify')]"><i class="fa fa-th me-2"></i>가게 수정</a>
                 <a href="/view/owner/menu" :class="['nav-item', 'nav-link', isActive('/view/owner/menu')]"><i class="fa fa-th me-2"></i>메뉴 관리</a>
                 <a href="/view/owner/coupon" :class="['nav-item', 'nav-link', isActive('/view/owner/coupon')]"><i class="fa fa-keyboard me-2"></i>쿠폰 관리</a>
                 <a href="/view/owner/reserve" :class="['nav-item', 'nav-link', isActive('/view/owner/reserve')]"><i class="fa fa-table me-2"></i>예약 관리</a>
@@ -61,7 +62,7 @@ Vue.component('sidebar-component', {
             return this.activeMenu === menu ? 'active' : '';
         }
     }
-});
+})
 
 Vue.component('footer-component', {
 template: `
@@ -77,7 +78,153 @@ template: `
 `
 });
 
-Vue.component('spinner-component', {
+  Vue.component('navbar-component', {
+    data() {
+        return {
+            loginType: '',
+            store: [],
+            storeName: '',
+            notifications: [],
+        }
+    },
+    template:
+    `<nav
+          class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0"
+        >
+          <a
+            href="/view/owner/index"
+            class="navbar-brand d-flex d-lg-none me-4"
+          >
+            <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
+          </a>
+          <a href="#" class="sidebar-toggler flex-shrink-0">
+            <i class="fa fa-bars"></i>
+          </a>
+
+          <div class="navbar-nav align-items-center ms-auto">
+            <div class="nav-item dropdown">
+              <a
+                href="#"
+                class="nav-link dropdown-toggle"
+                data-bs-toggle="dropdown"
+              >
+                <i class="fa fa-bell me-lg-2 position-relative">
+                  <span
+                    v-if="filteredNotifications.some(notification => !notification.read)"
+                    class="position-absolute top-0 start-100 translate-middle p-1 bg-danger rounded-circle"
+                    style="width: 8px; height: 8px;"
+                  ></span>
+
+                </i>
+                <span class="d-none d-lg-inline-flex">알림</span>
+              </a>
+              <div
+                class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0"
+              >
+              <div  v-for ="(notification, index) in filteredNotifications" :key="notification.alarmId">
+                <a class="dropdown-item" role="button" @click="readNotification(notification.alarmId, index)" :style="{'color': notification.read ? '#888' : 'initial'}" >
+                  <h6 class="fw-normal mb-0">{{notification.message}}</h6>
+                  <small>{{notification.createAt}}</small>
+                </a>
+                <hr class="dropdown-divider" />
+              </div>
+                <a href="/view/owner/notification" class="dropdown-item text-center"
+                  >모든 알림메세지 확인하기</a
+                >
+              </div>
+            </div>
+            <div class="nav-item dropdown">
+              <a
+                href="#"
+                class="nav-link dropdown-toggle"
+                data-bs-toggle="dropdown"
+              >
+                <span class="d-none d-lg-inline-flex">{{ name }}</span>
+              </a>
+              <div
+                class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0"
+              >
+                <a @click="logoutProcess" href="#" class="dropdown-item"
+                  >로그아웃</a
+                >
+              </div>
+            </div>
+          </div>
+        </nav>`,
+  created: function(){
+    this.fetchUserData();
+    this.spinner();
+    this.getNotification();
+  },
+  computed: {
+    // 예약 완료 상태는 보여주지 않음
+    filteredReserves() {
+      return this.reserves.filter(reserve => reserve.statusCodeId !== 4).slice(0, 5);
+    },
+    // 리뷰 요청 삭제 된거는 보여주지 않음
+    filteredReviews() {
+      return this.reviews.filter(review => !review.deleteReq).slice(0, 5);
+    },
+    // 읽은 알림은 보여주지 않음
+    filteredNotifications() {
+      return this.notifications.slice(0, 5);
+    },
+  },
+
+  methods: {
+    // 알림 읽음 처리
+    readNotification(alarmId, index) {
+        this.notifications[index].read = true;
+        const params = { alarmId: alarmId };
+        axios
+            .put("/api/owner/reserve/notification", null, { params })
+            .then((response) => {
+            console.log(response);
+            });
+        },
+    // 알림 목록 받아오기
+    getNotification() {
+        axios.get("/api/owner/reserve/notification").then((response) => {
+            console.log(response);
+            this.notifications = response.data.data;
+        });
+        },
+    fetchUserData: function() {
+      axios.get('/api/status')
+      .then(response => {
+        console.log("owner checked");
+      })
+      .catch(error => {
+        if(error.status === 401) {
+          alert('로그인 정보를 확인할 수 없습니다. 다시 로그인해주세요');
+        }else {
+          alert('서버 오류로 인해 정보를 확인할 수 없습니다.');
+        }
+        location.href = '/view/user/login';
+      });
+    },
+    logoutProcess: function() {
+      axios.post('/api/logout')
+        .then(response => {
+          console.log(response);
+          if(response.status === 200) {
+            location.href = '/';
+          }
+        }).catch(error => {
+          console.error(error);
+        });
+    },
+    spinner: function() {
+      setTimeout(function () {
+          if ($('#spinner').length > 0) {
+              $('#spinner').removeClass('show');
+          }
+      }, 1);
+    }
+  }
+  });
+
+  Vue.component('spinner-component', {
     template: `
     <div
           id="spinner"

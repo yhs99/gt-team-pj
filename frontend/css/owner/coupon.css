@@ -1,4 +1,155 @@
-
+/* 공통 스타일 */
 body {
-    font-family: 'Apple SD Gothic Neo';
+  font-family: 'Apple SD Gothic Neo', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9; /* 배경색을 밝고 부드럽게 */
+}
+
+/* 쿠폰 행 스타일 */
+.coupon-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin: 20px auto;
+}
+
+/* 각 쿠폰 아이템의 스타일 */
+.coupon-item {
+  flex: 1 1 100%; /* 한 줄에 1개씩 나오도록 설정 */
+  max-width: 350px; /* 최대 너비를 설정하여 너무 넓어지지 않도록 */
+  margin-bottom: 20px;
+}
+
+/* 미디어 쿼리로 화면 크기에 따라 레이아웃 조정 */
+@media (min-width: 768px) {
+  .coupon-item {
+    flex: 1 1 48%; /* 화면 크기가 768px 이상일 때 2개씩 나오도록 설정 */
   }
+}
+
+@media (min-width: 1024px) {
+  .coupon-item {
+    flex: 1 1 30%; /* 화면 크기가 1024px 이상일 때 3개씩 나오도록 설정 */
+  }
+}
+
+/* 카드 스타일 */
+.card {
+  background-color: #6EC1E4;
+  border-radius: 15px;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* 부드럽고 깊은 그림자 */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 부드러운 전환 효과 */
+}
+
+.card:hover {
+  transform: translateY(-5px); /* 카드에 마우스 오버시 살짝 떠오르는 효과 */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* 더 깊은 그림자 */
+}
+
+/* 카드 본문 스타일 */
+.card-body {
+  padding: 20px;
+  background-color: #f3f9fc; /* 부드럽고 차분한 배경 */
+  border-bottom: 2px solid #e1e1e1; /* 카드 하단에 세련된 구분선 */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.card-text {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.card-footer {
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-top: 2px solid #e1e1e1;
+  text-align: center;
+}
+
+/* 페이지 네이션 컨테이너 */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* 페이지 버튼 공통 스타일 */
+.page-btn {
+  background-color: #6EC1E4; /* 기본 버튼 색 */
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 10px 18px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 */
+}
+
+/* 활성화된 페이지 버튼 */
+.page-btn.active {
+  background-color: #17abeb; /* 활성화된 색 */
+  border-color: #003366;
+}
+
+/* 페이지 버튼 hover 효과 */
+.page-btn:hover {
+  background-color: #0056b3; /* hover 색 */
+  transform: scale(1.1); /* 살짝 커지도록 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 강화 */
+}
+
+/* 비활성화된 페이지 버튼 */
+.page-btn:disabled {
+  background-color: #e0e0e0; /* 비활성화된 버튼 색 */
+  color: #b0b0b0;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* 이전/다음 버튼 스타일 */
+.page-btn-prev, .page-btn-next {
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  font-size: 18px;
+  padding: 6px 14px;
+  color: black;
+  border: 1px solid #6EC1E4;
+  box-shadow: none;
+}
+
+.page-btn-prev:hover, .page-btn-next:hover {
+  background-color: #6EC1E4;
+  border-color: #6EC1E4;
+  color: white;
+}
+
+/* 버튼 간격 조정 */
+.pagination-container .page-btn:first-child,
+.pagination-container .page-btn:last-child {
+  border-radius: 4px;
+}

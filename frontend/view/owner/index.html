@@ -59,84 +59,24 @@
     <!-- Template Javascript -->
     <script type="module" src="/js/owner/main.js"></script>
     <script src="../../js/owner/component.js"></script>
+    
+    
   </head>
 
   <body>
     <div id="app">
-    <div class="container-xxl position-relative bg-white d-flex p-0">
-      <!-- Spinner Start -->
-      <spinner-component></spinner-component>
-      <!-- Spinner End -->
-
+      <div class="container-xxl position-relative bg-white d-flex p-0">
+        <!-- Spinner Start -->
+        <spinner-component></spinner-component>
+        <!-- Spinner End -->
+        
       <!-- Sidebar Start -->
       <sidebar-component></sidebar-component>
       <!-- Sidebar End -->
 
       <div class="content">
         <!-- Navbar Start -->
-        <nav
-          class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0"
-        >
-          <a
-            href="/view/owner/index"
-            class="navbar-brand d-flex d-lg-none me-4"
-          >
-            <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-          </a>
-          <a href="#" class="sidebar-toggler flex-shrink-0">
-            <i class="fa fa-bars"></i>
-          </a>
-
-          <div class="navbar-nav align-items-center ms-auto">
-            <div class="nav-item dropdown">
-              <a
-                href="#"
-                class="nav-link dropdown-toggle"
-                data-bs-toggle="dropdown"
-              >
-                <i class="fa fa-bell me-lg-2 position-relative">
-                  <span
-                    v-if="filteredNotifications.some(notification => !notification.read)"
-                    class="position-absolute top-0 start-100 translate-middle p-1 bg-danger rounded-circle"
-                    style="width: 8px; height: 8px;"
-                  ></span>
-
-                </i>
-                <span class="d-none d-lg-inline-flex">알림</span>
-              </a>
-              <div
-                class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0"
-              >
-              <div  v-for ="(notification, index) in filteredNotifications" :key="notification.alarmId">
-                <a class="dropdown-item" role="button" @click="readNotification(notification.alarmId, index)" :style="{'color': notification.read ? '#888' : 'initial'}" >
-                  <h6 class="fw-normal mb-0">{{notification.message}}</h6>
-                  <small>{{notification.createAt}}</small>
-                </a>
-                <hr class="dropdown-divider" />
-              </div>
-                <a href="#" class="dropdown-item text-center"
-                  >모든 알림메세지 확인하기</a
-                >
-              </div>
-            </div>
-            <div class="nav-item dropdown">
-              <a
-                href="#"
-                class="nav-link dropdown-toggle"
-                data-bs-toggle="dropdown"
-              >
-                <span class="d-none d-lg-inline-flex">{{ name }}</span>
-              </a>
-              <div
-                class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0"
-              >
-                <a @click="logoutProcess" href="#" class="dropdown-item"
-                  >로그아웃</a
-                >
-              </div>
-            </div>
-          </div>
-        </nav>
+        <navbar-component></navbar-component>
         <!-- Navbar End -->
         <!-- Sale & Revenue Start -->
         <div class="container-fluid pt-4 px-4 mb-4">
@@ -344,6 +284,56 @@
             </div>
           </div>
         </div>
+        
+<!-- 쿠폰을 최신순으로 5개 출력 -->
+<div id="couponList" class="container-fluid pt-4 px-4">
+  <div class="bg-light text-center rounded p-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <h6 class="mb-0">최신 쿠폰</h6>
+      <a href="/view/owner/coupon">전체 보기</a>
+    </div>
+    <div class="table-responsive">
+      <table class="table text-start align-middle table-bordered table-hover mb-0">
+        <thead>
+          <tr class="text-dark">
+            <th scope="col" style="color: black;">쿠폰 번호</th>
+            <th scope="col" style="color: black;">쿠폰 이름</th>
+            <th scope="col" style="color: black;">할인율</th>
+            <th scope="col" style="color: black;">수량</th>
+            <th scope="col" style="color: black;">기간</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- v-for를 사용하여 쿠폰을 정렬하고 상위 5개만 출력 -->
+          <tr v-for="(singleCoupon, index) in sortedCoupons.slice(0, 5)" :key="singleCoupon.couponId">
+            <td>{{ singleCoupon.couponId }}</td>
+            <td>{{ singleCoupon.couponName }}</td>
+            <td>
+              <!-- 할인율이 100 미만이면 % 붙이고, 100 이상이면 원 붙이기 -->
+              {{ singleCoupon.discount }}
+              <span v-if="singleCoupon.discount < 100">%</span>
+              <span v-else>(원)</span>
+            </td>
+            <td>
+              <!-- 수량이 -1이면 '무제한' 표시 -->
+              <span v-if="singleCoupon.stock === -1">무제한</span>
+              <span v-else>{{ singleCoupon.stock }}</span>
+            </td>
+            <td>
+              <!-- stock이 -1이면 날짜를, 아니면 '무기한' 표시 -->
+              <span v-if="singleCoupon.stock === -1">
+                {{ formatDate(singleCoupon.start) }} ~ {{ formatDate(singleCoupon.end) }}
+              </span>
+              <span v-else>무기한</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
 
         <!-- Footer Start -->
         <footer-component></footer-component>
@@ -356,8 +346,8 @@
         ><i class="bi bi-arrow-up"></i
       ></a>
     </div>
-    <script src="/js/owner/index.js"></script>
-
+    
   </div>
+  <script src="/js/owner/index.js"></script>
 </body>
 </html>

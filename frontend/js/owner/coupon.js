@@ -1,5 +1,5 @@
 new Vue({
-    el: "#vueApp",
+    el: "#app",
     data: {
         coupons: [],
         selectedCouponId: null,
@@ -12,6 +12,11 @@ new Vue({
             end: '',   // 빈 문자열로 초기화
         },
         originalCoupon: null, // 원래 쿠폰 정보를 저장할 변수 추가
+        currentPage: 1, // 현재 페이지
+        pageSize: 5, // 페이지당 표시 갯수
+        couponCount: 0, // 검색 총 결과수
+        totalPages: 0, // 총 페이지
+        paginatedCoupons: [] // 페이지네이션된 쿠폰 리스트
     },
     computed: {
         formattedDiscount() {
@@ -31,19 +36,45 @@ new Vue({
         }
     },
     created() {
-        this.getAllCoupons();
+        this.getAllCoupons(); // 첫 번째 페이지 데이터 로드
+    },
+    mounted() {
+        this.paginateCoupons(); // 첫 번째 페이지 로드 시 페이지네이션 처리
+    },
+    watch: {
+        // currentPage가 변경될 때마다 페이지네이션 처리
+        currentPage() {
+            this.paginateCoupons();
+        }
     },
     methods: {
+        paginateCoupons() {
+            const startIndex = (this.currentPage - 1) * this.pageSize;
+            const endIndex = startIndex + this.pageSize;
+            this.paginatedCoupons = this.formattedCoupons.slice(startIndex, endIndex); // 현재 페이지에 해당하는 데이터만 슬라이싱
+            console.log("현재 페이지 데이터: ", this.paginatedCoupons);
+        },
+        
+        changePage(page) {
+            if (page >= 1 && page <= this.totalPages) {
+                this.currentPage = page;
+                this.paginateCoupons();  // 페이지 변경 시 페이지네이션 실행
+            }
+        },
+        
         getAllCoupons() {
-            axios
-                .get("/api/coupon")
+            axios.get("/api/coupon")
                 .then((response) => {
                     this.coupons = Array.isArray(response.data.data) ? response.data.data : [];
+                    this.couponCount = response.data.data.length;
+                    this.totalPages = Math.ceil(this.couponCount / this.pageSize);
+                    this.paginateCoupons(); // 페이지네이션 호출
                 })
                 .catch((error) => {
                     console.error('Error fetching coupons:', error);
                 });
         },
+        
         formatDate(dateArray) {
             if (!dateArray || !Array.isArray(dateArray)) return '';
             const year = dateArray[0];
@@ -51,6 +82,7 @@ new Vue({
             const day = String(dateArray[2]).padStart(2, '0');
             return `${year}-${month}-${day}`; // "2024-11-04" 형태로 변환
         },
+        
         startEdit(couponId) {
             const couponToEdit = this.formattedCoupons.find(coupon => coupon.couponId === couponId);
             if (couponToEdit) {
@@ -66,9 +98,11 @@ new Vue({
                 };
             }
         },
+        
         isEditing(couponId) {
             return this.selectedCouponId === couponId;
         },
+        
         createCoupon() {
             const formData = this.prepareCouponData(false, this.couponCreationType === 'stock'); // 쿠폰 데이터 준비
             if (!formData) return; // 유효성 검사 통과하지 못한 경우 종료
@@ -88,6 +122,7 @@ new Vue({
                 console.error('Error creating coupon:', error.response ? error.response.data : error.message);
             });
         },
+        
         updateCoupon() {
             const coupon = this.coupons.find(c => c.couponId === this.selectedCouponId);
             if (!coupon) return; // 쿠폰이 없으면 종료
@@ -112,6 +147,7 @@ new Vue({
                 console.error('Error updating coupon:', error.response ? error.response.data : error.message);
             });
         },
+        
         prepareCouponData(isUpdate = false, isStockCoupon = false, coupon = null) {
             const formData = new FormData();
             formData.append('couponName', this.newCoupon.couponName);
@@ -148,6 +184,7 @@ new Vue({
         
             return formData;
         },
+        
         deleteCoupon(couponId) {
             if (confirm("정말로 삭제하시겠습니까?")) {
                 axios.delete(`/api/coupon/${couponId}`)
@@ -160,29 +197,17 @@ new Vue({
                     });
             }
         },
+        
         resetForm() {
             this.selectedCouponId = null;
             this.couponCreationType = null; // 생성 방식 초기화
-            if (this.originalCoupon) {
-                // 원래 쿠폰 정보가 있을 경우 복원
-                this.newCoupon = {
-                    couponName: this.originalCoupon.couponName,
-                    discount: this.originalCoupon.discount,
-                    stock: this.originalCoupon.stock,
-                    start: this.formatDate(this.originalCoupon.start),
-                    end: this.formatDate(this.originalCoupon.end),
-                };
-            } else {
-                // 원래 쿠폰 정보가 없으면 초기화
-                this.newCoupon = {
-                    couponName: '',
-                    discount: null,
-                    stock: 0,
-                    start: '', // 빈 문자열로 초기화
-                    end: ''    // 빈 문자열로 초기화
-                };
-            }
-            this.originalCoupon = null; // 원래 쿠폰 정보 초기화
+            this.newCoupon = {
+                couponName: '',
+                discount: null,
+                stock: 0,
+                start: '',
+                end: '',
+            };
         }
-    },
+    }
 });

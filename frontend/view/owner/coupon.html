@@ -7,15 +7,11 @@
     <meta content="" name="keywords" />
     <meta content="" name="description" />
     
-    <link href="https://fonts.googleapis.com/css2?family=Dongle&display=swap" rel="stylesheet">
-
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css"
       type="text/css"
     />
-
-    <!-- Icon Font Stylesheet -->
     <link
       rel="stylesheet"
       href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
@@ -24,8 +20,6 @@
       href="/node_modules/bootstrap-icons/font/bootstrap-icons.css"
       rel="stylesheet"
     />
-
-    <!-- Libraries Stylesheet -->
     <link
       href="/css/owner/lib/owlcarousel/assets/owl.carousel.min.css"
       rel="stylesheet"
@@ -34,178 +28,17 @@
       href="/css/owner/lib/tempusdominus/tempusdominus-bootstrap-4.min.css"
       rel="stylesheet"
     />
-
-    <!-- Customized Bootstrap Stylesheet -->
     <link
       href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-
-    <!-- Template Stylesheet -->
     <link href="/css/owner/style.css" rel="stylesheet" />
-    <link href="/css/owner/coupon.css" rel="stylesheet" />
+    <link href="/css/owner/mainlogo.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/owner/coupon.css" />
 
     <!-- JavaScript Libraries -->
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
-
-    
-
-  </head>
-  <body>
-    <div id="app">
-      <div id="vueApp" class="container-fluid position-relative bg-white d-flex p-0">
-        <!-- Spinner Start -->
-        <spinner-component></spinner-component>
-        <!-- Spinner End -->
-
-        <!-- Sidebar Start -->
-        <sidebar-component></sidebar-component>
-        <!-- Sidebar End -->
-
-        <!-- Content Start -->
-        <div class="content">
-          <!-- Navbar Start -->
-          <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-            <a href="/view/owner/index" class="navbar-brand d-flex d-lg-none me-4">
-              <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-            </a>
-            <a href="#" class="sidebar-toggler flex-shrink-0">
-              <i class="fa fa-bars"></i>
-            </a>
-
-            <div class="navbar-nav align-items-center ms-auto">
-              <div class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                  <i class="fa fa-bell me-lg-2"></i>
-                  <span class="d-none d-lg-inline-flex">알림</span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                  <a href="#" class="dropdown-item">
-                    <h6 class="fw-normal mb-0">프로필 업데이트</h6>
-                    <small>15 minutes ago</small>
-                  </a>
-                  <hr class="dropdown-divider" />
-                  <a href="#" class="dropdown-item">
-                    <h6 class="fw-normal mb-0">홍길북 님의 예약요청</h6>
-                    <small>15 minutes ago</small>
-                  </a>
-                  <hr class="dropdown-divider" />
-                  <a href="#" class="dropdown-item">
-                    <h6 class="fw-normal mb-0">홍길순님이 예약을 취소했습니다</h6>
-                    <small>15 minutes ago</small>
-                  </a>
-                  <hr class="dropdown-divider" />
-                  <a href="#" class="dropdown-item text-center">모든 알림메세지 확인하기</a>
-                </div>
-              </div>
-              <div class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                  <img class="rounded-circle me-lg-2" src="" alt="" style="width: 40px; height: 40px"/>
-                  <span class="d-none d-lg-inline-flex">사용자 이름</span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                  <a @click="" href="#" class="dropdown-item">로그아웃</a>
-                </div>
-              </div>
-            </div>
-          </nav>
-          <!-- Navbar End -->
-
-          <!-- 쿠폰 -->
-          <div class="container mt-5">
-            <h1 class="text-center mb-4 couponCreate">쿠폰</h1>
-            <div class="row">
-              <div class="col-md-3 mb-4" v-for="coupon in formattedCoupons" :key="coupon.couponId">
-                <div class="card">
-                  <div class="card-body">
-                    <div v-if="isEditing(coupon.couponId)">
-                      <label>쿠폰 이름:</label>
-                      <input v-model="newCoupon.couponName" type="text" class="form-control mb-2" />
-
-                      <label>할인율:</label>
-                      <input v-model.number="newCoupon.discount" type="number" class="form-control mb-2" />
-                      <span v-if="newCoupon.discount !== null && newCoupon.discount !== 0">
-                        {{ newCoupon.discount > 100 ? newCoupon.discount + ' 원' : newCoupon.discount + ' %' }}
-                      </span> <!-- 할인율 표시 -->
-
-                      <div v-if="coupon.stock === -1"> 
-                        <label>시작일:</label>
-                        <input v-model="newCoupon.start" type="date" class="form-control mb-2" />
-                        <label>종료일:</label>
-                        <input v-model="newCoupon.end" type="date" class="form-control mb-2" />
-                      </div>
-                      <div v-else>
-                        <label>수량:</label>
-                        <input v-model.number="newCoupon.stock" type="number" class="form-control mb-2" />
-                      </div>
-                    </div>
-                    <div v-else>
-                      <h5 class="card-title">{{ coupon.couponName }}</h5>
-                      <p class="coupon-discount">할인: 
-                        <span v-if="coupon.discount !== null && coupon.discount !== 0">
-                          {{ coupon.discount > 100 ? coupon.discount + ' 원' : coupon.discount + ' %' }}
-                        </span>
-                      </p> <!-- 할인율 표시 -->
-                      <div v-if="coupon.stock > 0">
-                        <p class="card-text">수량: {{ coupon.stock }}개</p>
-                      </div>
-                      <div v-if="coupon.start && coupon.end">
-                        <p>시작일: {{ coupon.formattedStart }}</p>
-                        <p>종료일: {{ coupon.formattedEnd }}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="card-footer">
-                    <button v-if="!isEditing(coupon.couponId)" class="btn btn-primary btn-sm" @click="startEdit(coupon.couponId)">수정하기</button>
-                    <button v-if="isEditing(coupon.couponId)" class="btn btn-primary btn-sm" @click="updateCoupon">수정 완료</button>
-                    <button v-if="isEditing(coupon.couponId)" class="btn btn-secondary btn-sm" @click="resetForm">수정 취소</button>
-                    <button class="btn btn-danger btn-sm" @click="deleteCoupon(coupon.couponId)">삭제하기</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="container mt-5">
-            <h2 class="couponCreate mb-4 text-center">쿠폰 생성하기</h2>
-            <div class="couponCreate text-center">
-              <label>
-                <input type="radio" v-model="couponCreationType" value="date" /> 날짜로 생성하기
-              </label>
-              <label>
-                <input type="radio" v-model="couponCreationType" value="stock" /> 수량으로 생성하기
-              </label>
-            </div>
-
-            <div v-if="couponCreationType" class="d-flex justify-content-center">
-              <div class="couponCreate card" style="width: 100%; max-width: 500px; height: auto;">
-                <input type="text" v-model="newCoupon.couponName" placeholder="쿠폰 이름" class="form-control mb-2" />
-                <input type="number" v-model.number="newCoupon.discount" placeholder="할인율" class="form-control mb-2" />
-                  <span v-if="newCoupon.discount !== null && newCoupon.discount !== 0">
-                    {{ newCoupon.discount > 100 ? newCoupon.discount + ' 원' : newCoupon.discount + ' %' }}
-                  </span> <!-- 할인율 표시 -->
-
-                    <div v-if="couponCreationType === 'date'">
-                      <input type="date" v-model="newCoupon.start" class="form-control mb-2" />
-                      <input type="date" v-model="newCoupon.end" class="form-control mb-2" />
-                    </div>
-
-                    <div v-if="couponCreationType === 'stock'">
-                      <input type="number" v-model.number="newCoupon.stock" placeholder="수량" class="form-control mb-2" />
-                    </div>
-
-                    <button class="btn btn-primary" @click="createCoupon">생성하기</button>
-              </div>
-            </div>
-          </div>
-          <!-- footer -->
-          <footer-component></footer-component>
-          <!-- footer End -->
-
-        <!-- Content End -->
-
-    <!-- Template Javascript -->
     <script src="/js/user/lib/wow/wow.min.js"></script>
     <script src="/js/owner/lib/chart/chart.min.js"></script>
     <script src="/js/owner/lib/easing/easing.min.js"></script>
@@ -218,8 +51,160 @@
     <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
     <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
     <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-    <script type="module" src="/js/owner/main.js"></script>
+
+    <!-- JavaScript Libraries -->
     <script type="module" src="/js/owner/coupon.js"></script>
+    <script type="module" src="/js/owner/main.js"></script>
     <script src="../../js/owner/component.js"></script>
+
+  </head>
+  <body>
+    <div id="app" class="container-xxl position-relative bg-white d-flex p-0">
+      <!-- Spinner Start -->
+      <spinner-component></spinner-component>
+      <!-- Spinner End -->
+      
+      <!-- Sidebar Start -->
+      <sidebar-component></sidebar-component>
+      <!-- Sidebar End -->
+
+      <!-- Content Start -->
+      <div class="content">
+        <!-- Navbar Start -->
+        <navbar-component></navbar-component>
+        <!-- Navbar End -->
+
+                  <!-- 쿠폰 -->
+                  <div class="container mt-5">
+                    <h1 class="text-center mb-4">쿠폰</h1>
+                  
+                    <!-- 총 쿠폰수는 첫 번째 coupon-item 위에만 출력 -->
+                    <div class="total-coupons">
+                      <p>총 쿠폰수: {{ couponCount }}</p>
+                    </div>
+                  
+                    <div class="coupon-row">
+                      <div class="coupon-item" v-for="coupon in paginatedCoupons" :key="coupon.couponId">
+                        <div class="card" :class="{'editing-card': isEditing(coupon.couponId)}">
+                          <div class="card-body">
+                            <div v-if="isEditing(coupon.couponId)">
+                              <label>쿠폰 이름:</label>
+                              <input v-model="newCoupon.couponName" type="text" class="form-control mb-2" />
+                              <label>할인율:</label>
+                              <input v-model.number="newCoupon.discount" type="number" class="form-control mb-2" />
+                              <span v-if="newCoupon.discount !== null && newCoupon.discount !== 0">
+                                {{ newCoupon.discount > 100 ? newCoupon.discount + ' 원' : newCoupon.discount + ' %' }}
+                              </span>
+                  
+                              <div v-if="coupon.stock === -1">
+                                <label>시작일:</label>
+                                <input v-model="newCoupon.start" type="date" class="form-control mb-2" />
+                                <label>종료일:</label>
+                                <input v-model="newCoupon.end" type="date" class="form-control mb-2" />
+                              </div>
+                              <div v-else>
+                                <label>수량:</label>
+                                <input v-model.number="newCoupon.stock" type="number" class="form-control mb-2" />
+                              </div>
+                            </div>
+                            <div v-else class="coupondetailDiv">
+                              <h5 class="card-title">{{ coupon.couponName }}</h5>
+                              <p class="coupon-discount">할인:
+                                <span v-if="coupon.discount !== null && coupon.discount !== 0">
+                                  {{ coupon.discount > 99 ? coupon.discount + ' 원' : coupon.discount + ' %' }}
+                                </span>
+                              </p>
+                              <div v-if="coupon.stock > 0">
+                                <p class="card-text">수량: {{ coupon.stock }}개</p>
+                              </div>
+                              <div v-if="coupon.start && coupon.end">
+                                <p>시작일: {{ coupon.formattedStart }}</p>
+                                <p>종료일: {{ coupon.formattedEnd }}</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="card-footer">
+                            <button v-if="!isEditing(coupon.couponId)" class="btn btn-primary btn-sm" @click="startEdit(coupon.couponId)" style="background-color: #6EC1E4; border-color: white;">수정하기</button>
+                            <button v-if="isEditing(coupon.couponId)" class="btn btn-primary btn-sm" @click="updateCoupon"                            style="background-color: #6EC1E4; border-color: white;">수정 완료</button>
+                            <button v-if="isEditing(coupon.couponId)" class="btn btn-secondary btn-sm" @click="resetForm" style="background-color: gray;">수정 취소</button>
+                            <button class="btn btn-danger btn-sm" @click="deleteCoupon(coupon.couponId)" style="background-color: red;">삭제하기</button>
+                          </div>
+                        </div>
+                      </div> <!-- 닫힌 coupon-item -->
+                    </div> <!-- 닫힌 coupon-row -->
+                  
+                    <!-- 페이지 네이션 -->
+                    <div class="pagination-container">
+                      <button
+                        v-if="currentPage > 1"
+                        @click="changePage(currentPage - 1)"
+                        class="btn btn-outline-primary btn-sm page-btn-prev"
+                      >
+                        이전
+                      </button>
+
+                      <button
+                        v-for="page in totalPages"
+                        :key="page"
+                        @click="changePage(page)"
+                        :class="{
+                          'active': currentPage === page,
+                          'page-btn': true,
+                          'btn-primary': currentPage === page,
+                          'btn-outline-primary': currentPage !== page
+                        }"
+                      >
+                        {{ page }}
+                      </button>
+
+                      <button
+                        v-if="currentPage < totalPages"
+                        @click="changePage(currentPage + 1)"
+                        class="btn btn-outline-primary btn-sm page-btn-next"
+                      >
+                        다음
+                      </button>
+                    </div>
+
+          <!-- 쿠폰 생성하기 섹션 -->
+          <div class="container mt-5">
+            <h2 class="mb-4 text-center">쿠폰 생성하기</h2>
+            <div class="text-center">
+              <label>
+                <input type="radio" v-model="couponCreationType" value="date" /> 날짜로 생성하기
+              </label>
+              <label>
+                <input type="radio" v-model="couponCreationType" value="stock" /> 수량으로 생성하기
+              </label>
+            </div>
+
+            <div v-if="couponCreationType" class="d-flex justify-content-center">
+              <div class="card" style="width: 100%; max-width: 500px; height: auto;">
+                <input type="text" v-model="newCoupon.couponName" placeholder="쿠폰 이름" class="form-control mb-2" />
+                <input type="number" v-model.number="newCoupon.discount" placeholder="할인율" class="form-control mb-2" />
+                  <span v-if="newCoupon.discount !== null && newCoupon.discount !== 0" class="form-control mb-2">
+                    {{ newCoupon.discount > 99 ? newCoupon.discount + ' 원' : newCoupon.discount + ' %' }}
+                  </span>
+
+                <div v-if="couponCreationType === 'date'">
+                  <input type="date" v-model="newCoupon.start" class="form-control mb-2" />
+                  <input type="date" v-model="newCoupon.end" class="form-control mb-2" />
+                </div>
+
+                <div v-if="couponCreationType === 'stock'">
+                  <input type="number" v-model.number="newCoupon.stock" placeholder="수량" class="form-control mb-2" />
+                </div>
+
+                <button class="btn btn-primary" @click="createCoupon">생성하기</button>
+              </div>
+            </div>
+          </div> <!-- 닫힌 container -->
+          
+          <!-- footer -->
+          <footer-component></footer-component>
+          <!-- footer End -->
+        </div> <!-- Content End -->
+      </div>
+    </div>
   </body>
 </html>

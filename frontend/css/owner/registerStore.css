@@ -1,0 +1,288 @@
+.registerStore {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    margin-top: 100px;
+    padding: 30px;
+    background: linear-gradient(135deg, #f9f9f9, #ffffff);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    font-family: 'Apple SD Gothic Neo', sans-serif;
+}
+
+.registerStore .mb-3 {
+    margin-bottom: 20px;
+}
+
+.registerStore .form-label {
+    font-size: 1rem;  /* 글씨 크기 줄이기 */
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+    transition: color 0.3s ease;
+}
+
+.registerStore .form-control {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 10px 15px;  /* 패딩 조정 */
+    font-size: 0.95rem;  /* 글씨 크기 줄이기 */
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: #f9f9f9;
+}
+
+.registerStore .form-control:focus {
+    border-color: #6EC1E4;  /* 연한 파란색 */
+    outline: none;
+    box-shadow: 0 0 5px rgba(110, 193, 228, 0.5);  /* 연한 파란색 */
+}
+
+.registerStore .category-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.registerStore .category-buttons input[type="button"] {
+    padding: 10px 18px;
+    background-color: #f0f0f0;
+    border: 2px solid #ddd;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #333;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.registerStore .category-buttons input[type="button"]:hover {
+    background-color: #6EC1E4;  /* 연한 파란색 */
+    color: #fff;
+    transform: translateY(-3px);
+}
+
+.registerStore .category-buttons input[type="button"].selected {
+    background-color: #6EC1E4;  /* 연한 파란색 */
+    color: white;
+}
+
+.registerStore .d-flex {
+    display: flex;
+    align-items: center;
+}
+
+.registerStore .d-flex .form-control {
+    margin-right: 10px;
+}
+
+.registerStore #fileCountLabel {
+    font-size: 0.95rem;  /* 글씨 크기 줄이기 */
+    margin-bottom: 15px;
+    color: #666;
+}
+
+.registerStore .btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.registerStore .btn-primary {
+    border: none;
+    color: white;
+}
+
+.registerStore .btn-primary:hover {
+    background-color: #4fa3c2;  /* 연한 파란색 */
+    transform: translateY(-3px);
+}
+
+.registerStore .btn-danger {
+    background-color: #f44336;
+    border: none;
+    color: white;
+}
+
+.registerStore .btn-danger:hover {
+    background-color: #e53935;
+    transform: translateY(-3px);
+}
+
+.registerStore .form-control[readonly] {
+    background-color: #f5f5f5;
+}
+
+.registerStore input[type="file"] {
+    display: none;
+}
+
+.registerStore button[type="button"] {
+    padding: 12px 20px;
+    background-color: #6EC1E4;  /* 연한 파란색 */
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.registerStore button[type="button"]:hover {
+    background-color: #4fa3c2;  /* 연한 파란색 */
+    transform: translateY(-3px);
+}
+
+.registerStore ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 15px;
+}
+
+.registerStore ul li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.registerStore ul li:hover {
+    background-color: #e8e8e8;
+}
+
+.registerStore ul li button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.registerStore ul li button:hover {
+    background-color: #e53935;
+    transform: translateY(-2px);
+}
+
+/* 주소 입력 필드 개선 */
+.registerStore .address-field {
+    position: relative;
+    margin-top: 20px;
+}
+
+.registerStore .address-field input {
+    padding: 12px 15px;
+    font-size: 1rem;
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.registerStore .address-field input:focus {
+    border-color: #6EC1E4;  /* 연한 파란색 */
+    outline: none;
+    box-shadow: 0 0 5px rgba(110, 193, 228, 0.5);  /* 연한 파란색 */
+}
+
+.registerStore .address-field .search-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 8px 15px;
+    background-color: #6EC1E4;  /* 연한 파란색 */
+    border: none;
+    color: white;
+    font-size: 0.9rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.registerStore .address-field .search-button:hover {
+    background-color: #4fa3c2;  /* 연한 파란색 */
+    transform: translateY(-2px);
+}
+
+/* 우편번호 입력란 */
+#sample6_postcode {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #fff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#sample6_postcode:focus {
+    border-color: #6EC1E4;  /* 연한 파란색 */
+    box-shadow: 0 0 5px rgba(110, 193, 228, 0.5);  /* 연한 파란색 */
+    outline: none;
+}
+
+/* 주소 입력란 */
+#sample6_address,
+#sample6_detailAddress,
+#sample6_extraAddress {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #fff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#sample6_address:focus,
+#sample6_detailAddress:focus,
+#sample6_extraAddress:focus {
+    border-color: #6EC1E4;  /* 연한 파란색 */
+    box-shadow: 0 0 5px rgba(110, 193, 228, 0.5);  /* 연한 파란색 */
+    outline: none;
+}
+
+/* 우편번호 찾기 버튼 */
+#sample6_postcode + input[type="button"] {
+    padding: 12px 15px;
+    background-color: #6EC1E4;  /* 연한 파란색 */
+    border: none;
+    color: white;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#sample6_postcode + input[type="button"]:hover {
+    background-color: #4fa3c2;  /* 연한 파란색 */
+    transform: translateY(-2px);
+}
+.button-group {
+    display: flex;
+    justify-content: space-between; /* 버튼 간 간격을 조정 */
+    gap: 10px; /* 버튼 사이에 10px 간격을 두기 */
+    width: 100%;
+  }
+  
+  .button-group .btn {
+    flex: 1; /* 각 버튼이 동일한 너비를 가지게 함 */
+  }
+
+  .magrinDiv {
+    margin-top: 20px;
+  }

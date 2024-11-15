@@ -50,7 +50,7 @@ public interface UserReserveDAO {
 	int getStoreId(int reserveId, int userId) throws Exception;
 
 	int getUpdateReserveSlotReserved(LocalDateTime reserveTime, int storeId) throws Exception;
-
+	
 	Integer getCouponStoreId(Integer couponId) throws Exception;
 
 	List<ReserveListsVO> getUserReserveLists(int userId, String reserveType);

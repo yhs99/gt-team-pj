@@ -43,14 +43,54 @@ public class UserReserveServiceImpl implements UserReserveService {
 	    validateReservation(userId, reserveDTO);
 	    
 	    // 예약 등록
-	    int insertReservation = userReserveDAO.insertReserve(userId, reserveDTO);
-	    // 예약 등록 성공시
-	    if(insertReservation == 1) {
-	    	//해당 점주에게 알림 설정
-	    	int setNotification = setNotificationToOwner(userId,reserveDTO);
-	    	if(setNotification == 1) {
-	    		log.info("신규 예약 등ㄺ 알림 설정 완료");
-	    	}
+	    userReserveDAO.insertReserve(userId, reserveDTO);
+
+	    double totalAmount = 0;
+
+	    // 총 금액 계산
+	    for (CartDTO cart : cartList) {
+	        totalAmount += cart.getPrice() * cart.getStock();
+	    }
+
+	    double finalAmount;
+	    
+	    // 쿠폰이 있는 경우와 없는 경우 처리
+	    if (reserveDTO.getCouponId() != null && reserveDTO.getCouponId() > 0) {
+	        Integer discount = userReserveDAO.getCouponDiscount(reserveDTO.getCouponId());
+	        discount = (discount == null) ? 0 : discount;
+
+	        LocalDateTime currentDateTime = LocalDateTime.now();
+	        LocalDateTime startTime = userReserveDAO.getCouponStartTime(reserveDTO.getCouponId());
+	        LocalDateTime endTime = userReserveDAO.getCouponEndTime(reserveDTO.getCouponId());
+	        
+	        Integer couponStoreId = userReserveDAO.getCouponStoreId(reserveDTO.getCouponId());
+	        if (couponStoreId == null || !couponStoreId.equals(reserveDTO.getStoreId())) {
+	            throw new IllegalArgumentException("해당 쿠폰은 선택한 매장에 쿠폰이 아닙니다.");
+	        }
+
+	        Integer stock = userReserveDAO.getCouponStockCheck(reserveDTO.getCouponId());
+	        if (stock == null || stock <= 0) {
+	            throw new IllegalArgumentException("유효하지 않은 쿠폰입니다.");
+	        }
+
+	        if ((startTime != null && currentDateTime.isBefore(startTime)) || 
+	            (endTime != null && currentDateTime.isAfter(endTime))) {
+	            throw new IllegalArgumentException("유효하지 않은 쿠폰입니다. 사용기간을 확인해 주세요.");
+	        }
+
+	        // 할인 계산
+	        if (discount >= 100) { // 고정할인
+	            finalAmount = totalAmount - discount;
+	            finalAmount = Math.max(finalAmount, 0);
+	        } else { // 퍼센트 할인
+	            finalAmount = totalAmount - (totalAmount * discount * 0.01);
+	        }
+
+	        // 쿠폰 사용 처리
+	        userReserveDAO.updateCouponStock(reserveDTO.getCouponId());
+	    } else {
+	        // 쿠폰이 없는 경우 기본 금액으로 결제
+	        finalAmount = totalAmount;
 	    }
 	    
 	    for (CartDTO cart : cartList) {
@@ -61,69 +101,18 @@ public class UserReserveServiceImpl implements UserReserveService {
 	        payHistoryDTO.setMenuName(cart.getMenuName());
 	        payHistoryDTO.setStock(cart.getStock());
 	        payHistoryDTO.setStockPerPrice(cart.getPrice());
+	        payHistoryDTO.setTotalPrice(cart.getPrice() * cart.getStock());
 
-	        double itemTotal = cart.getPrice() * cart.getStock();
-	        payHistoryDTO.setTotalPrice(itemTotal);
+	        payHistoryDTO.setCouponId(reserveDTO.getCouponId() != null ? reserveDTO.getCouponId() : 0);
+	        payHistoryDTO.setCouponYN(reserveDTO.getCouponId() != null ? 1 : 0);
+	        payHistoryDTO.setPayAmount(finalAmount);
 
-	        double finalAmount;
-	        
-	        // 쿠폰이 있는 경우와 없는 경우 처리
-	        if (reserveDTO.getCouponId() != null && reserveDTO.getCouponId() > 0) {
-	            Integer discount = userReserveDAO.getCouponDiscount(reserveDTO.getCouponId());
-	            discount = (discount == null) ? 0 : discount;
-
-	            LocalDateTime currentDateTime = LocalDateTime.now();
-	            LocalDateTime startTime = userReserveDAO.getCouponStartTime(reserveDTO.getCouponId());
-	            LocalDateTime endTime = userReserveDAO.getCouponEndTime(reserveDTO.getCouponId());
-
-	            // 쿠폰의 상점아이디랑 예약하려는 상점의 아이디가 일치하는지 확인
-	            Integer couponStoreId = userReserveDAO.getCouponStoreId(reserveDTO.getCouponId());
-	            if (couponStoreId == null || !couponStoreId.equals(reserveDTO.getStoreId())) {
-	                throw new IllegalArgumentException("해당 쿠폰은 선택한 매장에 쿠폰이 아닙니다.");
-	            }
-	            
-	            
-	            // 쿠폰 유효성 확인
-	            Integer stock = userReserveDAO.getCouponStockCheck(reserveDTO.getCouponId());
-	            if (stock == null || stock <= 0) {
-	                throw new IllegalArgumentException("유효하지 않은 쿠폰입니다.");
-	            }
-
-	            if ((startTime != null && currentDateTime.isBefore(startTime)) || 
-	                (endTime != null && currentDateTime.isAfter(endTime))) {
-	                throw new IllegalArgumentException("유효하지 않은 쿠폰입니다. 사용기간을 확인해 주세요.");
-	            }
-
-	            // 할인 계산
-	            if (discount >= 100) { // 고정할인
-	                finalAmount = itemTotal - discount;
-	                finalAmount = Math.max(finalAmount, 0);
-	            } else { // 퍼센트 할인
-	                finalAmount = itemTotal - (itemTotal * discount * 0.01);
-	            }
-
-	            // 할인된 금액 및 쿠폰 사용 여부 설정
-	            payHistoryDTO.setCouponId(reserveDTO.getCouponId());
-	            payHistoryDTO.setCouponYN(1);
-	            payHistoryDTO.setPayAmount(finalAmount);
-
-	            // 쿠폰 사용 처리
-	            userReserveDAO.updateCouponStock(reserveDTO.getCouponId());
-	        } else {
-	            // 쿠폰이 없는 경우에는 기본 금액으로 결제
-	            payHistoryDTO.setCouponId(0);
-	            payHistoryDTO.setCouponYN(0);
-	            payHistoryDTO.setPayAmount(itemTotal);
-	        }
-
-	        // 결제 기록 저장
 	        userReserveDAO.insertPayHistory(payHistoryDTO);
 	    }
-	    
+			
 	    // 결제 성공 후 카트 비우기
 	    userReserveDAO.deleteCart(userId);
 
-	    // 예약 등록 후 인원이 가득 차면 reserved를 1로 변경
 	    if (getTimeTotPeople(reserveDTO.getStoreId(), reserveDTO.getReserveTime()) == getMaxPeople(reserveDTO.getStoreId())) {
 	        updateReserved(reserveDTO.getStoreId(), reserveDTO.getReserveTime());
 	    }

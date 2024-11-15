@@ -4,10 +4,12 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.team.goott.owner.domain.NotificationDTO;
 import com.team.goott.user.domain.CartDTO;
 import com.team.goott.user.domain.MenuDTO;
 import com.team.goott.user.domain.PayHistoryDTO;
 import com.team.goott.user.domain.ReserveDTO;
+import com.team.goott.user.domain.ReserveListsVO;
 
 public interface UserReserveDAO {
 
@@ -48,8 +50,12 @@ public interface UserReserveDAO {
 	int getStoreId(int reserveId, int userId) throws Exception;
 
 	int getUpdateReserveSlotReserved(LocalDateTime reserveTime, int storeId) throws Exception;
-
+	
 	Integer getCouponStoreId(Integer couponId) throws Exception;
 
+	List<ReserveListsVO> getUserReserveLists(int userId, String reserveType);
+  
+	ReserveDTO getReserve(int storeId, int userId, LocalDateTime reserveTime);
 
+	int setNotification(NotificationDTO notification);
 }

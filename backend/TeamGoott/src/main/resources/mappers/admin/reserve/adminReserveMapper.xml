@@ -73,6 +73,7 @@
 		#{statusCode}
 		</foreach>
 	</if>
+	ORDER BY r.createAt DESC
 </select>
 
 <select id="getReserveStatusCodeFilters" resultType="com.team.goott.admin.domain.ReserveStatusCodeFilter">

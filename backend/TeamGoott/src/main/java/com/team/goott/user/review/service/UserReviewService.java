@@ -19,7 +19,7 @@ public interface UserReviewService {
 
 	ReviewImagesDTO imageIntoDTO(int reviewId, MultipartFile file) throws IOException, Exception;
 
-	boolean deleteReviewNFile(int reviewId, List<ReviewImagesDTO> imgDtoList);
+	boolean deleteReviewNFile(int reviewId, int reserveId, List<ReviewImagesDTO> imgDtoList);
 
 	boolean updateReview(ReviewDTO reviewDTO);
 
@@ -32,6 +32,8 @@ public interface UserReviewService {
 	ReserveDTO getReserveInfoByReserveId(int reservationId);
 	
 	List<ReviewImagesDTO> selectReviewImagesByReviewId(int reviewId);
+
+	int checkImageExist(int imageId);
 
 
 

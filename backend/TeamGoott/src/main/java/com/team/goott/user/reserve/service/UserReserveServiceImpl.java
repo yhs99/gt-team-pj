@@ -10,10 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.team.goott.owner.domain.NotificationDTO;
+import com.team.goott.owner.domain.NotificationType;
 import com.team.goott.user.domain.CartDTO;
 import com.team.goott.user.domain.MenuDTO;
 import com.team.goott.user.domain.PayHistoryDTO;
 import com.team.goott.user.domain.ReserveDTO;
+import com.team.goott.user.domain.ReserveListsVO;
 import com.team.goott.user.reserve.persistence.UserReserveDAO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -106,6 +109,9 @@ public class UserReserveServiceImpl implements UserReserveService {
 
 	        userReserveDAO.insertPayHistory(payHistoryDTO);
 	    }
+			
+	    // 결제 성공 후 카트 비우기
+	    userReserveDAO.deleteCart(userId);
 
 	    if (getTimeTotPeople(reserveDTO.getStoreId(), reserveDTO.getReserveTime()) == getMaxPeople(reserveDTO.getStoreId())) {
 	        updateReserved(reserveDTO.getStoreId(), reserveDTO.getReserveTime());
@@ -187,5 +193,23 @@ public class UserReserveServiceImpl implements UserReserveService {
 			}
 		}
 		return userReserveDAO.updateReserve(reserveId, userId);
+	}
+  
+	@Override
+	public List<ReserveListsVO> getUserReserveLists(int userId, String reserveType) {
+		return userReserveDAO.getUserReserveLists(userId, reserveType);
+  }
+  
+	//알림 설정
+	private int setNotificationToOwner(int userId, ReserveDTO reserveDTO) {
+		ReserveDTO reserve = userReserveDAO.getReserve(reserveDTO.getStoreId(), userId, reserveDTO.getReserveTime());
+		NotificationDTO notification = new NotificationDTO();
+		notification.setUserId(userId);
+		notification.setStoreId(reserveDTO.getStoreId());
+		notification.setReserveId(reserve.getReserveId());
+		notification.setNotificationType(NotificationType.valueOf("CUSTOMER_TO_OWNER"));
+		notification.setMessage("신규 예약이 등록 되었습니다. 예약번호 : " + reserve.getReserveId());
+		
+		return userReserveDAO.setNotification(notification);
 	}
 }

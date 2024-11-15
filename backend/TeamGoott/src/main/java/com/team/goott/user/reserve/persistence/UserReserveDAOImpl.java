@@ -11,10 +11,12 @@ import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.team.goott.owner.domain.NotificationDTO;
 import com.team.goott.user.domain.CartDTO;
 import com.team.goott.user.domain.MenuDTO;
 import com.team.goott.user.domain.PayHistoryDTO;
 import com.team.goott.user.domain.ReserveDTO;
+import com.team.goott.user.domain.ReserveListsVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -158,6 +160,25 @@ public class UserReserveDAOImpl implements UserReserveDAO {
 		return ses.selectOne(ns+"getCouponStoreId", couponId);
 	}
 
+	@Override
+	public List<ReserveListsVO> getUserReserveLists(int userId, String reserveType) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("userId", userId);
+		map.put("reserveType", reserveType);
+		return ses.selectList(ns+"getUserReserveLists", map);
+  }
+  
+	public ReserveDTO getReserve(int storeId, int userId, LocalDateTime reserveTime) {
+		Map<String,Object> params = new HashMap<String, Object>();
+		params.put("storeId", storeId);
+		params.put("userId", userId);
+		params.put("reserveTime", reserveTime);
+		return ses.selectOne(ns+"getReserve", params);
+	}
 
-
+	@Override
+	public int setNotification(NotificationDTO notification) {
+		return ses.insert(ns+"setNotification", notification);
+	}
+  
 }

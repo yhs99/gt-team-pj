@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta content="" name="description" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css" type="text/css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="/node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="/css/owner/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+    <link href="/css/owner/lib/tempusdominus/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+    <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/admin/style.css" rel="stylesheet" />
+    <link href="/css/admin/mainlogo.css" rel="stylesheet">
+    <link href="/css/admin/srAdminReviews.css" rel="stylesheet">
+
+    <!-- JavaScript Libraries -->
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="/js/user/lib/wow/wow.min.js"></script>
+    <script src="/js/owner/lib/chart/chart.min.js"></script>
+    <script src="/js/owner/lib/easing/easing.min.js"></script>
+    <script src="/js/user/lib/counterup/counterup.min.js"></script>
+    <script src="/js/user/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/node_modules/vue/dist/vue.min.js"></script>
+    <script src="/node_modules/axios/dist/axios.min.js"></script>
+    <script src="/js/owner/lib/waypoints/waypoints.min.js"></script>
+    <script src="/js/owner/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <!-- Template Javascript -->
+    <script type="module" src="/js/owner/main.js"></script>
+    <script src="/js/admin/axiosSetting.js"></script>
+  </head>
+
+  <body>
+  <div id="app">
+    <div class="container-xxl position-relative bg-white d-flex p-0">
+      <!-- Spinner Start -->
+      <spinner-component></spinner-component>
+      <!-- Spinner End -->
+
+      <!-- Sidebar Start -->
+      <div id="sidebar" class="sidebar pe-4 pb-3">
+        <sidebar-component></sidebar-component>
+        </div>
+      </div>
+      <!-- Sidebar End -->
+
+      <!-- Content Start -->
+      <div class="content">
+        <!-- Navbar Start -->
+        <navbar-component></navbar-component>
+        <!-- Navbar End -->
+
+        <div class="container-fluid pt-4 px-4">
+          <div class="row g-4" v-if="reviewLists">
+            <div class="col-sm-12 col-xl-12">
+              <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <h6 class="mb-0">리뷰 내역 조회</h6>
+                </div>
+                <div class="py-2 my-3 border rounded d-flex justify-content-center">
+                  <div class="w-50 input-group">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">{{ selectedFilterId }}</button>
+                    <ul class="dropdown-menu filter-menu">
+                      <li class="filter-li">
+                        <input type="radio" id="storeName" value="가게명" v-model="selectedFilterId" autocomplete="off">
+                        <label class="p-2" for="storeName">가게명</label>
+                      </li>
+                      <li class="filter-li">
+                        <input type="radio" id="userName" value="회원명" v-model="selectedFilterId" autocomplete="off">
+                        <label class="p-2" for="userName">회원명</label>
+                      </li>
+                    </ul>
+                    <input class="form-control" type="text" v-model="selectedFilter.searchQuery" @keyup.enter="fetchReviews">
+                    <button class="btn btn-success" @click="fetchReviews">검색</button>
+                  </div>
+                </div>
+                <div class="col text-start">
+                  <label class="list-group-item px-3 py-2">
+                  <input class="form-check-input me-1" type="checkbox" @change="fetchReviews" v-model="checkDeleteReqOnly" style="width:20px; height: 20px;"> 삭제 요청된 리뷰만 보기</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-xl-12">
+              <div class="bg-light rounded p-4">
+                
+                <div class="row">
+                  <div class="col text-start">
+                    <span>검색된 리뷰 : {{ reviewCount }}</span>
+                  </div>
+                  <div class="col text-center">
+                    <div id="pagination text-center">
+                      <ul class="pagination justify-content-center">
+                        <li class="page-item" v-if="currentPage > 1" @click="changePage(currentPage - 1)">
+                          <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                          </a>
+                        </li>
+                        <li class="page-item" v-for="page in totalPages" :key="page" @click="changePage(page)"><a class="page-link" href="#">{{ page }}</a></li>
+                        <li class="page-item" v-if="currentPage < totalPages" @click="changePage(currentPage + 1)">
+                          <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="col text-end">
+                    <span>페이지당 갯수</span>
+                    <select v-model="pageSize" @change="fetchReviews" name="pageSize">
+                      <option value="5">5</option>
+                      <option value="10" selected>10</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                  </div>
+                </div>
+                <!-- 본문 -->
+                <div class="row">
+                  <div v-if="reviewCount > 0" class="col-sm-12 col-xl-12 card mb-3" v-for="(review, index) in paginatedReviews" :key="review.reviewId">
+                    <div class="card-header">
+                      <div class="row">
+                        <div class="col">
+                          <label class="list-group-item">
+                            <span class="">작성자 : <img :src="review.profileImageUrl" class="profileImage rounded-circle"> 윤희성</span>
+                            <p><i v-for="sc in review.score" class="fas fa-star text-warning"></i> | {{dateFormat(review.dateTime) }}</p>
+                          </label>
+                        </div>
+                        <div class="col text-end mt-3">
+                          <button class="btn btn-danger" v-bind:disabled="!review.deleteReq" @click="deleteReview(review.reviewId)">삭제하기</button>
+                          <button class="btn btn-primary" v-bind:disabled="!review.deleteReq" @click="cancelDeleteReview(review.reviewId)">삭제거절</button>
+                          <p>({{ review.storeId }}). {{ review.storeName }}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <blockquote class="blockquote mb-0">
+                        <div class="row">
+                          <div class="col">
+                            <div class="thumbnail-container">
+                              <img v-for="(image, index) in review.reviewImages" @click="openModal(review.reviewImages, index)" :src="image.url" class="thumbnail_image" alt="Sample Image" data-bs-toggle="modal" data-bs-target="#imageModal">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="mt-4">
+                          <span>
+                            {{ review.content }}
+                          </span>
+                        </div>
+                        <footer class="text-end mt-2 blockquote-footer"><cite title="리뷰번호">리뷰번호. {{ review.reviewId }}</cite></footer>
+                      </blockquote>
+                    </div>
+                  </div>
+                  <div v-else>
+                    작성된 리뷰가 없습니다.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-else>
+            <p>로딩중</p>
+          </div>
+        </div>
+
+        <!-- Footer Start -->
+        <footer-component></footer-component>
+        <!-- Footer End -->
+         
+        <!-- Modal -->
+        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <img :src="currentImage" class="img-fluid" alt="Enlarged Image">
+                <div class="mt-3">
+                  <button v-if="reviewImageLists.length > 1" @click="controlImages('prev')" class="btn btn-custom">이전</button>
+                  <button v-if="reviewImageLists.length > 1" @click="controlImages('next')" class="btn btn-custom">다음</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Content End -->
+      <!-- Back to Top -->
+      <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+
+    <script src="/js/admin/component.js"></script>
+    <script src="/js/admin/srAdminReviews.js"></script>
+  </div>
+  </body>
+</html>

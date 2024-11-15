@@ -1,8 +1,9 @@
+
 new Vue({
     el: '#app',
     data() {
         return {
-            storeId:null,
+            storeId: null,
             restaurantData: {
                 data: {
                     storeImages: [],
@@ -22,9 +23,12 @@ new Vue({
             info:{
                 dateStr:""
             },
-            reserveSlots: [],
-            selectedSlot: null,
-            selectedSlotIndex: null,
+            reserveSlots:{},
+            buttons: ['홈', '메뉴', '사진', '리뷰', '매장정보'],
+            activeButton: 0,
+            isBookmarked: false,
+            currentBookmark:[],
+            loginInfo:{},
             isLoggedIn:false
         };
     },
@@ -92,6 +96,8 @@ new Vue({
                 this.fetchReviewData();
                 this.fetchRecommendData();
                 this.fetchCouponData();
+                
+                
             } catch (error) {
                 console.error('Error fetching restaurant data:', error);
             }
@@ -140,72 +146,7 @@ new Vue({
         setDefaultImage(event) {
             event.target.src = 'https://goott-bucket.s3.ap-northeast-2.amazonaws.com/noImage.jpg';
         },
-        makeACalendar() {
-            const calendarEl = document.getElementById('calendar');
-            const calendar = new FullCalendar.Calendar(calendarEl, {
-                locale: 'ko',
-                headerToolbar: {
-                    start: 'prev',
-                    center: 'title',
-                    end: 'next'
-                },
-                events: [],
-                clickedDate: null,
-                dateClick:(info) => {
-                    const clickedDate = info.date; // 클릭된 날짜
-                    const today = new Date(); // 오늘 날짜
-                    today.setHours(0, 0, 0, 0); // 시간 초기화 (00:00:00)
-
-                    // // 오늘 날짜로부터 30일 후의 날짜 계산
-                    const maxDate = new Date(today);
-                    maxDate.setDate(today.getDate() + 30);
-
-                    // 클릭된 날짜가 오늘 이전인지 확인
-                    if (clickedDate <= today) {
-                        return; // 이전 날짜 클릭 시 아무 동작도 하지 않음
-                    } else if (clickedDate > maxDate ){
-                        alert('30일 이전의 날짜만 클릭할 수 있습니다.');
-                        return;
-                    }
-
-                    alert('Clicked on: ' + info.dateStr);
-
-                    if (this.clickedDate) {
-                    const previousDateEl = this.clickedDate;
-                    if (previousDateEl) {
-                        previousDateEl.style.backgroundColor = ''; // 기본 색으로 초기화
-                    }
-                    }
-                    info.dayEl.style.border = '3px solid red';
-                    // 클릭한 날짜를 저장
-                    this.clickedDate = info.dayEl;
-                    this.fetchReserveSlots(info.dateStr);
-                     },
-                     datesSet: () => {
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0); // 시간 초기화 (00:00:00)
-                        console.log("today"+today);
-                        const maxDate = new Date(today);
-                        maxDate.setDate(today.getDate() + 31); 
-            
-
-                         // 오늘 날짜의 배경색 변경
-                        const todayStr = today.toISOString().split('T')[0]; // 'YYYY-MM-DD' 형식으로 변환
-
-                        // 모든 날짜에 대해 배경색 변경
-                        const dateElements = calendarEl.getElementsByClassName('fc-day');
-                        for (let dateEl of dateElements) {
-                            const date = new Date(dateEl.getAttribute('data-date'));
-                            if (date < today || date > maxDate) {
-                                dateEl.style.backgroundColor = '#d3d3d3'; 
-                            }   
-                        }
-                   }
-                });
-            
-            calendar.render();
-            
-        },
+      
         goToPage(url) {
             window.location.href = url;
         },
@@ -238,70 +179,89 @@ new Vue({
             const minutes = String(date.getMinutes()).padStart(2, '0'); // 분을 두 자리로 포맷
             return `${hours}:${minutes}`; // 'HH:mm' 형식으로 반환
         },
-        handleReservation() {
+        menuBtnGotopage(index) {
+            //  this.activeButton = index;
+            switch (index) {
+                case 0:
+                    this.goToPage(`#`)
+                    break;
+                case 1:
+                    this.goToPage(`storeDetails/menu?storeId=${this.storeId}`)
+                    break;
+                case 2:
+                    this.goToPage(`storeDetails/pictures?storeId=${this.storeId}`)
+                    break;
+                case 3:
+                    this.goToPage(`storeDetails/reviews?storeId=${this.storeId}`)
+                    break;
+                case 4:
+                    this.goToPage(`storeDetails/storeInfo?storeId=${this.storeId}`)
+                break;
+                default:
+                    break;
+            }
+    
+        },
+        async setBookmark(){
+           try{
+               const response = await axios.post(`/api/bookmark/${this.storeId}`);
+               console.log(response);
+               this.isBookmarked = true;
+           } catch(error){
+               console.error('북마크 추가 중 오류발생:',error);
+           }
+            
+        },
+        async deleteBookmark(){
+            try{
+                const response = await axios.delete(`/api/bookmark/${this.storeId}`);
+                console.log(response);
+                this.isBookmarked = false;
+            }catch(error){
+                console.error('북마크 삭제 에러',error)
+            }
+        },
+        toggleBookmark(){
+          
             if(this.isLoggedIn == true){
-                this.logCheckedMenus(); 
+                if(this.isBookmarked == false){
+                    this.setBookmark();
+                }else{
+                    this.deleteBookmark();
+                }
             }else{
                 this.goToPage(`/view/user/userLogin`);
             }
         },
-        logCheckedMenus() {
-
-            
-            // 체크된 메뉴 항목만 필터링
-            const checkedMenus = this.menuData.menu.filter(menu => menu.quantity > 0);
-            
-            // 콘솔에 체크된 메뉴 출력
-            if (checkedMenus.length > 0 && this.selectedSlot !== null) {
-                console.log('체크된 메뉴:');
-                checkedMenus.forEach(menu => {
-                    console.log(`Menu ID: ${menu.menuId}, Quantity: ${menu.quantity}`);
-                    this.insertMenu(menu.menuId,menu.quantity);
-
-                });
-
-                const queryString = `?reserveTime=${this.selectedSlot}`;
-                const targetUrl = `http://localhost/view/user/cart${queryString}`;
-    
-                window.location.href = targetUrl;
-            } else {
-                alert('메뉴와 시간을 선택해주세요');
+        async getBookmarkInfo(){
+            console.log("enterGetBookmarkInfo",this.isLoggedIn);
+            if(this.isLoggedIn == true){
+                try {
+                    const response = await axios.get(`/api/bookmark/`);
+                    this.currentBookmark = response.data.data;
+                    console.log("currentBookmark", this.currentBookmark);
+                    this.checkIfBookmarked();
+                } catch (error) {
+                    
+                        console.error('북마크 가져오기 에러:', error);
+                }
             }
-            
-            // if (this.selectedSlot !== null) {
-              
-            //     const queryString = `?reserveTime=${this.selectedSlot}`;
-            //     const targetUrl = `http://localhost/view/user/cart${queryString}`;
-    
-            //     window.location.href = targetUrl;
-            // } else {
-            //    alert('예약 시간을 선택해주세요');
-            // }
         },
         
-        selectSlot(time,index) {
-            this.selectedSlot = time;
-            this.selectedSlotIndex = index;
-            console.log(this.selectedSlot);
-        },
-        insertMenu(idMenu,qtyMenu){
-            const data = {
-                storeId: this.storeId,
-                menuId: idMenu,
-                stock: qtyMenu  
-            };
-            try {
-                const response = axios.post(`/api/cart`,data);
-                response.then(res => {
-                    console.log('데이터가 성공적으로 추가되었습니다:', res.data);
-                }).catch(error => {
-                    console.error('데이터 추가 중 오류 발생:', error);
-                });
-                
-            } catch (error) {
-                console.error('오류 발생:', error);
+        checkIfBookmarked(){
+            for(bookmark of this.currentBookmark){
+                console.log(bookmark.bookmarkDto.storeId,this.storeId);
+                if(bookmark.bookmarkDto.storeId == this.storeId){
+                    this.isBookmarked = true;
+                    console.log("isBookmarked",this.isBookmarked);
+                    break;
+                }else{
+
+                    console.log("isBookmarked",this.isBookmarked);
+                }
             }
         },
+       
         async checkLoginStatus() {
             try {
                 const response = await axios.get('/api/status'); 
@@ -311,6 +271,7 @@ new Vue({
                 } else if (response.status === 200) {
                     console.log("로그인 완료");
                     this.isLoggedIn =true;
+                    this.getBookmarkInfo();
                     console.log("isLoggedIn", this.isLoggedIn);
 
                 }
@@ -322,15 +283,20 @@ new Vue({
                     console.error('로그인 상태 확인 중 오류 발생:', error);
                 }
             }
-    },
-    updateQuantity(menu) {
-        // 체크박스가 체크되어 있으면 quantity를 1로 설정, 아니면 0으로 설정
-        menu.quantity = menu.isChecked ? 1 : 0;
-    },
+        },
+        goToReserve(){
+            if(this.isLoggedIn == true){
+                this.goToPage(`/view/user/storeDetails/reserve?storeId=${this.storeId}`)
+            }else{
+                this.goToPage(`/view/user/userLogin`);
+            }
+        }
+        
 },
+
     created() {
         this.getTodayDay();
-       
+    
     },
     mounted() {
         const queryParams = new URLSearchParams(window.location.search);
@@ -343,6 +309,5 @@ new Vue({
             console.error('storeId가 없습니다. URL을 확인하세요.');
         }
 
-        this.makeACalendar();
     }
 });

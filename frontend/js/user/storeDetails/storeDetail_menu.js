@@ -1,8 +1,9 @@
+
 new Vue({
     el: '#app',
     data() {
         return {
-            storeId:null,
+            storeId: null,
             restaurantData: {
                 data: {
                     storeImages: [],
@@ -22,10 +23,11 @@ new Vue({
             info:{
                 dateStr:""
             },
-            reserveSlots: [],
-            selectedSlot: null,
-            selectedSlotIndex: null,
-            isLoggedIn:false
+            reserveSlots:{},
+            buttons: ['홈', '메뉴', '사진', '리뷰', '매장정보'],
+            activeButton: 1,
+            isBookmarked: false,
+            currentBookmark:[]
         };
     },
     computed: {
@@ -86,12 +88,15 @@ new Vue({
                 console.log("restaurantData",this.restaurantData);
                 this.schedules = this.restaurantData.data.storeSchedules;
                 console.log("schedules",this.schedules);
-                this.checkLoginStatus();
+                this.getBookmarkInfo();
                 this.operationTodayDay();
                 this.fetchMenuData();
                 this.fetchReviewData();
+                this.kakaoMap();
                 this.fetchRecommendData();
                 this.fetchCouponData();
+                
+                
             } catch (error) {
                 console.error('Error fetching restaurant data:', error);
             }
@@ -132,7 +137,15 @@ new Vue({
             const schedule = this.restaurantData.data.storeSchedules;
             this.todayOperation = schedule.find(s => s.dayOfWeek === this.todayDay) || {};
         },
-       
+        kakaoMap() {
+            const { locationLatX: lat, locationLonY: lon } = this.restaurantData.data;
+            console.log(lat, lon)
+            const mapContainer = document.getElementById('map');
+            const mapOption = { center: new kakao.maps.LatLng(lon, lat), level: 3 };
+            const map = new kakao.maps.Map(mapContainer, mapOption);
+            const marker = new kakao.maps.Marker({ position: new kakao.maps.LatLng(lon, lat) });
+            marker.setMap(map);
+        },
         formatDate(dateString) {
             const date = new Date(dateString);
             return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
@@ -176,6 +189,7 @@ new Vue({
                         previousDateEl.style.backgroundColor = ''; // 기본 색으로 초기화
                     }
                     }
+                    // 클릭한 날짜의 배경색 변경
                     info.dayEl.style.border = '3px solid red';
                     // 클릭한 날짜를 저장
                     this.clickedDate = info.dayEl;
@@ -207,7 +221,7 @@ new Vue({
             
         },
         goToPage(url) {
-            window.location.href = url;
+            window.location.href = `/view/user/${url}`;
         },
         getClosedDays() {
             return this.schedules.filter(schedule => schedule.closeDay).map(schedule => schedule.dayOfWeek);
@@ -238,99 +252,107 @@ new Vue({
             const minutes = String(date.getMinutes()).padStart(2, '0'); // 분을 두 자리로 포맷
             return `${hours}:${minutes}`; // 'HH:mm' 형식으로 반환
         },
-        handleReservation() {
-            if(this.isLoggedIn == true){
-                this.logCheckedMenus(); 
+        menuBtnGotopage(index) {
+            //  this.activeButton = index;
+            switch (index) {
+                case 0:
+                    this.goToPage(`storeDetail?storeId=${this.storeId}`)
+                    break;
+                case 1:
+                    this.goToPage(`#`)
+                    break;
+                case 2:
+                    this.goToPage(`storeDetails/pictures?storeId=${this.storeId}`)
+                    break;
+                case 3:
+                    this.goToPage(`storeDetails/reviews?storeId=${this.storeId}`)
+                    break;
+                case 4:
+                    this.goToPage(`storeDetails/storeInfo?storeId=${this.storeId}`)
+                break;
+                default:
+                    break;
+            }
+    
+        },
+        async setBookmark(){
+           try{
+               const response = await axios.post(`/api/bookmark/${this.storeId}`);
+               console.log(response);
+               this.isBookmarked = true;
+           } catch(error){
+               console.error('북마크 추가 중 오류발생:',error);
+           }
+            
+        },
+        async deleteBookmark(){
+            try{
+                const response = await axios.delete(`/api/bookmark/${this.storeId}`);
+                console.log(response);
+                this.isBookmarked = false;
+            }catch(error){
+                console.error('북마크 삭제 에러',error)
+            }
+        },
+        toggleBookmark(){
+            if(this.isBookmarked == false){
+                this.setBookmark();
             }else{
-                this.goToPage(`/view/user/userLogin`);
+                this.deleteBookmark();
             }
         },
-        logCheckedMenus() {
-
-            
-            // 체크된 메뉴 항목만 필터링
-            const checkedMenus = this.menuData.menu.filter(menu => menu.quantity > 0);
-            
-            // 콘솔에 체크된 메뉴 출력
-            if (checkedMenus.length > 0 && this.selectedSlot !== null) {
-                console.log('체크된 메뉴:');
-                checkedMenus.forEach(menu => {
-                    console.log(`Menu ID: ${menu.menuId}, Quantity: ${menu.quantity}`);
-                    this.insertMenu(menu.menuId,menu.quantity);
-
-                });
-
-                const queryString = `?reserveTime=${this.selectedSlot}`;
-                const targetUrl = `http://localhost/view/user/cart${queryString}`;
-    
-                window.location.href = targetUrl;
-            } else {
-                alert('메뉴와 시간을 선택해주세요');
-            }
-            
-            // if (this.selectedSlot !== null) {
-              
-            //     const queryString = `?reserveTime=${this.selectedSlot}`;
-            //     const targetUrl = `http://localhost/view/user/cart${queryString}`;
-    
-            //     window.location.href = targetUrl;
-            // } else {
-            //    alert('예약 시간을 선택해주세요');
-            // }
-        },
-        
-        selectSlot(time,index) {
-            this.selectedSlot = time;
-            this.selectedSlotIndex = index;
-            console.log(this.selectedSlot);
-        },
-        insertMenu(idMenu,qtyMenu){
-            const data = {
-                storeId: this.storeId,
-                menuId: idMenu,
-                stock: qtyMenu  
-            };
+        async getBookmarkInfo(){
             try {
-                const response = axios.post(`/api/cart`,data);
-                response.then(res => {
-                    console.log('데이터가 성공적으로 추가되었습니다:', res.data);
-                }).catch(error => {
-                    console.error('데이터 추가 중 오류 발생:', error);
-                });
-                
+                const response = await axios.get(`/api/bookmark/`);
+                this.currentBookmark = response.data.data;
+                console.log("currentBookmark", this.currentBookmark);
+                this.checkIfBookmarked();
             } catch (error) {
-                console.error('오류 발생:', error);
+                // if (error.response && error.response.status === 401) {
+                //     alert('로그인이 필요합니다. 로그인을 해주세요.');
+                // } else {
+                    console.error('북마크 가져오기 에러:', error);
+                // }
             }
+
+        },
+        checkIfBookmarked(){
+            for(bookmark of this.currentBookmark){
+                console.log(bookmark.bookmarkDto.storeId,this.storeId);
+                if(bookmark.bookmarkDto.storeId == this.storeId){
+                    this.isBookmarked = true;
+                    console.log("isBookmarked",this.isBookmarked);
+                    break;
+                }else{
+
+                    console.log("isBookmarked",this.isBookmarked);
+                }
+            }
+        },
+        checkLoginBeforeReserve() {
+            
+            // if (!this.isLoggedIn) { //
+            //     alert('로그인이 필요합니다. 로그인을 해주세요.');
+            //     return; // 로그인하지 않은 경우 예약하기 작업을 중단합니다.
+            // }
+    
+            this.goToPage(`storeDetails/reserve?storeId=${this.storeId}`);
         },
         async checkLoginStatus() {
             try {
-                const response = await axios.get('/api/status'); 
-                if (response.status === 401) {
-                    this.isLoggedIn = false;
-                    
-                } else if (response.status === 200) {
-                    console.log("로그인 완료");
-                    this.isLoggedIn =true;
-                    console.log("isLoggedIn", this.isLoggedIn);
-
-                }
+                const response = await axios.get('/api/login'); 
+                this.isLoggedIn = response.data;
+                console.log("loginInfo",this.isLoggedIn);
             } catch (error) {
-                if (error.response && error.response.status === 401) {
-                    this.isLoggedIn = false;
-                    console.log("isLoggedIn", this.isLoggedIn);
-                } else {
-                    console.error('로그인 상태 확인 중 오류 발생:', error);
-                }
+                console.error('로그인 상태 확인 중 오류 발생:', error);
             }
+        }
+      
     },
-    updateQuantity(menu) {
-        // 체크박스가 체크되어 있으면 quantity를 1로 설정, 아니면 0으로 설정
-        menu.quantity = menu.isChecked ? 1 : 0;
-    },
-},
+
     created() {
         this.getTodayDay();
-       
+    
     },
     mounted() {
         const queryParams = new URLSearchParams(window.location.search);

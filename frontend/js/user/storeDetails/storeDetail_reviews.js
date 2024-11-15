@@ -1,12 +1,18 @@
 new Vue({
     el: '#app',
     data: {
+        storeId: null,
         restaurantData: {
             data: {
                 storeImages: []
             }
         },
-        reviewData: []
+        reviewData: [],
+        review: {
+            reviewImages: [] 
+        },
+        buttons: ['홈', '메뉴', '사진', '리뷰', '매장정보'],
+        activeButton: 3,
     },
     computed: { 
         calculateReviewScore() {
@@ -23,7 +29,7 @@ new Vue({
     },
     methods: {
         fetchRestaurantData() {
-            axios.get('http://localhost/api/stores/store/146')
+            axios.get(`http://localhost/api/stores/store/${this.storeId}`)
                 .then(response => {
                     this.restaurantData = response.data;
                     console.log("restaurantData:", this.restaurantData);
@@ -34,7 +40,7 @@ new Vue({
                 });
         },
         fetchReviewData() {
-            axios.get('http://localhost/api/review/store/146')
+            axios.get(`http://localhost/api/review/store/${this.storeId}`)
                 .then(response => {
                     console.log("API 응답:", response.data); // 응답 로그
                     this.reviewData = response.data.data; // 데이터 구조 확인
@@ -59,9 +65,45 @@ new Vue({
         },
         setDefaultImage(event) {
             event.target.src = 'https://goott-bucket.s3.ap-northeast-2.amazonaws.com/noImage.jpg'; 
-        }
+        },
+        goToPage(url) {
+            window.location.href = `/view/user/${url}`;
+        },
+        menuBtnGotopage(index) {
+            //  this.activeButton = index;
+            switch (index) {
+                case 0:
+                    this.goToPage(`storeDetail?storeId=${this.storeId}`)
+                    break;
+                case 1:
+                    this.goToPage(`storeDetails/menu?storeId=${this.storeId}`)
+                    break;
+                case 2:
+                    this.goToPage(`storeDetails/pictures?storeId=${this.storeId}`)
+                    break;
+                case 3:
+                    this.goToPage(`#`)
+                    break;
+                case 4:
+                    this.goToPage(`storeDetails/storeInfo?storeId=${this.storeId}`)
+                break;
+                default:
+                    break;
+            }
+    
+        },
+        
     },
     mounted() {
-        this.fetchRestaurantData(); // 컴포넌트가 마운트되면 데이터 fetch
+        const queryParams = new URLSearchParams(window.location.search);
+        this.storeId = queryParams.get('storeId');
+        console.log("Store ID:", this.storeId);
+
+        if (this.storeId) {
+            this.fetchRestaurantData(); 
+        } else {
+            console.error('storeId가 없습니다. URL을 확인하세요.');
+        }
+
     }
 });

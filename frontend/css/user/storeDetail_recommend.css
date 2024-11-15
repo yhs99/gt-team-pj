@@ -362,9 +362,9 @@ a {
 }
 
 /* 추천 레스토랑 */
-.restaurants_whole{
+/* .restaurants_whole{
     display: flex;
-}
+} */
 
 .restaurant-card {
     width: 205px;

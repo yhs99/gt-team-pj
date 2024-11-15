@@ -80,11 +80,13 @@
             </div>
             <h1 class="restaurant-name" v-if="restaurantData && restaurantData.data">
                 {{ restaurantData.data.storeName}}</h1>
-            <div class="rating">
-                <a href="http://localhost/view/user/storeDetails/storeDetail_reviews">
-                <span class="stars">⭐️ {{ calculateReviewScore.toFixed(1) }} <span class="review-count">리뷰수( {{ reviewData.length }})</span><span class="arrow" onclick="goToPage(review.html)">></span></span>
-                </a>
-            </div>
+                <div class="rating" @click="goToPage(`storeDetails/reviews?storeId=${storeId}`)">
+                    <span class="stars">
+                        ⭐️ {{ calculateReviewScore.toFixed(1) }} 
+                        <span class="review-count">리뷰수( {{ reviewData.length }})</span>
+                        <span class="arrow">></span>
+                    </span>
+                </div>
             <p class="description" v-if="restaurantData && restaurantData.data">
                 {{ restaurantData.data.description}}</p>
             <p class="address" v-if="restaurantData && restaurantData.data">
@@ -110,7 +112,7 @@
                 <div class="cButton" v-for="(button, index) in buttons" 
              :key="index" 
              :class="{ active: activeButton === index }" 
-             @click="setActiveButton(index)">
+             @click="menuBtnGotopage(index)">
             {{ button }}
             </div>
         </div>
@@ -136,7 +138,7 @@
             <div class="gap10">최대 예약인원 : {{restaurantData.data.maxPeoplePerReserve}}</div>
             <template>
                 <div class="gap10 slotBtns_sec">
-                    <div v-for="(slot,index) in reserveSlots" :key="slot.slotDateTime">
+                    <div v-for="(slot,index) in reserveSlots" :key="slot.slotDateTime" v-if="slot.reserved !== 1">
                         <div class="slot_button">{{ formatTime(slot.slotDatetime) }}
                             <span class="available_letters">예약가능</span></div>
                     </div>
@@ -165,7 +167,7 @@
                 </div>
             </div>
 
-            <button class="long_button more" @click="goToPage('storeDetails/storeDetail_menu')"> 메뉴 전체 보기 &gt;</button>
+            <button class="long_button more" @click="goToPage(`storeDetails/menu?storeId=${storeId}`)"> 메뉴 전체 보기 &gt;</button>
         </div>
 
         <div class="square_section">
@@ -178,7 +180,7 @@
             </div>
             </template>
            
-                <button class="long_button more" @click="goToPage('storeDetails/storeDetail_pictures')">사진 {{combinedImages.length}}개 전체보기 &gt;</button>
+                <button class="long_button more" @click="goToPage(`storeDetails/pictures?storeId=${storeId}`)">사진 {{combinedImages.length}}개 전체보기 &gt;</button>
         
         </div>
             
@@ -189,9 +191,12 @@
             <span class="score"> {{ calculateReviewScore.toFixed(1) }} ({{ reviewData.length }})</span>
         
             <div class="restaurants_whole">
-                <div class="restaurant-card" v-for="(review,index) in filteredReviews" :key="'review-' + index">
+                <div class="restaurant-card" v-for="(review,index) in filteredReviews.slice(0,3)" :key="'review-' + index">
                     <div class="restaurant_image_box">
-                        <img :src="review.reviewImages[0].url" alt="reviewImage">
+                        <img 
+                        :src="review.reviewImages && review.reviewImages.length > 0 ? review.reviewImages[0].url : 'https://goott-bucket.s3.ap-northeast-2.amazonaws.com/noImage.jpg'" 
+                        alt="reviewImage" 
+                        @error="setDefaultImage($event)">
                     </div>
                     <span class="restaurant-details">{{review.name}}</span>
                     <span class="review-rating">⭐️{{ review.score.toFixed(1) }}</span>
@@ -202,13 +207,13 @@
             
             </div>
            
-                <button class="long_button more" @click="goToPage('storeDetails/storeDetail_reviews')">리뷰 전체보기 &gt;</button>
+                <button class="long_button more" @click="goToPage(`storeDetails/reviews?storeId=${storeId}`)">리뷰 전체보기 &gt;</button>
           
         </div>
         <div class="square_section">
             <h2 class="my_title">지도</h2>
             <div id="map" style="width:100%;height:350px;" v-if="restaurantData && restaurantData.data"></div>
-            <div v-if="restaurantData && restaurantData.data">
+            <div class="gap10" v-if="restaurantData && restaurantData.data">
                 {{ restaurantData.data.directionGuide }}
             </div>
         </div>
@@ -224,13 +229,13 @@
                 <li v-for="(day, index) in getClosedDays()" :key="index">{{ day }}</li>
             </ul>
           
-            <button class="long_button more" @click="goToPage('storeDetails/storeDetail_storeInfo')">매장정보 전체보기 &gt;</button>
+            <button class="long_button more" @click="goToPage(`storeDetails/storeInfo?storeId=${storeId}`)">매장정보 전체보기 &gt;</button>
        
         </div>
         <div class="square_section_last-child">
             <h2 class="my_title">비슷한 레스토랑 추천</h2>
-            <div class="restaurants_whole" v-for="(recommend,index) in recommendData">
-                <div class="restaurant-card">
+            <div class="restaurants_whole">
+                <div class="restaurant-card"  v-for="(recommend,index) in Object.values(recommendData).slice(0, 3)">
                     <div class="restaurant_image_box">
                         <img v-if="recommend.storeImages" src="recommend.storeImages" alt="storeImage" class="restaurant-image" @error="setDefaultImage($event)">
                         <img v-else src="https://goott-bucket.s3.ap-northeast-2.amazonaws.com/noImage.jpg" alt="noImage" class="restaurant-image">
@@ -241,13 +246,13 @@
                     </div>
                 </div>
             </div>
-            <button class="long_button more">전체보기 &gt;</button>
+            <button class="long_button more" @click="goToPage(`storeDetails/recommend?storeId=${storeId}`)">전체보기 &gt;</button>
         </div>
         <div class="around_reserve">
             <i v-if="isBookmarked" class="fa-solid fa-bookmark fa-2x bookmarked_icon" @click="toggleBookmark()"></i>
             <i v-else class="fa-regular fa-bookmark fa-2x" @click="toggleBookmark()"></i>
             
-            <button class="reserve_button" @click="goToPage('storeDetails/storeDetail_reserve')">예약하기</button>
+            <button class="reserve_button" @click=" goToReserve()">예약하기</button>
         </div>
 
     </div>

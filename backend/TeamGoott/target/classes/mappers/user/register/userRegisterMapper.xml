@@ -15,9 +15,28 @@
 		resultType="com.team.goott.user.domain.UserDTO">
 		SELECT * from user WHERE userId = #{userId}
 	</select>
-	<update id="userUpdateProcess" >
-		UPDATE user SET name = #{name},  mobile = #{mobile},
-		profileImageUrl=#{profileImageUrl}, profileImageName =#{profileImageName}
+	<update id="userUpdateProcess" parameterType="com.team.goott.user.domain.UserDTO">
+		UPDATE user 
+		<set>
+			<if test="name != null and name != ''">
+				name = #{name},
+			</if>
+			<if test="mobile != null and mobile != ''">
+				mobile = #{mobile},
+			</if>
+			<if test="gender != null and gender != ''">
+				gender = #{gender},
+			</if>
+			<if test="profileImageUrl != null and profileImageUrl != ''">
+				profileImageUrl = #{profileImageUrl},
+			</if>
+			<if test="profileImageName != null and profileImageName != ''">
+				profileImageName = #{profileImageName},
+			</if>
+			<if test="password != 'null' and password != null and password != ''">
+				password = SHA2(#{password}, 256),
+			</if>
+		</set>
     	WHERE userId = #{userId}
 	</update>
 </mapper>

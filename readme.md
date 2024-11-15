@@ -25,7 +25,6 @@
 	관리자는 사용자와 입점 매장등을 관리할 수 있습니다.
 
 # 4. 🛠️ 기술 스택
-
 ### Backend
 ![image](https://github.com/user-attachments/assets/41e695a6-a9e2-4d0b-8d12-c9b86a688688)
 ### Frontend

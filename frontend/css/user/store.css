@@ -129,8 +129,8 @@
 }
 .category-container {
   display: flex;
-  align-items: stretch; /* 높이를 동일하게 맞춤 */
-  gap: 20px; /* 이미지와 메뉴 간의 간격 */
+  align-items: stretch;
+  gap: 20px;
   max-width: 1000px;
 }
 
@@ -190,8 +190,8 @@
 }
 
 .category-title button:hover {
-  background-color: #e0e0e0; /* 호버 시 배경색 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 */
+  background-color: #e0e0e0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 .coupon-event {
   color: red;
@@ -204,21 +204,21 @@
   right: 10px;
   cursor: pointer;
   font-size: 18px;
-  color: #ccc; /* 기본 상태 */
-  opacity: 1; /* 기본적으로 표시 */
+  color: #ccc;
+  opacity: 1;
   transition: color 0.3s ease;
   z-index: 2;
 }
 
 .favorite-icon .fas {
-  color: red; /* 즐겨찾기된 상태 */
+  color: red;
 }
 
 .favorite-icon .far {
-  color: #ccc; /* 즐겨찾기되지 않은 상태 */
+  color: #ccc;
 }
 .card:hover .favorite-icon {
-  color: red; /* 호버 시 강조 */
+  color: red;
 }
 .store-status {
   font-weight: bold;

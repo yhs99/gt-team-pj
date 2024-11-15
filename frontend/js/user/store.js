@@ -14,22 +14,52 @@ new Vue({
   },
   computed: {},
   created() {
-    this.fetchAllStore();
+    this.initData();
   },
   methods: {
+    async initData() {
+      await this.fetchFavoriteStores();
+      this.fetchAllStore();
+    },
+    async fetchFavoriteStores() {
+      try {
+        const response = await axios.get("/api/bookmark/");
+        this.favoriteStoreIds = response.data.data.map(
+          (item) => item.bookmarkDto.storeId
+        );
+        console.log("Fetched favorite store IDs:", this.favoriteStoreIds);
+      } catch (error) {
+        console.error("즐겨찾기 목록 가져오기 실패:", error);
+        this.favoriteStoreIds = [];
+      }
+    },
     fetchAllStore() {
       axios
         .get("/api/searchStores")
         .then((response) => {
           const shuffledStores = this.shuffle(response.data.data.storeLists);
-          this.stores = shuffledStores.slice(0, 15);
+
+          this.stores = shuffledStores.slice(0, 15).map((store) => ({
+            ...store,
+            isFavorite: this.favoriteStoreIds.includes(store.storeId),
+          }));
+
           this.groupStores = shuffledStores
             .filter((store) => store.maxPeoplePerReserve >= 6)
-            .slice(0, 15);
+            .slice(0, 15)
+            .map((store) => ({
+              ...store,
+              isFavorite: this.favoriteStoreIds.includes(store.storeId),
+            }));
+
           this.eventStores = shuffledStores
             .filter((store) => store.couponCount > 0)
-            .slice(0, 15);
-          // 후기가 많은 식당 가져오기
+            .slice(0, 15)
+            .map((store) => ({
+              ...store,
+              isFavorite: this.favoriteStoreIds.includes(store.storeId),
+            }));
+
           this.filterTopReviewStores();
 
           this.storeSchedules = response.data.data.storeLists
@@ -39,10 +69,10 @@ new Vue({
           console.log(this.storeSchedules);
           console.log(this.stores);
           console.log(this.groupStores);
-          console.log("리뷰많은식당", this.topReviewStores);
+          console.log("리뷰 많은 식당", this.topReviewStores);
         })
         .catch((error) => {
-          console.error(error);
+          console.error("데이터 요청 실패:", error);
         });
     },
     filterTopReviewStores() {
@@ -150,14 +180,18 @@ new Vue({
       }
 
       try {
-        store.isFavorite = !store.isFavorite;
-        await axios.post(`/api/bookmark/${store.storeId}`);
-        console.log(
-          `즐겨찾기 상태가 ${store.isFavorite ? "추가" : "제거"}되었습니다.`
-        );
+        if (store.isFavorite) {
+          await axios.delete(`/api/bookmark/${store.storeId}`);
+          this.updateFavoriteStatus(store.storeId, false);
+          console.log("즐겨찾기에서 제거되었습니다.");
+        } else {
+          await axios.post(`/api/bookmark/${store.storeId}`);
+          this.updateFavoriteStatus(store.storeId, true);
+          console.log("즐겨찾기에 추가되었습니다.");
+        }
       } catch (error) {
-        store.isFavorite = !store.isFavorite;
         console.error("즐겨찾기 처리 중 오류 발생:", error);
+        alert("즐겨찾기 처리에 실패했습니다. 다시 시도해 주세요.");
       }
     },
     navigateTo(categoryCode) {
@@ -206,6 +240,25 @@ new Vue({
         }
       }
       return "영업 정보 없음";
+    },
+    updateFavoriteStatus(storeId, isFavorite) {
+      this.stores.forEach((store, index) => {
+        if (store.storeId === storeId) {
+          Vue.set(this.stores[index], "isFavorite", isFavorite);
+        }
+      });
+
+      this.groupStores.forEach((store, index) => {
+        if (store.storeId === storeId) {
+          Vue.set(this.groupStores[index], "isFavorite", isFavorite);
+        }
+      });
+
+      this.eventStores.forEach((store, index) => {
+        if (store.storeId === storeId) {
+          Vue.set(this.eventStores[index], "isFavorite", isFavorite);
+        }
+      });
     },
   },
 });

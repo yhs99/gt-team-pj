@@ -42,15 +42,7 @@
           <i class="fa-solid fa-store"></i> 선택하신 식당 메뉴 정보
         </h2>
         <div v-for="(items, storeName) in groupedCarts" :key="storeName">
-          <div class="store-name">
-            <img
-              :src="getStoreImage(items[0].url)"
-              alt="상점 이미지"
-              class="store-image"
-              v-if="getStoreImage(items[0].url)"
-            />
-            {{ storeName }}
-          </div>
+          <div class="store-name">{{ storeName }}</div>
           <div class="cart-list">
             <div class="cart-item" v-for="cart in items" :key="cart.cartId">
               <div class="cart-image-wrapper">
@@ -85,7 +77,15 @@
         </h2>
         <div class="form-group">
           <label for="name">예약자명 *</label>
-          <input type="text" v-model="reservationName" required />
+          <input
+            type="text"
+            v-model="reservationName"
+            ref="reservationNameInput"
+            required
+          />
+          <p v-if="reservationNameError" class="error-message">
+            {{ reservationNameError }}
+          </p>
         </div>
         <div class="form-group">
           <label for="peopleCount">인원수 *</label>
@@ -141,18 +141,20 @@
             만나서 결제
           </button>
         </div>
-        <div v-if="discountAmount > 0" class="discount-section">
-          할인 금액: -{{ discountAmount.toLocaleString() }}원
-        </div>
 
-        <div class="payment-button text-center mt-3">
-          <button
-            @click="makeReservation"
-            class="btn btn-yellow"
-            :disabled="peopleCount < 1 || peopleCount > maxPeoplePerReserve"
-          >
-            {{ finalTotalPrice.toLocaleString() }}원 결제하기
-          </button>
+        <div class="payment-button text-center mt-2">
+          <div class="paybutton">
+            <div v-if="discountAmount > 0" class="discount-section">
+              할인 금액: -{{ discountAmount.toLocaleString() }}원
+            </div>
+            <button
+              @click="makeReservation"
+              class="btn btn-yellow"
+              :disabled="peopleCount < 1 || peopleCount > maxPeoplePerReserve"
+            >
+              {{ finalTotalPrice.toLocaleString() }}원 결제하기
+            </button>
+          </div>
         </div>
       </div>
 

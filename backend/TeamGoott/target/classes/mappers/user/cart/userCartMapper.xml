@@ -32,7 +32,7 @@
 	<insert id="addToCart">
 		insert into
 		cart(storeId,menuId,menuName,stock,price,totalPrice,userId)
-		VALUES(#{storeId},#{menuId},#{menuName},#{stock},#{price},#{totalPrice},#{userId})
+		VALUES(#{cartDTO.storeId},#{cartDTO.menuId},#{cartDTO.menuName},#{cartDTO.stock},#{cartDTO.price},#{cartDTO.totalPrice},#{userId})
 	</insert>
 
 	<delete id="deleteFromCart">
@@ -42,7 +42,7 @@
 
 	<select id="getMenuCart"
 		resultType="com.team.goott.user.domain.MenuDTO">
-		select * from menu where menuId = #{menuId}
+		select * from menu where menuId = #{menuId} AND storeId = #{storeId}
 	</select>
 
 	<select id="getUserCartById" resultMap="ExtendedCartMap">
@@ -63,6 +63,13 @@
 	<select id="getCartStoreList" resultType="int">
 		select DISTINCT storeId from cart where userId = #{userId}
 	</select>
-	
-
+	<select id="getMenu" resultType="com.team.goott.user.domain.MenuDTO">
+		select * from menu where menuId = #{menuId} AND storeId = #{storeId};
+	</select>
+	<select id="getCartItem" resultType="com.team.goott.user.domain.CartDTO">
+		select * from cart where userId = #{userId} AND menuId = #{menuId}
+	</select>
+	<update id="updateCart">
+		update cart set stock = #{stock}, totalPrice=#{totalPrice} where userId=#{userId} AND menuId=#{menuId}
+	</update>
 </mapper>

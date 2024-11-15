@@ -4,7 +4,9 @@ new Vue({
     carts: [],
     checkedCarts: [],
     reservationName: "",
+    reservationNameError: "",
     peopleCount: 1,
+    peopleCountError: "",
     note: "",
     isModalOpen: false,
     globalCoupons: [],
@@ -63,6 +65,21 @@ new Vue({
     makeReservation() {
       const urlParams = new URLSearchParams(window.location.search);
       const reserveTime = urlParams.get("reserveTime");
+
+      this.reservationNameError = "";
+      this.peopleCountError = "";
+
+      if (!this.reservationName.trim()) {
+        this.reservationNameError = "예약자명을 입력해 주세요.";
+        this.$refs.reservationNameInput.focus();
+        return;
+      }
+
+      if (this.peopleCount < 1 || this.peopleCount > this.maxPeoplePerReserve) {
+        this.peopleCountError = `인원수는 1 이상, 최대 ${this.maxPeoplePerReserve}명까지 가능합니다.`;
+        this.$refs.peopleCountInput.focus();
+        return;
+      }
 
       const reservationData = {
         reserveTime: reserveTime,

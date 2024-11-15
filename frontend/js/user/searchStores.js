@@ -5,12 +5,16 @@ new Vue({
     stores: [],
     page: 1,
     perPage: 10,
+    isLoading: false,
+    hasMore: true,
     scheduleLists: [],
     selectedCategoryCodes: [],
     selectSidoCodes: [],
     searchQuery: "",
+    favoriteStoreIds: [],
+    loginYN: false,
+    isDescriptionVisible: false,
   },
-  computed: {},
   created() {
     const urlParams = new URLSearchParams(window.location.search);
     this.selectedCategoryCodes = urlParams.get("categoryId")
@@ -21,50 +25,141 @@ new Vue({
       : [];
     this.searchQuery = urlParams.get("searchParam") || "";
     this.showBlock = urlParams.get("showBlock") || "";
-    this.fetchStore();
+
+    this.initData();
+    window.addEventListener("scroll", this.handleScroll);
+  },
+  destroyed() {
+    window.removeEventListener("scroll", this.handleScroll);
   },
   methods: {
-    fetchStore() {
-      const categoryCodes = this.selectedCategoryCodes.join(",");
-      const sidoCodes = this.selectSidoCodes.join(",");
-      let searchQuery = this.searchQuery.trim();
-
-      // 끝에 붙은 '}'를 제거합니다.
-      if (searchQuery.endsWith("}")) {
-        searchQuery = searchQuery.slice(0, -1);
-      }
-
-      let url = "/api/searchStores";
-      let params = [];
-
-      // 카테고리와 시도 코드 파라미터 추가
-      if (categoryCodes) params.push(`categoryId=${categoryCodes}`);
-      if (sidoCodes) params.push(`sidoCodeId=${sidoCodes}`);
-
-      // 검색어가 있을 때만 인코딩하여 searchParam에 추가
-      if (searchQuery) {
-        params.push(`searchParam=${encodeURIComponent(searchQuery)}`);
-      }
-
-      // showBlock 파라미터 추가
-      params.push("showBlock=0");
-
-      // 최종 URL 생성
-      url += "?" + params.join("&");
-
-      // 요청 URL 로그 확인
-      console.log("요청 URL: ", url);
-      axios
-        .get(url)
-        .then((response) => {
-          this.stores = response.data.data.storeLists;
-          this.scheduleLists = response.data.data.storeLists.storeSchedules;
-          console.log(this.stores);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+    async initData() {
+      await this.fetchFavoriteStores();
+      this.fetchStore();
     },
+    handleScroll() {
+      const { scrollTop, clientHeight, scrollHeight } =
+        document.documentElement;
+      if (scrollTop + clientHeight >= scrollHeight - 10) {
+        this.fetchStore();
+      }
+    },
+    async fetchFavoriteStores() {
+      try {
+        const response = await axios.get("/api/bookmark/");
+        this.favoriteStoreIds = response.data.data.map(
+          (item) => item.bookmarkDto.storeId
+        );
+        console.log("Fetched favorite store IDs:", this.favoriteStoreIds);
+      } catch (error) {
+        console.error("즐겨찾기 목록 가져오기 실패:", error);
+        this.favoriteStoreIds = [];
+      }
+    },
+
+    async fetchStore() {
+      if (this.isLoading || !this.hasMore) return;
+      this.isLoading = true;
+
+      let url = `/api/searchStores?page=${this.page}&perPage=${this.perPage}`;
+
+      if (this.selectedCategoryCodes.length > 0) {
+        const categoryCodes = this.selectedCategoryCodes.join(",");
+        url += `&categoryId=${categoryCodes}`;
+      }
+
+      if (this.selectSidoCodes.length > 0) {
+        const sidoCodes = this.selectSidoCodes.join(",");
+        url += `&sidoCodeId=${sidoCodes}`;
+      }
+
+      if (this.searchQuery.trim()) {
+        const searchQuery = encodeURIComponent(this.searchQuery.trim());
+        url += `&searchParam=${searchQuery}`;
+      }
+
+      url += `&showBlock=0`;
+
+      console.log("요청 URL:", url);
+
+      try {
+        const response = await axios.get(url);
+        const storeLists = response.data.data.storeLists;
+
+        if (storeLists.length < this.perPage) {
+          this.hasMore = false;
+        }
+
+        this.stores = [
+          ...this.stores,
+          ...storeLists.map((store) => ({
+            ...store,
+            isFavorite: this.favoriteStoreIds.includes(store.storeId),
+            isDescriptionVisible: false,
+            isExpanded: false,
+          })),
+        ];
+
+        this.page += 1;
+      } catch (error) {
+        console.error("가게 목록 가져오기 실패:", error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async toggleFavorite(store) {
+      await this.checkLoginStatus();
+      if (!this.loginYN) {
+        if (
+          confirm("즐겨찾기는 로그인 후에 이용 가능합니다. 로그인하시겠습니까?")
+        ) {
+          window.location.href = "/login"; // 로그인 페이지로 이동
+        }
+        return;
+      }
+
+      try {
+        if (store.isFavorite) {
+          await axios.delete(`/api/bookmark/${store.storeId}`);
+          this.updateFavoriteStatus(store.storeId, false);
+          console.log("즐겨찾기에서 제거되었습니다.");
+        } else {
+          await axios.post(`/api/bookmark/${store.storeId}`);
+          this.updateFavoriteStatus(store.storeId, true);
+          console.log("즐겨찾기에 추가되었습니다.");
+        }
+      } catch (error) {
+        console.error("즐겨찾기 처리 중 오류 발생:", error);
+        alert("즐겨찾기 처리에 실패했습니다. 다시 시도해 주세요.");
+      }
+    },
+    updateFavoriteStatus(storeId, isFavorite) {
+      this.stores.forEach((store, index) => {
+        if (store.storeId === storeId) {
+          Vue.set(this.stores[index], "isFavorite", isFavorite);
+        }
+      });
+    },
+
+    async checkLoginStatus() {
+      try {
+        const response = await axios.get("/api/status");
+        if (
+          response.data.status === "success" &&
+          response.data.data.loginType === "user"
+        ) {
+          this.loginYN = true;
+          this.userName = response.data.data.name;
+          this.profileImageUrl = response.data.data.profileImageUrl;
+        } else {
+          this.loginYN = false;
+        }
+      } catch (error) {
+        this.loginYN = false;
+        console.error("로그인 상태 확인 중 오류 발생:", error);
+      }
+    },
+
     getStoreStatus(store) {
       const today = new Date().getDay();
       const now = new Date();
@@ -109,47 +204,12 @@ new Vue({
       }
       return "영업 정보 없음";
     },
+
     goToStore(storeId) {
       window.location.href = `storeDetail?storeId=${storeId}`;
     },
-    async checkLoginStatus() {
-      try {
-        const response = await axios.get("/api/status");
-        if (
-          response.data.status === "success" &&
-          response.data.data.loginType === "user"
-        ) {
-          this.loginYN = true;
-          this.userName = response.data.data.name;
-          this.profileImageUrl = response.data.data.profileImageUrl;
-        } else {
-          this.loginYN = false;
-        }
-      } catch (error) {
-        this.loginYN = false;
-        console.error("로그인 상태 확인 중 오류 발생:", error);
-      }
-    },
-    async toggleFavorite(store) {
-      await this.checkLoginStatus();
-      if (!this.loginYN) {
-        alert("즐겨찾기는 로그인 후에 가능합니다.");
-        return;
-      }
-
-      try {
-        store.isFavorite = !store.isFavorite;
-        if (store.isFavorite) {
-          await axios.post(`/api/bookmark/${store.storeId}`);
-          console.log("즐겨찾기 상태가 추가되었습니다.");
-        } else {
-          await axios.delete(`/api/bookmark/${store.storeId}`);
-          console.log("즐겨찾기 상태가 삭제되었습니다.");
-        }
-      } catch (error) {
-        store.isFavorite = !store.isFavorite;
-        console.error("즐겨찾기 처리 중 오류 발생:", error);
-      }
+    goToReviewPage(storeId) {
+      window.location.href = `storeDetails/reviews?storeId=${storeId}`;
     },
   },
 });

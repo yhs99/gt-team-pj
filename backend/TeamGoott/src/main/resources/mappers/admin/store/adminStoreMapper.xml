@@ -9,8 +9,8 @@
     ORDER BY storeId
 </select>
 
-<select id="getRotationCodeIdByStoreId" parameterType="int" resultType="int">
-    SELECT r.rotation
+<select id="getRotationCodeIdByStoreId" parameterType="int" resultType="com.team.goott.admin.domain.RotationVO">
+    SELECT r.rotation, s.rotationIdLastUpdated
     FROM store s
     JOIN rotationCode r ON s.rotationId = r.rotationCodeId
     WHERE s.storeId = #{storeId}
@@ -21,6 +21,12 @@
     FROM reserveSlots
     WHERE DATE(slotDatetime) = #{date}
     AND storeId = #{storeId}
+</select>
+
+<select id="getLastReserveSlot" parameterType="int" resultType="java.time.LocalDate">
+SELECT MAX(slotDatetime)
+FROM reserveSlots
+WHERE storeId = #{storeId}
 </select>
 
 <insert id="insertReserveSlot" parameterType="com.team.goott.owner.domain.ReserveSlotsDTO">
@@ -153,6 +159,9 @@
     <if test="showBlock != null and showBlock != ''">
         AND isBlocked = #{showBlock}
     </if>
+    <if test="storeId != null and storeId != '' and storeId > 0">
+        AND s.storeId = #{storeId}
+    </if>
 </select>
 
 <select id="isExistStore" parameterType="map" resultType="int">
@@ -176,4 +185,53 @@
 	SET isBlocked = 0
 	WHERE storeId = #{storeId}
 </update>
+
+ <select id="getSummaryTitle" resultType="com.team.goott.admin.domain.SummaryTitleDTO">
+	SELECT SUM(p.payAmount) AS totalSales,
+	    SUM(CASE WHEN DATE(r.reserveTime) = CURRENT_DATE THEN p.payAmount ELSE 0 END) AS todaySales,
+	    COUNT(r.reserveTime) AS totalReserveCnt,
+	    SUM(CASE WHEN DATE(r.reserveTime) = CURRENT_DATE THEN 1 ELSE 0 END) AS todayReserveCnt
+	FROM payHistory p
+	JOIN reserve r ON p.reserveId = r.reserveId
+	WHERE r.statusCodeId IN (2, 4, 5)
+	<if test="storeId != null and storeId != '' and storeId != 0">
+	AND r.storeId = #{storeId}
+	</if>
+</select>
+<select id="getDailySales" resultType="com.team.goott.admin.domain.SummaryVO">
+	SELECT 
+		DATE(r.reserveTime) AS label,
+		SUM(p.payAmount) AS value
+	FROM payHistory p
+	JOIN reserve r
+	ON p.reserveId = r.reserveId
+	WHERE r.statusCodeId IN (2,4,5)
+	<if test="storeId != null and storeId != '' and storeId != 0">
+	AND r.storeId = #{storeId}
+	</if>
+	GROUP BY label
+</select>
+
+<select id="getMonthlySales" resultType="com.team.goott.admin.domain.SummaryVO">
+SELECT DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL seq MONTH), '%Y-%m') AS label,
+    COALESCE(SUM(p.payAmount), 0) AS value
+	FROM 
+    (SELECT 0 AS seq UNION ALL
+    SELECT 1 UNION ALL
+    SELECT 2 UNION ALL
+    SELECT 3 UNION ALL
+    SELECT 4 UNION ALL
+    SELECT 5) AS months
+	LEFT JOIN reserve r
+    ON DATE_FORMAT(r.reserveTime, '%Y-%m') = DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL months.seq MONTH), '%Y-%m')
+    AND (r.statusCodeId IS NULL OR r.statusCodeId IN (2, 4, 5))
+   	<if test="storeId != null and storeId != '' and storeId != 0">
+	AND r.storeId = #{storeId}
+	</if>
+    LEFT JOIN payHistory p
+	ON p.reserveId = r.reserveId
+	GROUP BY label
+	ORDER BY label
+</select>
+
 </mapper>

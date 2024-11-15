@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository;
 
 import com.team.goott.owner.domain.CategoryCodeVO;
 import com.team.goott.owner.domain.FacilityCodeVO;
+import com.team.goott.owner.domain.RotationCodeVO;
 import com.team.goott.owner.domain.sidoCodeVO;
 import com.team.goott.user.domain.StoreDTO;
-import com.team.goott.user.domain.StoreFiltersVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,6 +63,12 @@ public class UserStoreDAOImpl implements UserStoreDAO {
 	@Override
 	public List<FacilityCodeVO> getStoreFiltersFacilityCode() {
 		return ses.selectList(ns+"getStoreFiltersFacilityCode");
+	}
+
+
+	@Override
+	public List<RotationCodeVO> getStoreFiltersRotationCode() {
+		return ses.selectList(ns+"getStoreFiltersRotationCode");
 	}
 
 }

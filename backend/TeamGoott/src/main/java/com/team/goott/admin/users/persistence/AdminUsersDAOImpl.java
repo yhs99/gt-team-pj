@@ -10,7 +10,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import com.team.goott.admin.domain.AdminDTO;
-import com.team.goott.user.domain.UserDTO;
+import com.team.goott.admin.domain.UserDTO;
+import com.team.goott.admin.domain.UserSearchFilter;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,8 +25,8 @@ public class AdminUsersDAOImpl implements AdminUsersDAO {
 	private SqlSession ses;
 	
 	@Override
-	public List<UserDTO> getAllUsers() {
-		return ses.selectList(NS+"getAllUsers");
+	public List<UserDTO> getAllUsers(UserSearchFilter filter) {
+		return ses.selectList(NS+"getAllUsers", filter);
 	}
 
 	@Override

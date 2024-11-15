@@ -1,5 +1,11 @@
 package com.team.goott.admin.reserve.service;
 
-public interface AdminReserveService {
+import java.util.List;
+import java.util.Map;
 
+import com.team.goott.admin.domain.ReservesVO;
+
+public interface AdminReserveService {
+	List<ReservesVO> getReserveLists(Map<String, Object> filters);
+	int updateReserveStatusCode(List<Integer> reserveId, int statusCodeId);
 }

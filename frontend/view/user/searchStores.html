@@ -30,7 +30,6 @@
       href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-
     <link href="/css/user/searchStores.css" rel="stylesheet" />
     <link href="/css/user/header.css" rel="stylesheet" />
   </head>
@@ -47,7 +46,7 @@
             >
               <td>
                 <div class="storeTitle">
-                  {{ store.storeName }}
+                  <i class="fa-solid fa-store"></i> {{ store.storeName }}
                   <span v-if="store.couponCount > 0" class="coupon-event">
                     할인 행사 진행중 <i class="fa-solid fa-tags"></i>
                   </span>
@@ -57,7 +56,13 @@
                     class="fas fa-star"
                     style="color: gold; font-size: 15px"
                   ></i>
-                  {{ store.averageScore }} ({{ store.reviewCount }})
+                  {{ store.averageScore }}
+                  <span
+                    @click.stop="goToReviewPage(store.storeId)"
+                    class="review-count-link"
+                  >
+                    ({{ store.reviewCount }})
+                  </span>
                   {{store.address}}
                 </div>
                 <div class="store-tel">
@@ -98,15 +103,28 @@
                 </div>
               </td>
               <td>
-                <div class="favorite-icon" @click.stop="toggleFavorite(store)">
-                  <i
-                    :class="store.isFavorite ? 'fas fa-heart' : 'far fa-heart'"
-                  ></i>
+                <div class="icon-container">
+                  <div
+                    class="favorite-icon"
+                    @click.stop="toggleFavorite(store)"
+                  >
+                    <i
+                      :class="[
+                        store.isFavorite ? 'fas fa-heart red-heart' : 'far fa-heart black-heart'
+                      ]"
+                    ></i>
+                  </div>
                 </div>
               </td>
             </tr>
           </tbody>
         </table>
+        <div v-if="isLoading" class="loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i> 불러오는 중...
+        </div>
+        <div v-if="!hasMore && !isLoading" class="loading-spinner">
+          더 이상 데이터가 없습니다.
+        </div>
       </div>
       <footer-component></footer-component>
     </div>

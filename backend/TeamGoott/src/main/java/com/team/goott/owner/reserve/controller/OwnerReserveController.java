@@ -69,7 +69,7 @@ public class OwnerReserveController {
 			//승인 할 에약의 storeId와 로그인 한 점주의 storeId가 같을 시
 			if(storeId == reserve.getStoreId()) {
 				// 예약 상태 업데이트
-				result = service.updateStatus(reserveId,statusCode);				
+				result = service.updateStatus(reserveId,statusCode,storeId);				
 			} else {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("해당 예약에 대한 권한이 없습니다.");
 			}
@@ -106,13 +106,13 @@ public class OwnerReserveController {
 		return ResponseEntity.ok(reserveSlot);
 	}
 	
-	//알림 조회 
+	//점주 알림 조회 
 	@GetMapping("/reserve/notification")
-	public ResponseEntity<Object> getNotification(@RequestParam("userId") int userId, HttpSession session){
+	public ResponseEntity<Object> getNotification(HttpSession session){
 		StoreDTO storeSession = (StoreDTO)session.getAttribute("store");
 		List<NotificationDTO> notification = null;
 		if(storeSession != null) {
-			notification = service.getNotification(userId);
+			notification = service.getNotification(storeSession.getStoreId());
 		} else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
 		}

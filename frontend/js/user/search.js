@@ -84,7 +84,7 @@ new Vue({
       if (searchQuery) {
         newUrl += `${
           newUrl.includes("?") ? "&" : "?"
-        }searchParam=${searchQuery}}`;
+        }searchParam=${searchQuery}`;
       }
       window.location.href = newUrl;
     },

@@ -216,39 +216,41 @@
             </div>
           </div>
 
-          <div class="mb-3 magrinDiv" >
-            <!-- 이미지 업로드 설명 및 최대 5개 텍스트 -->
-            <label for="imageUpload" class="form-label">
-              이미지 업로드 <span style="font-size: 0.9em; color: gray;">(최대 5개)</span>
-            </label>
-            
-            <!-- 선택된 파일 갯수 표시 -->
-            <label for="imageUpload" id="fileCountLabel">
-              {{ fileCount }} 개 사진 선택됨
-            </label>
-          
-            <!-- 파일 선택 버튼 -->
+          <div>
+            <div class="mb-3">
+              <!-- 파일 선택 버튼을 클릭하면 파일 input 요소가 트리거되도록 하는 버튼 -->
+              <button type="button" class="btn btn-info" @click="triggerFileInput" 
+                      style="padding: 12px 24px; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; transition: background-color 0.3s;">
+                이미지 추가
+              </button>
+              
+              <!-- 선택된 파일 목록 -->
+              <ul v-if="uploadedFiles.length > 0" style="list-style-type: none; padding: 0; margin-top: 20px;">
+                <li v-for="(file, index) in uploadedFiles" :key="index" 
+                    style="display: flex; align-items: center; margin-bottom: 16px; border: 1px solid #ddd; padding: 12px; border-radius: 8px; background-color: #f9f9f9;">
+                  <span style="flex-grow: 1; font-size: 16px; font-weight: bold; color: #333;">
+                    {{ transName(file.name || file.fileName) }}
+                  </span>
+                  <div style="margin-right: 16px;">
+                    <img :src="file.url2 || file.url" alt="Uploaded Image" 
+                         style="width: 120px; height: 120px; object-fit: cover; border-radius: 6px;"/>
+                  </div>
+                  <button @click="removeFile(index)" 
+                          style="padding: 8px 16px; background-color: #dc3545; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; transition: background-color 0.3s;">
+                    삭제
+                  </button>
+                </li>
+              </ul>
+            </div>
+        
+            <!-- 파일 선택 input 요소 (display: none으로 숨김) -->
             <input
               type="file"
-              class="form-control"
               id="imageUpload"
-              accept="image/*"
-              @change="handleImageUpload($event)"
+              @change="handleImageUpload"
               multiple
-              style="display:none"  
+              style="display: none"
             />
-          </div>
-          <div class="mb-3">
-            <!-- 파일 선택 버튼을 클릭하면 파일 input 요소가 트리거되도록 하는 버튼 -->
-            <button type="button" class="btn btn-secondary" @click="triggerFileInput">이미지 추가</button>
-          
-            <!-- 선택된 파일 목록 -->
-            <ul v-if="uploadedFiles.length > 0">
-              <li v-for="(file, index) in uploadedFiles" :key="index">
-                {{ file.name }}
-                <button @click="removeFile(index)">삭제</button>
-              </li>
-            </ul>
           </div>
 
           <div class="button-group">

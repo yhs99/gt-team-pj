@@ -67,22 +67,49 @@ new Vue({
     this.checkLogin();
   },
   methods: {
+    transName(fileName) {
+      // 파일 경로에서 파일명 추출
+    const fullName = fileName.split('/').pop();
+    
+    // 파일명에서 언더스코어 이후의 부분 추출
+    const titleWithExtension = fullName.split('_').pop();
+    
+    return titleWithExtension;
+  },
 
-    handleImageUpload(event) {
-      const files = event.target.files;
-      
-      // 이미 5개 이상의 파일이 있을 경우 더 이상 추가하지 않음
-      if (this.uploadedFiles.length + files.length > 5) {
-        alert('최대 5개의 파일만 업로드 가능합니다.');
-        return;
-      }
+  handleImageUpload(event) {
+    const files = event.target.files;
+
+    // 이미 5개 이상의 파일이 있을 경우 더 이상 추가하지 않음
+    if (this.uploadedFiles.length + files.length > 5) {
+      alert('최대 5개의 파일만 업로드 가능합니다.');
+      return;
+    }
+
+      // 새로운 파일들을 배열에 추가하고 url2 값을 설정
+    Array.from(files).forEach(file => {
+      console.log("file : ", file)
+      // 업로드 파일 객체를 준비
+      const fileObj = file // 파일 이름
   
-      // 새로운 파일들을 배열에 추가
-      this.uploadedFiles.push(...files);
-      
-      // 파일 갯수 업데이트
-      this.updateFileCount();
-    },
+
+    // 만약 file 객체에 url이 있는 경우
+    if (file.url) {
+      fileObj.url2 = file.url; // 서버에서 받은 url을 url2에 할당
+    } else {
+      // 새로 추가된 파일인 경우 URL.createObjectURL을 사용하여 미리보기 URL 생성
+      fileObj.url2 = URL.createObjectURL(file);
+    }
+
+      // 파일을 uploadedFiles 배열에 추가
+      this.uploadedFiles.push(fileObj);
+    });
+
+
+
+    // 파일 갯수 업데이트
+    this.updateFileCount();
+  },
   
     // 파일 선택 버튼 클릭 시 input[type="file"]을 트리거하는 메서드
     triggerFileInput() {
@@ -191,16 +218,21 @@ new Vue({
       axios
         .get("/api/status")
         .then((response) => {
+          console.log(response)
           if (response.data.data.loginType == "user") {
             location.href = "/";
           } else {
-            alert("이미 등록하셨습니다");
-            location.href = "/view/owner/index";
+
+            if (response.status == 200) {
+              alert("이미 등록하셨습니다");
+              location.href = "/view/owner/index";
+            }
           }
         })
         .catch((error) => {
-          if (!error.status == 401) {
-            console.log("로그인 정보가 없습니다.");
+          if (error.status == 401) {
+            alert("로그인 정보가 없습니다.");
+            location.href = "/"
           }
         });
     },

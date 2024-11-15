@@ -67,7 +67,7 @@ public class UserUsersController {
 			if (map.get("name") == null) {
 				Map<String, String> noStoreInfoResult = new HashMap<String, String>();
 				noStoreInfoResult.put("message", "등록된 가게가 없습니다. 가게를 등록해주세요");
-				noStoreInfoResult.put("redirect", "/view/owner/store/register");
+				noStoreInfoResult.put("redirect", "/view/owner/registerStore");
 				return ResponseEntity.status(HttpStatus.ACCEPTED).body(noStoreInfoResult);
 			}
 			map.put("loginType", "store");

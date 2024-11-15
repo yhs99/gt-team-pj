@@ -41,7 +41,7 @@ new Vue({
         await axios.post('/api/store/owner/register', formData)
         .then(response => {
           alert('점주 회원가입이 완료되었습니다. 가게 정보를 등록해주세요!');
-          location.href = '/view/owner/store/register';
+          location.href = '/view/owner/registerStore';
         })
         .catch(error => {
           if(error.status === 400) {

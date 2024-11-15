@@ -125,6 +125,7 @@ public class OwnerStoreController {
 	        // 가게 정보가 없는 경우
 	        if (storeData == null) {
 	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("등록된 가게가 없습니다.");
+	            
 	        }
 	        
 	        // 가게 정보 반환
@@ -159,6 +160,11 @@ public class OwnerStoreController {
 		// 가게 저장
 		try {
 			if (ownerStoreService.createStore(store, schedules, category, facility, files) == 1) {
+				// 생성한 가게 정보를 store 테이블에서 select하고, ownerId로
+				 
+				// 해당 StoreDTO
+				session.setAttribute("store", ownerStoreDao.getStoreByOwnerId(ownerId));
+				
 				return ResponseEntity.ok("가게가 성공적으로 등록되었습니다.");
 			} else {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("가게 등록에 실패하였습니다.");

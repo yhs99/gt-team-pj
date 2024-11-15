@@ -46,13 +46,15 @@
 
 /* 추천 레스토랑 */
 .restaurants_whole{
-    display: block;
+    display: flex;              
+    flex-wrap: wrap;           
+    justify-content: space-between;
 }
 
 
 .restaurant-card {
-    width: 100%;
-    margin-bottom: 1px;
+    width: calc(50% - 10px);   
+    margin-bottom: 20px;  
     word-break: keep-all;
 }
 

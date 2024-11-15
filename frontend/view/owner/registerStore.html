@@ -216,6 +216,29 @@
             </div>
           </div>
 
+          <div class="mb-3 magrinDiv" >
+            <!-- 이미지 업로드 설명 및 최대 5개 텍스트 -->
+            <label for="imageUpload" class="form-label">
+              이미지 업로드 <span style="font-size: 0.9em; color: gray;">(최대 5개)</span>
+            </label>
+            
+            <!-- 선택된 파일 갯수 표시 -->
+            <label for="imageUpload" id="fileCountLabel">
+              {{ fileCount }} 개 사진 선택됨
+            </label>
+          
+            <!-- 파일 선택 버튼 -->
+            <input
+              type="file"
+              class="form-control"
+              id="imageUpload"
+              accept="image/*"
+              @change="handleImageUpload($event)"
+              multiple
+              style="display:none"  
+            />
+          </div>
+          
           <div>
             <div class="mb-3">
               <!-- 파일 선택 버튼을 클릭하면 파일 input 요소가 트리거되도록 하는 버튼 -->

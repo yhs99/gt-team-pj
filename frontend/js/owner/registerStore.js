@@ -87,22 +87,16 @@ new Vue({
     }
 
       // 새로운 파일들을 배열에 추가하고 url2 값을 설정
-    Array.from(files).forEach(file => {
-      console.log("file : ", file)
-      // 업로드 파일 객체를 준비
-      const fileObj = file // 파일 이름
-  
-
-    // 만약 file 객체에 url이 있는 경우
-    if (file.url) {
-      fileObj.url2 = file.url; // 서버에서 받은 url을 url2에 할당
-    } else {
-      // 새로 추가된 파일인 경우 URL.createObjectURL을 사용하여 미리보기 URL 생성
-      fileObj.url2 = URL.createObjectURL(file);
-    }
-
-      // 파일을 uploadedFiles 배열에 추가
-      this.uploadedFiles.push(fileObj);
+      Array.from(files).forEach(file => {
+        console.log("file : ", file);
+        // 업로드 파일 객체를 준비
+        const fileObj = file;
+      
+        // 새로 추가된 파일인 경우 URL.createObjectURL을 사용하여 미리보기 URL 생성
+        fileObj.url2 = URL.createObjectURL(file);
+      
+        // 파일을 uploadedFiles 배열에 추가
+        this.uploadedFiles.push(fileObj);
     });
 
 
@@ -241,9 +235,13 @@ new Vue({
       var detailAddress = document.getElementById("sample6_detailAddress").value;
       this.storeDTO.address += ' ' + detailAddress;
       let formData = new FormData();
+      
       this.uploadedFiles.forEach(file => {
+        console.log("등록시 file :: " , file)
         formData.append('uploadedFiles', file);  // 파일 객체를 formData에 추가
       });
+
+      console.log("업로드 파일 :: " , this.uploadedFiles);
       formData.append('storeDTO', new Blob([JSON.stringify(this.storeDTO)], { type: "application/json" }));
       formData.append('scheduleDTO', new Blob([JSON.stringify(this.scheduleDTO)], { type: "application/json" }));
       formData.append('storeCategoryDTO', new Blob([JSON.stringify(this.storeCategoryDTO)], { type: "application/json" }));
@@ -257,7 +255,7 @@ new Vue({
         console.log('Store registered:', response.data);
         alert('가게 등록이 완료되었습니다.');
         this.resetForm();
-        location.href = "/view/owner/index";
+        location.href = "/view/owner/index";  
       })
       .catch(error => {
         console.error('Error registering store:', error);

@@ -303,6 +303,8 @@ new Vue({
         console.log("수정시 file ::", file)
         formData.append('uploadedFiles', file);  // 파일 객체를 formData에 추가
       });
+
+      console.log("수정시 uploadFiles :: " , this.uploadedFiles);
       formData.append('storeDTO', new Blob([JSON.stringify(this.storeDTO)], { type: "application/json" }));
       formData.append('scheduleDTO', new Blob([JSON.stringify(this.scheduleDTO)], { type: "application/json" }));
       formData.append('storeCategoryDTO', new Blob([JSON.stringify(this.storeCategoryDTO)], { type: "application/json" }));

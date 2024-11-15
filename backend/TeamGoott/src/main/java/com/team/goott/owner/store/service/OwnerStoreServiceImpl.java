@@ -76,7 +76,7 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
 	}
 
     // 모든 테이블에 정보가 insert 되었을 때 실행
-    @Transactional(rollbackFor = Exception.class)
+	@Transactional(rollbackFor = { Throwable.class, IllegalArgumentException.class })
     @Override
     public int createStore(StoreDTO store, List<ScheduleDTO> schedules, List<StoreCategoryDTO> category, List<FacilityDTO> facility, List<MultipartFile> files) throws Exception {
     	validateStoreDTO(store);
@@ -152,6 +152,14 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
                 scheduleMap.put("closeDay", 1);
             } else {
                 scheduleMap.put("closeDay", 0);
+            }
+            
+            if (schedule.getOpen() != null && schedule.getClose() != null) {
+            	
+        	if (schedule.getClose().isBefore(schedule.getOpen())) {
+        	    throw new IllegalArgumentException("마감시간은 오픈시간보다 빠를 수 없습니다");
+        	}
+        	
             }
 
             scheduleMap.put("storeId", storeId);
@@ -372,6 +380,12 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
                         scheduleUpdateData.put("scheduleId", scheduleData.getScheduleId());
 
                         // 변경된 사항만 업데이트
+                        if (newSchedule.getOpen() != null && newSchedule.getClose() != null) {
+                        	
+                    	if (newSchedule.getClose().isBefore(newSchedule.getOpen())) {
+                            throw new IllegalArgumentException("마감시간은 오픈시간보다 빠를 수 없습니다");
+                        }
+                        	
                         if (!scheduleData.getOpen().equals(newSchedule.getOpen())) {
                             scheduleUpdateData.put("open", newSchedule.getOpen());
                             hasChanges = true;
@@ -387,6 +401,8 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
                         
                         if (beforeRotation != afterRotation) {
                         	hasChanges = true;
+                        }
+                        
                         }
                         
                         log.info("scheduleUpdateData :: " + scheduleUpdateData);

@@ -142,7 +142,7 @@ public class OwnerStoreController {
 			@RequestPart("scheduleDTO") List<ScheduleDTO> schedules,
 			@RequestPart("storeCategoryDTO") List<StoreCategoryDTO> category,
 			@RequestPart("facilityDTO") List<FacilityDTO> facility,
-			@RequestPart(value = "uploadedFiles", required = false) List<MultipartFile> files) {
+			@RequestPart(value = "uploadedFiles", required = false) List<MultipartFile> uploadedFiles) {
 
 		// 세션에서 ownerId 가져오기
 		
@@ -152,14 +152,14 @@ public class OwnerStoreController {
 		store.setOwnerId(ownerId);
 
 		// 요청 테스트
-		requestTest(store, schedules, category, facility, files);
+		requestTest(store, schedules, category, facility, uploadedFiles);
 		
 		// 가게 스케쥴 변경시
 		
 
 		// 가게 저장
 		try {
-			if (ownerStoreService.createStore(store, schedules, category, facility, files) == 1) {
+			if (ownerStoreService.createStore(store, schedules, category, facility, uploadedFiles) == 1) {
 				// 생성한 가게 정보를 store 테이블에서 select하고, ownerId로
 				 
 				// 해당 StoreDTO

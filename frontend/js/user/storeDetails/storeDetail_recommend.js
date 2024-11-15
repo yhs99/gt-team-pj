@@ -144,7 +144,7 @@ new Vue({
             return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
         },
         setDefaultImage(event) {
-            event.target.src = 'https://goott-bucket.s3.ap-northeast-2.amazonaws.com/noImage.jpg';
+            event.target.src = 'https://goott-bucket.s3.ap-northeast-2.amazonaws.com//noImage.jpg';
         },
       
         goToPage(url) {

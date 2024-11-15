@@ -194,7 +194,7 @@
                 <div class="restaurant-card" v-for="(review,index) in filteredReviews.slice(0,3)" :key="'review-' + index">
                     <div class="restaurant_image_box">
                         <img 
-                        :src="review.reviewImages && review.reviewImages.length > 0 ? review.reviewImages[0].url : 'https://goott-bucket.s3.ap-northeast-2.amazonaws.com/noImage.jpg'" 
+                        :src="review.reviewImages && review.reviewImages.length > 0 ? review.reviewImages[0].url : 'https://goott-bucket.s3.ap-northeast-2.amazonaws.com//noImage.jpg'" 
                         alt="reviewImage" 
                         @error="setDefaultImage($event)">
                     </div>
@@ -238,7 +238,7 @@
                 <div class="restaurant-card"  v-for="(recommend,index) in Object.values(recommendData).slice(0, 3)">
                     <div class="restaurant_image_box">
                         <img v-if="recommend.storeImages" src="recommend.storeImages" alt="storeImage" class="restaurant-image" @error="setDefaultImage($event)">
-                        <img v-else src="https://goott-bucket.s3.ap-northeast-2.amazonaws.com/noImage.jpg" alt="noImage" class="restaurant-image">
+                        <img v-else src="https://goott-bucket.s3.ap-northeast-2.amazonaws.com//noImage.jpg" alt="noImage" class="restaurant-image">
                     </div>
                     <div class="restaurant-info">
                         <p class="restaurant-name">{{recommend.storeName}}</p>

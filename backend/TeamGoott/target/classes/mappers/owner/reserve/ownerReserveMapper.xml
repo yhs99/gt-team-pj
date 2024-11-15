@@ -35,12 +35,12 @@
 	</resultMap>
 	
 	<select id="getReserveSlot" parameterType="map" resultMap="reserveSlots">
-		SELECT rs.*, IFNULL(s.maxPeople - sum(r.people), 0) as leftCount
+		SELECT rs.*, IFNULL(s.maxPeople - IFNULL(sum(r.people),0), 0) as leftCount
 		FROM reserveSlots rs left join reserve r
 		ON rs.slotDatetime = r.reserveTime AND rs.storeId = r.storeId
 		LEFT JOIN store s
 		ON rs.storeId = s.storeId
-		WHERE r.storeId = #{storeId} AND DATE(rs.slotDateTime) = #{reserveTime}
+		WHERE rs.storeId = #{storeId} AND DATE(rs.slotDateTime) = #{reserveTime}
 		GROUP BY rs.slotDatetime; 
 	</select>
 	

@@ -7,7 +7,7 @@ new Vue({
     idError: "",
   },
   created: function () {
-    this.checkLogin();
+    // this.checkLogin();
   },
   methods: {
     checkLogin: function () {

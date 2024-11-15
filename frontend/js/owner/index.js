@@ -248,13 +248,6 @@ new Vue({
       calendar.render();
     },
 
-    fetchReserves() {
-      axios.get("/api/owner/reserve").then((response) => {
-        console.log(response);
-        this.reserves = response.data.data.reservations;
-      });
-    },
-
     fetchStoreData() {
       axios
         .get(`/api/store`) // 가게 데이터 요청
@@ -342,7 +335,7 @@ new Vue({
         });
     },
 
-    formatDate(timestamp) {
+    formatDateTimeStamp(timestamp) {
       // 밀리초 단위의 타임스탬프를 변환하여 날짜로 포맷
       const date = new Date(timestamp);
       return date.toLocaleString(); // 날짜와 시간을 로컬 형식으로 반환

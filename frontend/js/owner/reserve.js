@@ -59,19 +59,20 @@ new Vue({
     searchReserves() {
       this.searchReserveList = this.reserves.filter((reserve) => {
         const matchesName = reserve.name.includes(this.searchCustomerName);
-        let matchesDateRange = true;
+        let matchStartDate = true;
+        let matchEndDate = true;
         if (this.searchStartDate) {
           let startDate = new Date(this.searchStartDate);
           startDate.setHours(0, 0, 0, 0);
-          matchesDateRange = new Date(reserve.reserveTime) >= startDate;
+          matchStartDate = new Date(reserve.reserveTime) >= startDate;
         }
         if (this.searchEndDate) {
           let endDate = new Date(this.searchEndDate);
-          startDate.setHours(23, 59, 59, 999);
-          matchesDateRange = new Date(reserve.reserveTime) <= endDate;
+          endDate.setHours(23, 59, 59, 999);
+          matchEndDate = new Date(reserve.reserveTime) <= endDate;
         }
 
-        return matchesName && matchesDateRange;
+        return matchesName && matchStartDate && matchEndDate;
       });
 
       //검색결과에 맞춘 페이지네이션

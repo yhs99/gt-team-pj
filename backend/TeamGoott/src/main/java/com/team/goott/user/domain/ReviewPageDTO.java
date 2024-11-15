@@ -24,6 +24,7 @@ public class ReviewPageDTO {
 	private int userId;
 	private int page;
 	private int size;
+	private String orderBy; 
 
 	private int postTotal;//글의 전체 수
 	private int pageTotal;//페이지의 전체 수 

@@ -9,10 +9,13 @@ import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.team.goott.admin.domain.StoreCategoryVO;
+import com.team.goott.admin.domain.StoresVO;
 import com.team.goott.owner.domain.CategoryCodeVO;
 import com.team.goott.owner.domain.FacilityCodeVO;
 import com.team.goott.owner.domain.RotationCodeVO;
 import com.team.goott.owner.domain.sidoCodeVO;
+import com.team.goott.user.domain.StoreCategoryDTO;
 import com.team.goott.user.domain.StoreDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -69,6 +72,20 @@ public class UserStoreDAOImpl implements UserStoreDAO {
 	@Override
 	public List<RotationCodeVO> getStoreFiltersRotationCode() {
 		return ses.selectList(ns+"getStoreFiltersRotationCode");
+	}
+
+
+	@Override
+	public List<String> selectCouponNameByStoreId(int storeId) {
+		// storeId로 couponName조회
+		return ses.selectList(ns+"getCouponName", storeId);
+	}
+
+
+	@Override
+	public List<StoreCategoryDTO> selectStoresByCategory(String categoryCodeId) {
+		// categoryCodeId로 가게 목록 받아오기
+		return ses.selectList(ns+"getAllStoresByCategory", categoryCodeId);
 	}
 
 }

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css" type="text/css"/>
+    <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/user/mainlogo.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/user/header.css">
+    <link rel="stylesheet" href="/css/user/storeDetail.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    
+    <script src="/js/user/storeDetails/storeDetail_recommend.js" defer></script>
+    <link rel="stylesheet" href="/css/user/storeDetails/storeDetail_recommend.css">
+</head>
+<body>
+    <div id="app">
+        <div class="square_section">
+
+            <h2 class="my_title">비슷한 레스토랑 추천</h2>
+            <div class="restaurants_whole">
+                <div class="restaurant-card"  v-for="(recommend,index) in recommendData" :key="recommend.storeId">
+                    <div class="restaurant_image_box">
+                        <img v-if="recommend.storeImages" src="recommend.storeImages" alt="storeImage" class="restaurant-image" @error="setDefaultImage($event)">
+                        <img v-else src="https://goott-bucket.s3.ap-northeast-2.amazonaws.com/noImage.jpg" alt="noImage" class="restaurant-image">
+                    </div>
+                    <div class="restaurant-info">
+                        <p class="restaurant-name">{{recommend.storeName}}</p>
+                        <span class="restaurant-details" v-for="(category,categoryIndex) in recommend.storeCategories">{{category.storeCategoryName}} </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+  
+    </div>
+</body>
+</html>

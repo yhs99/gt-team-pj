@@ -3,13 +3,14 @@
 <mapper namespace="com.team.mappers.user.review.userReviewMapper">
 
 <select id="getAllrevws" resultType="com.team.goott.user.domain.ReviewDTO">
-select * from review where storeId = #{storeId} and isDeleteReq = 0 
-order by createAt DESC LIMIT #{startRow},#{size}
-</select> 
+select * from review where storeId = #{storeId}
+order by ${orderBy} LIMIT #{startRow},#{size}
+</select>
 
 <select id="getBoardByNo" resultType="com.team.goott.user.domain.ReviewDTO">
 select * from review where reviewId= #{reviewId}
 </select>
+  
 <resultMap type="com.team.goott.user.domain.ReviewDTO" id="reviewResultMap">
 	<id property="reviewId" column="reviewId"/>
 	<result property="storeId" column="storeId"/>
@@ -44,14 +45,14 @@ select * from review where reviewId= #{reviewId}
 
 <insert id="insertReview" useGeneratedKeys="true" keyProperty="reviewId">
 insert into review (storeId,userId,reserveId, score,content) values (#{storeId},#{userId},#{reserveId},#{score},#{content})
-	<selectKey keyProperty="reviewId" resultType="int" order="AFTER">
-		select last_insert_id()
-	</selectKey>
+<selectKey keyProperty="reviewId" resultType="int" order="AFTER">
+select last_insert_id()
+</selectKey>
 </insert>
 
-<update id="deleteReview">
-update review set isDeleteReq = 1 where reviewId = #{reviewId} 
-</update>
+<delete id="deleteReview">
+delete from review where reviewId = #{reviewId}
+</delete>
 
 <insert id="insertImgs">
 insert into reviewImages(reviewId, url, fileName, fileType) values (#{reviewId},#{url},#{fileName},#{fileType})
@@ -78,7 +79,7 @@ select * from reserve where userId = #{userId}
 </select>
 
 <select id="getUserReviews" resultType="com.team.goott.user.domain.ReviewDTO">
-select * from review where userId= #{userId} and isDeleteReq = 0 
+select * from review where userId= #{userId}
 </select>
 
 <select id="getReserveByreserveId" resultType="com.team.goott.user.domain.ReserveDTO">
@@ -90,9 +91,12 @@ select count(*) from reviewImages where imageId = #{imageId}
 </select>
 
 <update id="updateStatusCode">
- update reserve set statusCodeId = #{statusCodeId} where reserveId = #{reserveId} 
+update reserve set statusCodeId = #{statusCodeId} where reserveId = #{reserveId}
 </update>
 
+<select id="selectUserName" resultType="com.team.goott.user.domain.ReviewDTO">
+select name,profileImageUrl from user where userId = #{userId} 
+</select>
 
 <insert id="setNotification">
 	insert into notification(userId , message, storeId, notificationType, reserveId) 

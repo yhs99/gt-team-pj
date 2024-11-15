@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>장바구니</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      href="/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link href="/css/user/animate/animate.min.css" rel="stylesheet" />
+    <link href="/css/user/lightbox/css/lightbox.min.css" rel="stylesheet" />
+    <link href="/css/user/owlcarousel/owl.carousel.min.css" rel="stylesheet" />
+    <link
+      href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="/css/user/cart.css" rel="stylesheet" />
+    <link href="/css/user/header.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="app">
+      <header-component></header-component>
+
+      <!-- 메뉴 섹션 -->
+      <div class="container section-container menu-section">
+        <h2 class="section-title">
+          <i class="fa-solid fa-store"></i> 선택하신 식당 메뉴 정보
+        </h2>
+        <div v-for="(items, storeName) in groupedCarts" :key="storeName">
+          <div class="store-name">{{ storeName }}</div>
+          <div class="cart-list">
+            <div class="cart-item" v-for="cart in items" :key="cart.cartId">
+              <div class="cart-image-wrapper">
+                <div class="cart-menuName">{{ cart.menuName }}</div>
+                <img
+                  :src="cart.menuImageUrl"
+                  alt="메뉴 이미지"
+                  class="cart-image"
+                />
+              </div>
+              <div class="cart-details">
+                <div class="cart-price">
+                  {{ cart.price.toLocaleString() }}원
+                </div>
+                <div class="cart-stock">개수: {{ cart.stock }}</div>
+                <div class="cart-totalPrice">
+                  합계: {{ cart.totalPrice.toLocaleString() }}원
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="total-section">
+            총 금액: <strong>{{ totalPrice.toLocaleString() }}원</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- 예약 정보 섹션 -->
+      <div class="container section-container reservation-section">
+        <h2 class="section-title">
+          <i class="fa-solid fa-user"></i> 예약 정보 입력
+        </h2>
+        <div class="form-group">
+          <label for="name">예약자명 *</label>
+          <input
+            type="text"
+            v-model="reservationName"
+            ref="reservationNameInput"
+            required
+          />
+          <p v-if="reservationNameError" class="error-message">
+            {{ reservationNameError }}
+          </p>
+        </div>
+        <div class="form-group">
+          <label for="peopleCount">인원수 *</label>
+          <input
+            type="number"
+            v-model="peopleCount"
+            :min="1"
+            :max="maxPeoplePerReserve"
+            required
+          />
+          <p
+            v-if="peopleCount < 1 || peopleCount > maxPeoplePerReserve"
+            class="error-message"
+          >
+            인원수는 1 이상, 최대 {{ maxPeoplePerReserve }}명까지 가능합니다.
+          </p>
+        </div>
+        <div class="form-group">
+          <label for="note">메모</label>
+          <textarea v-model="note" rows="3"></textarea>
+        </div>
+      </div>
+
+      <!-- 결제 섹션 -->
+      <div class="container section-container payment-section">
+        <h2 class="section-title">
+          <i class="fa-solid fa-credit-card"></i> 결제 수단
+        </h2>
+        <div v-if="globalCoupons.length" class="coupon-section mb-3">
+          <span>쿠폰 선택:</span>
+          <select v-model="selectedCoupon" @change="applyDiscount">
+            <option value="">- 쿠폰을 선택해주세요 -</option>
+            <option
+              v-for="coupon in globalCoupons"
+              :key="coupon.couponId"
+              :value="coupon"
+            >
+              {{ coupon.couponName }}
+            </option>
+          </select>
+        </div>
+        <div class="payment-option">
+          <button
+            :class="{'kakao-pay': true, 'selected': selectedPayment === 'kakaoPay'}"
+          >
+            <i class="fa-solid fa-comment"></i> PAY
+          </button>
+          <button
+            :class="{'meet-pay': true, 'selected': selectedPayment === 'meetPay'}"
+            @click="selectPayment('meetPay')"
+          >
+            <i class="fa-solid fa-handshake"></i>
+            만나서 결제
+          </button>
+        </div>
+
+        <div class="payment-button text-center mt-2">
+          <div class="paybutton">
+            <div v-if="discountAmount > 0" class="discount-section">
+              할인 금액: -{{ discountAmount.toLocaleString() }}원
+            </div>
+            <button
+              @click="makeReservation"
+              class="btn btn-yellow"
+              :disabled="peopleCount < 1 || peopleCount > maxPeoplePerReserve"
+            >
+              {{ finalTotalPrice.toLocaleString() }}원 결제하기
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <footer-component></footer-component>
+    </div>
+
+    <script src="/js/Footer.js"></script>
+    <script src="/js/Header.js"></script>
+    <script src="/js/user/cart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

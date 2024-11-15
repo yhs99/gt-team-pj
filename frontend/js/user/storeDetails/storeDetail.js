@@ -218,16 +218,17 @@ new Vue({
             return;
           }
 
-          alert("Clicked on: " + info.dateStr);
+          // alert("Clicked on: " + info.dateStr);
 
           if (this.clickedDate) {
             const previousDateEl = this.clickedDate;
             if (previousDateEl) {
+              previousDateEl.style.border = '';
               previousDateEl.style.backgroundColor = ""; // 기본 색으로 초기화
             }
           }
           // 클릭한 날짜의 배경색 변경
-          info.dayEl.style.border = "3px solid red";
+          info.dayEl.style.border = "2px solid red";
           // 클릭한 날짜를 저장
           this.clickedDate = info.dayEl;
           this.fetchReserveSlots(info.dateStr);

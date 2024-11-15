@@ -168,15 +168,17 @@ new Vue({
                         return;
                     }
 
-                    alert('Clicked on: ' + info.dateStr);
+                    // alert('Clicked on: ' + info.dateStr);
 
                     if (this.clickedDate) {
                     const previousDateEl = this.clickedDate;
                     if (previousDateEl) {
+                        previousDateEl.style.border = '';
                         previousDateEl.style.backgroundColor = ''; // 기본 색으로 초기화
                     }
                     }
                     info.dayEl.style.border = '3px solid red';
+                    info.dayEl.style.marginLeft = '-1px';
                     // 클릭한 날짜를 저장
                     this.clickedDate = info.dayEl;
                     this.fetchReserveSlots(info.dateStr);
@@ -268,15 +270,7 @@ new Vue({
                 alert('메뉴와 시간을 선택해주세요');
             }
             
-            // if (this.selectedSlot !== null) {
-              
-            //     const queryString = `?reserveTime=${this.selectedSlot}`;
-            //     const targetUrl = `http://localhost/view/user/cart${queryString}`;
-    
-            //     window.location.href = targetUrl;
-            // } else {
-            //    alert('예약 시간을 선택해주세요');
-            // }
+          
         },
         
         selectSlot(time,index) {

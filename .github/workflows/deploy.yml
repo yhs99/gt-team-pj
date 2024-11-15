@@ -64,16 +64,17 @@ jobs:
           
       - name: Delete ROOT
         run: |
-          ssh -i ~/ec2.pem -o UserKnownHostsFile=~/.ssh/known_hosts -tt ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} "sudo rm -rf /opt/tomcat/apache-tomcat-9.0.95/webapps/ROOT.war"  # 기존 파일 삭제
-          ssh -i ~/ec2.pem -o UserKnownHostsFile=~/.ssh/known_hosts -tt ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} "sudo rm -rf /opt/tomcat/apache-tomcat-9.0.95/webapps/ROOT"  # 기존 파일 삭제
+          ssh -i ~/ec2.pem -o UserKnownHostsFile=~/.ssh/known_hosts -tt ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} "sudo rm -rf /opt/tomcat/apache-tomcat-9.0.95/webapps/ROOT*"
+          ssh -i ~/ec2.pem -o UserKnownHostsFile=~/.ssh/known_hosts -tt ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} "sudo rm -rf /opt/tomcat-8081/apache-tomcat-9.0.95/webapps/ROOT*"
           
       - name: Deploy WAR to EC2
         run: |
-          scp -o StrictHostKeyChecking=no ${{ secrets.PROJECT_DIRECTORY }} ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }}:/opt/tomcat/apache-tomcat-9.0.95/webapps/
+          rsync -avz --delete -e "ssh -i ~/ec2.pem -o StrictHostKeyChecking=no" ${{ secrets.PROJECT_DIRECTORY }} ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }}:/opt/tomcat/apache-tomcat-9.0.95/webapps/
+          rsync -avz --delete -e "ssh -i ~/ec2.pem -o StrictHostKeyChecking=no" ${{ secrets.PROJECT_DIRECTORY }} ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }}:/opt/tomcat-8081/apache-tomcat-9.0.95/webapps/
           
       - name: Start Tomcat
         run: |
-          ssh -i ~/ec2.pem -o UserKnownHostsFile=~/.ssh/known_hosts -tt ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} "sudo systemctl restart tomcat"
+          ssh -i ~/ec2.pem -o UserKnownHostsFile=~/.ssh/known_hosts -tt ${{ secrets.EC2_USER }}@${{ secrets.EC2_IP }} "sudo systemctl reload tomcat"
   
   deploy-frontend:
     runs-on: ubuntu-latest

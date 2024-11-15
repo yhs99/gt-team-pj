@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta content="" name="description" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+    />
+    <link
+      href="/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/css/owner/lib/owlcarousel/assets/owl.carousel.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/css/owner/lib/tempusdominus/tempusdominus-bootstrap-4.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="/css/owner/style.css" rel="stylesheet" />
+    <link href="/css/owner/mainlogo.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/owner/index.css" />
+
+    <!-- JavaScript Libraries -->
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="/js/user/lib/wow/wow.min.js"></script>
+    <script src="/js/owner/lib/chart/chart.min.js"></script>
+    <script src="/js/owner/lib/easing/easing.min.js"></script>
+    <script src="/js/user/lib/counterup/counterup.min.js"></script>
+    <script src="/js/user/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/node_modules/vue/dist/vue.min.js"></script>
+    <script src="/node_modules/axios/dist/axios.min.js"></script>
+    <script src="/js/owner/lib/waypoints/waypoints.min.js"></script>
+    <script src="/js/owner/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <!-- Template Javascript -->
+    <script type="module" src="/js/owner/main.js"></script>
+    <script src="/js/owner/component.js"></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="container-xxl position-relative bg-white d-flex p-0">
+        <spinner-component></spinner-component>
+        <!-- Sidebar Start -->
+        <sidebar-component></sidebar-component>
+      </div>
+      <!-- Sidebar End -->
+
+      <div class="content">
+        <!-- Navbar Start -->
+        <navbar-component></navbar-component>
+        <!-- Navbar End -->
+
+        <!-- 에약 데이터 -->
+        <div class="container-fluid pt-4 px-4 mb-4">
+          <!-- <div class="container-fluid row g-4"> -->
+          <div class="container-fluid pt-4 px-4 mb-4">
+            <div
+              class="bg-light rounded d-flex align-items-center justify-content-between p-4"
+            >
+              <i class="fa fa-chart-bar fa-3x text-primary"></i>
+              <div class="ms-3">
+                <p class="mb-2">전체 예약 수</p>
+                <h6 class="mb-0">{{totalReserve}}개</h6>
+              </div>
+
+              <i class="fa fa-calendar-check fa-3x text-primary"></i>
+              <div class="ms-3">
+                <p class="mb-2">오늘 예약 수</p>
+                <h6 class="mb-0">{{totalTodayReserve}}개</h6>
+              </div>
+            </div>
+          </div>
+
+          <!-- single-bar chart -->
+          <div class="container-fluid pt-4 px-4 mb-4">
+            <div class="bg-light rounded h-100 p-4">
+              <h6 class="mb-4">최근 6개월 예약 수</h6>
+              <canvas id="reserve-chart"></canvas>
+            </div>
+          </div>
+
+          <!-- 예약 목록 테이블 -->
+          <div id="reviewLists" class="container-fluid pt-4 px-4 mb-4">
+            <div class="bg-light text-center rounded p-4">
+              <div
+                class="d-flex align-items-center justify-content-between mb-4"
+              >
+                <h6 class="mb-0">전체 예약 목록</h6>
+              </div>
+              <div class="mb-3 d-flex">
+                <input
+                  v-model="searchCustomerName"
+                  class="form-control me-2"
+                  type="text"
+                  placeholder="고객명으로 검색"
+                />
+              </div>
+              <div class="mb-3 d-flex">
+                <input
+                  v-model="searchStartDate"
+                  class="form-control"
+                  type="date"
+                  placeholder="시작일"
+                />
+
+                <input
+                  v-model="searchEndDate"
+                  class="form-control"
+                  type="date"
+                  placeholder="종료일"
+                />
+              </div>
+              <div class="mb-3 d-flex justify-content-end">
+                <button
+                  class="btn btn-primary ms-2"
+                  style="width: 200px"
+                  @click="searchReserves();"
+                >
+                  검색
+                </button>
+              </div>
+              <div class="table-responsive">
+                <table
+                  class="table text-start align-middle table-bordered table-hover mb-0"
+                >
+                  <thead>
+                    <tr class="text-dark">
+                      <th scope="col">예약 ID</th>
+                      <th scope="col">가게 ID</th>
+                      <th scope="col">고객명</th>
+                      <th scope="col">인원수</th>
+                      <th scope="col">메모</th>
+                      <th scope="col">예약 날짜</th>
+                      <th scope="col">예약 상태</th>
+                      <th scope="col">예약 상태 변경</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- 최대 5개만 보여줌 -->
+                    <tr
+                      v-for="(reserve, index) in paginatedReserves"
+                      :key="reserve.reserveId"
+                    >
+                      <td>{{ reserve.reserveId }}</td>
+                      <td>{{ reserve.storeId }}</td>
+                      <td>{{ reserve.name }}</td>
+                      <td>{{ reserve.people }}</td>
+                      <td>{{ reserve.memo }}</td>
+                      <td>
+                        {{ new Date(reserve.reserveTime).toLocaleString() }}
+                      </td>
+                      <td>
+                        <span v-if="reserve.statusCodeId === 1">대기</span>
+                        <span v-else-if="reserve.statusCodeId === 2">승인</span>
+                        <span v-else-if="reserve.statusCodeId === 3">취소</span>
+                        <span v-else-if="reserve.statusCodeId === 4">완료</span>
+                        <span v-else-if="reserve.statusCodeId === 5"
+                          >리뷰 작성 완료</span
+                        >
+                      </td>
+                      <td class="status-button">
+                        <button
+                          v-if="reserve.statusCodeId === 1"
+                          class="btn btn-success btn-block"
+                          @click="updateReserveStatus(reserve.reserveId, 2, index)"
+                        >
+                          예약 승인
+                        </button>
+                        <button
+                          v-if="reserve.statusCodeId === 1"
+                          class="btn btn-danger btn-block"
+                          @click="updateReserveStatus(reserve.reserveId, 3, index)"
+                        >
+                          예약 취소
+                        </button>
+                        <button
+                          v-if="reserve.statusCodeId !== 1"
+                          class="btn btn-outline-danger btn-block"
+                          diabled
+                        >
+                          예약 상태 업데이트 완료
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- pagination -->
+              <div id="pagination text-center">
+                <ul class="pagination justify-content-center">
+                  <li
+                    class="page-item"
+                    v-if="currentPage > 1"
+                    @click="changePage(currentPage - 1)"
+                  >
+                    <a class="page-link" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <li
+                    class="page-item"
+                    v-for="page in totalPages"
+                    :key="page"
+                    @click="changePage(page)"
+                  >
+                    <a class="page-link">{{page}}</a>
+                  </li>
+                  <li
+                    class="page-item"
+                    v-if="currentPage < totalPages"
+                    @click="changePage(currentPage + 1)"
+                  >
+                    <a class="page-link" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- 예약 가능한 특정시간대 리스트 -->
+          <div id="availableReviewList" class="container-fluid pt-4 px-4 mb-4">
+            <div class="bg-light text-center rounded p-4">
+              <div
+                class="d-flex align-items-center justify-content-between mb-4"
+              >
+                <h6 class="mb-0">특정 날짜 예약 가능 상태</h6>
+              </div>
+
+              <div class="mb-3 d-flex">
+                <input
+                  v-model="searchAvailableReserveDate"
+                  class="form-control"
+                  type="date"
+                />
+              </div>
+              <div class="mb-3 d-flex justify-content-end">
+                <button
+                  class="btn btn-primary ms-2"
+                  style="width: 200px"
+                  @click="searchAvailableDate();"
+                >
+                  검색
+                </button>
+              </div>
+              <div class="table-responsive">
+                <table
+                  class="table text-start align-middle table-bordered table-hover mb-0"
+                >
+                  <thead>
+                    <tr class="text-dark">
+                      <th scope="col">슬롯 ID</th>
+                      <th scope="col">시간</th>
+                      <th scope="col">예약 상태</th>
+                      <th scope="col">예약 가능 인원 수</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="(reserveSlot, index) in searchReserveSlots"
+                      :key="reserveSlot.reserveSlotId"
+                    >
+                      <td>{{ reserveSlot.reserveSlotId }}</td>
+                      <td>
+                        {{ new Date(reserveSlot.slotDatetime).toLocaleString()
+                        }}
+                      </td>
+                      <td v-if="reserveSlot.reserved">예약 불가</td>
+                      <td v-else>예약 가능</td>
+                      <td>{{reserveSlot.leftCount}}명</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 예약 데이터 끝 -->
+        <!-- Sales Chart Start -->
+
+        <!-- Footer Start -->
+        <div class="container-fluid pt-4 px-4">
+          <div class="bg-light rounded-top p-4">
+            <div class="row">
+              <div class="col-12 col-sm-6 text-center text-sm-start">
+                &copy; <a href="#">smartreserve.store</a>, All Right Reserved.
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Footer End -->
+      </div>
+      <!-- Content End -->
+
+      <!-- Back to Top -->
+      <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"
+        ><i class="bi bi-arrow-up"></i
+      ></a>
+    </div>
+
+    <script src="/js/owner/reserve.js"></script>
+  </body>
+</html>

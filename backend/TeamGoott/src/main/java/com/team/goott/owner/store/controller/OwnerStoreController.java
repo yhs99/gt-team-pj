@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.team.goott.owner.domain.FacilityDTO;
 import com.team.goott.owner.domain.FacilityVO;
 import com.team.goott.owner.domain.OwnerDTO;
+import com.team.goott.owner.domain.OwnerOnly;
 import com.team.goott.owner.domain.ScheduleDTO;
 import com.team.goott.owner.domain.ScheduleVO;
 import com.team.goott.owner.domain.StoreCategoryDTO;
@@ -36,8 +37,6 @@ import com.team.goott.owner.domain.StoreVO;
 import com.team.goott.owner.store.persistence.OwnerStoreDAO;
 import com.team.goott.owner.store.service.OwnerStoreService;
 
-import com.team.goott.owner.domain.OwnerDTO;
-import com.team.goott.owner.store.service.OwnerStoreService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -67,14 +66,12 @@ public class OwnerStoreController {
 		return ResponseEntity.ok(result?"점주 회원가입이 완료되었습니다. ":"실패");
 	}
 	
-	@GetMapping("/{storeId}")
-	public ResponseEntity<Object> getStore(HttpSession session, @PathVariable int storeId) {
-	     
-	     if (getOwnerIdFromSession(session) == null) {
-	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-	     }
+	@OwnerOnly
+	@GetMapping("")
+	public ResponseEntity<Object> getStore(HttpSession session) {
 	     
 	     int ownerId = getOwnerIdFromSession(session).getOwnerId();
+	     int storeId = getOwnerIdFromSession(session).getStoreId();
 	     log.info("세션의 onwerId : {}"  , ownerId);
 	    
 	    StoreVO storeData = null;
@@ -128,6 +125,7 @@ public class OwnerStoreController {
 	        // 가게 정보가 없는 경우
 	        if (storeData == null) {
 	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("등록된 가게가 없습니다.");
+	            
 	        }
 	        
 	        // 가게 정보 반환
@@ -138,33 +136,35 @@ public class OwnerStoreController {
 	    }
 	}
 
-
+	@OwnerOnly
 	@PostMapping("")
 	public ResponseEntity<Object> registerStore(HttpSession session, @RequestPart("storeDTO") StoreDTO store,
 			@RequestPart("scheduleDTO") List<ScheduleDTO> schedules,
 			@RequestPart("storeCategoryDTO") List<StoreCategoryDTO> category,
 			@RequestPart("facilityDTO") List<FacilityDTO> facility,
-			@RequestPart(value = "file", required = false) List<MultipartFile> files) {
+			@RequestPart(value = "uploadedFiles", required = false) List<MultipartFile> uploadedFiles) {
 
 		// 세션에서 ownerId 가져오기
 		
-        if (getOwnerIdFromSession(session) == null) {
-          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
 		int ownerId = getOwnerIdFromSession(session).getOwnerId();
 
 		// StoreDTO에 ownerId 설정
 		store.setOwnerId(ownerId);
 
 		// 요청 테스트
-		requestTest(store, schedules, category, facility, files);
+		requestTest(store, schedules, category, facility, uploadedFiles);
 		
 		// 가게 스케쥴 변경시
 		
 
 		// 가게 저장
 		try {
-			if (ownerStoreService.createStore(store, schedules, category, facility, files) == 1) {
+			if (ownerStoreService.createStore(store, schedules, category, facility, uploadedFiles) == 1) {
+				// 생성한 가게 정보를 store 테이블에서 select하고, ownerId로
+				 
+				// 해당 StoreDTO
+				session.setAttribute("store", ownerStoreDao.getStoreByOwnerId(ownerId));
+				
 				return ResponseEntity.ok("가게가 성공적으로 등록되었습니다.");
 			} else {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("가게 등록에 실패하였습니다.");
@@ -176,6 +176,7 @@ public class OwnerStoreController {
 
 	}
 	
+	@OwnerOnly
     @PutMapping("/{storeId}")
     public ResponseEntity<Object> updateStore(
             HttpSession session,
@@ -184,7 +185,7 @@ public class OwnerStoreController {
             @RequestPart(value = "scheduleDTO", required = false) List<ScheduleDTO> schedules,
             @RequestPart(value = "storeCategoryDTO", required = false) List<StoreCategoryDTO> category,
             @RequestPart(value = "facilityDTO", required = false) List<FacilityDTO> facility,
-            @RequestPart(value = "file", required = false) List<MultipartFile> updateFiles,
+            @RequestPart(value = "uploadedFiles", required = false) List<MultipartFile> updateFiles,
             @RequestPart(value = "deletedImageUrls", required = false) List<Object> deleteImages) throws Exception {
     	
     	// 삭제 요청받은 fileName을 저장하는 리스트
@@ -234,6 +235,7 @@ public class OwnerStoreController {
             }
         } catch (Exception e) {
             log.error("가게 수정 중 오류 발생: {}", e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("가게 수정 중 오류가 발생하였습니다.");
         }
     }
@@ -263,13 +265,13 @@ public class OwnerStoreController {
 	// dayCodeId에 따라 요일 반환하는 메서드
 	private String getDayOfWeek(int dayCodeId) {
 	    switch (dayCodeId) {
-	        case 0: return "일요일";
 	        case 1: return "월요일";
 	        case 2: return "화요일";
 	        case 3: return "수요일";
 	        case 4: return "목요일";
 	        case 5: return "금요일";
 	        case 6: return "토요일";
+	        case 0: return "일요일";
 			default:
 				return "알 수 없는 요일";
 			}

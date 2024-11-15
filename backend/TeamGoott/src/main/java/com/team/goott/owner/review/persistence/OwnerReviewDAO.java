@@ -2,6 +2,7 @@ package com.team.goott.owner.review.persistence;
 
 import java.util.List;
 
+import com.team.goott.owner.domain.ReviewByDateVO;
 import com.team.goott.owner.domain.ReviewVO;
 
 public interface OwnerReviewDAO {
@@ -25,5 +26,7 @@ public interface OwnerReviewDAO {
 
 	// 총 오늘의 리뷰 평점
 	float getTotalTodayScore(int storeId);
+
+	List<ReviewByDateVO> reviewByDate(int storeId);
 	
 }

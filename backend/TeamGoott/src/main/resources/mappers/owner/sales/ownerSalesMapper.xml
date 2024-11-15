@@ -19,30 +19,43 @@
 
 	<select id="getSalesList" parameterType="map" resultMap="SalesResult">
 		SELECT p.*, r.reserveTime 
-		FROM payHistory p left join reserve r
+		FROM payHistory p inner join reserve r
 		ON p.reserveId = r.reserveId
-		WHERE p.storeId = #{storeId};      
+		WHERE r.storeId = #{storeId} and r.statusCodeId IN(4,5);      
 	</select>
 
 	<select id="getTotalSales" resultType="int">
-		SELECT sum(payAmount) from payHistory
-		WHERE storeId = #{storeId}
+		SELECT IFNULL(SUM(p.payAmount),0) 
+		FROM payHistory p inner join reserve r
+		ON p.reserveId = r.reserveId 
+		WHERE r.storeId = #{storeId} and r.statusCodeId IN(4,5);   
 	</select>
 	
 	<select id="getTotalSalesCount" resultType="int">
-		SELECT count(*) from payHistory
-		WHERE storeId = #{storeId}
+		SELECT count(*) 
+		FROM payHistory p inner join reserve r
+		ON p.reserveId = r.reserveId
+		WHERE r.storeId = #{storeId} and r.statusCodeId IN (4,5)
 	</select>
 	
 	<select id="getTodayTotalSales" resultType="int">
-		SELECT sum(payAmount) from payHistory p left join reserve r
+		SELECT IFNULL(SUM(p.payAmount),0) from payHistory p inner join reserve r
 		ON p.reserveId = r.reserveId
-		WHERE p.storeID = #{storeId} and date_format(r.reserveTime, "%Y-%m-%d") = curdate();
+		WHERE r.storeID = #{storeId} and date_format(r.reserveTime, "%Y-%m-%d") = curdate() and r.statusCodeId IN (4,5)
 	</select>
 	
 	<select id="getTodayTotalSalesCount" resultType="int">
-		SELECT count(*) from payHistory p left join reserve r
+		SELECT count(*) from payHistory p inner join reserve r
 		ON p.reserveId = r.reserveId
-		WHERE p.storeID = #{storeId} and date_format(r.reserveTime, "%Y-%m-%d") = curdate();
+		WHERE r.storeID = #{storeId} and date_format(r.reserveTime, "%Y-%m-%d") = curdate() and r.statusCodeId IN (4,5)
+	</select>
+	
+	<select id="getSalesByDate" resultType="com.team.goott.owner.domain.SalesByDateVO">
+		SELECT DATE(r.reserveTime) as date, sum(p.payAmount) as total
+		FROM reserve r inner join payHistory p
+		ON r.reserveId = p.reserveId
+		WHERE r.statusCodeId IN (4,5)
+		AND r.storeId = #{storeId}
+		GROUP BY date; 
 	</select>
 </mapper>

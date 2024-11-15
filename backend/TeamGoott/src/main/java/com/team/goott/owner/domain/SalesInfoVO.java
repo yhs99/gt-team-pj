@@ -24,4 +24,5 @@ public class SalesInfoVO {
 	private int[] countMonthlySales; // 최근 6개월 결제 금액
 	private int[] countMonthlySalesCount; // 최근 6개월 결제 수
 	private List<SalesVO> sales;
+	private List<SalesByDateVO> salesByDate;
 }

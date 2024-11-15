@@ -23,5 +23,6 @@ public class ReserveInfoVO {
 	private int totalTodayReserve;
 	private int[] MonthlyTotalReserve;
 	
-	private List<ReserveDTO> reservations; 
+	private List<ReserveDTO> reservations;
+	private List<ReserveByDateVO> reserveByDate;
 }

@@ -1,11 +1,20 @@
-.reviewList{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+body {
+  font-family: "Apple SD Gothic Neo";
 }
 
+.reviewList {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-.orderMethods{
-    display: flex;
-    gap: 10px;
+.reviewList {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.orderMethods {
+  display: flex;
+  gap: 10px;
 }

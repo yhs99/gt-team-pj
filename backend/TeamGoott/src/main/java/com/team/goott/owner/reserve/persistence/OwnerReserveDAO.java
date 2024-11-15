@@ -1,10 +1,12 @@
 package com.team.goott.owner.reserve.persistence;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import com.team.goott.owner.domain.NotificationDTO;
 import com.team.goott.owner.domain.NotificationType;
+import com.team.goott.owner.domain.ReserveByDateVO;
 import com.team.goott.owner.domain.ReserveSlotsDTO;
 import com.team.goott.owner.domain.StoreVO;
 import com.team.goott.user.domain.ReserveDTO;
@@ -22,7 +24,7 @@ public interface OwnerReserveDAO {
 
 	ReserveDTO getReserve(int reserveId);
 
-	ReserveSlotsDTO getReserveSlots(int storeId, LocalDateTime reserveTime);
+	List<ReserveSlotsDTO>  getReserveSlots(int storeId, LocalDate reserveTime);
 
 	UserDTO getUser(int userId);
 
@@ -37,5 +39,9 @@ public interface OwnerReserveDAO {
 	Boolean getIsReserved(LocalDateTime reserveTime, int storeId);
 
 	int updateReserveSlot(LocalDateTime reserveTime, int storeId);
+
+	List<ReserveByDateVO> getReserveByDate(int storeId);
+
+	int deleteNotification(int storeId);
 
 }

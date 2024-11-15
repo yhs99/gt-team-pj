@@ -210,6 +210,25 @@
     <select id="getStoreByOwnerId" resultType="com.team.goott.owner.domain.StoreDTO">
     	select * from store where ownerId = #{ownerId}
     </select>
-
-
+    
+    <select id="selectSlotsByDayCodeId" parameterType="map" resultType="com.team.goott.owner.domain.ReserveSlotsDTO">
+        SELECT *
+        FROM reserveSlots
+        WHERE storeId = #{storeId}
+          AND DAYOFWEEK(slotDatetime) - 1 = #{dayCodeId}
+    </select>
+    
+	<update id="updateReserveStatus" parameterType="map">
+	    UPDATE reserve
+	    SET statusCodeId = 3
+	    WHERE statusCodeId = 1
+	    <if test="reserveTimes != null and reserveTimes.size() > 0">
+	        AND reserveTime IN
+	        <foreach collection="reserveTimes" item="reserveTime" open="(" separator="," close=")">
+	            #{reserveTime}
+	        </foreach>
+	    </if>
+	    AND storeId = #{storeId}
+	</update>
+	
 </mapper>

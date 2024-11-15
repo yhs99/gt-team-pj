@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.team.goott.owner.domain.SalesByDateVO;
 import com.team.goott.owner.domain.SalesVO;
 
 @Repository
@@ -44,6 +45,12 @@ public class OwnerSalesDAOImpl implements OwnerSalesDAO {
 	@Override
 	public int getTodayTotalSalesCount(int storeId) {
 		return session.selectOne(ns+"getTodayTotalSalesCount", storeId);
+	}
+
+
+	@Override
+	public List<SalesByDateVO> getSalesByDate(int storeId) {
+		return session.selectList(ns+"getSalesByDate", storeId);
 	}
 	
 	

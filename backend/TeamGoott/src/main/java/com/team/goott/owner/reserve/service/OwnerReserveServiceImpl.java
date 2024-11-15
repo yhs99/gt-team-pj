@@ -1,18 +1,19 @@
 package com.team.goott.owner.reserve.service;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.team.goott.infra.SendEmailService;
 import com.team.goott.owner.domain.NotificationDTO;
 import com.team.goott.owner.domain.NotificationType;
+import com.team.goott.owner.domain.ReserveByDateVO;
 import com.team.goott.owner.domain.ReserveInfoVO;
 import com.team.goott.owner.domain.ReserveSlotsDTO;
 import com.team.goott.owner.domain.StoreVO;
@@ -29,10 +30,12 @@ public class OwnerReserveServiceImpl implements OwnerReserveService {
 	@Inject
 	OwnerReserveDAO reserveDAO;
 	
+	private int ownerStoreId;
 	
 	@Override
 	public ReserveInfoVO getAllReserveInfo(int storeId, String sortMethod) {
 		List<ReserveDTO> reserveList = reserveDAO.getAllReserve(storeId, sortMethod);
+		List<ReserveByDateVO> reserveByDate = reserveDAO.getReserveByDate(storeId);
 		int totalReserve = reserveDAO.getTotalReserve(storeId);
 		int totalTodayReserve = reserveDAO.getTotalTodayReserve(storeId);
 		int[] MonthlyTotalReserve = new int[6];
@@ -59,7 +62,7 @@ public class OwnerReserveServiceImpl implements OwnerReserveService {
 			}
 		}
 		
-		 return ReserveInfoVO.builder().totalReserve(totalReserve).totalTodayReserve(totalTodayReserve).MonthlyTotalReserve(MonthlyTotalReserve).reservations(reserveList).build();
+		 return ReserveInfoVO.builder().totalReserve(totalReserve).totalTodayReserve(totalTodayReserve).MonthlyTotalReserve(MonthlyTotalReserve).reservations(reserveList).reserveByDate(reserveByDate).build();
 	}
 
 
@@ -111,7 +114,7 @@ public class OwnerReserveServiceImpl implements OwnerReserveService {
 
 
 	@Override
-	public ReserveSlotsDTO getReserveSlots(int storeId, LocalDateTime reserveTime) {
+	public List<ReserveSlotsDTO>  getReserveSlots(int storeId, LocalDate reserveTime) {
 		return reserveDAO.getReserveSlots(storeId, reserveTime);
 	}
 
@@ -174,15 +177,25 @@ public class OwnerReserveServiceImpl implements OwnerReserveService {
 
 
 	@Override
+	@Transactional
 	public List<NotificationDTO> getNotification(int storeId) {
+		this.ownerStoreId = storeId;
 		NotificationType type = NotificationType.CUSTOMER_TO_OWNER;
-		log.info(type.toString());
-		return reserveDAO.getNotification(storeId, type);
+		List<NotificationDTO> notifications = reserveDAO.getNotification(storeId, type);
+		return notifications;
 	}
 
 
 	@Override
 	public int updateNotification(int alarmId) {
 		return reserveDAO.updateNotification(alarmId);
+	}
+	
+	//매주 월요일 마다 알림 데이터 삭제
+	public void deleteNotifications() {
+		int result = reserveDAO.deleteNotification(this.ownerStoreId);
+		if(result == 1) {
+			log.info("알림데이터 삭제 완료");
+		}
 	}
 }

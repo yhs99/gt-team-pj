@@ -188,7 +188,7 @@ new Vue({
     },
     setDefaultImage(event) {
       event.target.src =
-        "https://goott-bucket.s3.ap-northeast-2.amazonaws.com/noImage.jpg";
+        "https://goott-bucket.s3.ap-northeast-2.amazonaws.com//noImage.jpg";
     },
     makeACalendar() {
       const calendarEl = document.getElementById("calendar");

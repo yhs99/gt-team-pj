@@ -64,7 +64,7 @@ new Vue({
             return (this.countScore(n)/this.reviewData.length)*100;
         },
         setDefaultImage(event) {
-            event.target.src = 'https://goott-bucket.s3.ap-northeast-2.amazonaws.com/noImage.jpg'; 
+            event.target.src = 'https://goott-bucket.s3.ap-northeast-2.amazonaws.com//noImage.jpg'; 
         },
         goToPage(url) {
             window.location.href = `/view/user/${url}`;

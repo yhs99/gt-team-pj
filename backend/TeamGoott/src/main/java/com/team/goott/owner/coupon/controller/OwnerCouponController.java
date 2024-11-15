@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.team.goott.owner.coupon.service.OwnerCouponService;
 import com.team.goott.owner.domain.CouponDTO;
 import com.team.goott.owner.domain.CouponVO;
+import com.team.goott.owner.domain.OwnerOnly;
 import com.team.goott.owner.domain.StoreDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,16 +33,11 @@ public class OwnerCouponController {
 	private OwnerCouponService ownerCouponService;
 
 	// 쿠폰 조회: 식당의 쿠폰 목록 조회
+	@OwnerOnly
 	@GetMapping("")
 	public ResponseEntity<Object> getCouponsByStoreId(HttpSession session) {
 		
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
-
-		// 사용자 로그인 상태 확인
-
-		if (storeSession == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다."); // 로그인 필요
-		}
 
 		int storeId = storeSession.getStoreId();
 
@@ -61,15 +57,12 @@ public class OwnerCouponController {
 	}
 
 	// 쿠폰 생성
+	@OwnerOnly
 	@PostMapping("")
 	public ResponseEntity<Object> createCoupon(HttpSession session, @ModelAttribute CouponDTO newCoupon) {
 		log.info("넘어온 couponDTO 값 : " + newCoupon.toString());	
 		
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
-		
-		if (storeSession == null) { // return
-			ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다."); // 로그인 필요
-		}
 		
 		int storeId = storeSession.getStoreId();
 
@@ -91,12 +84,10 @@ public class OwnerCouponController {
 	}
 	
 	 // 쿠폰 삭제
+	@OwnerOnly
     @DeleteMapping("/{couponId}") // 쿠폰 ID를 경로 변수로 받음
     public ResponseEntity<Object> deleteCoupon(HttpSession session, @PathVariable int couponId) {
         StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
-        if (storeSession == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다."); // 로그인 필요
-        }
         
         int storeId = storeSession.getStoreId();
         
@@ -115,16 +106,13 @@ public class OwnerCouponController {
     }
 	
     // 쿠폰 수정
+	@OwnerOnly
     @PutMapping("/{couponId}")
     public ResponseEntity<Object> updateCoupon(HttpSession session, @PathVariable int couponId, @ModelAttribute CouponDTO coupon) {
     	log.info("couponId : " + couponId);
     	log.info("coupon 정보 : " + coupon);
     	
         StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
-        
-        if (storeSession == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다."); // 로그인 필요
-        }
         
     	int storeId = storeSession.getStoreId();
     	

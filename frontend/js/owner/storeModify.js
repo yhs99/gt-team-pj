@@ -318,7 +318,7 @@ new Vue({
           console.log('Store updated:', response.data);
           console.log(formData);
           alert('가게 수정이 완료되었습니다.');
-          // location.href = "/";
+          location.href = "/";
         })
         .catch(error => {
           console.error('Error updating store:', error);

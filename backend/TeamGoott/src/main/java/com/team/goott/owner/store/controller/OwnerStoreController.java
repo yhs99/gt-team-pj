@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.team.goott.owner.domain.FacilityDTO;
 import com.team.goott.owner.domain.FacilityVO;
 import com.team.goott.owner.domain.OwnerDTO;
+import com.team.goott.owner.domain.OwnerOnly;
 import com.team.goott.owner.domain.ScheduleDTO;
 import com.team.goott.owner.domain.ScheduleVO;
 import com.team.goott.owner.domain.StoreCategoryDTO;
@@ -65,12 +66,9 @@ public class OwnerStoreController {
 		return ResponseEntity.ok(result?"점주 회원가입이 완료되었습니다. ":"실패");
 	}
 	
+	@OwnerOnly
 	@GetMapping("")
 	public ResponseEntity<Object> getStore(HttpSession session) {
-	     
-	     if (getOwnerIdFromSession(session) == null) {
-	         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-	     }
 	     
 	     int ownerId = getOwnerIdFromSession(session).getOwnerId();
 	     int storeId = getOwnerIdFromSession(session).getStoreId();
@@ -137,7 +135,7 @@ public class OwnerStoreController {
 	    }
 	}
 
-
+	@OwnerOnly
 	@PostMapping("")
 	public ResponseEntity<Object> registerStore(HttpSession session, @RequestPart("storeDTO") StoreDTO store,
 			@RequestPart("scheduleDTO") List<ScheduleDTO> schedules,
@@ -147,9 +145,6 @@ public class OwnerStoreController {
 
 		// 세션에서 ownerId 가져오기
 		
-        if (getOwnerIdFromSession(session) == null) {
-          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
 		int ownerId = getOwnerIdFromSession(session).getOwnerId();
 
 		// StoreDTO에 ownerId 설정
@@ -175,6 +170,7 @@ public class OwnerStoreController {
 
 	}
 	
+	@OwnerOnly
     @PutMapping("/{storeId}")
     public ResponseEntity<Object> updateStore(
             HttpSession session,

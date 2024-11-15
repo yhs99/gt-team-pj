@@ -274,7 +274,7 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
         log.info("서비스단 updatedCount : " + updatedCount);
 
         // 일정 정보 업데이트
-        updateSchedules(storeId, schedules, scheduleData);
+        updateSchedules(storeId, schedules, scheduleData, beforeRotation, afterRotation);
 
         // 카테고리 정보 업데이트
         updateCategory(storeId, category, storeCategoryData);
@@ -344,7 +344,8 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
         return ownerStoreDao.updateStore(storeId, storeUpdateData);
     }
 
-    private void updateSchedules(int storeId, List<ScheduleDTO> schedules, List<ScheduleVO> schedulesData) throws Exception {
+    private void updateSchedules(int storeId, List<ScheduleDTO> schedules, List<ScheduleVO> schedulesData,
+    		int beforeRotation, int afterRotation) throws Exception {
         log.info("서비스 impl updateSchedules 의 storeId : " + storeId);
         
         log.info("원래 스케쥴 데이터 :: " + schedulesData.toString());
@@ -375,13 +376,17 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
                             scheduleUpdateData.put("open", newSchedule.getOpen());
                             hasChanges = true;
                         }
-                        if (!	scheduleData.getClose().equals(newSchedule.getClose())) {
+                        if (!scheduleData.getClose().equals(newSchedule.getClose())) {
                             scheduleUpdateData.put("close", newSchedule.getClose());
                             hasChanges = true;
                         }
                         if (scheduleData.isCloseDay() != newSchedule.isCloseDay()) {
                             scheduleUpdateData.put("closeDay", newSchedule.isCloseDay());
                             hasChanges = true;
+                        }
+                        
+                        if (beforeRotation != afterRotation) {
+                        	hasChanges = true;
                         }
                         
                         log.info("scheduleUpdateData :: " + scheduleUpdateData);
@@ -439,7 +444,8 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
                 	// 휴일일 경우 생성 X
                 	if (!closeDay) {
                 		dayCodeMap.put("newSchedule", newSchedule);
-                		reserveSlotsScheduler.updateSlotsForStore(storeId, LocalDate.now().plusDays(1), LocalDate.now().plusMonths(1), dayCodeMap);
+                		log.info("dayCodeMap :: " + dayCodeMap.toString());
+                		reserveSlotsScheduler.updateSlotsForStore(storeId, LocalDate.now().plusDays(1), LocalDate.now().plusMonths(1), dayCodeMap, afterRotation);
                 	}
                 }
             }

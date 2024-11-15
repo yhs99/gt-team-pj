@@ -222,10 +222,13 @@
 	    UPDATE reserve
 	    SET statusCodeId = 3
 	    WHERE statusCodeId = 1
-	    AND reserveTime IN
-	    <foreach collection="reserveTimes" item="reserveTime" open="(" separator="," close=")">
-	        #{reserveTime}
-	    </foreach>
+	    <if test="reserveTimes != null and reserveTimes.size() > 0">
+	        AND reserveTime IN
+	        <foreach collection="reserveTimes" item="reserveTime" open="(" separator="," close=")">
+	            #{reserveTime}
+	        </foreach>
+	    </if>
 	    AND storeId = #{storeId}
 	</update>
+	
 </mapper>

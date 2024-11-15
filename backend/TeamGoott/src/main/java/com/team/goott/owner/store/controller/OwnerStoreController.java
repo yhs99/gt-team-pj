@@ -64,7 +64,7 @@ public class OwnerStoreController {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류 발생 ");
 		}
-		return ResponseEntity.ok(result?"성공 ":"실패 ");
+		return ResponseEntity.ok(result?"점주 회원가입이 완료되었습니다. ":"실패");
 	}
 	
 	@GetMapping("/{storeId}")

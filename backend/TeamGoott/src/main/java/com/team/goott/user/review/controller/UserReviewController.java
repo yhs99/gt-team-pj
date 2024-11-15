@@ -2,6 +2,7 @@ package com.team.goott.user.review.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,10 +26,13 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.team.goott.admin.domain.ReviewVO;
+import com.team.goott.admin.review.service.AdminReviewService;
 import com.team.goott.user.domain.ReserveDTO;
 import com.team.goott.user.domain.ReviewDTO;
 import com.team.goott.user.domain.ReviewImagesDTO;
 import com.team.goott.user.domain.UserDTO;
+import com.team.goott.user.domain.UserOnly;
 import com.team.goott.user.domain.ReviewImagesStatus;
 import com.team.goott.user.review.service.UserReviewService;
 
@@ -55,7 +59,10 @@ public class UserReviewController {
 	@Autowired
 	private UserReviewService service;
 	
-	//모든 리뷰 기져오기 (페이지네이션)
+	@Autowired
+	private AdminReviewService adminReviewService;
+	
+	 //모든 리뷰 기져오기 (페이지네이션)
 	 @GetMapping("/store/{storeId}")
 	 public ResponseEntity<List<ReviewDTO>> getAllReview(@PathVariable("storeId") int storeId,
 			 	@RequestParam(value = "sort", defaultValue = "rating_desc") String sort,
@@ -68,23 +75,34 @@ public class UserReviewController {
 	    }
 	
 	//모든 리뷰 가져오기-마이페이지(페이지네이션)
-	 
+	 @UserOnly
 	 @GetMapping("/")
 	 public ResponseEntity<Object> getMyReview(HttpSession session,
-	 			@RequestParam(value = "page", defaultValue = "1") int page,
-	            @RequestParam(value = "size", defaultValue = "5") int size){
+	 			@RequestParam(value = "page", required = false) Integer page,
+	            @RequestParam(value = "size", required = false) Integer size){
 		 UserDTO user = (UserDTO) session.getAttribute("user");
 		 List<ReviewDTO> lst = null;
-		 
-		 if(user == null) {
-			 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다"); //401
-		 }
 			 
 		 int userId = user.getUserId();
 		 lst = service.getMyReview(userId,page,size);
 		 
 		 return ResponseEntity.ok(lst);
 	 }
+	 
+	@UserOnly
+	@GetMapping()
+	public ResponseEntity<Object> getUserReviews(HttpSession session) {
+		UserDTO userSession = (UserDTO) session.getAttribute("user");
+		List<ReviewVO> reviews = new ArrayList<ReviewVO>();
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		Map<String, String> searchBy = new HashMap<String, String>();
+		searchBy.put("searchBy", "userId");
+		searchBy.put("searchValue", userSession.getUserId()+"");
+		reviews = adminReviewService.getAllReivews(searchBy);
+		returnMap.put("reviewCount", reviews.size());
+		returnMap.put("reviewData", reviews);
+		return ResponseEntity.ok(returnMap);
+	}
 	 
 	 
 	 
@@ -159,6 +177,7 @@ public class UserReviewController {
 		 }
 	 
 		 int userId = user.getUserId();
+		 comingDTO.setUserId(userId);
 		 int reserveId = comingDTO.getReserveId();
 		 ReserveDTO reserveInfo = service.getReserveInfoByReserveId(reserveId);
 		 comingDTO.setUserId(userId);
@@ -256,6 +275,7 @@ public class UserReviewController {
 		 if(user == null) {
 			 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다"); //401
 		 }
+		reviewDTO.setUserId(user.getUserId());
 		 
 		 //사용자 일치 검증
 		 if(user.getUserId() != reviewDTO.getUserId()){
@@ -326,11 +346,9 @@ public class UserReviewController {
 
 
 	private void showModifyList() {
-		System.out.println("=============modifyList 목록=============");
 		for(ReviewImagesDTO img : modifyFileList) {
-			System.out.println(img.toString());
+			log.info(img.toString());
 		}
-		System.out.println("=======================================");
 	}
 	 
 	//리뷰 삭제 
@@ -353,7 +371,6 @@ public class UserReviewController {
 			 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("작성자와 사용자가 일치하지 않습니다.");
 		 }
 		 
-		
 		 List<ReviewImagesDTO> imgDtoList= reviewDto.getReviewImages();
 		 
 		  // imgDtoList가 null인 경우 빈 리스트로 초기화

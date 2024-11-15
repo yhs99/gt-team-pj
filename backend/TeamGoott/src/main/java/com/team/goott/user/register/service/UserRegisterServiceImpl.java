@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class UserRegisterServiceImpl implements UserRegisterService {
 		}
 		
 		// 유저 프로필 이미지 업로드 처리
-		if(!user.getImageFile().getOriginalFilename().isEmpty()) {
+		if(user.getImageFile() != null) {
 			S3ImageManager imageManager = new S3ImageManager(user.getImageFile(), s3Client, bucketName);
 			imageInfo = imageManager.uploadImage();
 		}
@@ -71,21 +72,22 @@ public class UserRegisterServiceImpl implements UserRegisterService {
 	}
 
 	@Override
-	public int userUpdate(UserDTO userDTO, MultipartFile imageFile) throws ValidationException, Exception {
+	@Transactional(rollbackFor = Exception.class)
+	public void userUpdate(UserDTO userDTO, MultipartFile imageFile, HttpSession session) throws ValidationException, Exception {
 		// 회원 정보 수정
 		// 이름 , 휴대폰 , 프로필 수정
 		Map<String, String> imageInfo = new HashMap<String, String>();
 		imageInfo.put("imageUrl", null);
 		imageInfo.put("imageFileName", null);
-		String ProfileImageName =userDTO.getProfileImageName();
 		// 수정 정보 유효성 검사
-		String msg =new RegisterValidator().validateName(userDTO.getName());
-				if (msg.equals("success")) {
-					msg =new RegisterValidator().validatePhoneNumber(userDTO.getMobile());
-				}if (msg.equals("success")&&imageFile!=null) {
-					// 변경할 이미지 파일이 있을경우만 체크
-					msg =new RegisterValidator().validateImageFile(imageFile);
-				}
+		String msg = new RegisterValidator().validateName(userDTO.getName());
+		if (msg.equals("success")) {
+			msg = new RegisterValidator().validatePhoneNumber(userDTO.getMobile());
+		}
+		if (msg.equals("success")&&imageFile!=null) {
+			// 변경할 이미지 파일이 있을경우만 체크
+			msg = new RegisterValidator().validateImageFile(imageFile);
+		}
 		// 유저 회원정보 수정시 유효성검사  ValidationException 발생
 		if(!msg.equals("success")) {
 			throw new ValidationException(msg);
@@ -95,6 +97,7 @@ public class UserRegisterServiceImpl implements UserRegisterService {
 		if(imageFile!=null&&!imageFile.getOriginalFilename().isEmpty()) {
 			S3ImageManager imageManager = new S3ImageManager(imageFile, s3Client, bucketName);
 			imageInfo = imageManager.uploadImage();
+			String ProfileImageName = dao.userInfo(userDTO.getUserId()).getProfileImageName();
 			
 			if (!ProfileImageName.equals("defaultUser.jpg")) {
 				// 기본이미지 아닐경우 기존 서버 이미지 파일 삭제
@@ -104,10 +107,10 @@ public class UserRegisterServiceImpl implements UserRegisterService {
 			userDTO.setProfileImageUrl(imageInfo.get("imageUrl"));
 			userDTO.setProfileImageName(imageInfo.get("imageFileName"));
 		}
-		
-	
 		// 업데이트 유저 
-		return dao.userUpdateProcess(userDTO);
+		if(dao.userUpdateProcess(userDTO) > 0) {
+			session.invalidate();
+		}
 	}
 
 }

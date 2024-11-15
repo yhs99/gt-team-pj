@@ -38,12 +38,13 @@ public class UserUsersController {
 	@Inject
 	private AdminUsersService adminService;
 
+	private final String UNAUTHORIZED_MESSAGE = "로그인 정보가 없습니다.";
 	// 로그인 상태 체크
 	@GetMapping("/status")
 	public ResponseEntity<Object> checkStatus(HttpServletRequest request) {
 		HttpSession session = request.getSession(false);
 		if(session == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 되어있지 않습니다.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED_MESSAGE);
 		}
 
 		Object sessionData = null;
@@ -61,17 +62,21 @@ public class UserUsersController {
 			map.put("name", ((UserDTO) sessionData).getName());
 			map.put("profileImageUrl", ((UserDTO) sessionData).getProfileImageUrl());
 			map.put("loginType", "user");
+			
 		}else if(sessionData instanceof StoreDTO) {
 			map.put("name", ((StoreDTO) sessionData).getStoreName());
 			if (map.get("name") == null) {
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("권한이 없습니다");
+				Map<String, String> noStoreInfoResult = new HashMap<String, String>();
+				noStoreInfoResult.put("message", "등록된 가게가 없습니다. 가게를 등록해주세요");
+				noStoreInfoResult.put("redirect", "/view/owner/store/register");
+				return ResponseEntity.status(HttpStatus.ACCEPTED).body(noStoreInfoResult);
 			}
 			map.put("loginType", "store");
 		}else if(sessionData instanceof AdminDTO) {
 			map.put("name", ((AdminDTO) sessionData).getId());
 			map.put("loginType", "admin");
 		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 되어있지 않습니다.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED_MESSAGE);
 		}
 		
 		return ResponseEntity.ok(map);

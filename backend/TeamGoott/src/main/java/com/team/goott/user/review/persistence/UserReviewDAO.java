@@ -2,6 +2,7 @@ package com.team.goott.user.review.persistence;
 
 import java.util.List;
 
+import com.team.goott.owner.domain.NotificationDTO;
 import com.team.goott.user.domain.ReserveDTO;
 import com.team.goott.user.domain.ReviewDTO;
 import com.team.goott.user.domain.ReviewPageDTO;
@@ -42,6 +43,11 @@ int changeStatusCodeId(int reserveId, int statusCode);
 
 ReviewDTO selectUserByUserId(int userId);
 
+	int checkIfImageExist(int imageId);
+
+	int changeStatusCodeId(int reserveId, int statusCode);
+  
+	int setNotification(NotificationDTO notification);
 
 
 }

@@ -1,9 +1,8 @@
 # 🍴 SmartReserve
 ![enter image description here](https://github.com/user-attachments/assets/6ce50e6f-85a7-4ace-a7f8-b115d1561646)
-> 예약을 더 빠르고 더 알뜰하게
-
+> 예약을 더 빠르고 더 알뜰하게 <br><br>
+[프로젝트 WIKI 보러가기](https://github.com/yhs99/gt-team-pj/wiki)
 # 1. ✨ 서비스 소개
-
 **SmartReserve**는 사용자가 온라인으로 원하는 시간에 손쉽게 예약하고
  결제할 수 있도록 도와주는 서비스입니다. 
  또한, 서비스에 입점한 점주는 자신의 매장 정보를 관리하고, 예약 시스템을 편리하게 운영할 수 있습니다.
@@ -13,9 +12,9 @@
 |---|---|---|
 |팀장 [윤희성](https://github.com/yhs99) | [이현명](https://github.com/HyunmyoungLee) | [최범준](https://github.com/bumjun12)
 
-|<img src="https://avatars.githubusercontent.com/u/169752511?v=4" width="130" height="130">| <img src="https://avatars.githubusercontent.com/u/19566619?v=4" width="130" height="130">|<img src="https://avatars.githubusercontent.com/u/179418413?v=4" width="130" height="130">
-|---|---|---|
-| [김민성](https://github.com/minsung12345) | [김다손](https://github.com/kimdason) | [이연화](https://github.com/peachea27) 
+|<img src="https://avatars.githubusercontent.com/u/169752511?v=4" width="130" height="130">|<img src="https://avatars.githubusercontent.com/u/179418413?v=4" width="130" height="130">
+|---|---|
+| [김민성](https://github.com/minsung12345) | [이연화](https://github.com/peachea27) 
 
 # 3. 📌핵심 기능
 1. 사용자 예약 기능
@@ -26,7 +25,6 @@
 	관리자는 사용자와 입점 매장등을 관리할 수 있습니다.
 
 # 4. 🛠️ 기술 스택
-
 ### Backend
 ![image](https://github.com/user-attachments/assets/41e695a6-a9e2-4d0b-8d12-c9b86a688688)
 ### Frontend

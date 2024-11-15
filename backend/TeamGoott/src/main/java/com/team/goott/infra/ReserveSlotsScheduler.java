@@ -221,13 +221,13 @@ public class ReserveSlotsScheduler {
             int intervalMinutes = oDao.getRotationCodeIdByStoreId(schedules.getStoreId());
             log.info("스케쥴러 intervalMinutes : {}" , intervalMinutes);
             LocalTime openTime = schedules.getOpen();
-            log.info(openTime+"");
+//            log.info(openTime+"");
             LocalTime closeTime = schedules.getClose();
-            log.info(closeTime+"");
+//            log.info(closeTime+"");
 
             // 유효성 검증: 개장 시간이 폐장 시간보다 늦을 경우 경고
             if (openTime.isAfter(closeTime)) {
-                log.warn("유효하지 않은 시간 범위: {} ~ {}", openTime, closeTime);
+//                log.warn("유효하지 않은 시간 범위: {} ~ {}", openTime, closeTime);
             }
             
             // 기존 슬롯을 가져옵니다.
@@ -244,13 +244,14 @@ public class ReserveSlotsScheduler {
                 boolean exists = existingSlots.stream()
                         .anyMatch(slot -> slot.getSlotDatetime().toLocalDate().equals(date) &&
                                           slot.getSlotDatetime().toLocalTime().equals(currentTime));
-                log.info(time + " " +closeTime + " ::" +exists);
+//                log.info(time + " " +closeTime + " ::" +exists);
+//                log.info("existingSlots :: " + existingSlots.toString());
                 // 슬롯이 존재하지 않을 경우 새로운 슬롯을 생성합니다.
                 if (!exists) {
                     ReserveSlotsDTO newSlot = new ReserveSlotsDTO();
                     newSlot.setStoreId(schedules.getStoreId());
                     newSlot.setSlotDatetime(LocalDateTime.of(date, time)); // LocalDateTime으로 설정
-                    log.info("newSlot :: {} ", newSlot.toString());
+//                    log.info("newSlot :: {} ", newSlot.toString());
 //                        log.info("스케쥴러 newSlot : {} ", newSlot.toString());
                         oDao.UpdateReserveSlot(newSlot);
                         
@@ -262,4 +263,32 @@ public class ReserveSlotsScheduler {
         }
     }
 
+//    private int rotationChange(int rotationId) {
+//        int result;
+//        
+//        switch (rotationId) {
+//            case 1:
+//                result = 30;
+//                break;
+//            case 2:
+//                result = 60;
+//                break;
+//            case 3:
+//                result = 90;
+//                break;
+//            case 4:
+//                result = 120;
+//                break;
+//            case 5:
+//                result = 150;
+//                break;
+//            case 6:
+//                result = 180;
+//                break;
+//            default:
+//                throw new IllegalArgumentException("Invalid rotationId: " + rotationId);
+//        }
+//        
+//        return result;
+//    }
 }

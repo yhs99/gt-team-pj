@@ -91,6 +91,12 @@ public interface OwnerStoreDAO {
 	// 변경된 스케쥴에 따른 예약슬롯을 생성해주는 메서드
 	void UpdateReserveSlot(ReserveSlotsDTO newSlot);
 	
+	// 삭제 예정 예약 슬롯 반환 받는 메 서 드 
+	List<ReserveSlotsDTO> selectSlotsByDayCodeId(Map<String, Object> dayCodeMap);
+	
+	// 슬롯이 삭제되면 reserve 테이블의 status 코드를 바꿔줌
+	int updateReserveStatus(Map<String, Object> updateSlotMap);
+	
 
 	
 

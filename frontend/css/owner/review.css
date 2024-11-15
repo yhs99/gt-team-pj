@@ -1,5 +1,11 @@
 body {
-  font-family: "Apple SD Gothic Neo", sans-serif;
+  font-family: "Apple SD Gothic Neo";
+}
+
+.reviewList {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .reviewList {

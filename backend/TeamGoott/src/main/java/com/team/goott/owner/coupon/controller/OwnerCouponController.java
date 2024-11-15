@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -61,8 +62,9 @@ public class OwnerCouponController {
 
 	// 쿠폰 생성
 	@PostMapping("")
-	public ResponseEntity<Object> createCoupon(HttpSession session, CouponDTO coupon) {
-
+	public ResponseEntity<Object> createCoupon(HttpSession session, @ModelAttribute CouponDTO newCoupon) {
+		log.info("넘어온 couponDTO 값 : " + newCoupon.toString());	
+		
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
 		
 		if (storeSession == null) { // return
@@ -71,10 +73,12 @@ public class OwnerCouponController {
 		
 		int storeId = storeSession.getStoreId();
 
-		coupon.setStoreId(storeId);
+		newCoupon.setStoreId(storeId);
+		
+		log.info("storeId set 확인 : " + newCoupon);
 
 		try {
-			int result = ownerCouponService.createCoupon(coupon);
+			int result = ownerCouponService.createCoupon(newCoupon);
 			if (result > 0) {
 				return ResponseEntity.ok("쿠폰 생성 성공"); // 성공 응답
 			} else {
@@ -112,7 +116,9 @@ public class OwnerCouponController {
 	
     // 쿠폰 수정
     @PutMapping("/{couponId}")
-    public ResponseEntity<Object> updateCoupon(HttpSession session, @PathVariable int couponId, CouponDTO coupon) {
+    public ResponseEntity<Object> updateCoupon(HttpSession session, @PathVariable int couponId, @ModelAttribute CouponDTO coupon) {
+    	log.info("couponId : " + couponId);
+    	log.info("coupon 정보 : " + coupon);
     	
         StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
         

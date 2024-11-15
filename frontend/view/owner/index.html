@@ -287,16 +287,62 @@
           </div>
         </div>
 
-        <!-- Footer Start -->
-        <div class="container-fluid pt-4 px-4">
-          <div class="bg-light rounded-top p-4">
-            <div class="row">
-              <div class="col-12 col-sm-6 text-center text-sm-start">
-                &copy; <a href="#">smartreserve.store</a>, All Right Reserved.
-              </div>
+        <!-- 쿠폰을 최신순으로 5개 출력 -->
+        <div id="couponList" class="container-fluid pt-4 px-4">
+          <div class="bg-light text-center rounded p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+              <h6 class="mb-0">최신 쿠폰</h6>
+              <a href="/view/owner/coupon">전체 보기</a>
+            </div>
+            <div class="table-responsive">
+              <table
+                class="table text-start align-middle table-bordered table-hover mb-0"
+              >
+                <thead>
+                  <tr class="text-dark">
+                    <th scope="col" style="color: black">쿠폰 번호</th>
+                    <th scope="col" style="color: black">쿠폰 이름</th>
+                    <th scope="col" style="color: black">할인율</th>
+                    <th scope="col" style="color: black">수량</th>
+                    <th scope="col" style="color: black">기간</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- v-for를 사용하여 쿠폰을 정렬하고 상위 5개만 출력 -->
+                  <tr
+                    v-for="(singleCoupon, index) in sortedCoupons.slice(0, 5)"
+                    :key="singleCoupon.couponId"
+                  >
+                    <td>{{ singleCoupon.couponId }}</td>
+                    <td>{{ singleCoupon.couponName }}</td>
+                    <td>
+                      <!-- 할인율이 100 미만이면 % 붙이고, 100 이상이면 원 붙이기 -->
+                      {{ singleCoupon.discount }}
+                      <span v-if="singleCoupon.discount < 100">%</span>
+                      <span v-else>(원)</span>
+                    </td>
+                    <td>
+                      <!-- 수량이 -1이면 '무제한' 표시 -->
+                      <span v-if="singleCoupon.stock === -1">무제한</span>
+                      <span v-else>{{ singleCoupon.stock }}</span>
+                    </td>
+                    <td>
+                      <!-- stock이 -1이면 날짜를, 아니면 '무기한' 표시 -->
+                      <span v-if="singleCoupon.stock === -1">
+                        {{ formatDate(singleCoupon.start) }} ~ {{
+                        formatDate(singleCoupon.end) }}
+                      </span>
+                      <span v-else>무기한</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
+
+        <!-- Footer Start -->
+        <footer-component></footer-component>
         <!-- Footer End -->
       </div>
       <!-- Content End -->

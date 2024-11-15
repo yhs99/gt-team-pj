@@ -5,6 +5,16 @@ new Vue({
     loginYN: false,
     reviews: [],
     reserves: [],
+    store: [],
+    coupon: [
+      {
+        couponName: "",
+        discount: 0,
+        stock: 0,
+        start: "", // 빈 문자열로 초기화
+        end: "", // 빈 문자열로 초기화
+      },
+    ],
     sales: [],
     salesByDate: [],
     reserveByDate: [],
@@ -26,20 +36,37 @@ new Vue({
         .filter((reserve) => reserve.statusCodeId == 1)
         .slice(0, 5);
     },
-    //리뷰 요청 삭제 된거는 보여주지 않음
+    sortedCoupons() {
+      return this.coupon.sort((a, b) => b.couponId - a.couponId); // 쿠폰 번호 기준 내림차순 정렬
+    },
+
+    // 리뷰 요청 삭제 된거는 보여주지 않음
     filteredReviews() {
       return this.reviews.filter((review) => !review.deleteReq).slice(0, 5);
     },
   },
+
   created: function () {
     this.fetchUserData(); // Vue 인스턴스 생성 시 데이터 요청
     this.fetchReviews();
     this.fetchReserves();
+    this.fetchStoreData();
+    this.fetchCouponData();
     this.getNotification();
   },
 
   methods: {
-    //알림 읽음 처리
+    getFullCalendar() {
+      document.addEventListener("DOMContentLoaded", function () {
+        var calendarEl = document.getElementById("calendar");
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: "dayGridMonth",
+        });
+        calendar.render();
+      });
+    },
+
+    // 알림 읽음 처리
     readNotification(alarmId, index) {
       this.notifications[index].read = true;
       const params = { alarmId: alarmId };
@@ -124,7 +151,8 @@ new Vue({
         },
       });
     },
-    //알림 목록 받아오기
+
+    // 알림 목록 받아오기
     getNotification() {
       axios.get("/api/owner/reserve/notification").then((response) => {
         console.log("알림 목록 api", response);
@@ -132,7 +160,7 @@ new Vue({
       });
     },
 
-    //결제,매출 정보
+    // 결제, 매출 정보
     getSalesInfo() {
       axios.get("/api/owner/sales").then((response) => {
         console.log("결제 매출 정보 api ", response);
@@ -220,8 +248,38 @@ new Vue({
       calendar.render();
     },
 
-    //예약 상태 업데이트
-    updateReserveStatus: function (reserveId, status) {
+    fetchReserves() {
+      axios.get("/api/owner/reserve").then((response) => {
+        console.log(response);
+        this.reserves = response.data.data.reservations;
+      });
+    },
+
+    fetchStoreData() {
+      axios
+        .get(`/api/store`) // 가게 데이터 요청
+        .then((response) => {
+          console.log(response);
+          this.store = response.data.data.store; // 가게 데이터를 저장
+        })
+        .catch((error) => {
+          console.error("가게 데이터 로드 중 오류 발생:", error);
+        });
+    },
+
+    fetchCouponData() {
+      axios
+        .get("/api/coupon") // 쿠폰 데이터 요청
+        .then((response) => {
+          console.log(response);
+          this.coupon = response.data.data; // 쿠폰 데이터를 저장
+        })
+        .catch((error) => {
+          console.error("쿠폰 데이터 로드 중 오류 발생:", error);
+        });
+    },
+
+    updateReserveStatus(reserveId, status) {
       var statusCode = Number.parseInt(status);
       const params = { statusCode: statusCode };
       axios
@@ -254,7 +312,8 @@ new Vue({
           location.href = "/";
         });
     },
-    logoutProcess: function () {
+
+    logoutProcess() {
       axios
         .post("/api/logout")
         .then((response) => {
@@ -282,13 +341,18 @@ new Vue({
           console.log(error);
         });
     },
-    formatDate: function (timestamp) {
+
+    formatDate(timestamp) {
       // 밀리초 단위의 타임스탬프를 변환하여 날짜로 포맷
       const date = new Date(timestamp);
       return date.toLocaleString(); // 날짜와 시간을 로컬 형식으로 반환
     },
+    formatDate(dateArray) {
+      // 배열을 날짜로 변환하고, yyyy-MM-dd 형식으로 반환
+      const date = new Date(dateArray[0], dateArray[1] - 1, dateArray[2]);
+      return date.toISOString().split("T")[0]; // yyyy-MM-dd 형식
+    },
   },
-
   mounted() {
     this.getSalesInfo();
   },

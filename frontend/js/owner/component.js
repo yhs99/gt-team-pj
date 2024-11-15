@@ -33,6 +33,7 @@ Vue.component("sidebar-component", {
             </div>
             <div class="navbar-nav w-100">
                 <a href="/view/owner/index" :class="['nav-item', 'nav-link', isActive('/view/owner/index')]"><i class="fa fa-tachometer-alt me-2"></i>대시보드</a>
+                <a href="/view/owner/storeModify" :class="['nav-item', 'nav-link', isActive('/view/owner/storeModify')]"><i class="fa fa-th me-2"></i>가게 수정</a>
                 <a href="/view/owner/menu" :class="['nav-item', 'nav-link', isActive('/view/owner/menu')]"><i class="fa fa-th me-2"></i>메뉴 관리</a>
                 <a href="/view/owner/coupon" :class="['nav-item', 'nav-link', isActive('/view/owner/coupon')]"><i class="fa fa-keyboard me-2"></i>쿠폰 관리</a>
                 <a href="/view/owner/reserve" :class="['nav-item', 'nav-link', isActive('/view/owner/reserve')]"><i class="fa fa-table me-2"></i>예약 관리</a>

@@ -97,7 +97,7 @@ update reserve set statusCodeId = #{statusCodeId} where reserveId = #{reserveId}
 <select id="selectUserName" resultType="com.team.goott.user.domain.ReviewDTO">
 select name,profileImageUrl from user where userId = #{userId} 
 </select>
-  
+
 <insert id="setNotification">
 	insert into notification(userId , message, storeId, notificationType, reserveId) 
 	values(#{userId}, #{message}, #{storeId}, #{notificationType}, #{reserveId})

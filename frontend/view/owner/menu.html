@@ -146,7 +146,7 @@
                     <td>{{menu.menuId}}</td>
                     <td>{{menu.storeId}}</td>
                     <td>{{menu.menuName}}</td>
-                    <td>{{menu.price}}</td>
+                    <td>{{(menu.price).toLocaleString()}}원</td>
                     <td>
                       <img
                         :src="menu.menuImageUrl"
@@ -233,9 +233,21 @@
                   />
                 </div>
                 <div class="mb-3">
-                  <label for="menuImage" class="form-label">메뉴 사진</label>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    @click="showMenuImageInput = !showMenuImageInput"
+                  >
+                    메뉴 사진 추가
+                  </button>
+                </div>
+                <div v-if="showMenuImageInput" class="mb-3">
+                  <label for="menuImage" class="form-label"
+                    >메뉴 사진 (10MB 이하)</label
+                  >
                   <input
                     type="file"
+                    id="menuImage"
                     class="form-control"
                     @change="fileChange"
                     required
@@ -322,7 +334,9 @@
                   </button>
                 </div>
                 <div v-if="showMenuImageInput" class="mb-3">
-                  <label for="menuImage" class="form-label">메뉴 사진</label>
+                  <label for="menuImage" class="form-label"
+                    >메뉴 사진 (10MB 이하)</label
+                  >
                   <input
                     type="file"
                     id="menuImage"

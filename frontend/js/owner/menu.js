@@ -45,7 +45,14 @@ new Vue({
     fileChange(e) {
       const imgFile = e.target.files[0];
       if (imgFile) {
-        this.file = imgFile;
+        const maxSize = 10 * 1024 * 1024;
+        if (imgFile.size > maxSize) {
+          alert("이미지는 10MB이하의 파일만 업로드 가능합니다");
+          e.target.value = "";
+          return;
+        } else {
+          this.file = imgFile;
+        }
       } else {
         this.file = null;
       }
@@ -75,6 +82,7 @@ new Vue({
           console.log(response);
           this.showAddModal = false;
           alert("메뉴가 성공적으로 추가되었습니다.");
+          location.reload();
         })
         .catch((error) => {
           console.error(error);

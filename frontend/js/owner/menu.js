@@ -82,7 +82,7 @@ new Vue({
           console.log(response);
           this.showAddModal = false;
           alert("메뉴가 성공적으로 추가되었습니다.");
-          location.reload();
+          this.fetchMenu();
         })
         .catch((error) => {
           console.error(error);
@@ -111,7 +111,7 @@ new Vue({
           console.log(response);
           this.showModifyModal = false;
           alert("메뉴가 성공적으로 수정되었습니다.");
-          location.reload();
+          this.fetchMenu();
         })
         .catch((error) => {
           console.error(error);
@@ -123,7 +123,8 @@ new Vue({
       axios.delete("/api/owner/menu/" + this.deleteMenuId).then((response) => {
         console.log(response);
         alert("메뉴가 성공적으로 삭제되었습니다.");
-        location.reload();
+        this.fetchMenu();
+        this.showDeleteModal = false;
       });
     },
 
@@ -139,6 +140,7 @@ new Vue({
     showAddMenuModal() {
       console.log("modal");
       this.showAddModal = true;
+      this.clearModalInput();
     },
     showModifyMenuModal(menuId) {
       this.showModifyModal = true;
@@ -153,6 +155,21 @@ new Vue({
     showDeleteMenuModal(menuId) {
       this.showDeleteModal = true;
       this.deleteMenuId = menuId;
+    },
+    clearModalInput() {
+      this.newMenu = {
+        menuName: "",
+        price: "",
+        description: "",
+        main: true,
+      };
+      this.modifyMenuList = {
+        menuName: "",
+        price: "",
+        description: "",
+        main: true,
+      };
+      this.file = null;
     },
   },
   mounted() {},

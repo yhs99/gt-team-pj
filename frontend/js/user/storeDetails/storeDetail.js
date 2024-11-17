@@ -1,3 +1,5 @@
+
+
 new Vue({
   el: "#app",
   data() {
@@ -18,6 +20,7 @@ new Vue({
       },
       reviewData: [],
       recommendData: {},
+      storeReview: {},
       couponData: [],
       info: {
         dateStr: "",
@@ -74,7 +77,7 @@ new Vue({
     filteredReviews() {
       return this.reviewData
         .filter((review) => review.score >= 4)
-        .sort((a, b) => b.score - a.score);
+        .sort((a, b) => new Date(b.createAt) - new Date(a.createAt));
     },
     calculateMenuPriceAvg() {
       const mainMenus = this.menuData.menu.filter((menu) => menu.main);
@@ -135,7 +138,11 @@ new Vue({
     },
     async fetchReviewData() {
       try {
-        const response = await axios.get(`/api/review/store/${this.storeId}`);
+        const response = await axios.get(`/api/review/store/${this.storeId}`,{
+          params:{
+              size:500
+          }
+        });
         this.reviewData = response.data.data;
         console.log("reviewData", this.reviewData);
       } catch (error) {
@@ -144,11 +151,13 @@ new Vue({
     },
     async fetchRecommendData() {
       try {
-        const response = await axios.get(
-          `/api/stores/storeInfo/${this.storeId}`
-        );
-        this.recommendData = response.data.data;
+        const response = await axios.get(`/api/stores/storeInfo/${this.storeId}`);
+        this.recommendData = response.data.data.slice(0,3);
         console.log("recommendData", this.recommendData);
+
+        await Promise.all(this.recommendData.map(recommend => 
+          this.fetchStoreReviewData(recommend.storeId)
+      ));
       } catch (error) {
         console.error("Error fetching recommend data:", error);
       }
@@ -217,8 +226,7 @@ new Vue({
             alert("30일 이전의 날짜만 클릭할 수 있습니다.");
             return;
           }
-
-          // alert("Clicked on: " + info.dateStr);
+      
 
           if (this.clickedDate) {
             const previousDateEl = this.clickedDate;
@@ -391,6 +399,7 @@ new Vue({
     },
     goToReserve() {
       if (this.isLoggedIn == true) {
+         this.deleteCartData();
         this.goToPage(
           `/view/user/storeDetails/reserve?storeId=${this.storeId}`
         );
@@ -398,8 +407,46 @@ new Vue({
         this.goToPage(`/view/user/userLogin`);
       }
     },
-  },
+    async deleteCartData(){
+      try {
+        const response = await axios.get("/api/cart");
+        console.log("cart",response.data.data);
 
+        const deleteList = response.data.data.map(cartItem =>{
+          const cartId = cartItem.cartId;
+           axios.delete(`/api/cart/${cartId}`)
+           .catch(error => {
+              console.error(`카트에서 ${cartId} 를 삭제하는데 실패했습니다.`);
+           });
+        });
+
+         await Promise.all(deleteList);
+        console.log("카트 아이템 삭제 성공");
+     
+      }catch(error){
+        console.log("cart 정보를 불러오지 못했습니다");
+      }
+    },
+    async fetchStoreReviewData(recommendId) {
+      try {
+          console.log("recommendId",recommendId);
+          const response = await axios.get(`/api/review/store/${recommendId}`);
+
+          if (!this.storeReivew) {
+            this.storeReivew = {};
+        }
+          this.$set(this.storeReivew, recommendId, response.data.data || []);
+          console.log("storeReview",this.storeReivew);
+      } catch (error) {
+          console.error('Error fetching review data:', error);
+      }
+    },
+    calculateStoreReviewScore(storeId) {
+      const reviews = this.storeReview[storeId] || [];
+      const scoreSum = reviews.reduce((sum, review) => sum + (review.score || 0), 0);
+      return reviews.length > 0 ? scoreSum / reviews.length : 0;
+      }
+  },
   created() {
     this.getTodayDay();
   },
@@ -415,5 +462,5 @@ new Vue({
     }
 
     this.makeACalendar();
-  },
+   }
 });

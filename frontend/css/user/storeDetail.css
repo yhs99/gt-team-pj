@@ -282,7 +282,7 @@ a {
     padding-bottom: 3px; 
     width: 60px;
     color: #333; 
-    border: 1px solid #ccc; 
+    /* border: 1px solid #ccc;  */
     border-radius: 17%; 
     font-size: 14px;
     font-weight: bold; 
@@ -365,16 +365,17 @@ a {
 /* 추천 레스토랑 */
 .restaurants_whole{
     display: flex;
+    max-width: 700px;
+    justify-content: space-around;
 }
 
 .restaurant-card {
-    width: 205px;
-    margin-right: 1px;
+    width: 200px;
     word-break: keep-all;
 }
 
 .restaurant_image_box{
-    width: 200px;
+    width: 195px;
     height: 180px;
     border-radius: 5px; 
 }
@@ -403,3 +404,32 @@ a {
     color: #777; 
 }
 
+/*  리뷰 */
+.review_whole{
+    display: flex;
+    max-width: 700px;
+}
+
+.review-card {
+    width: 200px;
+    word-break: keep-all;
+}
+
+.review-card p{
+    overflow: hidden;
+}
+
+.review_image_box{
+    width: 195px;
+    height: 180px;
+    border-radius: 5px; 
+}
+.review_image_box img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.review-details {
+    font-size: 12px; 
+    color: #777; 
+}

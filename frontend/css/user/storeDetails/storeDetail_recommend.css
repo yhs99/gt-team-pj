@@ -48,14 +48,17 @@
 .restaurants_whole{
     display: flex;              
     flex-wrap: wrap;           
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
 
 .restaurant-card {
-    width: calc(50% - 10px);   
-    margin-bottom: 20px;  
+    width: calc(50% - 60px);
+    margin-bottom: 20px;
     word-break: keep-all;
+    margin-left: 10px;
+    width: 250px;
+    padding-left: 15px;
 }
 
 .restaurant_image_box{

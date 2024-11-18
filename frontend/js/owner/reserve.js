@@ -22,7 +22,6 @@ new Vue({
   methods: {
     fetchReserves: function () {
       axios.get("/api/owner/reserve").then((response) => {
-        console.log(response);
         this.reserves = response.data.data.reservations;
         this.totalReserve = response.data.data.totalReserve;
         this.totalTodayReserve = response.data.data.totalTodayReserve;
@@ -42,7 +41,6 @@ new Vue({
       axios
         .post("/api/owner/reserve/" + reserveId, null, { params })
         .then((response) => {
-          console.log(response);
           if (statusCode == 2) {
             alert(reserveId + "의 예약 승인요청이 완료 되었습니다.");
             location.reload();
@@ -86,11 +84,9 @@ new Vue({
         const formattedDate = dateObject.toISOString().split("T")[0];
 
         const params = { reserveTime: formattedDate };
-        console.log(params);
         axios
           .get("/api/owner/reserve/available", { params })
           .then((response) => {
-            console.log(response);
             this.searchReserveSlots = response.data.data;
           });
       } else {

@@ -48,13 +48,10 @@
 	   <url-pattern>/*</url-pattern>
 	</filter-mapping>
 <!-- utf-8 Encoding -->
-
-	<filter>
-		<filter-name>MultipartFilter</filter-name>
-		<filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>MultipartFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+	
+	<multipart-config>
+        <max-file-size>10485760</max-file-size> <!-- 파일 당 최대 10MB -->
+        <max-request-size>20971520</max-request-size> <!-- 전체 요청 크기 20MB -->
+        <file-size-threshold>0</file-size-threshold>
+    </multipart-config>
 </web-app>

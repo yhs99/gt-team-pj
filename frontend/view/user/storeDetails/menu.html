@@ -10,9 +10,12 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/js/user/storeDetails/storeDetail_menu.js" defer></script>
     <link rel="stylesheet" href="/css/user/storeDetail.css">
+
+    <script src="/js/user/component.js"></script>
 </head>
 <body>
     <div  id="app">
+        <header-navbar></header-navbar>
         <div class="square_section">
             <div class="cButton-container">
                 <div class="cButton" v-for="(button, index) in buttons" 

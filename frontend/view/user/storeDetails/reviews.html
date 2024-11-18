@@ -68,16 +68,30 @@
     margin-top: 5px; 
 }
 
-.review {
-    border-top: 1px solid #e0e0e0;
-    padding-top: 20px;
+.orderBy{
+   float: right;
+   margin-top: 5%;
+    border: 0;
+  
 }
+
+.orderBy_sec{
+    margin-bottom: 10%;
+}
+
+.review {
+    border-bottom: 1px solid #e0e0e0;
+    padding-top: 30px;
+    padding-bottom: 10px;
+}
+
 
 .review_header {
     display: flex;
     justify-content: left;
     align-items: center;
     gap: 10px;
+    margin-top: 1%;
 }
 
 .review_info span{
@@ -98,7 +112,7 @@
 
 .review_images {
     display: flex;
-    width: 680px;
+    max-width: 680px;
     height: 220px;
     border-radius: 5px;
     overflow-x: auto;
@@ -142,7 +156,7 @@
     <div class="details_container">
         <div class="rating_summary">
             <div class="grid_1">
-             <h3>{{ reviewData.length }}개 리뷰 평균</h3>
+             <h3>{{ allReviews.length }}개 리뷰 평균</h3>
              <div class="average_rating">
                 <h1>⭐️</h1>
                 <strong> {{ calculateReviewScore.toFixed(1) }} </strong></div>
@@ -185,6 +199,14 @@
             </div>
         </div>
           
+        </div>
+
+        <div class="orderBy_sec">
+            <select class="orderBy" @change="updateSort">
+                <option value="latest">최신순</option>
+                <option value="high">별점 높은순</option>
+                <option value="low">별점 낮은순</option>
+            </select>
         </div>
 
         <div class="review" v-for="(review, index) in reviewData" :key="review.reviewId">

@@ -6,7 +6,6 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta content="" name="keywords" />
     <meta content="" name="description" />
-    <link rel="icon" type="image/png" href="/assets/mainIcon.png" />
 
     <link
       rel="stylesheet"
@@ -66,6 +65,11 @@
   <body>
     <div id="app">
       <div class="container-xxl position-relative bg-white d-flex p-0">
+        <!-- 로딩 스피너와 메시지 -->
+        <div id="loadingSpinner">
+          <div class="spinner"></div>
+          <div id="loadingMessage">가게 수정중입니다 잠시 기다려주세요</div>
+        </div>
         <spinner-component></spinner-component>
         <!-- Sidebar Start -->
         <sidebar-component></sidebar-component>

@@ -17,13 +17,13 @@ new Vue({
       locationLonY: null,
     },
     scheduleDTO: [
+      { day: "일요일", open: "", close: "", closeDay: false, dayCodeId: 0 },
       { day: "월요일", open: "", close: "", closeDay: false, dayCodeId: 1 },
       { day: "화요일", open: "", close: "", closeDay: false, dayCodeId: 2 },
       { day: "수요일", open: "", close: "", closeDay: false, dayCodeId: 3 },
       { day: "목요일", open: "", close: "", closeDay: false, dayCodeId: 4 },
       { day: "금요일", open: "", close: "", closeDay: false, dayCodeId: 5 },
       { day: "토요일", open: "", close: "", closeDay: false, dayCodeId: 6 },
-      { day: "일요일", open: "", close: "", closeDay: false, dayCodeId: 0 },
     ],
     storeCategory: [
       { categoryId: "C1", categoryName: "한식" },
@@ -240,6 +240,8 @@ new Vue({
     },
     // 가게 등록 함수
     registerStore() {
+      document.getElementById("loadingSpinner").style.display = "block";
+
       var detailAddress = document.getElementById(
         "sample6_detailAddress"
       ).value;
@@ -249,6 +251,7 @@ new Vue({
       this.uploadedFiles.forEach((file) => {
         formData.append("uploadedFiles", file); // 파일 객체를 formData에 추가
       });
+
       formData.append(
         "storeDTO",
         new Blob([JSON.stringify(this.storeDTO)], { type: "application/json" })
@@ -283,8 +286,11 @@ new Vue({
           location.href = "/view/owner/index";
         })
         .catch((error) => {
-          console.error("Error registering store:", error);
           alert("가게 등록에 실패했습니다.");
+        })
+        .finally(() => {
+          // 로딩 스피너 숨기기
+          document.getElementById("loadingSpinner").style.display = "none";
         });
     },
     // 양식 초기화

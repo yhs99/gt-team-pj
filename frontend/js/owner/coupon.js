@@ -154,6 +154,7 @@ new Vue({
           },
         })
         .then((response) => {
+          console.log("Coupon updated:", response.data);
           this.getAllCoupons(); // 쿠폰 목록 새로 고침
           this.resetForm();
         })

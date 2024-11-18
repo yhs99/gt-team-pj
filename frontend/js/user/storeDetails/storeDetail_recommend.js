@@ -17,50 +17,34 @@ new Vue({
             menuData: {
                 menu: []
             },
-            reviewData: [],
-            recommendData: {},
-            couponData: [],
+            reviewData: {},
+            recommendData: [],
+            page: 1,
+            size: 10,
             info:{
                 dateStr:""
             },
-            reserveSlots:{},
-            buttons: ['홈', '메뉴', '사진', '리뷰', '매장정보'],
-            activeButton: 0,
             isBookmarked: false,
             currentBookmark:[],
             loginInfo:{},
-            isLoggedIn:false
+            isLoggedIn:false,
+            isLoading: false,
         };
     },
     computed: {
+        totalPages(){
+            return Math.ceil(this.recommendData.length / this.size);
+        },
+        pagination(){
+            const start = (this.page - 1) * this.size;
+            const end = start + this.size;
+            console.log("storeId Aru?",this.recommendData.slice(0,end))
+            return this.recommendData.slice(0, end);
+        },
         allSchedulesOpen() {
             return this.schedules.length > 0 && this.schedules.every(schedule => !schedule.closeDay);
         },
-        filteredMenus() {
-            if (!this.menuData?.menu) return [];
-
-            const mainMenus = this.menuData.menu.filter(menu => menu.main);
-            const remainingMenus = this.menuData.menu.filter(menu => !menu.main);
-
-            return mainMenus.length > 5 ? mainMenus.slice(0, 5) : [...mainMenus, ...remainingMenus].slice(0, 5);
-        },
-        combinedImages() {
-            const reviewImages = this.reviewData.flatMap(review => review.reviewImages);
-            const menuImages = this.menuData.menu.map(menu => ({ url: menu.menuImageUrl })).filter(image => image.url);
-
-            return [
-                ...this.restaurantData.data.storeImages.map(image => ({ url: image.url })),
-                ...reviewImages,
-                ...menuImages
-            ];
-        },
-        calculateReviewScore() {
-            const scoreSum = this.reviewData.reduce((sum, review) => sum + (review.score || 0), 0);
-            return this.reviewData.length > 0 ? scoreSum / this.reviewData.length : 0;
-        },
-        filteredReviews() {
-            return this.reviewData.filter(review => review.score >= 4).sort((a, b) => b.score - a.score);
-        },
+      
         calculateMenuPriceAvg() {
             const mainMenus = this.menuData.menu.filter(menu => menu.main);
             const menuMainPriceSum = mainMenus.reduce((sum, menu) => sum + menu.price, 0);
@@ -80,7 +64,7 @@ new Vue({
             ];
 
             return priceRanges.find(range => menuMainPriceAvg >= range.min && (!range.max || menuMainPriceAvg < range.max)).label;
-        }
+        },
     },
     methods: {
         async fetchRestaurantData() {
@@ -91,12 +75,10 @@ new Vue({
                 this.schedules = this.restaurantData.data.storeSchedules;
                 console.log("schedules",this.schedules);
                 this.checkLoginStatus();
-                this.operationTodayDay();
-                this.fetchMenuData();
-                this.fetchReviewData();
+                // this.operationTodayDay();
+                // this.fetchMenuData();
+                // this.fetchReviewData();
                 this.fetchRecommendData();
-                this.fetchCouponData();
-                
                 
             } catch (error) {
                 console.error('Error fetching restaurant data:', error);
@@ -111,10 +93,11 @@ new Vue({
                 console.error('Error fetching menu data:', error);
             }
         },
-        async fetchReviewData() {
+        async fetchReviewData(recommendId) {
             try {
-                const response = await axios.get(`/api/review/store/${this.storeId}`);
-                this.reviewData = response.data.data;
+                console.log("recommendId",recommendId);
+                const response = await axios.get(`/api/review/store/${recommendId}`);
+                this.$set(this.reviewData, recommendId, response.data.data);
                 console.log("reviewData",this.reviewData);
             } catch (error) {
                 console.error('Error fetching review data:', error);
@@ -123,8 +106,11 @@ new Vue({
         async fetchRecommendData() {
             try {
                 const response = await axios.get(`/api/stores/storeInfo/${this.storeId}`);
-                this.recommendData = response.data.data
+                this.recommendData = this.recommendData.concat(response.data.data);
                 console.log("recommendData",this.recommendData);
+                for(recommendStore of this.recommendData){
+                    this.fetchReviewData(recommendStore.storeId);
+                }
             } catch (error) {
                 console.error('Error fetching recommend data:', error);
             }
@@ -144,34 +130,11 @@ new Vue({
             return `${date.getFullYear()}.${date.getMonth() + 1}.${date.getDate()}`;
         },
         setDefaultImage(event) {
+            console.log("여기까지 오나요");
             event.target.src = 'https://goott-bucket.s3.ap-northeast-2.amazonaws.com//noImage.jpg';
-        },
-      
-        goToPage(url) {
-            window.location.href = url;
         },
         getClosedDays() {
             return this.schedules.filter(schedule => schedule.closeDay).map(schedule => schedule.dayOfWeek);
-        },
-        async fetchCouponData() {
-            try {
-                const response = await axios.get(`/api/stores/coupon/${this.storeId}`);
-                this.couponData = response.data.data;
-                console.log("CouponData",this.couponData);
-            } catch (error) {
-                console.error('Error fetching couponData:', error);
-            }
-        },
-        async fetchReserveSlots(date) {
-            console.log(date);
-            try{
-                const response = await axios.get(`/api/stores/reserveSlots/${this.storeId}/${date}`)
-                this.reserveSlots = response.data.data;
-                console.log("reserveSlots",this.reserveSlots);
-            }catch(error){
-                console.error('Error fetching reserveSlots:', error);
-            }
-
         },
         formatTime(datetime) {
             const date = new Date(datetime);
@@ -179,29 +142,7 @@ new Vue({
             const minutes = String(date.getMinutes()).padStart(2, '0'); // 분을 두 자리로 포맷
             return `${hours}:${minutes}`; // 'HH:mm' 형식으로 반환
         },
-        menuBtnGotopage(index) {
-            //  this.activeButton = index;
-            switch (index) {
-                case 0:
-                    this.goToPage(`#`)
-                    break;
-                case 1:
-                    this.goToPage(`storeDetails/menu?storeId=${this.storeId}`)
-                    break;
-                case 2:
-                    this.goToPage(`storeDetails/pictures?storeId=${this.storeId}`)
-                    break;
-                case 3:
-                    this.goToPage(`storeDetails/reviews?storeId=${this.storeId}`)
-                    break;
-                case 4:
-                    this.goToPage(`storeDetails/storeInfo?storeId=${this.storeId}`)
-                break;
-                default:
-                    break;
-            }
-    
-        },
+      
         async setBookmark(){
            try{
                const response = await axios.post(`/api/bookmark/${this.storeId}`);
@@ -284,19 +225,41 @@ new Vue({
                 }
             }
         },
-        goToReserve(){
-            if(this.isLoggedIn == true){
-                this.goToPage(`/view/user/storeDetails/reserve?storeId=${this.storeId}`)
-            }else{
-                this.goToPage(`/view/user/userLogin`);
+    
+          scrolling() {
+            const scrollHeight = window.scrollY + window.innerHeight; // 현재 스크롤 위치 + 창 높이
+            const totalHeight = document.body.scrollHeight; // 문서 전체 높이
+            console.log("scrolling")
+            if (scrollHeight >= totalHeight - 5 && !this.isLoading) {
+                this.loadMore();
             }
-        }
-        
+        },
+        async loadMore() {
+            if (this.page < this.totalPages) {
+                this.isLoading = true; // 로딩 시작
+                this.page++;
+                console.log(this.page);
+                await this.fetchRecommendData();
+                this.isLoading = false; // 로딩 종료
+            }
+        },
+        goToStore(recStoreId) {
+            window.location.href = `../storeDetail?storeId=${recStoreId}`;
+          },
+        calculateReviewScore(storeId) {
+        const reviews = this.reviewData[storeId] || [];
+        const scoreSum = reviews.reduce((sum, review) => sum + (review.score || 0), 0);
+        return reviews.length > 0 ? scoreSum / reviews.length : 0;
+        },
+       
 },
 
     created() {
         this.getTodayDay();
-    
+        window.addEventListener('scroll', this.scrolling); 
+    },
+    destroyed() {
+        window.removeEventListener('scroll', this.scrolling); // 컴포넌트가 파괴될 때 리스너 제거
     },
     mounted() {
         const queryParams = new URLSearchParams(window.location.search);
@@ -305,6 +268,7 @@ new Vue({
 
         if (this.storeId) {
             this.fetchRestaurantData(); 
+            this.fetchRestaurantData();
         } else {
             console.error('storeId가 없습니다. URL을 확인하세요.');
         }

@@ -87,14 +87,11 @@ new Vue({
 
         this.storeDTO = storeData.store; // storeDTO에 응답 데이터 저장
         this.address = this.storeDTO.address; // 주소 초기화
-
         this.scheduleDTO = storeData.schedule;
-
         this.facilityDTO = storeData.facility;
         this.storeCategoryDTO = storeData.category;
         this.uploadedFiles = storeData.storeImage;
       } catch (error) {
-        console.error(error);
         alert("fetchStores 가게 정보 수정 중 오류가 발생했습니다.");
       }
     },
@@ -107,14 +104,13 @@ new Vue({
         if (status === kakao.maps.services.Status.OK) {
           this.storeDTO.sidoCode = result[0].address.region_1depth_name;
           this.zipCode = result[0].road_address.zone_no;
-
           this.beforeAddress = address;
-
           this.address = result[0].address_name;
           this.detailAddress = address
             .replace(result[0].address_name, "")
             .trim();
         } else {
+          console.log("주소 검색 실패");
         }
       });
     },
@@ -278,13 +274,12 @@ new Vue({
     },
     // 가게 수정 함수
     updateStore() {
+      document.getElementById("loadingSpinner").style.display = "block";
       let formData = new FormData();
-
       this.storeDTO.address =
         document.getElementById("sample6_address").value +
         " " +
         document.getElementById("sample6_detailAddress").value;
-
       this.uploadedFiles.forEach((file) => {
         formData.append("uploadedFiles", file); // 파일 객체를 formData에 추가
       });
@@ -329,8 +324,11 @@ new Vue({
           location.href = "/";
         })
         .catch((error) => {
-          console.error("Error updating store:", error);
           alert("가게 수정에 실패했습니다.");
+        })
+        .finally(() => {
+          // 로딩 스피너 숨기기
+          document.getElementById("loadingSpinner").style.display = "none";
         });
     },
     // 양식 초기화

@@ -263,7 +263,7 @@ new Vue({
                 });
 
                 const queryString = `?reserveTime=${this.selectedSlot}`;
-                const targetUrl = `http://localhost/view/user/cart${queryString}`;
+                const targetUrl = `/view/user/cart${queryString}`;
     
                 window.location.href = targetUrl;
             } else {

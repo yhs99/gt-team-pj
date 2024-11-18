@@ -24,13 +24,16 @@
 
             <h2 class="my_title">비슷한 레스토랑 추천</h2>
             <div class="restaurants_whole">
-                <div class="restaurant-card"  v-for="(recommend,index) in recommendData" :key="recommend.storeId">
+                <div class="restaurant-card" v-for="(recommend,index) in pagination" :key="recommend.storeId" @click="goToStore(recommend.storeId)">
                     <div class="restaurant_image_box">
-                        <img v-if="recommend.storeImages" src="recommend.storeImages" alt="storeImage" class="restaurant-image" @error="setDefaultImage($event)">
-                        <img v-else src="https://goott-bucket.s3.ap-northeast-2.amazonaws.com/noImage.jpg" alt="noImage" class="restaurant-image">
+                        <img v-if="recommend.storeImages && recommend.storeImages.length > 0" :src="recommend.storeImages[0].url" alt="storeImage" 
+                        class="restaurant-image">
+                        <img v-else src="https://goott-bucket.s3.ap-northeast-2.amazonaws.com//noImage.jpg" alt="noImage" class="restaurant-image">
                     </div>
                     <div class="restaurant-info">
                         <p class="restaurant-name">{{recommend.storeName}}</p>
+                        ⭐️ {{ calculateReviewScore(recommend.storeId).toFixed(1) }} 
+                        <span class="review-count">( {{ reviewData[recommend.storeId]?.length || 0 }})</span>
                         <span class="restaurant-details" v-for="(category,categoryIndex) in recommend.storeCategories">{{category.storeCategoryName}} </span>
                     </div>
                 </div>

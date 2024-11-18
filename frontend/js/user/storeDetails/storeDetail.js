@@ -32,6 +32,8 @@ new Vue({
       currentBookmark: [],
       loginInfo: {},
       isLoggedIn: false,
+      reviewCount: 0,
+      recommendStoreIds: []
     };
   },
   computed: {
@@ -155,8 +157,11 @@ new Vue({
         this.recommendData = response.data.data.slice(0,3);
         console.log("recommendData", this.recommendData);
 
-        await Promise.all(this.recommendData.map(recommend => 
-          this.fetchStoreReviewData(recommend.storeId)
+        this.recommendStoreIds = this.recommendData.map(recommend => recommend.storeId);
+        console.log("recommendStoreIds",this.recommendStoreIds);
+
+        await Promise.all(this.recommendStoreIds.map(recommendStoreId => 
+          this.fetchStoreReviewData(recommendStoreId)
       ));
       } catch (error) {
         console.error("Error fetching recommend data:", error);
@@ -431,21 +436,36 @@ new Vue({
       try {
           console.log("recommendId",recommendId);
           const response = await axios.get(`/api/review/store/${recommendId}`);
+          const storeReview = response.data.data;
+      
+           // storeReview 객체에 storeId를 키로 사용하여 저장
+          this.$set(this.storeReview, recommendId, storeReview);
 
-          if (!this.storeReivew) {
-            this.storeReivew = {};
-        }
-          this.$set(this.storeReivew, recommendId, response.data.data || []);
-          console.log("storeReview",this.storeReivew);
+          console.log("2222storeReview",this.storeReview);
+          const keys = Object.keys(this.storeReview);
+          console.log("Keys:", keys);
+          const values =Object.values(this.storeReview);
+          console.log("values",values);
+
+        //   this.$set(this.storeReivew, recommendId, response.data.data || []);
+        //   console.log("storeReview",this.storeReivew);
       } catch (error) {
           console.error('Error fetching review data:', error);
       }
     },
-    calculateStoreReviewScore(storeId) {
-      const reviews = this.storeReview[storeId] || [];
-      const scoreSum = reviews.reduce((sum, review) => sum + (review.score || 0), 0);
-      return reviews.length > 0 ? scoreSum / reviews.length : 0;
-      }
+    // async calculateStoreReviewScore(storeNum) {
+    //   console.log("storeId!!", storeNum);
+    //   const reviews = await this.fetchStoreReviewData(storeNum);
+  
+    //   console.log("reviews!!", reviews);
+    //   const reviewCount = reviews.length; // 리뷰 수 계산
+    //   console.log("reviewCount", reviewCount);
+
+    //   this.reviewCount = reviewCount;
+  
+    //   // 리뷰 수를 직접 반환
+    //   return reviewCount;
+    //   },
   },
   created() {
     this.getTodayDay();

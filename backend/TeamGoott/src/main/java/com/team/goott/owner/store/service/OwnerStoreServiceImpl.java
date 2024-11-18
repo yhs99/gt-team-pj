@@ -1,8 +1,8 @@
 package com.team.goott.owner.store.service;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -145,16 +145,20 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
 
             if (schedule.isCloseDay()) {
                 // closeDay가 true인 경우: open과 close는 null이어야함
-            	if (schedule.isCloseDay()) {
-            	    schedule.setOpen(LocalTime.of(9, 0));
-            	    schedule.setClose(LocalTime.of(9, 0));
-            	}
+                if (schedule.isCloseDay()) {
+                	schedule.setOpen(null);
+                	schedule.setClose(null);
+                }
                 scheduleMap.put("closeDay", 1);
             } else {
                 scheduleMap.put("closeDay", 0);
             }
             
             if (schedule.getOpen() != null && schedule.getClose() != null) {
+            	
+        	if (schedule.getClose().isBefore(schedule.getOpen())) {
+        	    throw new IllegalArgumentException("마감시간은 오픈시간보다 빠를 수 없습니다");
+        	}
         	
             }
 
@@ -367,20 +371,20 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
                 log.info("데이코드맵 ::" + dayCodeMap.toString());
                 
                 boolean hasChanges = false; // 변경 사항 체크를 위한 변수
+                
+                
 
                 for (ScheduleVO scheduleData : schedulesData) {
                     if (scheduleData.getDayCodeId() == newSchedule.getDayCodeId()) {
                         Map<String, Object> scheduleUpdateData = new HashMap<>();
                         scheduleUpdateData.put("scheduleId", scheduleData.getScheduleId());
-                        
-                        if (scheduleData.isCloseDay() != newSchedule.isCloseDay()) {
-                            // closeDay가 변경되면 true일 경우 1, false일 경우 0을 넣습니다.
-                            scheduleUpdateData.put("closeDay", newSchedule.isCloseDay() ? 1 : 0);
-                            hasChanges = true;
-                        }
 
                         // 변경된 사항만 업데이트
                         if (newSchedule.getOpen() != null && newSchedule.getClose() != null) {
+                        	
+                    	if (newSchedule.getClose().isBefore(newSchedule.getOpen())) {
+                            throw new IllegalArgumentException("마감시간은 오픈시간보다 빠를 수 없습니다");
+                        }
                         	
                         if (!scheduleData.getOpen().equals(newSchedule.getOpen())) {
                             scheduleUpdateData.put("open", newSchedule.getOpen());
@@ -390,7 +394,10 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
                             scheduleUpdateData.put("close", newSchedule.getClose());
                             hasChanges = true;
                         }
-                        
+                        if (scheduleData.isCloseDay() != newSchedule.isCloseDay()) {
+                            scheduleUpdateData.put("closeDay", newSchedule.isCloseDay());
+                            hasChanges = true;
+                        }
                         
                         if (beforeRotation != afterRotation) {
                         	hasChanges = true;

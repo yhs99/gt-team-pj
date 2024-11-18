@@ -17,14 +17,13 @@ new Vue({
       locationLonY: null
     },
     scheduleDTO: [
-      { day: '일요일', open: '', close: '', closeDay: false, dayCodeId:0 },
       { day: '월요일', open: '', close: '', closeDay: false, dayCodeId:1 },
       { day: '화요일', open: '', close: '', closeDay: false, dayCodeId:2 },
       { day: '수요일', open: '', close: '', closeDay: false, dayCodeId:3 },
       { day: '목요일', open: '', close: '', closeDay: false, dayCodeId:4 },
       { day: '금요일', open: '', close: '', closeDay: false, dayCodeId:5 },
       { day: '토요일', open: '', close: '', closeDay: false, dayCodeId:6 },
-      
+      { day: '일요일', open: '', close: '', closeDay: false, dayCodeId:0 }
     ],
     storeCategory: [
       {categoryId : 'C1', categoryName :'한식'},
@@ -89,6 +88,7 @@ new Vue({
 
       // 새로운 파일들을 배열에 추가하고 url2 값을 설정
       Array.from(files).forEach(file => {
+        console.log("file : ", file);
         // 업로드 파일 객체를 준비
         const fileObj = file;
       
@@ -212,6 +212,7 @@ new Vue({
       axios
         .get("/api/status")
         .then((response) => {
+          console.log(response)
           if (response.data.data.loginType == "user") {
             location.href = "/";
           } else {
@@ -231,16 +232,16 @@ new Vue({
     },
     // 가게 등록 함수
     registerStore() {
-      document.getElementById("loadingSpinner").style.display = "block";
-
       var detailAddress = document.getElementById("sample6_detailAddress").value;
       this.storeDTO.address += ' ' + detailAddress;
       let formData = new FormData();
       
       this.uploadedFiles.forEach(file => {
+        console.log("등록시 file :: " , file)
         formData.append('uploadedFiles', file);  // 파일 객체를 formData에 추가
       });
 
+      console.log("업로드 파일 :: " , this.uploadedFiles);
       formData.append('storeDTO', new Blob([JSON.stringify(this.storeDTO)], { type: "application/json" }));
       formData.append('scheduleDTO', new Blob([JSON.stringify(this.scheduleDTO)], { type: "application/json" }));
       formData.append('storeCategoryDTO', new Blob([JSON.stringify(this.storeCategoryDTO)], { type: "application/json" }));
@@ -251,16 +252,18 @@ new Vue({
         }
       })
       .then(response => {
+        console.log('Store registered:', response.data);
         alert('가게 등록이 완료되었습니다.');
         this.resetForm();
         location.href = "/view/owner/index";  
       })
       .catch(error => {
+        console.error('Error registering store:', error);
+        console.log(this.storeDTO);
+        console.log(this.scheduleDTO);
+        console.log(this.storeCategoryDTO);
+        console.log(this.facilityDTO);
         alert('가게 등록에 실패했습니다.');
-      })
-      .finally(() => {
-        // 로딩 스피너 숨기기
-        document.getElementById("loadingSpinner").style.display = "none";
       });
     },
     // 양식 초기화

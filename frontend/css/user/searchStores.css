@@ -22,13 +22,18 @@
 .favorite-icon .black-heart {
   color: black;
 }
+.storeImg {
+  overflow-x: auto;
+  white-space: nowrap;
+}
 .store-image {
-  max-width: 280px;
+  max-width: 100%;
   width: 280px;
   height: 180px;
   padding: 3px;
   border-radius: 5px;
   object-fit: cover;
+  overflow-x: auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 .storeAddress {

@@ -17,16 +17,27 @@ new Vue({
   },
   computed: {
     groupedCarts() {
+      if (!Array.isArray(this.carts) || this.carts.length === 0) {
+        return {};
+      }
       return this.carts.reduce((groups, cart) => {
-        if (!groups[cart.storeName]) {
-          groups[cart.storeName] = [];
+        if (cart && cart.storeName) {
+          if (!groups[cart.storeName]) {
+            groups[cart.storeName] = [];
+          }
+          groups[cart.storeName].push(cart);
         }
-        groups[cart.storeName].push(cart);
         return groups;
       }, {});
     },
     totalPrice() {
-      return this.carts.reduce((total, cart) => total + cart.totalPrice, 0);
+      if (!Array.isArray(this.carts)) {
+        return 0;
+      }
+      return this.carts.reduce(
+        (total, cart) => total + (cart.totalPrice || 0),
+        0
+      );
     },
     isReservationEnabled() {
       return this.checkedCarts.length > 0;
@@ -44,8 +55,9 @@ new Vue({
       axios
         .get("/api/cart")
         .then((response) => {
-          this.carts = response.data.data;
-          console.log("응답 데이터", this.carts);
+          this.carts = Array.isArray(response.data.data)
+            ? response.data.data
+            : [];
           if (this.carts.length > 0) {
             this.maxPeoplePerReserve = this.carts[0].maxPeoplePerReserve || 0;
             if (this.carts[0].availableCoupons) {
@@ -57,8 +69,10 @@ new Vue({
           if (error.response && error.response.status === 401) {
             alert("로그인이 필요한 서비스입니다.");
             window.location.href = "userLogin";
+          } else if (error.response && error.response.status === 500) {
+            alert("서버에 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.");
           } else {
-            console.error("데이터 요청 실패:", error);
+            alert("데이터를 가져오는 중 오류가 발생했습니다.");
           }
         });
     },
@@ -69,54 +83,48 @@ new Vue({
       this.reservationNameError = "";
       this.peopleCountError = "";
 
+      // 예약자명 검증
       if (!this.reservationName.trim()) {
         this.reservationNameError = "예약자명을 입력해 주세요.";
-        this.$refs.reservationNameInput.focus();
+        this.$refs.reservationNameInput?.focus();
         return;
       }
 
-      if (this.peopleCount < 1 || this.peopleCount > this.maxPeoplePerReserve) {
+      // 인원수 검증
+      if (
+        !Number.isInteger(this.peopleCount) ||
+        this.peopleCount < 1 ||
+        this.peopleCount > this.maxPeoplePerReserve
+      ) {
         this.peopleCountError = `인원수는 1 이상, 최대 ${this.maxPeoplePerReserve}명까지 가능합니다.`;
-        this.$refs.peopleCountInput.focus();
+        this.$refs.peopleCountInput?.focus();
         return;
       }
 
       const reservationData = {
-        reserveTime: reserveTime,
-        name: this.reservationName,
+        reserveTime,
+        name: this.reservationName.trim(),
         people: this.peopleCount,
-        memo: this.note,
+        memo: this.note.trim(),
       };
 
-      if (this.selectedCoupon && this.selectedCoupon.couponId !== null) {
+      if (this.selectedCoupon?.couponId) {
         reservationData.couponId = this.selectedCoupon.couponId;
       }
-
-      console.log("/api/reserve", reservationData);
 
       axios
         .post("/api/reserve", reservationData, {
           headers: { "Content-Type": "application/json" },
         })
-        .then((response) => {
-          console.log("예약 성공:", response.data);
+        .then(() => {
           alert("예약이 완료되었습니다!");
-
           window.location.href = "/";
         })
         .catch((error) => {
-          console.error("예약 요청 실패:", error);
-          if (
-            error.response &&
-            error.response.data &&
-            error.response.data.message
-          ) {
-            alert("오류 발생: " + error.response.data.message);
-          } else {
-            alert(
-              "예약 중 알 수 없는 오류가 발생했습니다. 다시 시도해 주세요."
-            );
-          }
+          const errorMessage =
+            error.response?.data?.message ||
+            "예약 중 알 수 없는 오류가 발생했습니다. 다시 시도해 주세요.";
+          alert("오류 발생: " + errorMessage);
         });
 
       this.reservationName = "";
@@ -140,7 +148,6 @@ new Vue({
         this.checkedCarts = [];
         alert("선택된 항목이 삭제되었습니다.");
       } catch (error) {
-        console.error("삭제 요청 실패:", error);
         alert("삭제 중 오류가 발생했습니다.");
       }
     },

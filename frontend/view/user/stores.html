@@ -31,21 +31,20 @@
       rel="stylesheet"
     />
     <link href="/css/user/store.css" rel="stylesheet" />
-    <link href="/css/user/header.css" rel="stylesheet" />
   </head>
   <body>
     <div id="app">
-      <header-component></header-component>
-      <div style="text-align: center; margin-top: 80px">
+      <header-navbar></header-navbar>
+      <!-- <div style="text-align: center; margin-top: 80px">
         <img
           src="/assets/user/img/welcome.png"
-          alt="흑백요리사"
+          alt="welcome"
           width="65%"
           height="360"
         />
-      </div>
+      </div> -->
       <div class="container">
-        <div class="slider-heading">식당을 구경하자</div>
+        <div class="slider-heading">마음에 들 만한 곳을 모아봤어요</div>
       </div>
       <!-- 첫 번째 슬라이더 -->
       <div class="container slider">
@@ -82,11 +81,13 @@
                   >할인 행사 중</span
                 >
               </p>
-              <div class="card-overlay">{{ store.description }}</div>
+              <div class="card-overlay">
+                {{ truncatedDescription(store.description) }}
+              </div>
             </div>
           </div>
           <div class="card more-card" @click="showMore">
-            <p class="more-text">원하는 식당이 없으시다면 Click!</p>
+            <p class="more-text">더보기</p>
           </div>
         </div>
         <span
@@ -133,7 +134,9 @@
                   >할인 행사 중
                 </span>
               </p>
-              <div class="card-overlay">{{ groupStore.description }}</div>
+              <div class="card-overlay">
+                {{ truncatedDescription(groupStore.description) }}
+              </div>
             </div>
           </div>
           <div class="card more-card" @click="showMore">
@@ -189,7 +192,9 @@
                   >할인 행사 중</span
                 >
               </p>
-              <div class="card-overlay">{{ topReviewStore.description }}</div>
+              <div class="card-overlay">
+                {{ truncatedDescription(topReviewStore.description) }}
+              </div>
             </div>
           </div>
           <div class="card more-card" @click="showMore">
@@ -240,7 +245,9 @@
                   >할인 행사 중</span
                 >
               </p>
-              <div class="card-overlay">{{ eventStore.description }}</div>
+              <div class="card-overlay">
+                {{ truncatedDescription(eventStore.description) }}
+              </div>
             </div>
           </div>
           <div class="card more-card" @click="showMore">
@@ -296,8 +303,7 @@
       </div>
       <footer-component></footer-component>
     </div>
-    <script src="/js/Footer.js"></script>
-    <script src="/js/Header.js"></script>
+    <script src="/js/user/component.js"></script>
     <script src="/js/user/store.js"></script>
   </body>
 </html>

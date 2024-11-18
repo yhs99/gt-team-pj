@@ -155,10 +155,8 @@ new Vue({
       try {
         const response = await axios.get(`/api/stores/storeInfo/${this.storeId}`);
         this.recommendData = response.data.data.slice(0,3);
-        console.log("recommendData", this.recommendData);
 
         this.recommendStoreIds = this.recommendData.map(recommend => recommend.storeId);
-        console.log("recommendStoreIds",this.recommendStoreIds);
 
         await Promise.all(this.recommendStoreIds.map(recommendStoreId => 
           this.fetchStoreReviewData(recommendStoreId)
@@ -415,8 +413,6 @@ new Vue({
     async deleteCartData(){
       try {
         const response = await axios.get("/api/cart");
-        console.log("cart",response.data.data);
-
         const deleteList = response.data.data.map(cartItem =>{
           const cartId = cartItem.cartId;
            axios.delete(`/api/cart/${cartId}`)
@@ -424,7 +420,6 @@ new Vue({
               console.error(`카트에서 ${cartId} 를 삭제하는데 실패했습니다.`);
            });
         });
-
          await Promise.all(deleteList);
         console.log("카트 아이템 삭제 성공");
      
@@ -441,31 +436,17 @@ new Vue({
            // storeReview 객체에 storeId를 키로 사용하여 저장
           this.$set(this.storeReview, recommendId, storeReview);
 
-          console.log("2222storeReview",this.storeReview);
           const keys = Object.keys(this.storeReview);
-          console.log("Keys:", keys);
           const values =Object.values(this.storeReview);
-          console.log("values",values);
-
-        //   this.$set(this.storeReivew, recommendId, response.data.data || []);
-        //   console.log("storeReview",this.storeReivew);
       } catch (error) {
           console.error('Error fetching review data:', error);
       }
     },
-    // async calculateStoreReviewScore(storeNum) {
-    //   console.log("storeId!!", storeNum);
-    //   const reviews = await this.fetchStoreReviewData(storeNum);
-  
-    //   console.log("reviews!!", reviews);
-    //   const reviewCount = reviews.length; // 리뷰 수 계산
-    //   console.log("reviewCount", reviewCount);
-
-    //   this.reviewCount = reviewCount;
-  
-    //   // 리뷰 수를 직접 반환
-    //   return reviewCount;
-    //   },
+    calculateStoreReviewScore(storeId) {
+      const reviews = this.storeReview[storeId] || [];
+      const scoreSum = reviews.reduce((sum, review) => sum + (review.score || 0), 0);
+      return reviews.length > 0 ? scoreSum / reviews.length : 0;
+      }
   },
   created() {
     this.getTodayDay();

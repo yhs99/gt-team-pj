@@ -40,8 +40,8 @@
         <table class="table">
           <tbody>
             <tr
-              v-for="store in stores"
-              :key="store.storeId"
+              v-for="(store, index) in stores"
+              :key="store.storeId + '-' + index"
               @click="goToStore(store.storeId)"
             >
               <td>

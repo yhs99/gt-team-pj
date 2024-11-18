@@ -27,9 +27,7 @@ new Vue({
         this.favoriteStoreIds = response.data.data.map(
           (item) => item.bookmarkDto.storeId
         );
-        console.log("Fetched favorite store IDs:", this.favoriteStoreIds);
       } catch (error) {
-        console.error("즐겨찾기 목록 가져오기 실패:", error);
         this.favoriteStoreIds = [];
       }
     },
@@ -65,15 +63,8 @@ new Vue({
           this.storeSchedules = response.data.data.storeLists
             .map((store) => store.storeSchedules)
             .flat();
-
-          console.log(this.storeSchedules);
-          console.log(this.stores);
-          console.log(this.groupStores);
-          console.log("리뷰 많은 식당", this.topReviewStores);
         })
-        .catch((error) => {
-          console.error("데이터 요청 실패:", error);
-        });
+        .catch((error) => {});
     },
     filterTopReviewStores() {
       this.topReviewStores = this.stores
@@ -90,7 +81,7 @@ new Vue({
     },
 
     truncatedDescription(description) {
-      const maxLength = 100;
+      const maxLength = 200;
       description = description || "";
       return description.length > maxLength
         ? description.substring(0, maxLength) + "..."
@@ -119,7 +110,6 @@ new Vue({
           currentIndexName = "currentIndexGroup3";
           break;
         default:
-          console.error(`Invalid refName: ${refName}`);
           return;
       }
 
@@ -169,7 +159,6 @@ new Vue({
         }
       } catch (error) {
         this.loginYN = false;
-        console.error("로그인 상태 확인 중 오류 발생:", error);
       }
     },
     async toggleFavorite(store) {
@@ -183,14 +172,11 @@ new Vue({
         if (store.isFavorite) {
           await axios.delete(`/api/bookmark/${store.storeId}`);
           this.updateFavoriteStatus(store.storeId, false);
-          console.log("즐겨찾기에서 제거되었습니다.");
         } else {
           await axios.post(`/api/bookmark/${store.storeId}`);
           this.updateFavoriteStatus(store.storeId, true);
-          console.log("즐겨찾기에 추가되었습니다.");
         }
       } catch (error) {
-        console.error("즐겨찾기 처리 중 오류 발생:", error);
         alert("즐겨찾기 처리에 실패했습니다. 다시 시도해 주세요.");
       }
     },

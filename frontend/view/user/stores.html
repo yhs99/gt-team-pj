@@ -82,7 +82,9 @@
                   >할인 행사 중</span
                 >
               </p>
-              <div class="card-overlay">{{ store.description }}</div>
+              <div class="card-overlay">
+                {{ truncatedDescription(store.description) }}
+              </div>
             </div>
           </div>
           <div class="card more-card" @click="showMore">
@@ -133,7 +135,9 @@
                   >할인 행사 중
                 </span>
               </p>
-              <div class="card-overlay">{{ groupStore.description }}</div>
+              <div class="card-overlay">
+                {{ truncatedDescription(groupStore.description) }}
+              </div>
             </div>
           </div>
           <div class="card more-card" @click="showMore">
@@ -189,7 +193,9 @@
                   >할인 행사 중</span
                 >
               </p>
-              <div class="card-overlay">{{ topReviewStore.description }}</div>
+              <div class="card-overlay">
+                {{ truncatedDescription(topReviewStore.description) }}
+              </div>
             </div>
           </div>
           <div class="card more-card" @click="showMore">
@@ -240,7 +246,9 @@
                   >할인 행사 중</span
                 >
               </p>
-              <div class="card-overlay">{{ eventStore.description }}</div>
+              <div class="card-overlay">
+                {{ truncatedDescription(eventStore.description) }}
+              </div>
             </div>
           </div>
           <div class="card more-card" @click="showMore">

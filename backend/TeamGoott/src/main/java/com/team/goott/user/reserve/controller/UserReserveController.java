@@ -30,13 +30,12 @@ public class UserReserveController {
 	private UserReserveService userReserveService;
 
 	// 예약 생성
+	@UserOnly
 	@PostMapping()
 	public ResponseEntity<String> createReserve(HttpSession session, @RequestBody ReserveDTO reserveDTO) {
 		 //로그인 확인
 		UserDTO userSession = (UserDTO) session.getAttribute("user");
-		if (userSession == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
-		}
+		
 		try {
 			// 예약 생성 서비스 호출
 			userReserveService.createReserve(userSession.getUserId(), reserveDTO);
@@ -56,13 +55,12 @@ public class UserReserveController {
 	
 	
 	// 에약 제거
+	@UserOnly
 	@DeleteMapping("/{reserveId}")
 	public ResponseEntity<String> removeReserve(@PathVariable int reserveId, HttpSession session){
 		// 로그인 확인
 		UserDTO userSession = (UserDTO) session.getAttribute("user");
-		if (userSession == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
-			}
+		
 		
 		try {
 			int result = userReserveService.updateReserve(reserveId, userSession.getUserId());

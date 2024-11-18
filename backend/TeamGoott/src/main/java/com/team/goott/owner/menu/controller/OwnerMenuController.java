@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,11 +68,15 @@ public class OwnerMenuController {
 	// 메뉴 등록
 	@OwnerOnly
 	@PostMapping("/menu")
-	public ResponseEntity<Object> addMenu(@RequestPart("menu") MenuDTO menu, @RequestPart("file") MultipartFile file, HttpSession session){
+	public ResponseEntity<Object> addMenu(@RequestPart("menu") MenuDTO menu, @RequestPart(value = "file", required = false) MultipartFile file, HttpSession session){
 		int result = 0;
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
 		int storeId = storeSession.getStoreId();
-		result = service.uploadMenu(menu, file, storeId);
+		if(file == null) {
+			//파일이 없을시 빈파일 생성
+			file = new MockMultipartFile("file", new byte[0]);
+		}
+			result = service.uploadMenu(menu, file, storeId);
 		return ResponseEntity.ok(result == 1 ? "메뉴 추가 완료" : "메뉴 추가 실패");
 	}
 	

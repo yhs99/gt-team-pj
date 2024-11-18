@@ -64,6 +64,10 @@ WHERE storeId = #{storeId}
     <result property="isBlocked" column="isBlocked"/>
     <result property="locationLatX" column="locationLatX"/>
     <result property="locationLonY" column="locationLonY"/>
+    <result property="reviewCount" column="reviewCount"/>
+    <result property="averageScore" column="averageScore"/>
+    <result property="couponCount" column="couponCount"/>
+    
     <collection property="storeImages" ofType="com.team.goott.admin.domain.StoreImagesVO">
         <id property="imageId" column="imageId"/>
         <result property="url" column="url"/>
@@ -118,7 +122,15 @@ WHERE storeId = #{storeId}
         ss.dayCodeId,
         ss.open,
         ss.close,
-        ss.closeDay
+        ss.closeDay,
+        (SELECT COUNT(*) FROM review WHERE review.storeId = s.storeId) AS reviewCount,
+		(SELECT IFNULL(ROUND(AVG(score), 1), 0) FROM review WHERE review.storeId = s.storeId) AS averageScore,
+		(SELECT COUNT(*) 
+         FROM coupon 
+         WHERE coupon.storeId = s.storeId 
+         AND stock &gt; 0 
+         AND (start IS NULL OR start &lt;= CURRENT_DATE) 
+         AND (end IS NULL OR end &gt;= CURRENT_DATE)) AS couponCount
 
     FROM store s
     LEFT JOIN storeImages si ON s.storeId = si.storeId
@@ -126,6 +138,7 @@ WHERE storeId = #{storeId}
     LEFT JOIN facilityCode fc ON f.facilityCode = fc.facilityCode
     LEFT JOIN storeCategory sc ON s.storeId = sc.storeId
     LEFT JOIN schedule ss ON s.storeId = ss.storeId
+    
 
     WHERE 1=1
     <if test="categoryId != null and categoryId.size > 0">

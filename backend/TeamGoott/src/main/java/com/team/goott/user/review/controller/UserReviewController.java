@@ -65,11 +65,12 @@ public class UserReviewController {
 	
 	 //모든 리뷰 기져오기 (페이지네이션)
 	 @GetMapping("/store/{storeId}")
-	 public ResponseEntity<List<ReviewDTO>> getAllReview(@PathVariable("storeId") int storeId, 
+	 public ResponseEntity<List<ReviewDTO>> getAllReview(@PathVariable("storeId") int storeId,
+			 	@RequestParam(value = "sort", defaultValue = "rating_desc") String sort,
 	    		@RequestParam(value = "page", defaultValue = "1") int page,
 	            @RequestParam(value = "size", defaultValue = "5") int size){
-		
-		 List<ReviewDTO> lst = service.getAllReviews(storeId, page, size);
+
+		 List<ReviewDTO> lst = service.getAllReviews(storeId, sort, page, size);
 
 		return ResponseEntity.ok(lst);
 	    }
@@ -180,8 +181,9 @@ public class UserReviewController {
 		 comingDTO.setUserId(userId);
 		 int reserveId = comingDTO.getReserveId();
 		 ReserveDTO reserveInfo = service.getReserveInfoByReserveId(reserveId);
+		 comingDTO.setUserId(userId);
 		 
-	  // 리뷰 작성 여부 및 예약 상태 체크
+		 // 리뷰 작성 여부 및 예약 상태 체크
 	    ResponseEntity<Object> reviewCheckResponse = checkReviewDone(userId, reserveId);
 	    if (reviewCheckResponse.getStatusCode() != HttpStatus.OK) {
 	        return reviewCheckResponse; // 리뷰 작성이 완료된 경우 처리
@@ -202,7 +204,7 @@ public class UserReviewController {
 		            return ResponseEntity.badRequest().body("파일은 최대 " + MAX_NUM + "개까지만 업로드할 수 있습니다.");
 		     }
 	  
-	  // 리뷰 내용 길이 체크
+			 // 리뷰 내용 길이 체크
 		    if (comingDTO.getContent() != null && comingDTO.getContent().length() > MAX_CONTENT) {
 		        return ResponseEntity.badRequest().body("리뷰는 최대 " + MAX_CONTENT + "자까지 작성할 수 있습니다.");//255
 		    }
@@ -242,10 +244,12 @@ public class UserReviewController {
                 System.out.println("저장실패");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ADD_FAILED);
             }
-        } catch (DuplicateKeyException | MyBatisSystemException e) {
+        } catch (DuplicateKeyException e) {
             // 중복된 키가 있으면
             log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 작성한 리뷰가 있습니다.");
+        }catch (MyBatisSystemException e) {
+        	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("리뷰 저장에 실패했습니다.");
         }
 
 		}else {
@@ -268,6 +272,7 @@ public class UserReviewController {
 		
 		//로그인
 		 UserDTO user = (UserDTO) session.getAttribute("user");
+		 
 		 if(user == null) {
 			 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다"); //401
 		 }
@@ -277,6 +282,7 @@ public class UserReviewController {
 		 if(user.getUserId() != reviewDTO.getUserId()){
 			 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("작성자와 사용자가 일치하지 않습니다.");
 		 }
+		 
 
 		 // 리뷰 내용 길이 체크
 	    if (reviewDTO.getContent() != null && reviewDTO.getContent().length() > MAX_CONTENT) {
@@ -294,6 +300,7 @@ public class UserReviewController {
 	    }
 		
 		 reviewDTO.setReviewId(reviewId);
+	
 		 
 		   // modifyFileList의 현재 상태 확인 
 		    int count = 0;
@@ -324,11 +331,10 @@ public class UserReviewController {
 					 showModifyList();
 					 
 					 } catch (IOException e) {
-						 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred: " + e.getMessage());
+						 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("리뷰 수정에 실패했습니다: " + e.getMessage());
 					 } catch (Exception e) {
-						 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred: " + e.getMessage());
+						 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("리뷰 수정에 실패했습니다: " + e.getMessage());
 					 }
-					 
 			 
 			}
 				reviewDTO.setReviewImages(modifyFileList);
@@ -346,7 +352,7 @@ public class UserReviewController {
 		}
 	}
 	 
-	//리뷰 삭제 : db에서 사라지지 않고 isDelete 를 -1로 바꿔줌
+	//리뷰 삭제 
 	 @DeleteMapping("/{reviewId}")
 	 public ResponseEntity<Object> delReview(@PathVariable("reviewId") int reviewId, HttpSession session){
 		 ReviewDTO reviewDto= service.reviewByNo(reviewId);
@@ -365,7 +371,7 @@ public class UserReviewController {
 		 if(user.getUserId() != reviewDto.getUserId()){
 			 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("작성자와 사용자가 일치하지 않습니다.");
 		 }
-		  
+		 
 		 List<ReviewImagesDTO> imgDtoList= reviewDto.getReviewImages();
 		 
 		  // imgDtoList가 null인 경우 빈 리스트로 초기화

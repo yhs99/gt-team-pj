@@ -20,5 +20,4 @@ public interface OwnerMenuService {
 	int updateMenu(int menuId, MenuDTO updateMenu, MultipartFile file, MenuDTO originMenu);
 
 	int updateMenuWithoutFile(int menuId, MenuDTO updateMenu, MenuDTO originMenu);
-
 }

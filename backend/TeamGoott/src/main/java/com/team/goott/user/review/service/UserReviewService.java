@@ -11,7 +11,7 @@ import com.team.goott.user.domain.ReviewImagesDTO;
 
 public interface UserReviewService {
 
-	List<ReviewDTO> getAllReviews(int storeId, int page, int size);
+	List<ReviewDTO> getAllReviews(int storeId, String sort, int page, int size);
 
 	ReviewDTO reviewByNo(int reviewId);
 
@@ -30,11 +30,10 @@ public interface UserReviewService {
 	List<ReviewDTO> getUserReview(int userId);
 
 	ReserveDTO getReserveInfoByReserveId(int reservationId);
-	
+
 	List<ReviewImagesDTO> selectReviewImagesByReviewId(int reviewId);
 
 	int checkImageExist(int imageId);
-
 
 
 }

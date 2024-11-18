@@ -52,7 +52,6 @@ new Vue({
             const startIndex = (this.currentPage - 1) * this.pageSize;
             const endIndex = startIndex + this.pageSize;
             this.paginatedCoupons = this.formattedCoupons.slice(startIndex, endIndex); // 현재 페이지에 해당하는 데이터만 슬라이싱
-            console.log("현재 페이지 데이터: ", this.paginatedCoupons);
         },
         
         changePage(page) {
@@ -114,7 +113,6 @@ new Vue({
                 }
             })
             .then(response => {
-                console.log('Coupon created:', response.data);
                 this.getAllCoupons(); // 쿠폰 목록 새로 고침
                 this.resetForm();
             })
@@ -189,7 +187,6 @@ new Vue({
             if (confirm("정말로 삭제하시겠습니까?")) {
                 axios.delete(`/api/coupon/${couponId}`)
                     .then(response => {
-                        console.log('Coupon deleted:', response.data);
                         this.getAllCoupons(); // 쿠폰 목록 새로 고침
                     })
                     .catch((error) => {

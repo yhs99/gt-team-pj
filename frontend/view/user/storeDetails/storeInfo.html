@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ae7f9510119596f0c0ff9416ba9caf07"></script>
+
+    <script src="/js/user/storeDetails/storeDetail_Info.js" defer></script>
+    <link rel="stylesheet" href="/css/user/storeDetail.css">
+</head>
+
+
+<body>
+    
+    <div  id="app">
+        
+        <div class="square_section"> 
+            <div class="cButton-container">
+                <div class="cButton" v-for="(button, index) in buttons" 
+                :key="index" 
+                :class="{ active: activeButton === index }" 
+                @click="menuBtnGotopage(index)">
+            {{ button }}
+            </div>
+            </div>   
+        
+            
+    
+
+        <div class="square_section"> 
+ 
+        <button class="small_button"><a href="#store_intro">매장소개</a></button>
+        <button class="small_button"><a href="#store_location">위치</a></button>
+        <button class="small_button"><a href="#store_facility">편의시설</a></button>
+        <button class="small_button"><a href="#store_detailInfo">상세정보</a></button>
+      
+
+    <h2 class="my_title" id="store_intro">매장소개</h2>
+    <p class="description" v-if="restaurantData && restaurantData.data">
+        {{ restaurantData.data.description}}</p>
+    </div>
+    <div class="square_section">
+    <h2 class="my_title" id="store_location">위치</h2>
+    <div id="map" style="width:100%;height:350px;" v-if="restaurantData && restaurantData.data"></div>
+    <div v-if="restaurantData && restaurantData.data">
+        {{ restaurantData.data.directionGuide }}
+    </div>
+    </div>
+    <div class="square_section">
+        <h2 class="my_title" id="store_facility">편의시설</h2>
+        <li v-for="(facility, index) in restaurantData.data.facilities" :key="index">
+            {{ facility.facilityName }}
+          </li>
+    </div>
+    <div class="square_section" id="store_detailInfo">
+        <h2 class="my_title">상세정보</h2>
+        <p class="info-label">전화번호</p>
+        <p class="info-content" v-if="restaurantData && restaurantData.data">
+            📞 {{ restaurantData.data.tel }}</p>
+        <p class="info-label">정기 휴무</p>
+
+        <p class="info-content" v-if="allSchedulesOpen">연중 무휴입니다.</p>
+        <ul>
+            <li v-for="(day, index) in getClosedDays()" :key="index">{{ day }}</li>
+        </ul>
+
+    
+</body>
+</html>

@@ -17,11 +17,16 @@ new Vue({
   },
   computed: {
     groupedCarts() {
+      if (!Array.isArray(this.carts) || this.carts.length === 0) {
+        return {};
+      }
       return this.carts.reduce((groups, cart) => {
-        if (!groups[cart.storeName]) {
-          groups[cart.storeName] = [];
+        if (cart && cart.storeName) {
+          if (!groups[cart.storeName]) {
+            groups[cart.storeName] = [];
+          }
+          groups[cart.storeName].push(cart);
         }
-        groups[cart.storeName].push(cart);
         return groups;
       }, {});
     },
@@ -45,7 +50,6 @@ new Vue({
         .get("/api/cart")
         .then((response) => {
           this.carts = response.data.data;
-          console.log("응답 데이터", this.carts);
           if (this.carts.length > 0) {
             this.maxPeoplePerReserve = this.carts[0].maxPeoplePerReserve || 0;
             if (this.carts[0].availableCoupons) {
@@ -58,7 +62,6 @@ new Vue({
             alert("로그인이 필요한 서비스입니다.");
             window.location.href = "userLogin";
           } else {
-            console.error("데이터 요청 실패:", error);
           }
         });
     },
@@ -92,20 +95,16 @@ new Vue({
         reservationData.couponId = this.selectedCoupon.couponId;
       }
 
-      console.log("/api/reserve", reservationData);
-
       axios
         .post("/api/reserve", reservationData, {
           headers: { "Content-Type": "application/json" },
         })
         .then((response) => {
-          console.log("예약 성공:", response.data);
           alert("예약이 완료되었습니다!");
 
           window.location.href = "/";
         })
         .catch((error) => {
-          console.error("예약 요청 실패:", error);
           if (
             error.response &&
             error.response.data &&
@@ -140,7 +139,6 @@ new Vue({
         this.checkedCarts = [];
         alert("선택된 항목이 삭제되었습니다.");
       } catch (error) {
-        console.error("삭제 요청 실패:", error);
         alert("삭제 중 오류가 발생했습니다.");
       }
     },

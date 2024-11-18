@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,31 +53,29 @@ public class UserRegisterController {
 	
 	// 회원 정보 수정
 	@UserOnly
-	@PutMapping("/")
+	@PatchMapping
 	public ResponseEntity<Object> updateUserInfo(HttpSession session, UserDTO userDTO,MultipartFile imageFile){
-		int status = 0;
 		try {
-			status = service.userUpdate(userDTO,imageFile);
+			UserDTO userSession = (UserDTO) session.getAttribute("user");
+			userDTO.setUserId(userSession.getUserId());
+			service.userUpdate(userDTO,imageFile, session);
 		}catch (ValidationException e) {
 			log.error(e.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}catch (Exception e) {
-			log.error(e.getMessage());
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
-		return ResponseEntity.ok(status > 0 ? "회원정보 수정 성공" : "");
+		return ResponseEntity.ok("수정 완료 다시 로그인 해주세요.");
 	}
+	
 	//회원 정보 가져오기
-	@GetMapping("/")
+	@UserOnly
+	@GetMapping
 	public ResponseEntity<Object> myUserInfo(HttpSession session){
-		
 		UserDTO loginUser=(UserDTO) session.getAttribute("user");
-		
-		if (loginUser==null) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("로그인 상태가 아닙니다.");
-		}
 		UserDTO myUserInfo = service.userInfo(loginUser.getUserId());
-		log.info(myUserInfo.toString());
+		myUserInfo.setPassword("");
 		return ResponseEntity.ok(myUserInfo);
 	}
 }

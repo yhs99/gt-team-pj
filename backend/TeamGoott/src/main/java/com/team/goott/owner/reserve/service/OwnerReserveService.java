@@ -1,5 +1,6 @@
 package com.team.goott.owner.reserve.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface OwnerReserveService {
 
 	ReserveDTO getReserve(int reserveId);
 
-	ReserveSlotsDTO getReserveSlots(int storeId, LocalDateTime reserveTime);
+	List<ReserveSlotsDTO>  getReserveSlots(int storeId, LocalDate reserveTime);
 
 	List<NotificationDTO> getNotification(int storeId);
 

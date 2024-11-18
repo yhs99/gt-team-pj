@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .fixed-header {
   position: fixed;
   top: 0;
@@ -35,4 +36,55 @@
 .logNBotton {
   margin-left: auto;
   margin-right: 200px;
+=======
+header {
+    background-color: white;
+    border-bottom: 2px solid #f0f0f0;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.header_container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 800px;
+   width: 100%;
+}
+
+.search_container{
+    position: relative;
+    left: -20px;
+}
+
+.search_icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: orange; 
+}
+
+.search_box {
+    width: 400px;
+    border: 1px solid #ccc;
+    padding: 5px 10px 5px 40px;
+    border-radius: 30px;
+    background-color: #F0F0F0
+}
+
+.icons_sec {
+    display: flex;
+    align-items: center;
+}
+
+.icons_sec i {
+    
+    color:rgb(254, 180, 44);
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 20px;
+    margin-right: 5px;
+>>>>>>> c9d65e26f2fbc2c744b56bba0720650c08430f4c
 }

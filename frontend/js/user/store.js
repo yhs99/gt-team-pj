@@ -42,7 +42,7 @@ new Vue({
             isFavorite: this.favoriteStoreIds.includes(store.storeId),
           }));
 
-          this.groupStores = shuffledStores
+          this.groupStores = this.shuffle(shuffledStores)
             .filter((store) => store.maxPeoplePerReserve >= 6)
             .slice(0, 15)
             .map((store) => ({
@@ -58,7 +58,7 @@ new Vue({
               isFavorite: this.favoriteStoreIds.includes(store.storeId),
             }));
 
-          this.filterTopReviewStores();
+          this.filterTopReviewStores(shuffledStores);
 
           this.storeSchedules = response.data.data.storeLists
             .map((store) => store.storeSchedules)
@@ -66,8 +66,8 @@ new Vue({
         })
         .catch((error) => {});
     },
-    filterTopReviewStores() {
-      this.topReviewStores = this.stores
+    filterTopReviewStores(stores) {
+      this.topReviewStores = stores
         .slice()
         .sort((a, b) => b.reviewCount - a.reviewCount)
         .slice(0, 15);
@@ -82,6 +82,7 @@ new Vue({
 
     truncatedDescription(description) {
       const maxLength = 200;
+
       description = description || "";
       return description.length > maxLength
         ? description.substring(0, maxLength) + "..."

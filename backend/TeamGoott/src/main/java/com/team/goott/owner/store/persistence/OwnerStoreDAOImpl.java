@@ -216,4 +216,15 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
 		return ses.selectOne(NS + "getStoreByOwnerId", ownerId);
 	}
 
+	@Override
+	public List<ReserveSlotsDTO> selectSlotsByDayCodeId(Map<String, Object> dayCodeMap) {
+		return ses.selectList(NS + "selectSlotsByDayCodeId", dayCodeMap);
+	}
+
+	@Override
+	public int updateReserveStatus(Map<String, Object> updateSlotMap) {
+		log.info("DAO Imple :: " + updateSlotMap.toString());
+		return ses.update(NS + "updateReserveStatus", updateSlotMap);
+	}
+
 }

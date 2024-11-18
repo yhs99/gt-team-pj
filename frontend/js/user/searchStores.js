@@ -77,6 +77,7 @@ new Vue({
       }
 
       url += `&showBlock=0`;
+
       try {
         const response = await axios.get(url);
         const storeLists = response.data.data.storeLists;

@@ -110,4 +110,72 @@
 		values(#{userId}, #{message}, #{storeId}, #{notificationType}, #{reserveId})
 	</insert>
 
+	<resultMap type="com.team.goott.user.domain.ReserveListsVO" id="reserveResultMap">
+		<id property="reserveId" column="reserveId"/>
+		<result property="storeId" column="storeId"/>
+		<result property="reserveTime" column="reserveTime"/>
+		<result property="name" column="name"/>
+		<result property="people" column="people"/>
+		<result property="statusCodeId" column="statusCodeId"/>
+		<result property="memo" column="memo"/>
+		<result property="storeName" column="storeName"/>
+		<result property="address" column="address"/>
+		<result property="directionGuide" column="directionGuide"/>
+		<result property="locationLatX" column="locationLatX"/>
+		<result property="locationLonY" column="locationLonY"/>
+		<collection property="storeImages" ofType="com.team.goott.owner.domain.StoreImagesDTO">
+			<id property="imageId" column="imageId"/>
+			<result property="url" column="url"/>
+		</collection>
+		<collection property="categories" ofType="com.team.goott.user.domain.StoreCategoryDTO">
+			<id property="categoryId" column="categoryId"/>
+			<result property="categoryCodeId" column="categoryCodeId"/>
+			<result property="storeCategoryName" column="storeCategoryName"/>
+		</collection>
+	</resultMap>
+	<select id="getUserReserveLists" parameterType="map" resultMap="reserveResultMap">
+		SELECT
+		r.reserveId,
+		r.reserveTime,
+		r.name,
+		r.people,
+		r.statusCodeId,
+		r.memo,
+		s.storeId,
+		s.storeName,
+		s.address,
+		s.directionGuide,
+		s.locationLatX,
+		s.locationLonY,
+		si.imageId,
+		si.url,
+		sc.categoryId,
+		sc.categoryCodeId,
+		sc.storeCategoryName
+		FROM reserve r
+		LEFT JOIN store s
+		ON r.storeId = s.storeId
+		LEFT JOIN storeImages si
+		ON s.storeId = si.storeId
+		LEFT JOIN storeCategory sc
+		ON s.storeId = sc.storeId
+		<where>
+			<if test="reserveType == 'plan'">
+				current_date() &lt; r.reserveTime
+				AND r.statusCodeId IN (1,2)
+			</if>
+			<if test="reserveType == 'complete'">
+				current_date() &gt; r.reserveTime
+				AND r.statusCodeId IN (4,5)
+			</if>
+			<if test="reserveType == 'cancel'">
+				r.statusCodeId = (3)
+			</if>
+			<if test="reserveType == null or reserveType == ''">
+		        1 = 1
+		    </if>
+			AND userId = #{userId}
+		</where>
+		ORDER BY r.reserveTime ASC
+	</select>
 </mapper>

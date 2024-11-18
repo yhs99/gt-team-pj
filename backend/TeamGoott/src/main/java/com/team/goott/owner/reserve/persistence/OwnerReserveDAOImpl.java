@@ -1,5 +1,6 @@
 package com.team.goott.owner.reserve.persistence;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.team.goott.owner.domain.NotificationDTO;
 import com.team.goott.owner.domain.NotificationType;
+import com.team.goott.owner.domain.ReserveByDateVO;
 import com.team.goott.owner.domain.ReserveSlotsDTO;
 import com.team.goott.owner.domain.StoreDTO;
 import com.team.goott.owner.domain.StoreVO;
@@ -60,11 +62,11 @@ public class OwnerReserveDAOImpl implements OwnerReserveDAO {
 	}
 
 	@Override
-	public ReserveSlotsDTO getReserveSlots(int storeId, LocalDateTime reserveTime) {
+	public List<ReserveSlotsDTO> getReserveSlots(int storeId, LocalDate reserveTime) {
 		Map<String, Object> args = new HashMap<String, Object>();
 		args.put("storeId", storeId);
 		args.put("reserveTime", reserveTime);
-		return session.selectOne(ns+"getReserveSlot", args);
+		return session.selectList(ns+"getReserveSlot", args);
 	}
 
 	@Override
@@ -110,6 +112,16 @@ public class OwnerReserveDAOImpl implements OwnerReserveDAO {
 		args.put("reserveTime", reserveTime);
 		args.put("storeId", storeId);
 		return session.update(ns+"updateReserveSlot", args);
+	}
+
+	@Override
+	public List<ReserveByDateVO> getReserveByDate(int storeId) {
+		return session.selectList(ns+"getReserveByDate", storeId);
+	}
+
+	@Override
+	public int deleteNotification(int storeId) {
+		return session.delete(ns+"deleteNotifications", storeId);
 	}
 
 

@@ -22,11 +22,8 @@ new Vue({
               isActive: false,
             };
           });
-          console.log(this.sidoCodes);
         })
-        .catch((error) => {
-          console.error(error);
-        });
+        .catch((error) => {});
     },
     fetchCategories() {
       axios
@@ -38,11 +35,8 @@ new Vue({
               isActive: false,
             };
           });
-          console.log(this.categories);
         })
-        .catch((error) => {
-          console.error(error);
-        });
+        .catch((error) => {});
     },
     toggleSido(sido) {
       sido.isActive = !sido.isActive;

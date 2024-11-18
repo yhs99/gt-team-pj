@@ -243,8 +243,8 @@
                     </div>
                     <div class="restaurant-info">
                         <div class="restaurant-name">{{recommend.storeName}}</div>
-                       <span>⭐️ {{ calculateStoreReviewScore(recommend.storeId).toFixed(1) }} </span> 
-                        <span class="review-count">( {{ storeReview[recommend.storeId]?.length || 0 }})</span>
+                       <span >⭐️ {{ recommend.storeId }} </span> 
+                        <span class="review-count">( {{ storeReview[recommend.storeId] ? storeReview[recommend.storeId].length : 0 }})</span>
                         <span class="restaurant-details" v-for="(category,categoryIndex) in recommend.storeCategories">{{category.storeCategoryName}} </span>
                     </div>
                 </div>

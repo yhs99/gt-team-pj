@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <title>스마트한 예약 경험 | 상세정보</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css" type="text/css"/>
     <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/user/mainlogo.css" rel="stylesheet">
@@ -17,32 +17,23 @@
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ae7f9510119596f0c0ff9416ba9caf07"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     
-    <script src="/js/axiosSetting.js"></script>
     <script src="/js/user/userHeader.js" defer></script>
     <script src="/js/user/storeDetails/storeDetail.js" defer></script>
+    <script src="/js/user/component.js"></script>
+    <script src="/js/axiosSetting.js"></script>
 
     <script src="https://kit.fontawesome.com/aebc8a6fa8.js" crossorigin="anonymous"></script>
 
 </head>
 
 <body>
-
-    <header>
-        <div class="header_container">
-           <a class="navbar-brand fs-3 text-warning fw-bold" href="#"><img src="/assets/mainIcon.png"> SmartReserve</a>
-            <div class="search_container">
-            <i class="fa-solid fa-magnifying-glass search_icon"></i>
-            <input type="text" placeholder="찾고 있는 맛집이 있나요?" class="search_box">
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-bell"></i>
-            </div>
-         
+  <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+    <div class="spinner-grow text-warning" role="status"></div>
+  </div>
+    <div id="app" class="bg-light">
+        <div class="container-fluid bg-light">
+            <header-navbar></header-navbar>
         </div>
-    </header>
-
-
-
-    <div  id="app">
         <div class="details_container">
             <div class="restaurant-header">
 

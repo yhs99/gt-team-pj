@@ -1,14 +1,14 @@
+html,
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  padding-top: 90px;
+  height: 100%;
+  margin: 0;
+  background-color: #f8f9fa;
 }
 .container {
   padding-top: 90px;
   max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #fff;
   border-radius: 10px;
 }
 h1 {
@@ -154,7 +154,6 @@ button[type="submit"]:hover {
   color: #212529;
 }
 .section-container {
-  background-color: #f8f9fa;
   padding: 20px;
   margin-bottom: 20px;
   border-radius: 8px;

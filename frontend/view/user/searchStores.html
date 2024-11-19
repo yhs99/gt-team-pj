@@ -50,15 +50,17 @@
                   <span v-if="store.couponCount > 0" class="coupon-event">
                     할인 행사 진행중 <i class="fa-solid fa-tags"></i>
                   </span>
-                  <div
-                    class="favorite-icon"
-                    @click.stop="toggleFavorite(store)"
-                  >
-                    <i
-                      :class="[
+                  <div class="icon-container">
+                    <div
+                      class="favorite-icon"
+                      @click.stop="toggleFavorite(store)"
+                    >
+                      <i
+                        :class="[
                     store.isFavorite ? 'fas fa-heart red-heart' : 'far fa-heart black-heart'
                     ]"
-                    ></i>
+                      ></i>
+                    </div>
                   </div>
                 </div>
                 <div class="storeAddress">

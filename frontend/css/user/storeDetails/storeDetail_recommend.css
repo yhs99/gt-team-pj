@@ -86,3 +86,21 @@
     color: #777; 
 }
 
+.icon_header_sec1 {
+    position: relative;
+    padding: 4px 8px 0px 8px;
+    border: none;
+    border-radius: 100%;
+    background-color: lightgray;
+    color: white;
+    text-align: center;
+    margin-bottom: 50px;
+    z-index: 1000;
+    float: right;
+}
+
+
+
+.bookmarked_icon {
+    color: orangered !important;
+}

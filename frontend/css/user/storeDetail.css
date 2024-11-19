@@ -1,6 +1,11 @@
+#app {
+    height: 100%;
+}
+
 .gap10 {
     margin-top: 10px;
 }
+
 .details_container {
     max-width: 800px;
     margin: 20px auto;
@@ -35,11 +40,6 @@
     margin-bottom: 100px;
 }
 
-#app {
-    height: 100%;
-}
-
-
 .restaurant-header {
     position: relative;
     text-align: center;
@@ -49,12 +49,6 @@
     width: 100%;
     height: auto;
     border-radius: 8px;
-}
-
-.restaurant-name {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 10px 0;
 }
 
 /* full-calendar */
@@ -126,6 +120,7 @@ h2 {
 .icon_header_sec {
     position: absolute;
     right: 10px;
+    bottom: 210px;
     padding: 5px;
     border: none;
     border-radius: 100%;
@@ -136,12 +131,22 @@ h2 {
     z-index: 1000;
 }
 
-
+.icon_header_sec1 {
+    padding: 4px 8px 0px 8px;
+    border: none;
+    border-radius: 100%;
+    background-color: lightgray;
+    color: white;
+    text-align: center;
+    margin-bottom: 50px;
+    z-index: 1000;
+    float: right;
+}
 
 .bookmarked_icon {
-    /* position: absolute; */
     color: orangered !important;
 }
+
 /* automaic-carousel */
 
 #carouselExampleIndicators {
@@ -183,12 +188,16 @@ h2 {
 } 
 /* 섹션 버튼 */
 
-/* 쿠폰 */
-#coupon_sec {
-   margin-left: auto;    
+.foldable{
+    list-style: none;
+    color: #333;
 }
 
 /* reserve버튼 */
+
+.reserved-slot .available_letters {
+    color: #d3d3d3; 
+}
 
 .around_reserve {
     display: inline-flex;
@@ -362,6 +371,16 @@ a {
     color: #333; 
 }
 
+.facilities_box {
+    display: flex;
+}
+
+.facilities_category {
+    background-color: #e0dcdc;
+    padding: 2px;
+    margin-right: 3px;
+}
+
 /* 추천 레스토랑 */
 .restaurants_whole{
     display: flex;
@@ -389,17 +408,16 @@ a {
     flex-grow: 1;
 }
 
-.rating {
-    color: gold; 
-    margin-right: 5px; 
-}
-
 .restaurant-name {
     font-size: 20px;
     font-weight: bold;
+    height: 60px;
+    display: flex;
+    align-items: center;
 }
 
-.restaurant-details {
+.restaurant_category {
+    margin-left: 3px;
     font-size: 12px; 
     color: #777; 
 }
@@ -420,8 +438,8 @@ a {
 }
 
 .review_image_box{
-    width: 195px;
-    height: 180px;
+    width: 170px;
+    height: 170px;
     border-radius: 5px; 
 }
 .review_image_box img{

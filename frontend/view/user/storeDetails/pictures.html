@@ -8,12 +8,15 @@
     <title>Document</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+   
     <script src="/js/user/storeDetails/storeDetail_pictures.js" defer></script>
-    <link rel="stylesheet" href="/css/user/storeDetail.css">
+    <link rel="stylesheet" href="/css/user/storeDetails/storeDetail_pictures.css">
+   
+    <script src="/js/user/component.js"></script>
 </head>
 <body>
     <div  id="app">
-    
+    <header-navbar></header-navbar>
 
     <div class="square_section">
         <div class="cButton-container">
@@ -28,20 +31,14 @@
     <div class="square_section">
     <div class="nav-tabs">
        
-            <button class="small_button" :class="{ active: activeTab === '전체' }" @click="setActiveTab('전체')">전체</button>
-    
-       
+            <button class="small_button" :class="{ active: activeTab === '전체' }" @click="setActiveTab('전체')">전체</button>       
             <button class="small_button" :class="{ active: activeTab === '업체' }" @click="setActiveTab('업체')">업체</button>
-   
-      
             <button class="small_button" :class="{ active: activeTab === '음식' }" @click="setActiveTab('음식')">음식</button>
-     
             <button class="small_button" :class="{ active: activeTab === '메뉴' }" @click="setActiveTab('메뉴')">메뉴</button>
      
     </div>
 
    
-        <!-- 전체 탭이 활성화 되었을 때만 combinedImages 표시 -->
         <div v-if="activeTab === '전체'" class="photo_column">
             <div class="photo_frame" v-for="(image, index) in combinedImages" :key="'combinedImage-' + index">
                 <img :src="image.url" class="d-block w-100" :alt="'combinedImages.url(' + (index + 1) + ')'">
@@ -64,6 +61,7 @@
         </div>
 
     </div> 
+    <footer-component></footer-component>
     </div>
 
 </body>

@@ -8,8 +8,9 @@
     <title>Document</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <script src="/js/user/storeDetails/storeDetail_menu.js" defer></script>
-    <link rel="stylesheet" href="/css/user/storeDetail.css">
+    <link rel="stylesheet" href="/css/user/storeDetails/storeDetail_menu.css">
 
     <script src="/js/user/component.js"></script>
 </head>
@@ -29,9 +30,9 @@
 
     <div class="square_section">
         <h2 class="my_title">메뉴</h2>
-        <button class="small_button">식사류</button>
-        <button class="small_button">사이드</button>
-        <h3 class="overGap" v-if="menuData.numOfMainMenu > 0">식사류</h3>
+        <a href="#main"><button class="small_button">식사류</button></a>
+        <a href="#side"><button class="small_button">사이드</button></a>
+        <h3 id="main" class="overGap" v-if="menuData.numOfMainMenu > 0">식사류</h3>
         <div v-for="(menu, index) in menuData.menu" :key ="index" class="menu-item" v-if="menu.main">
             
             <div class="menu-details">
@@ -43,7 +44,7 @@
             @error="setDefaultImage($event)">
             </div>
         </div>
-        <h3 class="overGap" v-if="menuData.numOfSideMenu > 0">사이드</h3>
+        <h3 id="side" class="overGap" v-if="menuData.numOfSideMenu > 0">사이드</h3>
         <div v-for="(menu, index) in menuData.menu" :key ="index" class="menu-item" v-if="!menu.main">
             
             <div class="menu-details">
@@ -55,6 +56,7 @@
             @error="setDefaultImage($event)">
             </div>
         </div>
+        <footer-component></footer-component>
     </div>   
 </body>
 </html>

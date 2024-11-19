@@ -7,19 +7,21 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css" type="text/css"/>
     <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/user/mainlogo.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/user/header.css">
     <link rel="stylesheet" href="/css/user/storeDetail.css">
     
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/aebc8a6fa8.js" crossorigin="anonymous"></script>
     
     <script src="/js/user/storeDetails/storeDetail_recommend.js" defer></script>
     <link rel="stylesheet" href="/css/user/storeDetails/storeDetail_recommend.css">
+    <script src="/js/user/component.js"></script>
 </head>
 <body>
     <div id="app">
+        <header-navbar></header-navbar>
         <div class="square_section">
 
             <h2 class="my_title">비슷한 레스토랑 추천</h2>
@@ -34,12 +36,16 @@
                         <p class="restaurant-name">{{recommend.storeName}}</p>
                         ⭐️ {{ calculateReviewScore(recommend.storeId).toFixed(1) }} 
                         <span class="review-count">( {{ reviewData[recommend.storeId]?.length || 0 }})</span>
+                        <span class="icon_header_sec1">
+                            <i v-if="recommend.isBookmarked" class="fa-solid fa-bookmark bookmarked_icon" @click.stop="toggleBookmark(recommend.storeId)"></i>
+                            <i v-else class="fa-regular fa-bookmark" @click.stop="toggleBookmark(recommend.storeId)"></i>
+                        </span>
                         <span class="restaurant-details" v-for="(category,categoryIndex) in recommend.storeCategories">{{category.storeCategoryName}} </span>
                     </div>
                 </div>
             </div>
         </div>
-  
+        <footer-component></footer-component>
     </div>
 </body>
 </html>

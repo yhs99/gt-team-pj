@@ -19,9 +19,8 @@ new Vue({
         menu: [],
       },
       reviewData: [],
-      recommendData: {},
+      recommendData: [],
       storeReview: {},
-      couponData: [],
       info: {
         dateStr: "",
       },
@@ -33,7 +32,8 @@ new Vue({
       loginInfo: {},
       isLoggedIn: false,
       reviewCount: 0,
-      recommendStoreIds: []
+      recommendStoreIds: [],
+      averageScoreList : []
     };
   },
   computed: {
@@ -115,16 +115,13 @@ new Vue({
       try {
         const response = await axios.get(`/api/stores/store/${this.storeId}`);
         this.restaurantData = response.data;
-        console.log("restaurantData", this.restaurantData);
         this.schedules = this.restaurantData.data.storeSchedules;
-        console.log("schedules", this.schedules);
         this.checkLoginStatus();
         this.operationTodayDay();
         this.fetchMenuData();
         this.fetchReviewData();
         this.kakaoMap();
         this.fetchRecommendData();
-        this.fetchCouponData();
       } catch (error) {
         console.error("Error fetching restaurant data:", error);
       }
@@ -133,7 +130,6 @@ new Vue({
       try {
         const response = await axios.get(`/api/stores/menu/${this.storeId}`);
         this.menuData = response.data.data;
-        console.log("menuData", this.menuData);
       } catch (error) {
         console.error("Error fetching menu data:", error);
       }
@@ -146,7 +142,6 @@ new Vue({
           }
         });
         this.reviewData = response.data.data;
-        console.log("reviewData", this.reviewData);
       } catch (error) {
         console.error("Error fetching review data:", error);
       }
@@ -154,15 +149,19 @@ new Vue({
     async fetchRecommendData() {
       try {
         const response = await axios.get(`/api/stores/storeInfo/${this.storeId}`);
-        this.recommendData = response.data.data.slice(0,3);
-        console.log("recommendData", this.recommendData);
-
+          // blocked가 false인 객체들만 필터링
+          const filteredData = response.data.data.filter(recommend => !recommend.blocked);
+        
+          // 필터링된 데이터에서 최대 3개 가져오기
+        this.recommendData = filteredData.slice(0, 3);
         this.recommendStoreIds = this.recommendData.map(recommend => recommend.storeId);
-        console.log("recommendStoreIds",this.recommendStoreIds);
-
-        await Promise.all(this.recommendStoreIds.map(recommendStoreId => 
-          this.fetchStoreReviewData(recommendStoreId)
-      ));
+        
+        await Promise.all(this.recommendStoreIds.map((recommendStoreId, index) => 
+          this.fetchStoreReviewData(recommendStoreId, index)
+        ));
+        
+        // 초기에 bookmark 상태를 확인
+        this.checkRecommendBookmarked();
       } catch (error) {
         console.error("Error fetching recommend data:", error);
       }
@@ -187,7 +186,6 @@ new Vue({
     },
     kakaoMap() {
       const { locationLatX: lat, locationLonY: lon } = this.restaurantData.data;
-      console.log(lat, lon);
       const mapContainer = document.getElementById("map");
       const mapOption = { center: new kakao.maps.LatLng(lon, lat), level: 3 };
       const map = new kakao.maps.Map(mapContainer, mapOption);
@@ -249,7 +247,6 @@ new Vue({
         datesSet: () => {
           const today = new Date();
           today.setHours(0, 0, 0, 0); // 시간 초기화 (00:00:00)
-          console.log("today" + today);
           const maxDate = new Date(today);
           maxDate.setDate(today.getDate() + 31);
 
@@ -277,23 +274,13 @@ new Vue({
         .filter((schedule) => schedule.closeDay)
         .map((schedule) => schedule.dayOfWeek);
     },
-    async fetchCouponData() {
-      try {
-        const response = await axios.get(`/api/stores/coupon/${this.storeId}`);
-        this.couponData = response.data.data;
-        console.log("CouponData", this.couponData);
-      } catch (error) {
-        console.error("Error fetching couponData:", error);
-      }
-    },
+  
     async fetchReserveSlots(date) {
-      console.log(date);
       try {
         const response = await axios.get(
           `/api/stores/reserveSlots/${this.storeId}/${date}`
         );
         this.reserveSlots = response.data.data;
-        console.log("reserveSlots", this.reserveSlots);
       } catch (error) {
         console.error("Error fetching reserveSlots:", error);
       }
@@ -329,7 +316,6 @@ new Vue({
     async setBookmark() {
       try {
         const response = await axios.post(`/api/bookmark/${this.storeId}`);
-        console.log(response);
         this.isBookmarked = true;
       } catch (error) {
         console.error("북마크 추가 중 오류발생:", error);
@@ -338,7 +324,6 @@ new Vue({
     async deleteBookmark() {
       try {
         const response = await axios.delete(`/api/bookmark/${this.storeId}`);
-        console.log(response);
         this.isBookmarked = false;
       } catch (error) {
         console.error("북마크 삭제 에러", error);
@@ -356,13 +341,12 @@ new Vue({
       }
     },
     async getBookmarkInfo() {
-      console.log("enterGetBookmarkInfo", this.isLoggedIn);
       if (this.isLoggedIn == true) {
         try {
           const response = await axios.get(`/api/bookmark/`);
           this.currentBookmark = response.data.data;
-          console.log("currentBookmark", this.currentBookmark);
           this.checkIfBookmarked();
+          this.checkRecommendBookmarked();
         } catch (error) {
           console.error("북마크 가져오기 에러:", error);
         }
@@ -371,14 +355,10 @@ new Vue({
 
     checkIfBookmarked() {
       for (bookmark of this.currentBookmark) {
-        console.log(bookmark.bookmarkDto.storeId, this.storeId);
         if (bookmark.bookmarkDto.storeId == this.storeId) {
           this.isBookmarked = true;
-          console.log("isBookmarked", this.isBookmarked);
           break;
-        } else {
-          console.log("isBookmarked", this.isBookmarked);
-        }
+        } 
       }
     },
 
@@ -388,10 +368,8 @@ new Vue({
         if (response.status === 401) {
           this.isLoggedIn = false;
         } else if (response.status === 200) {
-          console.log("로그인 완료");
           this.isLoggedIn = true;
           this.getBookmarkInfo();
-          console.log("isLoggedIn", this.isLoggedIn);
         }
       } catch (error) {
         if (error.response && error.response.status === 401) {
@@ -405,18 +383,16 @@ new Vue({
     goToReserve() {
       if (this.isLoggedIn == true) {
          this.deleteCartData();
-        this.goToPage(
+         this.goToPage(
           `/view/user/storeDetails/reserve?storeId=${this.storeId}`
         );
       } else {
-        this.goToPage(`/view/user/userLogin`);
+         this.goToPage(`/view/user/userLogin`);
       }
     },
     async deleteCartData(){
       try {
         const response = await axios.get("/api/cart");
-        console.log("cart",response.data.data);
-
         const deleteList = response.data.data.map(cartItem =>{
           const cartId = cartItem.cartId;
            axios.delete(`/api/cart/${cartId}`)
@@ -426,46 +402,105 @@ new Vue({
         });
 
          await Promise.all(deleteList);
-        console.log("카트 아이템 삭제 성공");
      
       }catch(error){
         console.log("cart 정보를 불러오지 못했습니다");
       }
     },
-    async fetchStoreReviewData(recommendId) {
+    async fetchStoreReviewData(recommendId,index) {
       try {
-          console.log("recommendId",recommendId);
           const response = await axios.get(`/api/review/store/${recommendId}`);
           const storeReview = response.data.data;
       
            // storeReview 객체에 storeId를 키로 사용하여 저장
           this.$set(this.storeReview, recommendId, storeReview);
 
-          console.log("2222storeReview",this.storeReview);
-          const keys = Object.keys(this.storeReview);
-          console.log("Keys:", keys);
           const values =Object.values(this.storeReview);
-          console.log("values",values);
-
-        //   this.$set(this.storeReivew, recommendId, response.data.data || []);
-        //   console.log("storeReview",this.storeReivew);
+          const averageScore = this.calculateRecommendScore(values);
+  
+          // averageScoreList에 index에 맞춰 점수 추가
+          this.averageScoreList[index] = averageScore;
+   
       } catch (error) {
           console.error('Error fetching review data:', error);
       }
     },
-    // async calculateStoreReviewScore(storeNum) {
-    //   console.log("storeId!!", storeNum);
-    //   const reviews = await this.fetchStoreReviewData(storeNum);
+    calculateRecommendScore(values) {
+      let totalScore = 0;
+      let totalCount = 0;
   
-    //   console.log("reviews!!", reviews);
-    //   const reviewCount = reviews.length; // 리뷰 수 계산
-    //   console.log("reviewCount", reviewCount);
+      for (const value of values) {
+          if (value.length > 0) {
+              for (const item of value) {
+                  totalScore += item.score; 
+                  totalCount++;
+              }
+          }
+      }
+  
+      // 평균 계산
+      return totalCount > 0 ? (totalScore / totalCount) : 0; 
+  },
 
-    //   this.reviewCount = reviewCount;
-  
-    //   // 리뷰 수를 직접 반환
-    //   return reviewCount;
-    //   },
+//////////////////////////////recommend//////////////////////////////
+async doBookmark(favoriteId) {
+  try {
+    const response = await axios.post(`/api/bookmark/${favoriteId}`);
+    return true;
+  } catch (error) {
+    console.error("북마크 추가 중 오류발생:", error);
+    return false;
+  }
+},
+
+async undoBookmark(favoriteId) {
+  try {
+    const response = await axios.delete(`/api/bookmark/${favoriteId}`);
+    return true;
+  } catch (error) {
+    console.error("북마크 삭제 에러", error);
+    return false;
+  }
+},
+async clickBookmark(storeId) {
+  if (this.isLoggedIn) {
+      const recommend = this.recommendData.find(recommend => recommend.storeId === storeId);
+      const isBookmarked = recommend?.isBookmarked;
+
+      // UI 업데이트: 북마크 상태 즉시 반영하기
+      this.updateBookmark(storeId, !isBookmarked);
+
+      try {
+          if (isBookmarked) {
+              await this.undoBookmark(storeId);
+          } else {
+              await this.doBookmark(storeId);
+          }
+      } catch (error) {
+          // API 호출 실패시 이전 상태로 되돌리기
+          this.updateBookmark(storeId, isBookmarked);
+          console.error("북마크 처리 중 오류 발생:", error);
+      }
+  } else {
+      this.goToPage(`/view/user/userLogin`);
+  }
+},
+
+updateBookmark(storeId, isFavorite) {
+  const recommend = this.recommendData.find(recommend => recommend.storeId === storeId);
+  if (recommend) {
+    this.$set(recommend, 'isBookmarked', isFavorite);
+  }
+},
+
+checkRecommendBookmarked() {
+  this.recommendData.forEach(recommend => {
+    const isBookmarked = this.currentBookmark.some(bookmark => bookmark.bookmarkDto.storeId === recommend.storeId);
+    this.$set(recommend, 'isBookmarked', isBookmarked); // Vue의 반응성을 위해 $set 사용
+  });
+},
+
+
   },
   created() {
     this.getTodayDay();
@@ -473,7 +508,6 @@ new Vue({
   mounted() {
     const queryParams = new URLSearchParams(window.location.search);
     this.storeId = queryParams.get("storeId");
-    console.log("Store ID:", this.storeId);
 
     if (this.storeId) {
       this.fetchRestaurantData();

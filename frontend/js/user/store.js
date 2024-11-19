@@ -177,6 +177,10 @@ new Vue({
           await axios.delete(`/api/bookmark/${store.storeId}`);
           this.updateFavoriteStatus(store.storeId, false);
         } else {
+          if (this.favoriteStoreIds.length >= 30) {
+            alert("즐겨찾기는 최대 30개까지만 가능합니다.");
+            return;
+          }
           await axios.post(`/api/bookmark/${store.storeId}`);
           this.updateFavoriteStatus(store.storeId, true);
         }

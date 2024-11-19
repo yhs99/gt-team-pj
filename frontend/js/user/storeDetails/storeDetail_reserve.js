@@ -259,9 +259,11 @@ new Vue({
                 axios.get(`/api/cart`)
                 .then(async response => {
                     console.log('loaded cart');
-                    await Promise.all(
-                        response.data.data.map(cartItem => axios.delete(`/api/cart/${cartItem.cartId}`))
-                    );
+                    if(response.data.data.length > 0) {
+                        await Promise.all(
+                            response.data.data.map(cartItem => axios.delete(`/api/cart/${cartItem.cartId}`))
+                        );
+                    }
                     console.log('deleted carts');
                     for(const menu of checkedMenus) {
                         await this.insertMenu(menu.menuId, menu.quantity);

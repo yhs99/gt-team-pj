@@ -35,7 +35,10 @@ new Vue({
       axios
         .get("/api/searchStores")
         .then((response) => {
-          const shuffledStores = this.shuffle(response.data.data.storeLists);
+          const filteredStores = response.data.data.storeLists.filter(
+            (store) => !store.blocked
+          );
+          const shuffledStores = this.shuffle(filteredStores);
 
           this.stores = shuffledStores.slice(0, 15).map((store) => ({
             ...store,

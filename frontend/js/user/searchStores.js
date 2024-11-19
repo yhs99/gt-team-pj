@@ -14,6 +14,7 @@ new Vue({
     favoriteStoreIds: [],
     loginYN: false,
     isDescriptionVisible: false,
+    showScrollButton: false,
   },
   created() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -43,6 +44,8 @@ new Vue({
       if (scrollTop + clientHeight >= scrollHeight - 10) {
         this.fetchStore();
       }
+
+      this.showScrollButton = scrollTop > 200;
     },
     async fetchFavoriteStores() {
       try {
@@ -205,6 +208,9 @@ new Vue({
     },
     goToReviewPage(storeId) {
       window.location.href = `storeDetails/reviews?storeId=${storeId}`;
+    },
+    scrollToTop() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
   },
 });

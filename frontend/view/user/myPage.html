@@ -169,7 +169,7 @@
               </div>
               <div v-if="planReserveHistoryData.length == 0">
                 <p>예약 내역이 없습니다. 예약할 식당을 찾아보세요</p>
-                <a href="/view/stores"><p>식당 찾으러 가기</p></a>
+                <a href="/view/user/stores"><p>식당 찾으러 가기</p></a>
               </div>
             </div>
 
@@ -216,7 +216,7 @@
               </div>
               <div v-if="completeReserveHistoryData.length == 0">
                 <p>예약 내역이 없습니다. 예약할 식당을 찾아보세요</p>
-                <a href="/view/stores"><p>식당 찾으러 가기</p></a>
+                <a href="/view/user/stores"><p>식당 찾으러 가기</p></a>
               </div>
             </div>
 
@@ -297,7 +297,7 @@
                   </div>
                   <div v-if="bookMarkListData.length == 0">
                     <p>즐겨찾기한 식당이 없습니다. 즐겨찾고 싶은 식당을 찾아보세요</p>
-                    <a href="/view/stores"><p>식당 찾으러 가기</p></a>
+                    <a href="/view/user/stores"><p>식당 찾으러 가기</p></a>
                   </div>
                 </div>
               </div>
@@ -305,7 +305,11 @@
           </div>
           <div class="col-md-8 col-lg-8" v-if="currentPage == 'reviewHistory'">
             <h3>내가 작성한 리뷰 {{ reviewHistoryCount }}건</h3>
-            <div v-for="(review, index) in reviewHistoryData.reviewData" :key="review.reviewId">
+            <div v-if="reviewHistoryCount == 0">
+              <p>작성한 리뷰가 없습니다. 식당을 방문해 리뷰를 남겨보세요</p>
+              <a href="/view/user/stores"><p>식당 찾으러 가기</p></a>
+            </div>
+            <div v-else v-for="(review, index) in reviewHistoryData.reviewData" :key="review.reviewId">
               <div class="card mb-3">
                 <div class="card-header border">
                   <div>

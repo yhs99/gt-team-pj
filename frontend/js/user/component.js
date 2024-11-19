@@ -16,6 +16,10 @@ Vue.component('header-navbar', {
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="search_container">
+              <i class="fa-solid fa-magnifying-glass search_icon"></i>
+              <input type="text" placeholder="찾고 있는 맛집이 있나요?" class="search_box pointer" @click="redirectSearch">
+            </div>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             </ul>
             <div v-if="loginYN==true">
@@ -37,12 +41,13 @@ Vue.component('header-navbar', {
                 <li class="nav-item">
                     {{ userName }}님 환영합니다!
                 </li>
-            </ul>
+              </ul>
             </div>
             <div v-else>
               <button class="btn btn-outline-warning m-2" type="button" onclick="location.href = '/view/user/userLogin'">로그인</button>
               <button class="btn btn-outline-warning m-2" type="button" onclick="location.href = '/view/user/register'">회원가입</button>
             </div>
+            
           </div>
         </div>
       </nav>
@@ -80,6 +85,9 @@ Vue.component('header-navbar', {
         }
       })
     },
+    redirectSearch: function() {
+      location.href="/view/user/search"
+    }
   }
 });
 

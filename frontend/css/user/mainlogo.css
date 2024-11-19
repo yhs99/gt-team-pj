@@ -122,3 +122,23 @@ a {
 .pointer {
   cursor: pointer;
 }
+
+.search_box {
+  width: 20rem;
+  border: 1px solid #ccc;
+  padding: 5px 10px 5px 40px;
+  border-radius: 30px;
+  background-color: #F0F0F0
+}
+.search_container{
+  position: relative;
+}
+
+.search_icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: orange; 
+  cursor: pointer;
+}

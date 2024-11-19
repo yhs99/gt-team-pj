@@ -147,7 +147,11 @@ public class UserStoreController {
 	 		for(StoreCategoryVO category : storeCategories) {
 				List<StoreCategoryDTO> storeList = userStoreService.getStoresByCategory(category.getCategoryCodeId());
 				for(StoreCategoryDTO store : storeList) {
-					storeIdSet.add(store.getStoreId());
+					if(storeIdSet.size() <50) { // 추천 레스토랑은 50개까지만
+						storeIdSet.add(store.getStoreId());						
+					}else {
+						break;
+					}
 				}
 			}
 	 		storeIdSet.remove(storeId);

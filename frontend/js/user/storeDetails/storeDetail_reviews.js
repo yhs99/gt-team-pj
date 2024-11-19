@@ -2,53 +2,102 @@ new Vue({
     el: '#app',
     data: {
         storeId: null,
-        restaurantData: {
-            data: {
-                storeImages: []
-            }
-        },
+        page: 1,
+        size: 10,
+        sort: 'latest',
         reviewData: [],
+        allReviews: [],
         review: {
             reviewImages: [] 
         },
         buttons: ['홈', '메뉴', '사진', '리뷰', '매장정보'],
         activeButton: 3,
+        loading: false, 
+        hasMoreData: true,
     },
     computed: { 
         calculateReviewScore() {
             let scoreSum = 0;
             let scoreAvg = 0;
-            for (let review of this.reviewData) {
-                scoreSum += review.score || 0; // score가 undefined일 경우 0 처리
-            }
-            if (this.reviewData.length > 0) {
-                scoreAvg = scoreSum / this.reviewData.length;
+            if (this.allReviews.length > 0) {
+                for (let review of this.allReviews) {
+                    scoreSum += review.score || 0; 
+                }
+                scoreAvg = scoreSum / this.allReviews.length;
             }
             return scoreAvg;
         }
     },
     methods: {
-        fetchRestaurantData() {
-            axios.get(`http://localhost/api/stores/store/${this.storeId}`)
-                .then(response => {
-                    this.restaurantData = response.data;
-                    console.log("restaurantData:", this.restaurantData);
-                    this.fetchReviewData(); // 리뷰 데이터를 가져옴
-                })
-                .catch(error => {
-                    console.error('Error fetching restaurantData:', error);
-                });
+        fetchAllReviews() {
+            axios.get(`/api/review/store/${this.storeId}`, {
+                params: {
+                    size: 500 
+                }
+            })
+            .then(response => {
+                this.allReviews = response.data.data; // 모든 리뷰 저장
+                console.log("All Reviews:", this.allReviews);
+            })
+            .catch(error => {
+                console.error('Error fetching all reviews', error);
+            });
         },
         fetchReviewData() {
-            axios.get(`http://localhost/api/review/store/${this.storeId}`)
-                .then(response => {
-                    console.log("API 응답:", response.data); // 응답 로그
-                    this.reviewData = response.data.data; // 데이터 구조 확인
-                    console.log("reviewData:", this.reviewData);
-                })
-                .catch(error => {
-                    console.error('Error fetching ReviewData', error);
-                });
+            if (this.loading || !this.hasMoreData) return; // 로딩 중이면 요청을 중단
+            this.loading = true;
+
+            axios.get(`/api/review/store/${this.storeId}`,{
+                params: {
+                    page: this.page,
+                    size: this.size,
+                    sort: this.sort
+                }
+            })
+            .then(response => {
+                console.log("API 응답:", response.data);
+                if (response.data.data.length === 0) {
+                    this.hasMoreData = false; // 더 이상 데이터가 없으면 플래그를 false로 변경
+                } else {
+                    this.reviewData = this.reviewData.concat(response.data.data); // 기존 데이터와 새 데이터 병합
+                }
+                console.log("reviewData:", this.reviewData);
+            })
+            .catch(error => {
+                console.error('Error fetching ReviewData', error);
+            })
+            .finally(() => {
+                this.loading = false; 
+            });
+        },
+        updateSort(event) {
+            const selectedValue = event.target.value;
+            switch (selectedValue) {
+                case 'latest':
+                    this.sort = 'latest'; 
+                    break;
+                case 'high':
+                    this.sort = 'score_desc'; 
+                    break;
+                case 'low':
+                    this.sort = 'score_asc'; 
+                    break;
+            }
+            this.page = 1; // 페이지 초기화
+            this.reviewData = []; // 리뷰 데이터 초기화
+            this.hasMoreData = true; 
+            this.fetchReviewData(); // 정렬 변경 시 리뷰 데이터 재요청
+        },
+        handleScroll() {
+            const scrollHeight = window.scrollY + window.innerHeight;
+            const offsetHeight = document.body.offsetHeight;
+
+            // 스크롤이 바닥에 거의 도달했을 때
+            if (!this.loading && this.hasMoreData && scrollHeight >= offsetHeight - 100) {
+                this.page++; // 다음 페이지로 증가
+                console.log(this.page);
+                this.fetchReviewData(); // 다음 페이지 데이터 요청
+            }
         },
         formatDate(dateString) {
             const date = new Date(dateString);
@@ -58,10 +107,10 @@ new Vue({
             return `${year}.${month}.${day}`;
         },
         countScore(n) {
-            return this.reviewData.filter(review => review.score === n).length;
+            return this.allReviews.filter(review => review.score === n).length;
         },
         calculateScoreRatio(n){
-            return (this.countScore(n)/this.reviewData.length)*100;
+            return (this.countScore(n)/this.allReviews.length)*100;
         },
         setDefaultImage(event) {
             event.target.src = 'https://goott-bucket.s3.ap-northeast-2.amazonaws.com//noImage.jpg'; 
@@ -100,10 +149,14 @@ new Vue({
         console.log("Store ID:", this.storeId);
 
         if (this.storeId) {
-            this.fetchRestaurantData(); 
+            this.fetchAllReviews();
+            this.fetchReviewData();
+            window.addEventListener('scroll', this.handleScroll); // 스크롤 이벤트 리스너 추가
         } else {
             console.error('storeId가 없습니다. URL을 확인하세요.');
         }
-
+    },
+    beforeDestroy() {
+        window.removeEventListener('scroll', this.handleScroll); // 컴포넌트가 파괴될 때 이벤트 리스너 제거
     }
 });

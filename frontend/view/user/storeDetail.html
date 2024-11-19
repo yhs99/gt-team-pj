@@ -65,7 +65,7 @@
                     </div>
                     <div class="carousel-inner">
                         <div class="caroPic carousel-item" v-for="(image, index) in restaurantData.data.storeImages" :class="{ active: index === 0 }" :key="index">
-                            <img :src="image.url" class="d-block w-100" :alt="'storeImages.url(' + (index + 1) + ')'">
+                            <img :src="image.url" class="d-block w-100" :alt="'storeImages.url(' + (index + 1) + ')'" @error="setDefaultImage($event)">
                         </div>
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -190,15 +190,15 @@
             <span class="star">⭐️</span>
             <span class="score"> {{ calculateReviewScore.toFixed(1) }} ({{ reviewData.length }})</span>
         
-            <div class="restaurants_whole">
-                <div class="restaurant-card" v-for="(review,index) in filteredReviews.slice(0,3)" :key="'review-' + index">
-                    <div class="restaurant_image_box">
+            <div class="review_whole">
+                <div class="review-card" v-for="(review,index) in filteredReviews.slice(0,4)" :key="'review-' + index">
+                    <div class="review_image_box">
                         <img 
                         :src="review.reviewImages && review.reviewImages.length > 0 ? review.reviewImages[0].url : 'https://goott-bucket.s3.ap-northeast-2.amazonaws.com//noImage.jpg'" 
                         alt="reviewImage" 
                         @error="setDefaultImage($event)">
                     </div>
-                    <span class="restaurant-details">{{review.name}}</span>
+                    <span class="review-details">{{review.name}}</span>
                     <span class="review-rating">⭐️{{ review.score.toFixed(1) }}</span>
                     <p class="review-date">{{ formatDate(review.createAtLocalDateTime) }}</p>
                     <p class="review-text">{{ review.content }}</p>
@@ -235,13 +235,16 @@
         <div class="square_section_last-child">
             <h2 class="my_title">비슷한 레스토랑 추천</h2>
             <div class="restaurants_whole">
-                <div class="restaurant-card"  v-for="(recommend,index) in Object.values(recommendData).slice(0, 3)">
+                <div class="restaurant-card"  v-for="(recommend,index) in recommendData"
+                    @click="goToPage(`storeDetail?storeId=${recommend.storeId}`)">
                     <div class="restaurant_image_box">
-                        <img v-if="recommend.storeImages" src="recommend.storeImages" alt="storeImage" class="restaurant-image" @error="setDefaultImage($event)">
+                        <img v-if="recommend.storeImages[0]" :src="recommend.storeImages[0].url" alt="storeImage" class="restaurant-image" @error="setDefaultImage($event)">
                         <img v-else src="https://goott-bucket.s3.ap-northeast-2.amazonaws.com//noImage.jpg" alt="noImage" class="restaurant-image">
                     </div>
                     <div class="restaurant-info">
-                        <p class="restaurant-name">{{recommend.storeName}}</p>
+                        <div class="restaurant-name">{{recommend.storeName}}</div>
+                       <span >⭐️ {{ recommend.storeId }} </span> 
+                        <span class="review-count">( {{ storeReview[recommend.storeId] ? storeReview[recommend.storeId].length : 0 }})</span>
                         <span class="restaurant-details" v-for="(category,categoryIndex) in recommend.storeCategories">{{category.storeCategoryName}} </span>
                     </div>
                 </div>

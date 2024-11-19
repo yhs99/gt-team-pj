@@ -255,7 +255,6 @@ new Vue({
             
             // 콘솔에 체크된 메뉴 출력
             if (checkedMenus.length > 0 && this.selectedSlot !== null) {
-                console.log('체크된 메뉴:');
                 checkedMenus.forEach(menu => {
                     console.log(`Menu ID: ${menu.menuId}, Quantity: ${menu.quantity}`);
                     this.insertMenu(menu.menuId,menu.quantity);
@@ -329,12 +328,12 @@ new Vue({
     mounted() {
         const queryParams = new URLSearchParams(window.location.search);
         this.storeId = queryParams.get('storeId');
-        console.log("Store ID:", this.storeId);
 
         if (this.storeId) {
             this.fetchRestaurantData(); 
         } else {
-            console.error('storeId가 없습니다. URL을 확인하세요.');
+            console.error('잘못된 매장입니다.');
+            window.history.back();
         }
 
         this.makeACalendar();

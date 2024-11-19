@@ -132,5 +132,11 @@ new Vue({
       this.currentPaginatedList = this.reserveLists.slice(start, end)
       return this.currentPaginatedList
     },
+  },
+  filters: {
+    formatPrice(value) {
+      if(!value) return '';
+      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
   }
 })

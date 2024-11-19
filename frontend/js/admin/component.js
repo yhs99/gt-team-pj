@@ -68,8 +68,8 @@ methods: {
       console.log("admin checked");
     })
     .catch(error => {
-      if(error.status === 401) {
-        alert('로그인 정보를 확인할 수 없습니다. 다시 로그인해주세요');
+      if(error.status === 401 || error.status === 403) {
+        alert(error.response.data.message);
       }else {
         alert('서버 오류로 인해 정보를 확인할 수 없습니다.');
       }

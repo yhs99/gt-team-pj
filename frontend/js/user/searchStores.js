@@ -14,6 +14,7 @@ new Vue({
     favoriteStoreIds: [],
     loginYN: false,
     isDescriptionVisible: false,
+    showScrollButton: false,
   },
   created() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -43,6 +44,8 @@ new Vue({
       if (scrollTop + clientHeight >= scrollHeight - 10) {
         this.fetchStore();
       }
+
+      this.showScrollButton = scrollTop > 200;
     },
     async fetchFavoriteStores() {
       try {
@@ -98,10 +101,16 @@ new Vue({
             )
         );
 
-        this.stores = [...this.stores, ...uniqueStores];
+        const storesWithFavoriteStatus = uniqueStores.map((store) => ({
+          ...store,
+          isFavorite: this.favoriteStoreIds.includes(store.storeId),
+        }));
+
+        this.stores = [...this.stores, ...storesWithFavoriteStatus];
 
         this.page += 1;
       } catch (error) {
+        console.error("가게 목록을 가져오는 중 에러 발생:", error);
       } finally {
         this.isLoading = false;
       }
@@ -120,13 +129,17 @@ new Vue({
       try {
         if (store.isFavorite) {
           await axios.delete(`/api/bookmark/${store.storeId}`);
+          this.favoriteStoreIds = this.favoriteStoreIds.filter(
+            (id) => id !== store.storeId
+          );
           this.updateFavoriteStatus(store.storeId, false);
         } else {
           await axios.post(`/api/bookmark/${store.storeId}`);
           this.updateFavoriteStatus(store.storeId, true);
+          this.favoriteStoreIds.push(store.storeId);
         }
       } catch (error) {
-        alert("즐겨찾기 처리에 실패했습니다. 다시 시도해 주세요.");
+        alert("즐겨찾기 처리에 실패했습니다.");
       }
     },
     updateFavoriteStatus(storeId, isFavorite) {
@@ -205,6 +218,9 @@ new Vue({
     },
     goToReviewPage(storeId) {
       window.location.href = `storeDetails/reviews?storeId=${storeId}`;
+    },
+    scrollToTop() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
   },
 });

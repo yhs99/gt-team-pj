@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>장바구니</title>
+    <link rel="icon" type="image/png" href="/assets/mainIcon.png" />
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link
@@ -29,10 +30,11 @@
       href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="/css//user/mainlogo.css" />
     <link href="/css/user/cart.css" rel="stylesheet" />
   </head>
   <body>
-    <div id="app">
+    <div id="app" class="bg-light">
       <header-navbar></header-navbar>
 
       <div class="container section-container menu-section">
@@ -108,7 +110,7 @@
 
       <div class="container section-container payment-section">
         <h2 class="section-title">
-          <i class="fa-solid fa-credit-card"></i> 결제 수단
+          <i class="fa-solid fa-credit-card"></i> 결제 금액
         </h2>
         <div v-if="globalCoupons.length" class="coupon-section mb-3">
           <span>쿠폰 선택:</span>
@@ -123,21 +125,6 @@
             </option>
           </select>
         </div>
-        <div class="payment-option">
-          <button
-            :class="{'kakao-pay': true, 'selected': selectedPayment === 'kakaoPay'}"
-          >
-            <i class="fa-solid fa-comment"></i> PAY
-          </button>
-          <button
-            :class="{'meet-pay': true, 'selected': selectedPayment === 'meetPay'}"
-            @click="selectPayment('meetPay')"
-          >
-            <i class="fa-solid fa-handshake"></i>
-            만나서 결제
-          </button>
-        </div>
-
         <div class="payment-button text-center mt-2">
           <div class="paybutton">
             <div v-if="discountAmount > 0" class="discount-section">

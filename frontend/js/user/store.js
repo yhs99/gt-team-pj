@@ -35,7 +35,10 @@ new Vue({
       axios
         .get("/api/searchStores")
         .then((response) => {
-          const shuffledStores = this.shuffle(response.data.data.storeLists);
+          const filteredStores = response.data.data.storeLists.filter(
+            (store) => !store.blocked
+          );
+          const shuffledStores = this.shuffle(filteredStores);
 
           this.stores = shuffledStores.slice(0, 15).map((store) => ({
             ...store,
@@ -172,13 +175,18 @@ new Vue({
       try {
         if (store.isFavorite) {
           await axios.delete(`/api/bookmark/${store.storeId}`);
+          this.favoriteStoreIds = this.favoriteStoreIds.filter(
+            ((id) => id !== store.storeId).slice()
+          );
           this.updateFavoriteStatus(store.storeId, false);
         } else {
           await axios.post(`/api/bookmark/${store.storeId}`);
           this.updateFavoriteStatus(store.storeId, true);
+          this.favoriteStoreIds.push(store.storeId);
         }
       } catch (error) {
         alert("즐겨찾기 처리에 실패했습니다. 다시 시도해 주세요.");
+        this.updateFavoriteStatus(store.storeId, store.isFavorite);
       }
     },
     navigateTo(categoryCode) {

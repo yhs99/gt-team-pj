@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>필터링 후 식당</title>
+    <link rel="icon" type="image/png" href="/assets/mainIcon.png" />
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -30,10 +31,11 @@
       href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <link href="/css/user/mainlogo.css" rel="stylesheet" />
     <link href="/css/user/searchStores.css" rel="stylesheet" />
   </head>
   <body>
-    <div id="app">
+    <div id="app" class="bg-light">
       <header-navbar></header-navbar>
       <div class="container">
         <table class="table">
@@ -49,6 +51,18 @@
                   <span v-if="store.couponCount > 0" class="coupon-event">
                     할인 행사 진행중 <i class="fa-solid fa-tags"></i>
                   </span>
+                  <div class="icon-container">
+                    <div
+                      class="favorite-icon"
+                      @click.stop="toggleFavorite(store)"
+                    >
+                      <i
+                        :class="[
+                    store.isFavorite ? 'fas fa-heart red-heart' : 'far fa-heart black-heart'
+                    ]"
+                      ></i>
+                    </div>
+                  </div>
                 </div>
                 <div class="storeAddress">
                   <i
@@ -101,20 +115,6 @@
                   </ul>
                 </div>
               </td>
-              <td>
-                <div class="icon-container">
-                  <div
-                    class="favorite-icon"
-                    @click.stop="toggleFavorite(store)"
-                  >
-                    <i
-                      :class="[
-                        store.isFavorite ? 'fas fa-heart red-heart' : 'far fa-heart black-heart'
-                      ]"
-                    ></i>
-                  </div>
-                </div>
-              </td>
             </tr>
           </tbody>
         </table>
@@ -125,6 +125,13 @@
           더 이상 데이터가 없습니다.
         </div>
       </div>
+      <button
+        v-show="showScrollButton"
+        class="scroll-to-top"
+        @click="scrollToTop"
+      >
+        <i class="fa-solid fa-arrow-up"></i>
+      </button>
       <footer-component></footer-component>
     </div>
     <script src="/js/Footer.js"></script>

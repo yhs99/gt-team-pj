@@ -1,55 +1,61 @@
 .table {
-  padding: 30px;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
 }
+
+.table tr {
+  display: block;
+  margin-bottom: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.table td {
+  padding: 20px;
+  display: block;
+}
+
 .container {
-  margin-top: 90px;
-  width: 60%;
-}
-.storeTitle {
-  font-weight: bold;
-  font-size: 22px;
-}
-.favorite-icon {
-  margin-top: 15px;
-  margin-left: auto;
-  font-size: 20px;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-.favorite-icon .red-heart {
-  color: red;
-}
-.favorite-icon .black-heart {
-  color: black;
+  width: 65%;
+  margin: 20px auto;
+  background-color: #f8f9fa;
+  border-radius: 8px;
 }
 .storeImg {
+  display: block;
+  padding: 10px 0;
   overflow-x: auto;
   white-space: nowrap;
 }
 .store-image {
+  display: inline-block;
+  flex-shrink: 0;
   max-width: 100%;
   width: 280px;
   height: 180px;
-  padding: 3px;
+  gap: 10px;
+  padding: 10px 0;
+  overflow-x: auto;
+  white-space: nowrap;
   border-radius: 5px;
   object-fit: cover;
-  overflow-x: auto;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.coupon-event {
+  color: red;
+}
+.storeTitle {
+  font-weight: bold;
+  font-size: 22px;
+  position: relative;
 }
 .storeAddress {
   font-weight: bold;
   color: gray;
   margin-top: 5px;
-}
-.coupon-event {
-  color: red;
-  font-weight: bold;
-  margin-left: 5px;
-}
-.store-status {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #333;
 }
 .facilities-list {
   display: flex;
@@ -57,7 +63,6 @@
   list-style-type: none;
   padding: 0;
   margin: 0;
-  margin-top: 2px;
 }
 .facilities-list li {
   padding: 5px 12px;
@@ -68,6 +73,24 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   white-space: nowrap;
 }
+.favorite-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 30px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.favorite-icon .red-heart {
+  color: red;
+}
+
+.favorite-icon .black-heart {
+  color: black;
+}
+
 .loading-spinner {
   display: flex;
   justify-content: center;
@@ -78,17 +101,39 @@
   font-size: 18px;
   color: #555;
 }
-.loading-spinner img {
-  width: 50px;
-  height: 50px;
-  margin-right: 10px;
-}
-.loading-spinner p {
+
+html,
+body {
+  height: 100%;
   margin: 0;
-  font-weight: bold;
-  color: #333;
+  background-color: #f8f9fa;
 }
-.review-count-link {
+.scroll-to-top {
+  position: fixed;
+  bottom: 50px;
+  right: 100px;
+  width: 70px;
+  height: 70px;
+  background-color: orange;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  text-decoration: underline;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.scroll-to-top:hover {
+  background-color: #ff7f50;
+}
+
+.scroll-to-top:active {
+  transform: scale(0.9);
+  background-color: #e67300;
 }

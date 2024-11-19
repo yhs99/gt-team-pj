@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>모든 식당</title>
+    <link rel="icon" type="image/png" href="/assets/mainIcon.png" />
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -30,19 +31,12 @@
       href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <link href="/css/user/mainlogo.css" rel="stylesheet" />
     <link href="/css/user/store.css" rel="stylesheet" />
   </head>
   <body>
-    <div id="app">
+    <div id="app" class="bg-light">
       <header-navbar></header-navbar>
-      <!-- <div style="text-align: center; margin-top: 80px">
-        <img
-          src="/assets/user/img/welcome.png"
-          alt="welcome"
-          width="65%"
-          height="360"
-        />
-      </div> -->
       <div class="container">
         <div class="slider-heading">마음에 들 만한 곳을 모아봤어요</div>
       </div>
@@ -140,7 +134,7 @@
             </div>
           </div>
           <div class="card more-card" @click="showMore">
-            <p class="more-text">원하는 식당이 없으시다면 Click!</p>
+            <p class="more-text">더보기</p>
           </div>
         </div>
         <span
@@ -198,7 +192,7 @@
             </div>
           </div>
           <div class="card more-card" @click="showMore">
-            <p class="more-text">원하는 식당이 없으시다면 Click!</p>
+            <p class="more-text">더보기</p>
           </div>
         </div>
         <span
@@ -251,7 +245,7 @@
             </div>
           </div>
           <div class="card more-card" @click="showMore">
-            <p class="more-text">원하는 식당이 없으시다면 Click!</p>
+            <p class="more-text">더보기</p>
           </div>
         </div>
         <span

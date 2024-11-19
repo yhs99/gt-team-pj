@@ -180,20 +180,6 @@ button[type="submit"]:hover {
   cursor: pointer;
   transition: background-color 0.3s;
 }
-.kakao-pay {
-  background-color: #ffeb3b;
-  color: #000;
-}
-.kakao-pay:hover {
-  background-color: #fdd835;
-}
-.meet-pay {
-  background-color: #007bff;
-  color: #fff;
-}
-.meet-pay:hover {
-  background-color: #0056b3;
-}
 .error-message {
   color: red;
   font-size: 14px;

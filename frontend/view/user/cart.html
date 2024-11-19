@@ -110,7 +110,7 @@
 
       <div class="container section-container payment-section">
         <h2 class="section-title">
-          <i class="fa-solid fa-credit-card"></i> 결제 수단
+          <i class="fa-solid fa-credit-card"></i> 결제 금액
         </h2>
         <div v-if="globalCoupons.length" class="coupon-section mb-3">
           <span>쿠폰 선택:</span>
@@ -125,21 +125,6 @@
             </option>
           </select>
         </div>
-        <div class="payment-option">
-          <button
-            :class="{'kakao-pay': true, 'selected': selectedPayment === 'kakaoPay'}"
-          >
-            <i class="fa-solid fa-comment"></i> PAY
-          </button>
-          <button
-            :class="{'meet-pay': true, 'selected': selectedPayment === 'meetPay'}"
-            @click="selectPayment('meetPay')"
-          >
-            <i class="fa-solid fa-handshake"></i>
-            만나서 결제
-          </button>
-        </div>
-
         <div class="payment-button text-center mt-2">
           <div class="paybutton">
             <div v-if="discountAmount > 0" class="discount-section">

@@ -58,7 +58,7 @@
               <div class="form-group">
                 <div class="col-sm-12 mb-3">
                   <label for="email" class="form-label">이메일 <span class="text-warning">*</span></label>
-                  <input class="form-control was-validated" type="email" placeholder="example@smartreserve.com" id="email" name="email" v-model="formDatas.email" aria-describedby="emailHelp" required>
+                  <input class="form-control was-validated" type="email" placeholder="example@smartreserve.com" id="email" name="email" v-model="formDatas.email" aria-describedby="emailHelp" required :readOnly="socialRegister">
                   <p v-if="errorMsg.errorCode.includes('email')" class="text-danger"> {{ errorMsg.errorMsg[errorMsg.errorCode.indexOf('email')] }}</p>
                 </div>
                 <div class="col-sm-12 mb-3">

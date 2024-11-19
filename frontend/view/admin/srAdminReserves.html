@@ -199,12 +199,12 @@
                           <li v-for="menu in reserve.payHistories" :key="menu.payHistoryId" class="menu-item">
                             <span>{{ menu.menuName }} {{ menu.stock }}개 </span>
                             <span>·············</span>
-                            <span>{{ menu.totalPrice }}원</span>
+                            <span>{{ menu.totalPrice | formatPrice }}원</span>
                           </li>
                         </ul>
-                        <p><strong>총 금액:</strong>{{ reserve.totalPriceBeforeDiscount }}원</p>
-                        <p v-if="reserve.payHistories[0].couponYN" class="text-danger"><strong>할인 금액:</strong><span> - {{ reserve.totalDiscountPrice }}원</span></p>
-                        <p v-if="reserve.payHistories[0].couponYN"><strong>할인 후 결제 금액:</strong>{{ reserve.totalPriceAfterDiscount }}원</p>
+                        <p><strong>총 금액:</strong>{{ reserve.totalPriceBeforeDiscount | formatPrice }}원</p>
+                        <p v-if="reserve.payHistories[0].couponYN" class="text-danger"><strong>할인 금액:</strong><span> - {{ reserve.totalDiscountPrice | formatPrice }}원</span></p>
+                        <p v-if="reserve.payHistories[0].couponYN"><strong>할인 후 결제 금액:</strong>{{ reserve.totalPriceAfterDiscount | formatPrice }}원</p>
                       </div>
                     </div>
                   </div>

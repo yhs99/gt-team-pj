@@ -26,8 +26,14 @@ public class AdminReserveServiceImpl implements AdminReserveService {
 	@Override
 	public List<ReservesVO> getReserveLists(Map<String, Object> filters) {
 		List<ReservesVO> ls = adminReserveDAO.getReserveLists(filters);
-		ls.stream()
-		.forEach(ReservesVO::setPrices);
+		log.info(ls.toString());
+		try {
+			ls.stream()
+			.forEach(ReservesVO::setPrices);
+		}catch(Exception e) {
+			e.printStackTrace();
+			log.info("에러");
+		}
 		return ls;
 	}
 	

@@ -85,25 +85,14 @@ new Vue({
         const response = await axios.get('/api/store');
         const storeData = response.data.data;
 
-        console.log(storeData);
         this.storeDTO = storeData.store;  // storeDTO에 응답 데이터 저장
         this.address = this.storeDTO.address; // 주소 초기화
-        console.log("GET으로 받아올 때 address 값 : " + this.storeDTO.address);
-
         this.scheduleDTO = storeData.schedule;
-        console.log("GET으로 받아올 때 스케쥴 값 : " + JSON.stringify(this.scheduleDTO));
-
-        console.log("스케쥴 :: " ,  this.scheduleDTO);
-
         this.facilityDTO = storeData.facility;
         this.storeCategoryDTO = storeData.category;
         this.uploadedFiles = storeData.storeImage;
 
-
-        console.log("업로드 파일 : " ,this.uploadedFiles)
-
       } catch (error) {
-        console.error(error);
         alert('fetchStores 가게 정보 수정 중 오류가 발생했습니다.');
       }
     },
@@ -114,16 +103,9 @@ new Vue({
       const geocoder = new kakao.maps.services.Geocoder();
       geocoder.addressSearch(address, (result, status) => {
         if (status === kakao.maps.services.Status.OK) {
-          console.log(result);
-          console.log(result[0].address.region_1depth_name);
           this.storeDTO.sidoCode = result[0].address.region_1depth_name;
           this.zipCode = result[0].road_address.zone_no;
-
-          console.log("address :: " + address);
           this.beforeAddress = address;
-          console.log("잘라낼 부분 :: " + result[0].address_name);
-          console.log("잘라낸 부분 :: " + address.replace(result[0].address_name, '').trim());
-
           this.address = result[0].address_name;
           this.detailAddress = address.replace(result[0].address_name, '').trim();
 
@@ -144,7 +126,6 @@ new Vue({
 
         // 새로운 파일들을 배열에 추가하고 url2 값을 설정
       Array.from(files).forEach(file => {
-        console.log("file : ", file)
         // 업로드 파일 객체를 준비
         const fileObj = file // 파일 이름
     
@@ -284,27 +265,13 @@ new Vue({
     },
     // 가게 수정 함수
     updateStore() {
+      document.getElementById("loadingSpinner").style.display = "block";
       let formData = new FormData();
-      console.log("수정시 주소 : " +  this.storeDTO.address)
-      console.log("수정시 도로명 주소 :: " + this.afterAddress)
-      console.log("수정시 address : " + this.detailAddress)
-      console.log("beforeAddress :: " + this.beforeAddress)
-      
-
-      console.log("주소 밸류값: " + document.getElementById('sample6_address').value)
-      console.log("상세주소 밸류값 : " + document.getElementById('sample6_detailAddress').value)
-
-      console.log("수정시 스케쥴 :: " ,  this.scheduleDTO);
-
       this.storeDTO.address = document.getElementById('sample6_address').value + ' ' + document.getElementById('sample6_detailAddress').value
-      console.log(this.storeDTO.address)
-
       this.uploadedFiles.forEach(file => {
-        console.log("수정시 file ::", file)
         formData.append('uploadedFiles', file);  // 파일 객체를 formData에 추가
       });
 
-      console.log("수정시 uploadFiles :: " , this.uploadedFiles);
       formData.append('storeDTO', new Blob([JSON.stringify(this.storeDTO)], { type: "application/json" }));
       formData.append('scheduleDTO', new Blob([JSON.stringify(this.scheduleDTO)], { type: "application/json" }));
       formData.append('storeCategoryDTO', new Blob([JSON.stringify(this.storeCategoryDTO)], { type: "application/json" }));
@@ -317,18 +284,15 @@ new Vue({
         }
       })
         .then(response => {
-          console.log('Store updated:', response.data);
-          console.log(formData);
           alert('가게 수정이 완료되었습니다.');
           location.href = "/";
         })
         .catch(error => {
-          console.error('Error updating store:', error);
-          console.log(this.storeDTO);
-          console.log(this.scheduleDTO);
-          console.log(this.storeCategoryDTO);
-          console.log(this.facilityDTO);
           alert('가게 수정에 실패했습니다.');
+        })
+        .finally(() => {
+          // 로딩 스피너 숨기기
+          document.getElementById("loadingSpinner").style.display = "none";
         });
     },
     // 양식 초기화

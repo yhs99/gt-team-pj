@@ -149,7 +149,7 @@
                     </div>
                     <div class="col">
                       <ul>
-                        <li><a :href="'/view/user/storeInfo?storeId='+reserve.storeId"><h4>{{ reserve.storeName }}</h4></a></li>
+                        <li><a :href="'/view/user/storeDetail?storeId='+reserve.storeId"><h4>{{ reserve.storeName }}</h4></a></li>
                         <li><label v-for="(category, index) in reserve.categories" :key="category.categoryId">
                           {{ category.storeCategoryName }}<span v-if="index !== reserve.categories.length - 1">&nbsp;·&nbsp;</span></label>
                         </li>
@@ -190,7 +190,7 @@
                     </div>
                     <div class="col">
                       <ul>
-                        <li><a :href="'/view/user/storeInfo?storeId='+reserve.storeId"><h4>{{ reserve.storeName }}</h4></a></li>
+                        <li><a :href="'/view/user/storeDetail?storeId='+reserve.storeId"><h4>{{ reserve.storeName }}</h4></a></li>
                         <li><label v-for="(category, index) in reserve.categories" :key="category.categoryId">
                           {{ category.storeCategoryName }}<span v-if="index !== reserve.categories.length - 1">&nbsp;·&nbsp;</span></label>
                         </li>
@@ -237,7 +237,7 @@
                     </div>
                     <div class="col">
                       <ul>
-                        <li><a :href="'/view/user/storeInfo?storeId='+reserve.storeId"><h4>{{ reserve.storeName }}</h4></a></li>
+                        <li><a :href="'/view/user/storeDetail?storeId='+reserve.storeId"><h4>{{ reserve.storeName }}</h4></a></li>
                         <li><label v-for="(category, index) in reserve.categories" :key="category.categoryId">
                           {{ category.storeCategoryName }}<span v-if="index !== reserve.categories.length - 1">&nbsp;·&nbsp;</span></label>
                         </li>
@@ -279,7 +279,7 @@
                         </div>
                         <div class="col">
                           <ul>
-                            <li><a :href="'/view/user/storeInfo?storeId='+bookmark.bookmarkDto.storeId"><h4>{{ bookmark.storeName }}</h4></a></li>
+                            <li><a :href="'/view/user/storeDetail?storeId='+bookmark.bookmarkDto.storeId"><h4>{{ bookmark.storeName }}</h4></a></li>
                             <li><label>
                               {{ bookmark.categoryName }}
                               </label>
@@ -311,7 +311,7 @@
                   <div>
                     <div class="mt-2">
                       <span class="review-delete" @click="deleteReview(review.reviewId)">X</span>
-                      <h3><a :href="'/view/user/storeInfo?storeId='+review.storeId">{{ review.storeName }}</a></h3>
+                      <h3><a :href="'/view/user/storeDetail?storeId='+review.storeId">{{ review.storeName }}</a></h3>
                     </div>
                     <div>
                       <label><i v-for="sc in review.score" class="fas fa-star text-warning"></i> | {{dateFormat(review.dateTime) }}</label>

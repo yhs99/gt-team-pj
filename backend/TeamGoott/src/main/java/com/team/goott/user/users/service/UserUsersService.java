@@ -6,4 +6,6 @@ public interface UserUsersService {
 
 	UserDTO login(String id, String password);
 
+	UserDTO loginByKakao(String email);
+
 }

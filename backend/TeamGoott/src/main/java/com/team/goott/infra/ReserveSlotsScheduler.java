@@ -126,15 +126,14 @@ public class ReserveSlotsScheduler {
     
  // 특정 가게의 예약 슬롯을 생성하는 메서드
     public void createSlotsForStoreId(int storeId, LocalDate startDate, LocalDate endDate) {
-        log.info("[{}] 가게의 슬롯을 생성중입니다.", storeId);
+//        log.info("[{}] 가게의 슬롯을 생성중입니다.", storeId);
 
         for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
             int dayCode = date.getDayOfWeek().getValue() % 7;
             
-            log.info(storeId + "[{}] 날짜의 슬롯을 생성중입니다.", date);
-//            log.info("date : " + date + "dayCode : " + dayCode);
+//            log.info(storeId + "[{}] 날짜의 슬롯을 생성중입니다.", date);
             createSlotsForDate(date, dayCode, storeId); // storeId 추가
-            log.info(storeId + "[{}] 날짜의 슬롯 생성완료", date);
+//            log.info(storeId + "[{}] 날짜의 슬롯 생성완료", date);
         }
     }
 
@@ -191,13 +190,13 @@ public class ReserveSlotsScheduler {
     // 특정 가게의 예약 슬롯을 생성 또는 업데이트하는 메서드
     public void updateSlotsForStore(int storeId, LocalDate startDate, LocalDate endDate, Map<String, Object> dayCodeMap,
     		int afterRotation) {
-        log.info("[{}] 가게의 슬롯을 생성 또는 업데이트 중입니다.", storeId);
+//        log.info("[{}] 가게의 슬롯을 생성 또는 업데이트 중입니다.", storeId);
 
         // 시작 날짜부터 종료 날짜까지 슬롯을 생성합니다.
         for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+        	
             int calDayCode = date.getDayOfWeek().getValue() % 7;
             int dayCode = (Integer) dayCodeMap.get("dayCodeId");
-            
             
             if (dayCode == calDayCode) {
             	updateSlotsForDate(date, dayCode, storeId, dayCodeMap, afterRotation); // storeId 추가
@@ -209,29 +208,24 @@ public class ReserveSlotsScheduler {
     // 날짜에 대한 예약 슬롯 생성 또는 업데이트
     private void updateSlotsForDate(LocalDate date, int dayCode, int storeId, Map<String, Object> dayCodeMap, int afterRotation) {
         // 해당 일자에 대한 스케줄을 가져옵니다.
-    	ScheduleDTO schedules = (ScheduleDTO) dayCodeMap.get("newSchedule");    	
+    	ScheduleDTO schedules = (ScheduleDTO) dayCodeMap.get("newSchedule");    
     	
-        log.info("스케쥴러의 schedules 배열 :  " + schedules.toString());
-        log.info("updateSlotsForDate의 storeId : " + storeId);
         // 각 스케줄에 대해 슬롯을 생성합니다.
         schedules.setStoreId(storeId);
-    	log.info("스케쥴러의 schedule : " + schedules);
         // 정기휴일이거나 해당 가게의 스케줄이 아닐 경우 생략합니다.
         if (schedules.isCloseDay() || schedules.getStoreId() != storeId) {
+        	return;
         }
         try {
             // 슬롯 생성에 필요한 정보를 가져옵니다.
             int intervalMinutes = rotationChange(afterRotation);
-            
-            log.info("스케쥴러 intervalMinutes : {}" , intervalMinutes);
             LocalTime openTime = schedules.getOpen();
-//            log.info(openTime+"");
             LocalTime closeTime = schedules.getClose();
-//            log.info(closeTime+"");
 
             // 유효성 검증: 개장 시간이 폐장 시간보다 늦을 경우 경고
             if (openTime.isAfter(closeTime)) {
-//                log.warn("유효하지 않은 시간 범위: {} ~ {}", openTime, closeTime);
+                log.warn("유효하지 않은 시간 범위: {} ~ {}", openTime, closeTime);
+                return;
             }
             
             // 기존 슬롯을 가져옵니다.
@@ -241,22 +235,24 @@ public class ReserveSlotsScheduler {
             List<ReserveSlotsDTO> existingSlots = oDao.getExistingSlots(map);
 
             // 운영시간 내 슬롯을 생성합니다.
-            for (LocalTime time = openTime; time.isBefore(closeTime); time = time.plusMinutes(intervalMinutes)) {
-                final LocalTime currentTime = time;
-
-                // 이미 존재하는 슬롯인지 확인합니다.
+            LocalDateTime startDateTime = LocalDateTime.of(date, openTime);
+        	LocalDateTime endDateTime = LocalDateTime.of(date, closeTime);
+    		for (LocalDateTime time = startDateTime; time.isBefore(endDateTime); time = time.plusMinutes(intervalMinutes)) {
+                final LocalTime currentTime = time.toLocalTime();
                 boolean exists = existingSlots.stream()
-                        .anyMatch(slot -> slot.getSlotDatetime().toLocalDate().equals(date) &&
+                        .anyMatch(slot -> slot.getSlotDatetime().toLocalDate().equals(date) && 
                                           slot.getSlotDatetime().toLocalTime().equals(currentTime));
-//                log.info(time + " " +closeTime + " ::" +exists);
-//                log.info("existingSlots :: " + existingSlots.toString());
+                
+                log.info("existingSlots :: " + existingSlots.toString());
+                
                 // 슬롯이 존재하지 않을 경우 새로운 슬롯을 생성합니다.
                 if (!exists) {
+                	log.info("!exist 일경우 log :: ");
                     ReserveSlotsDTO newSlot = new ReserveSlotsDTO();
                     newSlot.setStoreId(schedules.getStoreId());
-                    newSlot.setSlotDatetime(LocalDateTime.of(date, time)); // LocalDateTime으로 설정
+                    newSlot.setSlotDatetime(LocalDateTime.of(date, time.toLocalTime())); // LocalDateTime으로 설정
+                    
                     log.info("newSlot :: {} ", newSlot.toString());
-//                        log.info("스케쥴러 newSlot : {} ", newSlot.toString());
                         oDao.UpdateReserveSlot(newSlot);
                         
 //                            log.info("[{}] 새로운 슬롯 생성 완료: {}", schedule.getStoreId(), newSlot.getSlotDatetime());

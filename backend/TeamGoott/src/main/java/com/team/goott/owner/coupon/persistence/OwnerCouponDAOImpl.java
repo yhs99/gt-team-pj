@@ -48,8 +48,6 @@ public class OwnerCouponDAOImpl implements OwnerCouponDAO {
 
 	@Override
 	public int modifyCoupon(Map<String, Object> updateCoupon) throws Exception {
-	    log.info("다오단 (수정) : " + updateCoupon);
-
 	    return ses.update(ns + "modifyCoupon", updateCoupon);
 	}
 

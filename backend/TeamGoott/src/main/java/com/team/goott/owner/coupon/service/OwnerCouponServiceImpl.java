@@ -59,11 +59,9 @@ public class OwnerCouponServiceImpl implements OwnerCouponService {
 	public int modifyCoupon(int couponId, int storeId, CouponDTO coupon) throws Exception {
         
 		CouponVO existingCoupon = ownerCouponDAO.selectCouponByCouponId(couponId);
-		log.info("서비스단 넘어온 coupon : " + coupon.toString());
 
 		if (existingCoupon != null && existingCoupon.getStoreId() == storeId) {
 			validateAndSetDefaults(coupon);
-			log.info("서비스단 유효성 검사 후 coupon : " + coupon.toString());
 
 			Map<String, Object> couponData = new HashMap<>();
 			couponData.put("couponId", couponId);
@@ -86,8 +84,6 @@ public class OwnerCouponServiceImpl implements OwnerCouponService {
 			}
 
 			if (existingCoupon.getStock() != coupon.getStock()) {
-				log.info("DB의 쿠폰 stock : " + existingCoupon.getStock());
-				log.info("넘어온 coupon의 stock : " + coupon.getStock());
 				couponData.put("stock", coupon.getStock());
 			}
 
@@ -99,9 +95,6 @@ public class OwnerCouponServiceImpl implements OwnerCouponService {
 				couponData.put("end", coupon.getEnd());
 			}
 			
-			log.info("서비스단 dao 가기전 coupon : " + coupon.toString());
-			log.info("서비스단 couponMap의 데이터 : " + couponData.toString());
-
 			return ownerCouponDAO.modifyCoupon(couponData); // 1 반환 시 성공
 		} else {
 			throw new Exception("쿠폰 수정 권한이 없습니다."); // 권한 없음 예외 처리

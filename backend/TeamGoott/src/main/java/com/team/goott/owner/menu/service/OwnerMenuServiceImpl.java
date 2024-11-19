@@ -47,8 +47,6 @@ public class OwnerMenuServiceImpl implements OwnerMenuService {
 		allMenuInfo.put("numOfMainMenu", numOfMain);
 		allMenuInfo.put("numOfSideMenu", numOfSide);
 		
-		log.info("{}", allMenuInfo.toString());
-		
 		return allMenuInfo;
 	}
 
@@ -65,7 +63,6 @@ public class OwnerMenuServiceImpl implements OwnerMenuService {
 	@Override
 	public int uploadMenu(MenuDTO menu, MultipartFile file, int storeId) {
 		MenuDTO uploadMenu = menu;
-		log.info("{}",file.getOriginalFilename().isEmpty());
 		try {
 			//이미지 파일 처리
 			if(!file.getOriginalFilename().isEmpty()) {
@@ -87,7 +84,6 @@ public class OwnerMenuServiceImpl implements OwnerMenuService {
 
 	@Override
 	public int updateMenu(int menuId, MenuDTO updateMenu, MultipartFile file, MenuDTO originMenu) {
-		log.info("파일 이름 : {}", originMenu.getMenuImageName() );
 		MenuDTO modifyMenu = updateMenu;
 		try {
 			// 수정 메뉴 이미지 파일 처리

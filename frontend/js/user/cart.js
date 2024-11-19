@@ -48,9 +48,19 @@ new Vue({
     },
   },
   created() {
+    this.start();
     this.fetchUserCart();
   },
   methods: {
+    start() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const reserveTime = urlParams.get("reserveTime");
+      if (!reserveTime) {
+        alert("예약 시간이 필요합니다.");
+        window.location.href = "/";
+        return;
+      }
+    },
     fetchUserCart() {
       axios
         .get("/api/cart")
@@ -83,22 +93,19 @@ new Vue({
       this.reservationNameError = "";
       this.peopleCountError = "";
 
+      let check = true;
       // 예약자명 검증
       if (!this.reservationName.trim()) {
+        check = false;
         this.reservationNameError = "예약자명을 입력해 주세요.";
         this.$refs.reservationNameInput?.focus();
-        return;
       }
 
       // 인원수 검증
-      if (
-        !Number.isInteger(this.peopleCount) ||
-        this.peopleCount < 1 ||
-        this.peopleCount > this.maxPeoplePerReserve
-      ) {
+      if (this.peopleCount < 1 || this.peopleCount > this.maxPeoplePerReserve) {
         this.peopleCountError = `인원수는 1 이상, 최대 ${this.maxPeoplePerReserve}명까지 가능합니다.`;
         this.$refs.peopleCountInput?.focus();
-        return;
+        check = false;
       }
 
       const reservationData = {
@@ -111,25 +118,26 @@ new Vue({
       if (this.selectedCoupon?.couponId) {
         reservationData.couponId = this.selectedCoupon.couponId;
       }
+      if (check) {
+        axios
+          .post("/api/reserve", reservationData, {
+            headers: { "Content-Type": "application/json" },
+          })
+          .then(() => {
+            alert("예약이 완료되었습니다!");
+            window.location.href = "/";
+          })
+          .catch((error) => {
+            const errorMessage =
+              error.response?.data?.message ||
+              "예약 중 알 수 없는 오류가 발생했습니다. 다시 시도해 주세요.";
+            alert("오류 발생: " + errorMessage);
+          });
 
-      axios
-        .post("/api/reserve", reservationData, {
-          headers: { "Content-Type": "application/json" },
-        })
-        .then(() => {
-          alert("예약이 완료되었습니다!");
-          window.location.href = "/";
-        })
-        .catch((error) => {
-          const errorMessage =
-            error.response?.data?.message ||
-            "예약 중 알 수 없는 오류가 발생했습니다. 다시 시도해 주세요.";
-          alert("오류 발생: " + errorMessage);
-        });
-
-      this.reservationName = "";
-      this.peopleCount = 1;
-      this.note = "";
+        this.reservationName = "";
+        this.peopleCount = 1;
+        this.note = "";
+      }
     },
     getStoreImage(urlArray) {
       if (!Array.isArray(urlArray)) return null;

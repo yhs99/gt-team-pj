@@ -1,7 +1,8 @@
 # 🍴 SmartReserve
 ![enter image description here](https://github.com/user-attachments/assets/6ce50e6f-85a7-4ace-a7f8-b115d1561646)
 > 예약을 더 빠르고 더 알뜰하게 <br><br>
-[프로젝트 WIKI 보러가기](https://github.com/yhs99/gt-team-pj/wiki)
+[프로젝트 WIKI 보러가기](https://github.com/yhs99/gt-team-pj/wiki)<br>
+[사이트 바로가기](https://smartreserve.store)
 # 1. ✨ 서비스 소개
 **SmartReserve**는 사용자가 온라인으로 원하는 시간에 손쉽게 예약하고
  결제할 수 있도록 도와주는 서비스입니다. 

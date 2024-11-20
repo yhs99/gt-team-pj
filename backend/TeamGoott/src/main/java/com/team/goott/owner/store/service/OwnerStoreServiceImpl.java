@@ -82,6 +82,21 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
     	validateStoreDTO(store);
         setSidoCodeId(store);
         log.info("서비스단 store : {}", store);
+        
+        if (schedules.size() < 1) {
+        	store.setRotationId(0);
+        	throw new Exception("스케쥴이 비어있습니다");
+        }
+        
+        if (category.size() < 1) {
+        	store.setRotationId(0);
+        	throw new Exception("카테고리가 비어있습니다");
+        }
+        
+        if (facility.size() < 1 ) {
+        	store.setRotationId(0);
+        	throw new Exception("편의 시설이 비어있습니다");
+        }
 
         // store테이블에 정보가 insert 되었을 경우 1이 반환되고, storeId를 반환값으로 받음
         if (ownerStoreDao.createStore(store) <= 0) {

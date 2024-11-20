@@ -26,8 +26,22 @@
 		select * from reserve where reserveId = #{reserveId}
 	</select>
 	
-	<select id="getReserveSlot" resultType="com.team.goott.owner.domain.ReserveSlotsDTO">
-		select * from reserveSlots where storeId = #{storeId} and slotDatetime = #{reserveTime}
+	<resultMap type="com.team.goott.owner.domain.ReserveSlotsDTO" id="reserveSlots">
+		<id property="reserveSlotId" column ="reserveSlotId"/>
+		<result property="storeId" column="storeId"/>
+		<result property="slotDatetime" column="slotDatetime"/>
+		<result property="reserved" column="reserved"/>
+		<result property="leftCount" column="leftCount"/>
+	</resultMap>
+	
+	<select id="getReserveSlot" parameterType="map" resultMap="reserveSlots">
+		SELECT rs.*, IFNULL(s.maxPeople - IFNULL(sum(r.people),0), 0) as leftCount
+		FROM reserveSlots rs left join reserve r
+		ON rs.slotDatetime = r.reserveTime AND rs.storeId = r.storeId
+		LEFT JOIN store s
+		ON rs.storeId = s.storeId
+		WHERE rs.storeId = #{storeId} AND DATE(rs.slotDateTime) = #{reserveTime}
+		GROUP BY rs.slotDatetime; 
 	</select>
 	
 	<select id="getUser" resultType="com.team.goott.user.domain.UserDTO">
@@ -48,7 +62,16 @@
 	</insert>
 	
 	<select id="getNotification" resultType="com.team.goott.owner.domain.NotificationDTO">
-		select * from notification where storeId = #{storeId} and notificationType = #{notificationType}
+		select * from notification 
+		where storeId = #{storeId} and notificationType = #{notificationType}
+		order by createAt desc
+	</select>
+	
+	<select id="getReserveByDate" resultType="com.team.goott.owner.domain.ReserveByDateVO">
+		select DATE(reserveTime) as date, count(*) as total
+		from reserve
+		where storeId = #{storeId}
+		group by date
 	</select>
 	
 	<update id="updateStatus">
@@ -65,4 +88,9 @@
  		 set reserved = false 
  		 where slotDatetime = #{reserveTime} and storeId = #{storeId}
 	</update>
+	
+	<delete id="deleteNotifications">
+		DELETE FROM notification
+		WHERE storeId = #{storeId} and notificationType = 'CUSTOMER_TO_OWNER'
+	</delete>
 </mapper>

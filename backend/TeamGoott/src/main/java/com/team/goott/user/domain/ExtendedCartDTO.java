@@ -1,5 +1,8 @@
 package com.team.goott.user.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,8 +24,9 @@ public class ExtendedCartDTO {
 	private int stock;
 	private double price;
 	private double totalPrice;
-	private int userId;
+	private int maxPeoplePerReserve;
 	private String menuImageUrl;
-	private String description;
 	private String storeName;
+	private List<String> url = new ArrayList<>();
+	private List<CouponVO> availableCoupons = new ArrayList<>();
 }

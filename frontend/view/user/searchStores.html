@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>필터링 후 식당</title>
+    <link rel="icon" type="image/png" href="/assets/mainIcon.png" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      href="/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link href="/css/user/animate/animate.min.css" rel="stylesheet" />
+    <link href="/css/user/lightbox/css/lightbox.min.css" rel="stylesheet" />
+    <link href="/css/user/owlcarousel/owl.carousel.min.css" rel="stylesheet" />
+    <link
+      href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="/css/user/mainlogo.css" rel="stylesheet" />
+    <link href="/css/user/searchStores.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="app" class="bg-light">
+      <header-navbar></header-navbar>
+      <div class="container">
+        <table class="table">
+          <tbody>
+            <tr
+              v-for="(store, index) in stores"
+              :key="store.storeId + '-' + index"
+              @click="goToStore(store.storeId)"
+            >
+              <td>
+                <div class="storeTitle">
+                  <i class="fa-solid fa-store"></i> {{ store.storeName }}
+                  <span v-if="store.couponCount > 0" class="coupon-event">
+                    할인 행사 진행중 <i class="fa-solid fa-tags"></i>
+                  </span>
+                  <div class="icon-container">
+                    <div
+                      class="favorite-icon"
+                      @click.stop="toggleFavorite(store)"
+                    >
+                      <i
+                        :class="[
+                    store.isFavorite ? 'fas fa-heart red-heart' : 'far fa-heart black-heart'
+                    ]"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+                <div class="storeAddress">
+                  <i
+                    class="fas fa-star"
+                    style="color: gold; font-size: 15px"
+                  ></i>
+                  {{ store.averageScore }}
+                  <span
+                    @click.stop="goToReviewPage(store.storeId)"
+                    class="review-count-link"
+                  >
+                    ({{ store.reviewCount }})
+                  </span>
+                  {{store.address}}
+                </div>
+                <div class="store-tel">
+                  <i class="fa-solid fa-phone"></i> tel: {{ store.tel }}
+                </div>
+                <div class="storeImg">
+                  <div v-if="store.storeImages && store.storeImages.length > 0">
+                    <img
+                      v-for="(image, index) in store.storeImages.slice(0, 3)"
+                      :key="index"
+                      :src="image.url"
+                      alt="식당 이미지"
+                      class="store-image"
+                    />
+                  </div>
+                  <div v-else>
+                    <img
+                      src="/assets/user/img/준비중.png"
+                      alt="준비중 이미지"
+                      class="store-image"
+                    />
+                  </div>
+                  <p class="store-status">
+                    <i class="fa-solid fa-clock"></i> {{ getStoreStatus(store)
+                    }}
+                  </p>
+                  <ul
+                    class="facilities-list"
+                    v-if="store.facilities && store.facilities.length > 0"
+                  >
+                    <li
+                      v-for="(facility, index) in store.facilities"
+                      :key="index"
+                    >
+                      {{ facility.facilityName }}
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div v-if="isLoading" class="loading-spinner">
+          <i class="fas fa-spinner fa-spin"></i> 불러오는 중...
+        </div>
+        <div v-if="!hasMore && !isLoading" class="loading-spinner">
+          더 이상 데이터가 없습니다.
+        </div>
+      </div>
+      <button
+        v-show="showScrollButton"
+        class="scroll-to-top"
+        @click="scrollToTop"
+      >
+        <i class="fa-solid fa-arrow-up"></i>
+      </button>
+      <footer-component></footer-component>
+    </div>
+    <script src="/js/Footer.js"></script>
+    <script src="/js/user/component.js"></script>
+    <script src="/js/user/searchStores.js"></script>
+  </body>
+</html>

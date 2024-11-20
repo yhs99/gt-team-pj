@@ -58,4 +58,15 @@ public class OwnerMenuDAOImpl implements OwnerMenuDAO {
 		return ses.update(ns+"updateMenu", args);
 	}
 
+	@Override
+	public int updateMenuWithoutFile(int menuId, MenuDTO menu) {
+		Map<String, Object> args = new HashMap<String, Object>();
+		args.put("menuId", menuId);
+		args.put("menuName", menu.getMenuName());
+		args.put("price", menu.getPrice());
+		args.put("description", menu.getDescription());
+		args.put("isMain", menu.isMain());
+		return ses.update(ns+"updateMenuWithoutFile", args);
+	}
+
 }

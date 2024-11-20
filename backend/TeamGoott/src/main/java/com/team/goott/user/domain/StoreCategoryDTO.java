@@ -16,6 +16,6 @@ import lombok.ToString;
 public class StoreCategoryDTO {
 	private int categoryId; 
 	private int storeId;
-	private int categoryCodeId;
-	private String categoryName;
+	private String categoryCodeId;
+	private String storeCategoryName;
 }

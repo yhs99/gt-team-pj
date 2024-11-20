@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>가게 등록</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta content="" name="description" />
+    <link rel="icon" type="image/png" href="/assets/mainIcon.png" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+    />
+    <link
+      href="/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/css/owner/lib/owlcarousel/assets/owl.carousel.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/css/owner/lib/tempusdominus/tempusdominus-bootstrap-4.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="/css/owner/style.css" rel="stylesheet" />
+    <link href="/css/owner/mainlogo.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/owner/registerStore.css" />
+
+    <!-- fullcalenda CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="/js/user/lib/wow/wow.min.js"></script>
+    <script src="/js/owner/lib/chart/chart.min.js"></script>
+    <script src="/js/owner/lib/easing/easing.min.js"></script>
+    <script src="/js/user/lib/counterup/counterup.min.js"></script>
+    <script src="/js/user/lib/lightbox/js/lightbox.min.js"></script>
+    <script src="/node_modules/vue/dist/vue.min.js"></script>
+    <script src="/node_modules/axios/dist/axios.min.js"></script>
+    <script src="/js/owner/lib/waypoints/waypoints.min.js"></script>
+    <script src="/js/owner/lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="/js/owner/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <!-- JavaScript Libraries -->
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="/node_modules/vue/dist/vue.min.js"></script>
+    <script src="/node_modules/axios/dist/axios.min.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="/js/owner/component.js"></script>
+    <script
+      type="text/javascript"
+      src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7394510cd6543ff560b02ba31649d9f3&libraries=services"
+    ></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="container-xxl position-relative bg-white d-flex p-0">
+          <!-- 로딩 스피너와 메시지 -->
+        <div id="loadingSpinner">
+          <div class="spinner"></div>
+          <div id="loadingMessage">가게 등록중입니다 잠시 기다려주세요</div>
+        </div>
+        <!-- Sidebar Start -->
+        <div class="sidebar pe-4 pb-3">
+          <nav class="navbar bg-light navbar-light">
+            <a href="/view/user/userLogin" class="navbar-brand mx-4 mb-3">
+              <h3 class="text-primary">
+                <i class="fa fa-hashtag me-2"></i>smart reserve
+              </h3>
+            </a>
+            <div class="d-flex align-items-center ms-4 mb-4">
+              <div class="position-relative">
+                <img
+                  class="rounded-circle"
+                  src="../../assets/mainIcon.png"
+                  alt=""
+                  style="width: auto; height: auto"
+                />
+              </div>
+              <div class="ms-3">
+                <h6 class="mb-0">환영합니다!</h6>
+                <h6 class="mb-0">가게를 등록하세요!</h6>
+              </div>
+            </div>
+          </nav>
+        </div>
+        <!-- Sidebar End -->
+
+        <!-- Content Start -->
+        <div class="content">
+          <!-- navbar Start -->
+          <!-- navbar End -->
+
+          <!-- 가게 등록 페이지 -->
+          <!-- 가게 이름 -->
+
+          <div class="registerStore">
+            <div class="mb-3">
+              <label for="storeName" class="form-label">가게 이름</label>
+              <input
+                type="text"
+                class="form-control"
+                id="storeName"
+                v-model="storeDTO.storeName"
+                required
+              />
+            </div>
+
+            <!-- 전화번호 -->
+            <div class="mb-3">
+              <label for="tel" class="form-label">전화번호</label>
+              <input
+                type="text"
+                class="form-control"
+                id="tel"
+                v-model="storeDTO.tel"
+                required
+              />
+            </div>
+
+            <!-- 가게 설명 -->
+            <div class="mb-3">
+              <label for="description" class="form-label">가게 설명</label>
+              <textarea
+                class="form-control"
+                id="description"
+                v-model="storeDTO.description"
+                rows="6"
+                required
+              ></textarea>
+            </div>
+
+            <!-- 오시는길 -->
+            <div class="mb-3">
+              <label for="directionGuide" class="form-label">오시는길</label>
+              <textarea
+                class="form-control"
+                id="directionGuide"
+                v-model="storeDTO.directionGuide"
+                rows="3"
+                required
+              ></textarea>
+            </div>
+
+            <!-- 최대 수용 인원 -->
+            <div class="mb-3">
+              <label for="maxPeople" class="form-label">최대 인원</label>
+              <input
+                type="number"
+                class="form-control"
+                id="maxPeople"
+                v-model="storeDTO.maxPeople"
+                required
+              />
+            </div>
+
+            <!-- 예약시 최대 인원 -->
+            <div class="mb-3">
+              <label for="maxPeoplePerReserve" class="form-label"
+                >예약시 최대 인원</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="maxPeoplePerReserve"
+                v-model="storeDTO.maxPeoplePerReserve"
+                required
+              />
+            </div>
+
+            <!-- 스케쥴 설정 -->
+            <div
+              class="mb-3"
+              v-for="(schedule, index) in scheduleDTO"
+              :key="index"
+            >
+              <label :for="'schedule-' + index" class="form-label"
+                >운영 시간 ({{ schedule.day }})</label
+              >
+              <div class="d-flex align-items-center">
+                <!-- 시작 시간 -->
+                <input
+                  type="time"
+                  class="form-control me-2"
+                  :id="'schedule-' + index + '-open'"
+                  v-model="schedule.open"
+                  required
+                  v-if="!schedule.closeDay"
+                />
+
+                <!-- 종료 시간 -->
+                <input
+                  type="time"
+                  class="form-control me-2"
+                  :id="'schedule-' + index + '-close'"
+                  v-model="schedule.close"
+                  required
+                  v-if="!schedule.closeDay"
+                />
+                <!-- 운영/휴무 선택 -->
+                <select
+                  class="form-control"
+                  v-model="schedule.closeDay"
+                  @change="toggleScheduleVisibility(index)"
+                  :style="{ backgroundColor: schedule.closeDay ? '#f8d7da' : '#d4edda', color: schedule.closeDay ? '#721c24' : '#155724' }"
+                  style="width: auto"
+                >
+                  <option :value="false">운영</option>
+                  <option :value="true">휴무</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label for="storeRotaion">예약 시간 간격 설정</label>
+              <div class="category-buttons">
+                <div
+                  v-for="rotation in storeRotaion"
+                  :key="rotation.rotationTime"
+                >
+                  <input
+                    type="button"
+                    :value="`${rotation.rotationTime} (분)`"
+                    @click="toggleRotation(rotation)"
+                    :class="{'selected': rotationIsSelected(rotation)}"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="address-container magrinDiv">
+              주소 입력
+              <!-- 주소 검색 -->
+              <input type="text" id="sample6_postcode" placeholder="우편번호" />
+              <input
+                type="button"
+                @click="sample6_execDaumPostcode()"
+                value="우편번호 찾기"
+              /><br />
+              <input
+                type="text"
+                id="sample6_address"
+                placeholder="주소"
+              /><br />
+              <input
+                type="text"
+                id="sample6_detailAddress"
+                placeholder="상세주소"
+              />
+              <input
+                type="text"
+                id="sample6_extraAddress"
+                placeholder="참고항목"
+              />
+            </div>
+
+            <!-- 카테고리 버튼들 -->
+            <div>
+              <label for="storeCategory">카테고리 선택</label>
+              <div class="category-buttons">
+                <div
+                  v-for="category in storeCategory"
+                  :key="category.categoryId"
+                >
+                  <input
+                    type="button"
+                    :value="category.categoryName"
+                    @click="toggleCategory(category)"
+                    :class="{'selected': isSelected(category)}"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- 편의시설 버튼들 -->
+            <div class="magrinDiv">
+              <label for="facility">편의시설 선택</label>
+              <div class="category-buttons">
+                <div
+                  v-for="facility in storeFacility"
+                  :key="facility.facilityCode"
+                >
+                  <input
+                    type="button"
+                    :value="facility.facilityName"
+                    @click="toggleFacility(facility)"
+                    :class="{'selected': facilityIsSelected(facility)}"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3 magrinDiv">
+              <!-- 이미지 업로드 설명 및 최대 5개 텍스트 -->
+              <label for="imageUpload" class="form-label">
+                이미지 업로드
+                <span style="font-size: 0.9em; color: gray">(최대 5개)</span>
+              </label>
+
+              <!-- 선택된 파일 갯수 표시 -->
+              <label for="imageUpload" id="fileCountLabel">
+                {{ fileCount }} 개 사진 선택됨
+              </label>
+
+              <!-- 파일 선택 버튼 -->
+              <input
+                type="file"
+                class="form-control"
+                id="imageUpload"
+                accept="image/*"
+                @change="handleImageUpload($event)"
+                multiple
+                style="display: none"
+              />
+            </div>
+
+            <div>
+              <div class="mb-3">
+                <!-- 파일 선택 버튼을 클릭하면 파일 input 요소가 트리거되도록 하는 버튼 -->
+                <button
+                  type="button"
+                  class="btn btn-info"
+                  @click="triggerFileInput"
+                  style="
+                    padding: 12px 24px;
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    transition: background-color 0.3s;
+                  "
+                >
+                  이미지 추가
+                </button>
+
+                <!-- 선택된 파일 목록 -->
+                <ul
+                  v-if="uploadedFiles.length > 0"
+                  style="list-style-type: none; padding: 0; margin-top: 20px"
+                >
+                  <li
+                    v-for="(file, index) in uploadedFiles"
+                    :key="index"
+                    style="
+                      display: flex;
+                      align-items: center;
+                      margin-bottom: 16px;
+                      border: 1px solid #ddd;
+                      padding: 12px;
+                      border-radius: 8px;
+                      background-color: #f9f9f9;
+                    "
+                  >
+                    <span
+                      style="
+                        flex-grow: 1;
+                        font-size: 16px;
+                        font-weight: bold;
+                        color: #333;
+                      "
+                    >
+                      {{ transName(file.name || file.fileName) }}
+                    </span>
+                    <div style="margin-right: 16px">
+                      <img
+                        :src="file.url2 || file.url"
+                        alt="Uploaded Image"
+                        style="
+                          width: 120px;
+                          height: 120px;
+                          object-fit: cover;
+                          border-radius: 6px;
+                        "
+                      />
+                    </div>
+                    <button
+                      @click="removeFile(index)"
+                      style="
+                        padding: 8px 16px;
+                        background-color: #dc3545;
+                        color: white;
+                        border: none;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        transition: background-color 0.3s;
+                      "
+                    >
+                      삭제
+                    </button>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- 파일 선택 input 요소 (display: none으로 숨김) -->
+              <input
+                type="file"
+                id="imageUpload"
+                @change="handleImageUpload"
+                multiple
+                style="display: none"
+              />
+            </div>
+
+            <div class="button-group">
+              <button class="btn btn-primary" @click="registerStore">
+                가게 등록
+              </button>
+              <button
+                class="btn btn-danger"
+                @click="window.location.href = '/'"
+              >
+                등록 취소
+              </button>
+            </div>
+          </div>
+          <footer-component></footer-component>
+        </div>
+      </div>
+      <!-- Content End -->
+    </div>
+
+    <script src="/js/owner/registerStore.js"></script>
+  </body>
+</html>

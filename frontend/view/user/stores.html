@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>모든 식당</title>
+    <link rel="icon" type="image/png" href="/assets/mainIcon.png" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      href="/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link href="/css/user/animate/animate.min.css" rel="stylesheet" />
+    <link href="/css/user/lightbox/css/lightbox.min.css" rel="stylesheet" />
+    <link href="/css/user/owlcarousel/owl.carousel.min.css" rel="stylesheet" />
+    <link
+      href="/node_modules/bootstrap/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="/css/user/mainlogo.css" rel="stylesheet" />
+    <link href="/css/user/store.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="app" class="bg-light">
+      <header-navbar></header-navbar>
+      <div class="container">
+        <div class="slider-heading">마음에 들 만한 곳을 모아봤어요</div>
+      </div>
+      <!-- 첫 번째 슬라이더 -->
+      <div class="container slider">
+        <span
+          class="arrow-btn arrow-left"
+          @click="scrollLeft('mainCardContainer')"
+          >‹</span
+        >
+        <div class="card-container" ref="mainCardContainer">
+          <div
+            v-for="store in stores"
+            :key="store.storeId"
+            class="card"
+            @click="goToStore(store.storeId)"
+          >
+            <div class="favorite-icon" @click.stop="toggleFavorite(store)">
+              <i
+                :class="store.isFavorite ? 'fas fa-heart' : 'far fa-heart'"
+              ></i>
+            </div>
+            <img
+              :src="store.storeImages?.[0]?.url || '/assets/user/img/준비중.png'"
+              @error="this.src='/assets/user/img/준비중.png'"
+              alt="식당 이미지"
+              class="store-image"
+            />
+            <div class="card-content">
+              <p class="card-title">{{ store.storeName }}</p>
+              <p class="store-status">{{ getStoreStatus(store)}}</p>
+              <p class="cart-review">
+                <i class="fas fa-star" style="color: gold; font-size: 15px"></i>
+                {{ store.averageScore }} ({{ store.reviewCount }})
+                <span v-if="store.couponCount > 0" class="coupon-event"
+                  >할인 행사 중</span
+                >
+              </p>
+              <div class="card-overlay">
+                {{ truncatedDescription(store.description) }}
+              </div>
+            </div>
+          </div>
+          <div class="card more-card" @click="showMore">
+            <p class="more-text">더보기</p>
+          </div>
+        </div>
+        <span
+          class="arrow-btn arrow-right"
+          @click="scrollRight('mainCardContainer')"
+          >›</span
+        >
+      </div>
+      <div class="container">
+        <p class="slider-groupHeading">단체라면 여기가 딱 !</p>
+      </div>
+      <!-- 두 번째 슬라이더 -->
+      <div class="container slider">
+        <span
+          class="arrow-btn arrow-left"
+          @click="scrollLeft('groupCardContainer1')"
+          >‹</span
+        >
+        <div class="card-container" ref="groupCardContainer1">
+          <div
+            v-for="groupStore in groupStores"
+            :key="groupStore.storeId"
+            class="card"
+            @click="goToStore(groupStore.storeId)"
+          >
+            <div class="favorite-icon" @click.stop="toggleFavorite(groupStore)">
+              <i
+                :class="groupStore.isFavorite ? 'fas fa-heart' : 'far fa-heart'"
+              ></i>
+            </div>
+            <img
+              :src="groupStore.storeImages?.[0]?.url || '/assets/user/img/준비중.png'"
+              @error="this.src='/assets/user/img/준비중.png'"
+              alt="식당 이미지"
+              class="store-image"
+            />
+            <div class="card-content">
+              <p class="card-title">{{ groupStore.storeName }}</p>
+              <p class="store-status">{{ getStoreStatus(groupStore)}}</p>
+              <p class="cart-review">
+                <i class="fas fa-star" style="color: gold; font-size: 15px"></i>
+                {{ groupStore.averageScore }} ({{ groupStore.reviewCount
+                }})<span v-if="groupStore.couponCount > 0" class="coupon-event"
+                  >할인 행사 중
+                </span>
+              </p>
+              <div class="card-overlay">
+                {{ truncatedDescription(groupStore.description) }}
+              </div>
+            </div>
+          </div>
+          <div class="card more-card" @click="showMore">
+            <p class="more-text">더보기</p>
+          </div>
+        </div>
+        <span
+          class="arrow-btn arrow-right"
+          @click="scrollRight('groupCardContainer1')"
+          >›</span
+        >
+      </div>
+      <div class="container">
+        <p class="slider-groupHeading">후기가 많은 식당</p>
+      </div>
+      <!-- 세 번째 슬라이더 -->
+      <div class="container slider">
+        <span
+          class="arrow-btn arrow-left"
+          @click="scrollLeft('groupCardContainer2')"
+          >‹</span
+        >
+        <div class="card-container" ref="groupCardContainer2">
+          <div
+            v-for="topReviewStore in topReviewStores"
+            :key="topReviewStore.storeId"
+            class="card"
+            @click="goToStore(topReviewStore.storeId)"
+          >
+            <div
+              class="favorite-icon"
+              @click.stop="toggleFavorite(topReviewStore)"
+            >
+              <i
+                :class="topReviewStore.isFavorite ? 'fas fa-heart' : 'far fa-heart'"
+              ></i>
+            </div>
+            <img
+              :src="topReviewStore.storeImages?.[0]?.url || '/assets/user/img/준비중.png'"
+              @error="this.src='/assets/user/img/준비중.png'"
+              alt="식당 이미지"
+              class="store-image"
+            />
+            <div class="card-content">
+              <p class="card-title">{{ topReviewStore.storeName }}</p>
+              <p class="store-status">{{ getStoreStatus(topReviewStore)}}</p>
+              <p class="cart-review">
+                <i class="fas fa-star" style="color: gold; font-size: 15px"></i>
+                {{ topReviewStore.averageScore }} ({{ topReviewStore.reviewCount
+                }})<span
+                  v-if="topReviewStore.couponCount > 0"
+                  class="coupon-event"
+                  >할인 행사 중</span
+                >
+              </p>
+              <div class="card-overlay">
+                {{ truncatedDescription(topReviewStore.description) }}
+              </div>
+            </div>
+          </div>
+          <div class="card more-card" @click="showMore">
+            <p class="more-text">더보기</p>
+          </div>
+        </div>
+        <span
+          class="arrow-btn arrow-right"
+          @click="scrollRight('groupCardContainer2')"
+          >›</span
+        >
+      </div>
+      <div class="container">
+        <p class="slider-groupHeading">EVENT (할인 쿠폰을 확인해보세요)</p>
+      </div>
+      <!-- 네 번째 슬라이더 -->
+      <div class="container slider">
+        <span
+          class="arrow-btn arrow-left"
+          @click="scrollLeft('groupCardContainer3')"
+          >‹</span
+        >
+        <div class="card-container" ref="groupCardContainer3">
+          <div
+            v-for="eventStore in eventStores"
+            :key="eventStore.storeId"
+            class="card"
+            @click="goToStore(eventStore.storeId)"
+          >
+            <div class="favorite-icon" @click.stop="toggleFavorite(eventStore)">
+              <i
+                :class="eventStore.isFavorite ? 'fas fa-heart' : 'far fa-heart'"
+              ></i>
+            </div>
+            <img
+              :src="eventStore.storeImages?.[0]?.url || '/assets/user/img/준비중.png'"
+              @error="this.src='/assets/user/img/준비중.png'"
+              alt="식당 이미지"
+              class="store-image"
+            />
+            <div class="card-content">
+              <p class="card-title">{{ eventStore.storeName }}</p>
+              <p class="store-status">{{ getStoreStatus(eventStore)}}</p>
+              <p class="cart-review">
+                <i class="fas fa-star" style="color: gold; font-size: 15px"></i>
+                {{ eventStore.averageScore }} ({{ eventStore.reviewCount
+                }})<span v-if="eventStore.couponCount > 0" class="coupon-event"
+                  >할인 행사 중</span
+                >
+              </p>
+              <div class="card-overlay">
+                {{ truncatedDescription(eventStore.description) }}
+              </div>
+            </div>
+          </div>
+          <div class="card more-card" @click="showMore">
+            <p class="more-text">더보기</p>
+          </div>
+        </div>
+        <span
+          class="arrow-btn arrow-right"
+          @click="scrollRight('groupCardContainer3')"
+          >›</span
+        >
+      </div>
+      <div class="container category-title">
+        <p class="slider-groupHeading">추천카테고리</p>
+        <button @click="showMore">더 많은 카테고리 보러가기</button>
+      </div>
+
+      <div class="container category-container">
+        <div
+          class="image-container"
+          :style="{ backgroundImage: `url(${currentImage})` }"
+        ></div>
+        <div class="category">
+          <div
+            class="category-item"
+            @click="navigateTo('C1')"
+            @mouseover="changeImage('/assets/user/img/한식.png')"
+          >
+            한식
+          </div>
+          <div
+            class="category-item"
+            @click="navigateTo('C2')"
+            @mouseover="changeImage('/assets/user/img/일식.png')"
+          >
+            일식
+          </div>
+          <div
+            class="category-item"
+            @click="navigateTo('C7')"
+            @mouseover="changeImage('/assets/user/img/육류.png')"
+          >
+            육류
+          </div>
+          <div
+            class="category-item"
+            @click="navigateTo('C5')"
+            @mouseover="changeImage('/assets/user/img/서양식.png')"
+          >
+            서양식
+          </div>
+        </div>
+      </div>
+      <footer-component></footer-component>
+    </div>
+    <script src="/js/user/component.js"></script>
+    <script src="/js/user/store.js"></script>
+  </body>
+</html>

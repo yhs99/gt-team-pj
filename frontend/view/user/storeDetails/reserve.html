@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <title>스마트한 예약 경험 | 예약하기</title>
+    
+    <link href="/css/user/mainlogo.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ae7f9510119596f0c0ff9416ba9caf07"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/js/user/storeDetails/storeDetail_reserve.js" defer></script>
+    <script src="https://kit.fontawesome.com/9ebc532cee.js" crossorigin="anonymous"></script>
+    <script src="/js/user/component.js"></script>
+    <script src="/js/axiosSetting.js"></script>
+    <link rel="stylesheet" href="/css/user/storeDetails/storeDetails_reserve.css">
+</head>
+<body>
+    
+  <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+    <div class="spinner-grow text-warning" role="status"></div>
+  </div>
+    <div id="app" class="bg-light">
+        <div class="container-fluid">
+            <header-navbar></header-navbar>
+        </div>
+        <div class="details_container">
+            <div class="square_section">
+            <h2 class="my_title">예약하기</h2>
+            
+            <div id='calendar'></div>
+            
+           <template>
+            <div class="gap10 slotBtns_sec">
+                <div v-for="(slot, index) in reserveSlots" :key="slot.slotDatetime" 
+                     v-if="slot.reserved !== 1" 
+                   > 
+                    <div class="slot_button"   @click="selectSlot(slot.slotDatetime, index)" 
+                    :class="{ active: selectedSlotIndex === index }">
+                    {{ formatTime(slot.slotDatetime) }} <span class="available_letters">예약가능</span>
+                    </div>
+                </div>
+            </div>
+            </template>
+            </div> 
+            <div class="square_section">
+                <h2 class="my_title">메뉴</h2>
+                <a href="#mainDish">
+                <button class="small_button">식사류</button>
+                </a>
+                <a href="#sideDish">
+                <button class="small_button">사이드</button>
+                </a>
+                <h3 id="mainDish" class="overGap" v-if="menuData.numOfMainMenu > 0">식사류</h3>
+                <div v-for="(menu, index) in menuData.menu" :key ="menu.menuId" class="menu_item" v-if="menu.main">
+                    <input type="checkbox" 
+                    v-model="menu.isChecked" 
+                    @change="updateQuantity(menu)" />
+                    <div class="menu_details">
+                        <h3>{{menu.menuName}}</h3>
+                        <span>가격: {{menu.price}} 원</span>
+                        <input type="number" v-model="menu.quantity" min="0" placeholder="0" class="menu_quantity" />
+                    </div>
+                    <div class="img_container">
+                    <img :src="menu.menuImageUrl" :alt="menu.menuImageName" class="menu_image" 
+                    @error="setDefaultImage($event)">
+                    </div>
+                </div>
+                <h3 id="sideDish" class="overGap" v-if="menuData.numOfSideMenu > 0">사이드</h3>
+                <div v-for="(menu, index) in menuData.menu" :key ="menu.menuId" class="menu_item" v-if="!menu.main">
+                    <input type="checkbox" 
+                    v-model="menu.isChecked" 
+                    @change="updateQuantity(menu)" />
+                    <div class="menu_details">
+                        <h3>{{menu.menuName}}</h3>
+                        <span>가격: {{menu.price}} 원</span>
+                        <input type="number" v-model="menu.quantity" min="0" placeholder="0" class="menu_quantity" />
+                    </div>
+                    <div class="img_container">
+                    <img :src="menu.menuImageUrl" :alt="menu.menuImageName" class="menu_image" 
+                    @error="setDefaultImage($event)">
+                    </div>
+                </div>
+                <a href="#" @click.prevent="handleReservation">
+                    <button class="reserve"> 예약하기</button></a>
+            </div>  
+        </div> 
+    </div>
+</body>
+</html>

@@ -2,6 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.team.mappers.user.cart.userCartMapper">
 
+	<resultMap id="ExtendedCartMap" type="com.team.goott.user.domain.ExtendedCartDTO">
+    <id property="cartId" column="cartId" />
+    <result property="menuId" column="menuId" />
+    <result property="menuName" column="menuName" />
+    <result property="stock" column="stock" />
+    <result property="price" column="price" />
+    <result property="totalPrice" column="totalPrice" />
+    <result property="storeName" column="storeName" />
+	<result property="menuImageUrl" column="menuImageUrl" />
+	<result property="maxPeoplePerReserve" column="maxPeoplePerReserve" />
+
+    <collection property="url" ofType="String">
+        <result column="url" />
+    </collection>
+    
+   <collection property="availableCoupons" ofType="com.team.goott.user.domain.CouponVO">
+        <result property="couponId" column="couponId" />
+        <result property="discount" column="discount" />
+        <result property="couponName" column="couponName" />
+    </collection>
+</resultMap>
+
 	<select id="getAllCart"
 		resultType="com.team.goott.user.domain.CartDTO">
 		select * from cart where userId = #{userId}
@@ -23,14 +45,34 @@
 		select * from menu where menuId = #{menuId} AND storeId = #{storeId}
 	</select>
 
-	<select id="getUserCartById"
-		resultType="com.team.goott.user.domain.ExtendedCartDTO">
-		select c.*,m.menuImageUrl,m.description,s.storeName from
-		cart c
-		join menu m on c.menuId = m.menuId
-		join store s on m.storeId = s.storeId
-		where userId = #{userId};
-	</select>
+	<select id="getUserCartById" resultMap="ExtendedCartMap">
+   select 
+        c.cartId, 
+        c.userId, 
+        c.menuId, 
+        c.menuName, 
+        c.stock, 
+        c.price, 
+        c.totalPrice, 
+        s.storeName,
+        si.url, 
+        cp.couponId, 
+        cp.couponName, 
+        m.menuImageUrl, 
+        s.maxPeoplePerReserve, 
+        cp.discount
+    from cart c
+    join menu m on c.menuId = m.menuId
+    join store s on m.storeId = s.storeId
+    left join storeImages si on m.storeId = si.storeId
+    left join coupon cp on cp.storeId = s.storeId 
+    and (
+        (cp.start &lt;= CURRENT_DATE and cp.end &gt;= CURRENT_DATE and cp.stock &gt; 0)
+        or (cp.start is null and cp.end is null and cp.stock &gt; 0)
+    )
+where c.userId = #{userId}
+</select>
+
 	<select id="getCartStoreList" resultType="int">
 		select DISTINCT storeId from cart where userId = #{userId}
 	</select>

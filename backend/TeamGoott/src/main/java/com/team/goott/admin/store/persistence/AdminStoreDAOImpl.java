@@ -98,7 +98,6 @@ public class AdminStoreDAOImpl implements AdminStoreDAO {
 	public StoresVO getStoreInfoForUpdate(Map<String, Object> map) {
 		List<StoresVO> storeInfo = new ArrayList<StoresVO>();
 		storeInfo = ses.selectList(NS+"getStoresInfo", map);
-		log.info(storeInfo.size() + "");
 		return storeInfo.get(0);
 	}
 

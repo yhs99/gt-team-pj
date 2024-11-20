@@ -40,6 +40,13 @@
 		select sum(score) from review where date_format(createAt, "%Y-%m-%d") = curdate() and storeId = #{storeId}
 	</select>
 	
+	<select id="getReviewByDate" resultType = "com.team.goott.owner.domain.ReviewByDateVO">
+		SELECT DATE(createAt) as date ,count(*) as total
+		FROM review
+		WHERE storeId = #{storeId}
+		GROUP BY DATE;
+	</select>
+	
 	<update id="updateisDeleteReq">
 		<choose>
 			<when test="isDeleteReq == false">

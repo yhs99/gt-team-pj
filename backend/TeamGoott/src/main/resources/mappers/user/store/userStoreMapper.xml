@@ -54,4 +54,12 @@
 		SELECT rotationCodeId, rotation
 		FROM rotationCode
 	</select> 
+	
+	<select id="getCouponName" resultType="String">
+	select couponName from coupon where storeId = #{storeId}
+	</select>
+	
+	<select id="getAllStoresByCategory" resultType="com.team.goott.user.domain.StoreCategoryDTO">
+	select storeId from storeCategory where categoryCodeId = #{categoryCodeId}
+	</select>
 </mapper>

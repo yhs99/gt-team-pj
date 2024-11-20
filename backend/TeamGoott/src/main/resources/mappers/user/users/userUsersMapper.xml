@@ -6,4 +6,10 @@
 		resultType="com.team.goott.user.domain.UserDTO">
 		SELECT * FROM user WHERE email = #{email} AND password = SHA2(#{password}, 256)
 	</select>
+	
+<select id="getUserInfoByKakao" parameterType="map" resultType="com.team.goott.user.domain.UserDTO">
+	SELECT *
+	FROM user
+	WHERE email = #{email}
+</select>
 </mapper>

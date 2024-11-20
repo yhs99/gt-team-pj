@@ -1,0 +1,189 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background-color: #f8f9fa;
+}
+.container {
+  padding-top: 90px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 10px;
+}
+h1 {
+  font-size: 24px;
+  text-align: left;
+  margin-bottom: 20px;
+}
+.store-image {
+  border-radius: 10px;
+  max-width: 100px;
+  max-height: 80px;
+}
+.store-section {
+  margin-bottom: 30px;
+}
+.store-name {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.cart-list {
+  border-top: 1px solid #ddd;
+  padding: 10px 0;
+}
+.cart-item {
+  display: flex;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+  align-items: center;
+}
+.cart-item img {
+  width: 150px;
+  height: 100px;
+  margin-right: 15px;
+  border-radius: 5px;
+}
+.cart-details {
+  flex: 1;
+  text-align: right;
+}
+.cart-menuName {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.cart-price {
+  font-size: 13px;
+  margin-top: 5px;
+}
+.cart-totalPrice {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+.sold-out {
+  color: gray;
+  font-weight: normal;
+}
+.reservation-info {
+  margin-top: 1.5rem;
+}
+.reservation-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #333;
+}
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+.coupon-section {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.coupon-section span {
+  font-weight: bold;
+  margin-right: 8px;
+}
+.coupon-section select {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+.discount-section {
+  margin-top: 20px;
+  font-weight: bold;
+  color: #e74c3c;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.total-section {
+  text-align: center;
+  margin-top: 1rem;
+}
+.total-price {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+.btn-yellow {
+  background-color: #ffc107;
+  color: #212529;
+  border: none;
+  font-weight: bold;
+  font-size: 20px;
+  padding: 20px 50px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 400px;
+}
+.btn-yellow:hover {
+  background-color: #e0a800;
+  color: #212529;
+}
+.section-container {
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+.section-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #333;
+}
+.payment-option {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+.payment-option button {
+  width: 48%;
+  padding: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.error-message {
+  color: red;
+  font-size: 14px;
+}
+.paybutton {
+  margin-top: 50px;
+}

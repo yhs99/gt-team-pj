@@ -15,7 +15,9 @@ new Vue({
       statusCodeId:[]
     },
     checkedReserveIds:[],
-    selectedFilterId:'가게명'
+    selectedFilterId:'가게명',
+    selectAll:false,
+    currentPaginatedList:[]
   },
   created: function() {
     this.fetchFilters();
@@ -52,6 +54,8 @@ new Vue({
         this.reserveCount = this.reserveLists.length;
         this.totalStoreCount = this.reserveCount;
         this.totalPages = Math.ceil(this.reserveCount / this.pageSize);
+        this.selectAll = false;
+        this.toggleSelectAll();
       })
       .catch(error => {
         if(error.status === 401) {
@@ -112,13 +116,27 @@ new Vue({
       }else {
         alert('수정할 매장을 하나 이상 선택하세요.');
       }
+    },
+    toggleSelectAll() {
+      if(this.selectAll) {
+        this.checkedReserveIds = this.currentPaginatedList.map(reserve => reserve.reserveId);
+      }else {
+        this.checkedReserveIds = [];
+      }
     }
   },
   computed: {
     paginatedReserves() {
       const start = (this.currentPage - 1) * this.pageSize;
       const end = start + this.pageSize;
-      return this.reserveLists.slice(start, end);
+      this.currentPaginatedList = this.reserveLists.slice(start, end)
+      return this.currentPaginatedList
     },
+  },
+  filters: {
+    formatPrice(value) {
+      if(!value) return '';
+      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
   }
 })

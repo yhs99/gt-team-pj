@@ -2,10 +2,11 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>스마트한 예약 경험 | 관리자</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta content="" name="keywords" />
     <meta content="" name="description" />
+    <link rel="icon" type="image/png" href="/assets/mainIcon.png" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css" type="text/css"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
@@ -125,7 +126,7 @@
               <div class="bg-light text-center rounded p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
                   <h6 class="mb-0">일별 매출액</h6>
-                  <a href="">전체 보기</a>
+                  <!-- <a href="">전체 보기</a> -->
                 </div>
                 <div id="reserve-calendar"></div>
               </div>
@@ -137,7 +138,7 @@
           <div class="bg-light text-center rounded p-4">
             <div class="d-flex align-items-center justify-content-between mb-4">
               <h6 class="mb-0">최근 삭제 요청 리뷰</h6>
-              <a href="">전체 보기</a>
+              <a href="/view/admin/srAdminReviews">전체 보기</a>
             </div>
             <div>
               <table class="table table-responsive text-start align-middle table-bordered table-hover mb-0">
@@ -157,7 +158,7 @@
                   <tr v-if="deleteReqReviewsCnt > 0" v-for="(review, index) in deleteReqReviews.slice(0, 5)" :key="deleteReqReviews.reviewId">
                   <!-- <tr v-for="(review, index) in reviews" :key="review.reviewId"> 전체 리뷰 for문 -->
                     <td>{{ review.reviewId }}</td>
-                    <td><span v-for="(scoreCount, index) in review.score">★</span></td>
+                    <td><i v-for="sc in review.score" class="fas fa-star text-warning"></i></td>
                     <td>{{ review.storeName }}</td>
                     <td>{{ review.name }}</td>
                     <td>{{ review.content }}</td>
@@ -179,131 +180,6 @@
             </div>
           </div>
         </div>
-
-        
-
-
-        <!-- Widgets Start
-        <div class="container-fluid pt-4 px-4">
-          <div class="row g-4">
-            <div class="col-sm-12 col-md-6 col-xl-4">
-              <div class="h-100 bg-light rounded p-4">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                  <h6 class="mb-0">메세지</h6>
-                  <a href="">전체 보기</a>
-                </div>
-                <div class="d-flex align-items-center border-bottom py-3">
-                  <img class="rounded-circle flex-shrink-0" src="" alt="" style="width: 40px; height: 40px" />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 justify-content-between">
-                      <h6 class="mb-0">bca@abc.com</h6>
-                      <small>~ 분 전</small>
-                    </div>
-                    <span>홍길동 님이 ~분 전에 가게 예약을 요청하였습니다</span>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center border-bottom py-3">
-                  <img class="rounded-circle flex-shrink-0" src="" alt="" style="width: 40px; height: 40px" />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 justify-content-between">
-                      <h6 class="mb-0">bcd@abc.com</h6>
-                      <small>~분 전</small>
-                    </div>
-                    <span>홍길북 님의 가게 요청을 승인해주세요</span>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center border-bottom py-3">
-                  <img class="rounded-circle flex-shrink-0" src="" alt="" style="width: 40px; height: 40px" />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 justify-content-between">
-                      <h6 class="mb-0">baca@abc.com</h6>
-                      <small>~분 전</small>
-                    </div>
-                    <span>홍길순 님이 ~분 전에 가게 예약을 취소하였습니다</span>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center pt-3">
-                  <img class="rounded-circle flex-shrink-0" src="" alt="" style="width: 40px; height: 40px" />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 justify-content-between">
-                      <h6 class="mb-0">bca12@abc.com</h6>
-                      <small>~분 전</small>
-                    </div>
-                    <span>홍길남 님의 결제가 완료되었습니다</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-12 col-md-6 col-xl-4">
-              <div class="h-100 bg-light rounded p-4">
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                  <h6 class="mb-0">날짜</h6>
-                  <a href="">전체 보기</a>
-                </div>
-                <div id="calender"></div>
-              </div>
-            </div>
-            <div class="col-sm-12 col-md-6 col-xl-4">
-              <div class="h-100 bg-light rounded p-4">
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                  <h6 class="mb-0">할일</h6>
-                  <a href="">전체 보기</a>
-                </div>
-                <div class="d-flex mb-2">
-                  <input class="form-control bg-transparent" type="text" placeholder="검색어를 입력하세요" />
-                  <button type="button" class="btn btn-primary ms-2">search</button>
-                </div>
-                <div class="d-flex align-items-center border-bottom py-2">
-                  <input class="form-check-input m-0" type="checkbox" />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 align-items-center justify-content-between">
-                      <span>고래고래</span>
-                      <button class="btn btn-sm"><i class="fa fa-times"></i></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center border-bottom py-2">
-                  <input class="form-check-input m-0" type="checkbox" />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 align-items-center justify-content-between">
-                      <span>소리지르기</span>
-                      <button class="btn btn-sm"><i class="fa fa-times"></i></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center border-bottom py-2">
-                  <input class="form-check-input m-0" type="checkbox" checked />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 align-items-center justify-content-between">
-                      <span><del>고함지르기</del></span>
-                      <button class="btn btn-sm text-primary"><i class="fa fa-times"></i></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center border-bottom py-2">
-                  <input class="form-check-input m-0" type="checkbox" />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 align-items-center justify-content-between">
-                      <span>윽박지르기</span>
-                      <button class="btn btn-sm"><i class="fa fa-times"></i></button>
-                    </div>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center pt-2">
-                  <input class="form-check-input m-0" type="checkbox" />
-                  <div class="w-100 ms-3">
-                    <div class="d-flex w-100 align-items-center justify-content-between">
-                      <span>심호흡하기</span>
-                      <button class="btn btn-sm"><i class="fa fa-times"></i></button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> -->
-        <!-- Widgets End -->
-
         <!-- Footer Start -->
         <footer-component></footer-component>
         <!-- Footer End -->

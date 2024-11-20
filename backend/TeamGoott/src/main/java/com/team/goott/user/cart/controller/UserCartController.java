@@ -18,6 +18,7 @@ import com.team.goott.user.cart.service.UserCartService;
 import com.team.goott.user.domain.CartDTO;
 import com.team.goott.user.domain.ExtendedCartDTO;
 import com.team.goott.user.domain.UserDTO;
+import com.team.goott.user.domain.UserOnly;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,14 +30,11 @@ public class UserCartController {
 	UserCartService userCartService;
 
 	// 장바구니 조회
+	@UserOnly
 	@GetMapping("/cart")
 	public ResponseEntity<Object> getUserCartById(HttpSession session) {
 		List<ExtendedCartDTO> cart = null;
 		UserDTO userSession = (UserDTO) session.getAttribute("user");
-		if (userSession == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
-		}
-
 		try {
 			cart = userCartService.getUserCartById(userSession.getUserId());
 			if (cart == null || cart.isEmpty()) {
@@ -50,13 +48,11 @@ public class UserCartController {
 	}
 
 	// 장바구니에 담기
+	@UserOnly
 	@PostMapping("/cart")
 	public ResponseEntity<Object> addCart(@RequestBody CartDTO cartDTO, HttpSession session) {
 		UserDTO userSession = (UserDTO) session.getAttribute("user");
 
-		if (userSession == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
-		}
 		try {
 			userCartService.addCart(cartDTO,userSession.getUserId());
 			log.info("메뉴가 추가됐습니다 : {}", cartDTO);
@@ -69,15 +65,13 @@ public class UserCartController {
 	}
 
 	// 장바구니에 메뉴 삭제
+	@UserOnly
 	@DeleteMapping("/cart/{cartId}")
 	public ResponseEntity<Object> deleteCartItem(@PathVariable int cartId, HttpSession session) {
 
 		UserDTO userSession = (UserDTO) session.getAttribute("user");
 
-		if (userSession == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요한 서비스입니다.");
-		}
-
+		
 		try {
 			List<CartDTO> cartList = userCartService.getUserCart(userSession.getUserId());
 			if (cartList == null || cartList.isEmpty()) {

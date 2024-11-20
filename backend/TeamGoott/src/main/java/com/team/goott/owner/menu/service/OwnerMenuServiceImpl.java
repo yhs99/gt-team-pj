@@ -35,20 +35,17 @@ public class OwnerMenuServiceImpl implements OwnerMenuService {
 		List<MenuDTO> dishes = menuDAO.getAllMenu(storeId);
 		int numOfMain = 0;
 		int numOfSide = 0;
+		allMenuInfo.put("menu", dishes);
 		for(MenuDTO dish : dishes) {
 			if(dish.isMain()) {
-				allMenuInfo.put("main", dish);
 				numOfMain++;
 			}else {
-				allMenuInfo.put("side", dish);
 				numOfSide++;
 			}
 		}
 		allMenuInfo.put("numOfAllMenu", dishes.size());
 		allMenuInfo.put("numOfMainMenu", numOfMain);
 		allMenuInfo.put("numOfSideMenu", numOfSide);
-		
-		log.info("{}", allMenuInfo.toString());
 		
 		return allMenuInfo;
 	}
@@ -66,7 +63,6 @@ public class OwnerMenuServiceImpl implements OwnerMenuService {
 	@Override
 	public int uploadMenu(MenuDTO menu, MultipartFile file, int storeId) {
 		MenuDTO uploadMenu = menu;
-		log.info("{}",file.getOriginalFilename().isEmpty());
 		try {
 			//이미지 파일 처리
 			if(!file.getOriginalFilename().isEmpty()) {
@@ -91,7 +87,7 @@ public class OwnerMenuServiceImpl implements OwnerMenuService {
 		MenuDTO modifyMenu = updateMenu;
 		try {
 			// 수정 메뉴 이미지 파일 처리
-			if(!file.getOriginalFilename().isEmpty()) {
+			if(originMenu.getMenuImageName() != null) {
 				S3ImageManager uploadS3ImageManager = new S3ImageManager(file, s3Client, bucketName);
 				S3ImageManager deleteS3ImageManager = new S3ImageManager(s3Client, bucketName, originMenu.getMenuImageName());
 				
@@ -112,6 +108,13 @@ public class OwnerMenuServiceImpl implements OwnerMenuService {
 			e.printStackTrace();
 		}
 		return menuDAO.updateMenu(menuId, modifyMenu);
+	}
+
+	@Override
+	public int updateMenuWithoutFile(int menuId, MenuDTO updateMenu, MenuDTO originMenu) {
+		log.info("메뉴 사진 변경 사항 없이 업데이트");
+		MenuDTO modifyMenu = updateMenu;
+		return menuDAO.updateMenuWithoutFile(menuId, modifyMenu);
 	}
 
 }

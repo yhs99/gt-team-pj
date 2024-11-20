@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.team.goott.owner.domain.OwnerOnly;
 import com.team.goott.owner.domain.SalesInfoVO;
 import com.team.goott.owner.domain.SalesVO;
 import com.team.goott.owner.domain.StoreDTO;
@@ -26,20 +27,14 @@ public class OwnerSalesController {
 	@Inject
 	OwnerSalesService service;
 	
+	@OwnerOnly
 	@GetMapping("/sales")
 	public ResponseEntity<Object> getSalesInfo(HttpSession session){
 		
 		SalesInfoVO salesInfo = null;
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
 		int storeId = storeSession.getStoreId();
-//		로그인 시
-		if(storeSession != null) {
-			salesInfo = service.getSales(storeId);
-		} else {
-			// 로그인 실패 시 
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다");
-
-		}
+		salesInfo = service.getSales(storeId);
 		return ResponseEntity.ok(salesInfo);
 	}
 	

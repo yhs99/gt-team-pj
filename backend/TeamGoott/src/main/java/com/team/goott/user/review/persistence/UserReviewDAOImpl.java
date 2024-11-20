@@ -1,12 +1,15 @@
 package com.team.goott.user.review.persistence;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.team.goott.owner.domain.NotificationDTO;
 import com.team.goott.user.domain.ReserveDTO;
 import com.team.goott.user.domain.ReviewDTO;
 import com.team.goott.user.domain.ReviewPageDTO;
@@ -19,13 +22,29 @@ import lombok.extern.slf4j.Slf4j;
 public class UserReviewDAOImpl implements UserReviewDAO {
 	
 	@Inject
-	private SqlSession ses; 
-	
+	private SqlSession ses;
+
 	private static String ns="com.team.mappers.user.review.userReviewMapper.";
-	
+
 	@Override
-	public List<ReviewDTO> getAllReviews(ReviewPageDTO paging){
+	public List<ReviewDTO> getAllReviews(ReviewPageDTO paging, String sort){
 		// 리뷰 조회
+		String orderBy;
+		switch (sort) {
+			case "score_desc":
+				orderBy = "score DESC";
+				break;
+			case "score_asc":
+				orderBy = "score ASC";
+				break;
+			case "latest":
+				orderBy = "createAt DESC";
+				break;
+			default:
+				orderBy = "createAt DESC"; // 기본값
+		}
+
+		paging.setOrderBy(orderBy);
 		return ses.selectList(ns+"getAllrevws",paging);
 	}
 
@@ -37,9 +56,14 @@ public class UserReviewDAOImpl implements UserReviewDAO {
 
 	@Override
 	public int insertReview(ReviewDTO reviewDTO) {
-		// 리뷰 작성
-		return ses.insert(ns+"insertReview", reviewDTO);
+		//리뷰작성
+		try {
+			return ses.insert(ns + "insertReview", reviewDTO);
+		} catch (Exception e) {
+			throw new RuntimeException("리뷰 추가 중 오류 발생", e);
+		}
 	}
+
 
 	@Override
 	public int delReview(int reviewId) {
@@ -50,7 +74,11 @@ public class UserReviewDAOImpl implements UserReviewDAO {
 	@Override
 	public int insertImgs(ReviewImagesDTO reviewImg) {
 		// 이미지 첨부
-		return ses.insert(ns+"insertImgs", reviewImg);
+	   try {
+			return ses.insert(ns + "insertImgs", reviewImg);
+		} catch (Exception e) {
+			throw new RuntimeException("이미지 추가 중 오류 발생", e);
+		}
 	}
 
 	@Override
@@ -101,7 +129,34 @@ public class UserReviewDAOImpl implements UserReviewDAO {
 		return ses.selectOne(ns+"getReserveByreserveId", reserveId);
 	}
 
-	
+	@Override
+	public int checkIfImageExist(int imageId) {
+		// imageid로 존재하는 이미지 개수가 1인지 0인지 파악하기
+		return ses.selectOne(ns+"countImageId", imageId);
+	}
+
+	@Override
+	public int changeStatusCodeId(int reserveId, int newStatusCode) {
+		//리뷰 작성 시 예약 statusCode를 5로 바꿔준다
+		Map<String, Object> reserveMap = new HashMap<String, Object>();
+		reserveMap.put("reserveId", reserveId);
+		reserveMap.put("statusCodeId", newStatusCode);
+		 try {
+				return ses.update(ns + "updateStatusCode", reserveMap);
+			} catch (Exception e) {
+				throw new RuntimeException("상태 코드 변경 중 오류 발생", e);
+			}
+	}
+
+	@Override
+	public ReviewDTO selectUserByUserId(int userId) {
+		// userId로 userName&profileUrl을 가져온다
+		return ses.selectOne(ns+"selectUserName", userId);
+	}
 
 
+	@Override
+	public int setNotification(NotificationDTO notification) {
+		return ses.insert(ns+"setNotification", notification);
+	}
 }

@@ -5,7 +5,9 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
@@ -34,9 +36,18 @@
 	
     <beans:bean id="multipartResolver"
     	class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-    	  <!-- 최대 업로드 가능한 파일 크기 설정 (10MB) -->
-    <beans:property name="maxUploadSize" value="10485760"/>
-    <!-- 최대 요청 크기 설정 (전체 요청 크기 20MB) -->
-    <beans:property name="maxUploadSizePerFile" value="5242880"/>
+      <!-- 최대 요청 크기 설정 (전체 요청 크기 20MB) -->	  
+    <beans:property name="maxUploadSize" value="20971520"/>
+    <!-- 최대 업로드 가능한 파일 크기 설정 (10MB) -->
+    <beans:property name="maxUploadSizePerFile" value="10485760"/>
     </beans:bean>
+    
+    <task:annotation-driven scheduler="scheduler"/>
+    <task:scheduler id="scheduler" pool-size = "10"/>
+    <context:component-scan base-package="com.team.goott.**.service"/>
+    
+   <!--   알림 데이터 크론 설정 -->
+    <task:scheduled-tasks>
+    	<task:scheduled ref="ownerReserveServiceImpl" method="deleteNotifications" cron="0 0 0 * * MON"/>
+    </task:scheduled-tasks>
 </beans:beans>

@@ -1,0 +1,139 @@
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table tr {
+  display: block;
+  margin-bottom: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.table td {
+  padding: 20px;
+  display: block;
+}
+
+.container {
+  width: 65%;
+  margin: 20px auto;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+.storeImg {
+  display: block;
+  padding: 10px 0;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.store-image {
+  display: inline-block;
+  flex-shrink: 0;
+  max-width: 100%;
+  width: 280px;
+  height: 180px;
+  gap: 10px;
+  padding: 10px 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  border-radius: 5px;
+  object-fit: cover;
+}
+.coupon-event {
+  color: red;
+}
+.storeTitle {
+  font-weight: bold;
+  font-size: 22px;
+  position: relative;
+}
+.storeAddress {
+  font-weight: bold;
+  color: gray;
+  margin-top: 5px;
+}
+.facilities-list {
+  display: flex;
+  gap: 10px;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+.facilities-list li {
+  padding: 5px 12px;
+  background-color: #f0f0f0;
+  color: #333;
+  border-radius: 15px;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+}
+.favorite-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 30px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.favorite-icon .red-heart {
+  color: red;
+}
+
+.favorite-icon .black-heart {
+  color: black;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto;
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  color: #555;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background-color: #f8f9fa;
+}
+.scroll-to-top {
+  position: fixed;
+  bottom: 50px;
+  right: 100px;
+  width: 70px;
+  height: 70px;
+  background-color: orange;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.scroll-to-top:hover {
+  background-color: #ff7f50;
+}
+
+.scroll-to-top:active {
+  transform: scale(0.9);
+  background-color: #e67300;
+}

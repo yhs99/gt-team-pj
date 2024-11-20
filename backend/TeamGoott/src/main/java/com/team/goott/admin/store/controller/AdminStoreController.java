@@ -38,10 +38,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/")
 @Slf4j
 public class AdminStoreController {
-	
+
 	@Autowired
 	private AdminStoreService adminStoreService;
-	
+
 	@Autowired
 	private OwnerStoreService ownerStoreService;
 	
@@ -87,16 +87,14 @@ public class AdminStoreController {
 	}
 	
 	@AdminOnly
-	@GetMapping({"admin/stats/sales", "admin/stats/sales/{storeId}"})
-	public ResponseEntity<Object> salesSummary(HttpSession session
-											, @PathVariable(required = false) Integer storeId) {
+	@GetMapping(value = {"admin/stats/sales", "admin/stats/sales/{storeId}"})
+	public ResponseEntity<Object> getStatsStores(HttpSession session
+												,@PathVariable(name = "storeId", required = false) Integer storeId) {
 		try {
-			return ResponseEntity.ok(adminStoreService.getSummary(storeId == null ? 0 : storeId));
-		}catch(StoreNotFoundException e) {
-			return ResponseEntity.ok("해당 매장을 찾을 수 없습니다.");
+			return ResponseEntity.ok(adminStoreService.getSummary(storeId!=null ? storeId : 0));
 		}catch(Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류로 통계자료를 불러올 수 없습니다.");
 		}
 	}
 	
@@ -137,7 +135,7 @@ public class AdminStoreController {
                 }
             }
         }
-
+    	
         if (ownerStoreService.getStoreById(storeId) == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("가게를 찾을 수 없습니다.");
         }
@@ -155,5 +153,4 @@ public class AdminStoreController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("가게 수정 중 오류가 발생하였습니다.");
         }
     }
-	
 }

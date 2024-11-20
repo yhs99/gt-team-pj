@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.team.goott.admin.domain.AdminOnly;
 import com.team.goott.admin.reserve.persistence.AdminReserveDAO;
 import com.team.goott.admin.reserve.service.AdminReserveService;
-import com.team.goott.owner.reserve.service.OwnerReserveService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,9 +38,9 @@ public class AdminReserveController {
 												, @RequestParam(name = "userName", required = false) String userName
 												, @RequestParam(name = "statusCodeId", required = false) List<Integer> statusCodeId) {
 		Map<String, Object> filters = new HashMap<String, Object>();
-		if(storeName != null) filters.put("storeName", storeName);
-		if(userName != null) filters.put("userName", userName);
-		if(statusCodeId != null) filters.put("statusCodeId", statusCodeId);
+		filters.put("storeName", storeName!=null ? storeName : "");
+		filters.put("userName", userName!=null ? userName : "");
+		if(statusCodeId.size() > 0) filters.put("statusCodeId", statusCodeId);
 		return ResponseEntity.ok(adminReserveService.getReserveLists(filters));
 	}
 

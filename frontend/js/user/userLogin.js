@@ -5,6 +5,7 @@ new Vue({
     password: "",
     loginGroup: 0,
     idError: "",
+    kakaoAuth : null,
   },
   created: function () {
     this.checkLogin();
@@ -48,4 +49,7 @@ new Vue({
       }
     },
   },
+  mounted() {
+    Kakao.init('7394510cd6543ff560b02ba31649d9f3');
+  }
 });

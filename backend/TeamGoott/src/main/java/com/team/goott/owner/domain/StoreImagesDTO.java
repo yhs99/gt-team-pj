@@ -14,7 +14,7 @@ import lombok.ToString;
 @ToString
 @Builder
 public class StoreImagesDTO {
-	
+	private int imageId;
 	private int storeId;
 	private String url;
 	private String fileName; 

@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
+import com.team.goott.owner.domain.ReviewByDateVO;
 import com.team.goott.owner.domain.ReviewInfoVO;
 import com.team.goott.owner.domain.ReviewVO;
 import com.team.goott.owner.review.persistence.OwnerReviewDAO;
@@ -40,6 +41,7 @@ public class OwnerReviewServiceImpl implements OwnerReviewService {
 		float totalScore = reviewDAO.getTotalScore(storeId);
 		float totalTodayScore = reviewDAO.getTotalTodayScore(storeId);
 		List<ReviewVO> reviews = reviewDAO.getAllReview(storeId, sortMethod);
+		List<ReviewByDateVO> reviewByDate = reviewDAO.reviewByDate(storeId);
 		int[] countScore = new int[5];
 		int[] countMonthlyReview = new int[6];
 		
@@ -95,7 +97,7 @@ public class OwnerReviewServiceImpl implements OwnerReviewService {
 			}
 		}
 		
-		ReviewInfoVO reviewInfo = ReviewInfoVO.builder().totalReview(totalReviewCount).todayReview(todayReview).totalScore(totalScore).todayTotalScore(totalTodayScore).reviews(reviews).countMonthlyReview(countMonthlyReview).countScore(countScore).build();	
+		ReviewInfoVO reviewInfo = ReviewInfoVO.builder().totalReview(totalReviewCount).todayReview(todayReview).totalScore(totalScore).todayTotalScore(totalTodayScore).reviews(reviews).reviewByDate(reviewByDate).countMonthlyReview(countMonthlyReview).countScore(countScore).build();	
 		log.info(reviewInfo.toString());
 		
 		return reviewInfo;

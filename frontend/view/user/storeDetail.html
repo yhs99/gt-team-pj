@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <title>스마트한 예약 경험 | 상세정보</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/AppleSDGothicNeo/AppleSDGothicNeo.css" type="text/css"/>
     <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/user/mainlogo.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/user/header.css">
-    <link rel="stylesheet" href="/css/user/storeDetail.css">
     
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -16,32 +14,25 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ae7f9510119596f0c0ff9416ba9caf07"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-    
-    <script src="/js/user/userHeader.js" defer></script>
-    <script src="/js/user/storeDetails/storeDetail.js" defer></script>
+    <script src="/js/user/component.js"></script>
+    <script src="/js/axiosSetting.js"></script>
 
     <script src="https://kit.fontawesome.com/aebc8a6fa8.js" crossorigin="anonymous"></script>
+    
+    <script src="/js/user/storeDetails/storeDetail.js" defer></script>
+    <link rel="stylesheet" href="/css/user/storeDetail.css">
+
 
 </head>
 
 <body>
-
-    <header>
-        <div class="header_container">
-           <a class="navbar-brand fs-3 text-warning fw-bold" href="#"><img src="/assets/mainIcon.png"> SmartReserve</a>
-            <div class="search_container">
-            <i class="fa-solid fa-magnifying-glass search_icon"></i>
-            <input type="text" placeholder="찾고 있는 맛집이 있나요?" class="search_box">
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-bell"></i>
-            </div>
-         
+  <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+    <div class="spinner-grow text-warning" role="status"></div>
+  </div>
+    <div id="app" class="bg-light">
+        <div class="container-fluid bg-light">
+            <header-navbar></header-navbar>
         </div>
-    </header>
-
-
-
-    <div  id="app">
         <div class="details_container">
             <div class="restaurant-header">
 
@@ -80,21 +71,20 @@
             </div>
             <h1 class="restaurant-name" v-if="restaurantData && restaurantData.data">
                 {{ restaurantData.data.storeName}}</h1>
-                <div class="rating" @click="goToPage(`storeDetails/reviews?storeId=${storeId}`)">
+                <div @click="goToPage(`storeDetails/reviews?storeId=${storeId}`)">
                     <span class="stars">
                         ⭐️ {{ calculateReviewScore.toFixed(1) }} 
                         <span class="review-count">리뷰수( {{ reviewData.length }})</span>
-                        <span class="arrow">></span>
                     </span>
                 </div>
             <p class="description" v-if="restaurantData && restaurantData.data">
                 {{ restaurantData.data.description}}</p>
             <p class="address" v-if="restaurantData && restaurantData.data">
-                {{ restaurantData.data.address}}</p>
-            <p class="mainPrice">평균가격: {{ calculateMenuPriceAvg }}  </p>
+                📍{{ restaurantData.data.address}}</p>
+            <p class="mainPrice">💰평균가격: {{ calculateMenuPriceAvg }}  </p>
             <p v-if="todayOperation.closeDay">오늘은 휴무입니다<span @click="isOpen = !isOpen" style="cursor: pointer;">{{ isOpen ? '▲' : '▼' }}</span></p>
             
-            <p v-else class="hours">{{ todayDay}} 영업시간: {{todayOperation.open}} - {{todayOperation.close}}<span @click="isOpen = !isOpen" style="cursor: pointer;">{{ isOpen ? '▲' : '▼' }}</span></p>
+            <p v-else class="hours">⏰{{ todayDay}}영업시간: {{todayOperation.open}} - {{todayOperation.close}}<span @click="isOpen = !isOpen" style="cursor: pointer;">{{ isOpen ? '▲' : '▼' }}</span></p>
             
             <ul class="foldable" v-if="isOpen">
                 <li v-for="(schedule, index) in schedules" :key="index">
@@ -102,9 +92,11 @@
                     <span v-else> {{ schedule.dayOfWeek }}: {{ schedule.open }} - {{ schedule.close }} </span>
                 </li>
             </ul>
-            <li v-for="(facility, index) in restaurantData.data.facilities" :key="index">
-                    {{ facility.facilityName }}
-            </li>
+            <div class="facilities_box">
+                <div class="facilities_category" v-for="(facility, index) in restaurantData.data.facilities" :key="index">
+                        #{{ facility.facilityName }}
+                </div>
+            </div>
         </div>
             
         <div class="square_section">
@@ -117,30 +109,21 @@
             </div>
         </div>
 
-    
-
-        <!-- <div id="coupon_sec" v-if="couponData.length > 0" class="dropdown">
-            <button class="btn btn-secondary btn-lg dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                <span>{{ couponData[0] }}</span> 
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li v-for="(coupon, index) in couponData.slice(1)" class="dropdown-item" :key="index">
-                    {{ coupon }} 
-                </li>
-            </ul>
-        </div> -->
-            
-
             <h2 class="my_title">예약하기</h2>
         
             <div id='calendar'></div>
                 
-            <div class="gap10">최대 예약인원 : {{restaurantData.data.maxPeoplePerReserve}}</div>
+            <div class="gap10">👥최대 예약인원 : {{restaurantData.data.maxPeoplePerReserve}}</div>
             <template>
                 <div class="gap10 slotBtns_sec">
-                    <div v-for="(slot,index) in reserveSlots" :key="slot.slotDateTime" v-if="slot.reserved !== 1">
-                        <div class="slot_button">{{ formatTime(slot.slotDatetime) }}
-                            <span class="available_letters">예약가능</span></div>
+                    <div v-for="(slot, index) in reserveSlots" :key="slot.slotDateTime" 
+                         :class="{ 'reserved-slot': slot.reserved == 1 }">
+                        <div class="slot_button">
+                            {{ formatTime(slot.slotDatetime) }}
+                            <span class="available_letters">
+                                {{ slot.reserved == 1 ? '예약불가' : '예약가능' }}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </template>
@@ -148,9 +131,9 @@
  
         <div class="square_section">
             <h2 class="my_title">편의시설</h2>
-            <li v-for="(facility, index) in restaurantData.data.facilities" :key="index">
+            <div class="facility_icons" v-for="(facility, index) in restaurantData.data.facilities" :key="index">
                 {{ facility.facilityName }}
-            </li>
+            </div>
         </div>
 
         <div class="square_section">
@@ -243,9 +226,14 @@
                     </div>
                     <div class="restaurant-info">
                         <div class="restaurant-name">{{recommend.storeName}}</div>
-                       <span >⭐️ {{ recommend.storeId }} </span> 
+                        <span>⭐️ {{ averageScoreList[index] !== undefined ? averageScoreList[index].toFixed(1) : '0.0'}} </span> 
                         <span class="review-count">( {{ storeReview[recommend.storeId] ? storeReview[recommend.storeId].length : 0 }})</span>
-                        <span class="restaurant-details" v-for="(category,categoryIndex) in recommend.storeCategories">{{category.storeCategoryName}} </span>
+                        <span class="icon_header_sec1">
+                            <i v-if="recommend.isBookmarked" class="fa-solid fa-bookmark bookmarked_icon" @click.stop="clickBookmark(recommend.storeId)"></i>
+                            <i v-else class="fa-regular fa-bookmark" @click.stop="clickBookmark(recommend.storeId)"></i>
+                        </span>
+                        <br>
+                        <span class="restaurant_category" v-for="(category,categoryIndex) in recommend.storeCategories">{{category.storeCategoryName}} </span>
                     </div>
                 </div>
             </div>
@@ -255,9 +243,9 @@
             <i v-if="isBookmarked" class="fa-solid fa-bookmark fa-2x bookmarked_icon" @click="toggleBookmark()"></i>
             <i v-else class="fa-regular fa-bookmark fa-2x" @click="toggleBookmark()"></i>
             
-            <button class="reserve_button" @click=" goToReserve()">예약하기</button>
+            <button class="reserve_button" @click="goToReserve()">예약하기</button>
         </div>
-
+        <footer-component></footer-component>
     </div>
 
 </body>

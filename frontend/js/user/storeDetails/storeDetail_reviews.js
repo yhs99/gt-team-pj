@@ -95,7 +95,6 @@ new Vue({
             // 스크롤이 바닥에 거의 도달했을 때
             if (!this.loading && this.hasMoreData && scrollHeight >= offsetHeight - 100) {
                 this.page++; // 다음 페이지로 증가
-                console.log(this.page);
                 this.fetchReviewData(); // 다음 페이지 데이터 요청
             }
         },
@@ -131,7 +130,7 @@ new Vue({
                     this.goToPage(`storeDetails/pictures?storeId=${this.storeId}`)
                     break;
                 case 3:
-                    this.goToPage(`#`)
+                    this.goToPage(`storeDetails/reviews?storeId=${this.storeId}`);
                     break;
                 case 4:
                     this.goToPage(`storeDetails/storeInfo?storeId=${this.storeId}`)
@@ -146,7 +145,6 @@ new Vue({
     mounted() {
         const queryParams = new URLSearchParams(window.location.search);
         this.storeId = queryParams.get('storeId');
-        console.log("Store ID:", this.storeId);
 
         if (this.storeId) {
             this.fetchAllReviews();

@@ -46,9 +46,6 @@ new Vue({
         .then((response) => {
           this.restaurantData = response.data; // 응답 데이터를 restaurantData에 저장
           this.schedules = this.restaurantData.data.storeSchedules;
-          console.log("schedules:", this.schedules);
-          console.log(this.restaurantData); // 가져온 데이터 출력
-          console.log(this.restaurantData.data.storeImages);
           // storeName 접근
           if (this.restaurantData && this.restaurantData.data) {
             this.$nextTick(() => {
@@ -69,7 +66,6 @@ new Vue({
         .get(`http://localhost/api/stores/menu/${this.storeId}`)
         .then((response) => {
           this.menuData = response.data.data;
-          console.log("menuData:", this.menuData.menu[0].menuImageUrl);
         })
         .catch((error) => {
           console.error("Error fetching MenuData", error);
@@ -84,7 +80,6 @@ new Vue({
         .get(`http://localhost/api/review/store/${this.storeId}`)
         .then((response) => {
           this.reviewData = response.data.data;
-          console.log("reviewData:", this.reviewData);
         })
         .catch((error) => {
           console.error("Error fetching ReviewData", error);
@@ -106,7 +101,7 @@ new Vue({
           this.goToPage(`storeDetails/menu?storeId=${this.storeId}`);
           break;
         case 2:
-          this.goToPage(`#`);
+          this.goToPage(`storeDetails/pictures?storeId=${this.storeId}`);
           break;
         case 3:
           this.goToPage(`storeDetails/reviews?storeId=${this.storeId}`);
@@ -122,7 +117,6 @@ new Vue({
   created() {
     const queryParams = new URLSearchParams(window.location.search);
     this.storeId = queryParams.get("storeId");
-    console.log("Store ID:", this.storeId);
 
     if (this.storeId) {
       this.fetchRestaurantData();

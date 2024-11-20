@@ -38,9 +38,9 @@ public class AdminReserveController {
 												, @RequestParam(name = "userName", required = false) String userName
 												, @RequestParam(name = "statusCodeId", required = false) List<Integer> statusCodeId) {
 		Map<String, Object> filters = new HashMap<String, Object>();
-		if(storeName != null) filters.put("storeName", storeName);
-		if(userName != null) filters.put("userName", userName);
-		if(statusCodeId != null) filters.put("statusCodeId", statusCodeId);
+		filters.put("storeName", storeName!=null ? storeName : "");
+		filters.put("userName", userName!=null ? userName : "");
+		if(statusCodeId.size() > 0) filters.put("statusCodeId", statusCodeId);
 		return ResponseEntity.ok(adminReserveService.getReserveLists(filters));
 	}
 

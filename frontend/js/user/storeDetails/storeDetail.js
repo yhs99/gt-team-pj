@@ -296,7 +296,7 @@ new Vue({
       //  this.activeButton = index;
       switch (index) {
         case 0:
-          this.goToPage(`#`);
+          this.goToPage(`storeDetail?storeId=${this.storeId}`)
           break;
         case 1:
           this.goToPage(`storeDetails/menu?storeId=${this.storeId}`);

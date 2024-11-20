@@ -130,7 +130,7 @@ new Vue({
                     this.goToPage(`storeDetails/pictures?storeId=${this.storeId}`)
                     break;
                 case 3:
-                    this.goToPage(`#`)
+                    this.goToPage(`storeDetails/reviews?storeId=${this.storeId}`);
                     break;
                 case 4:
                     this.goToPage(`storeDetails/storeInfo?storeId=${this.storeId}`)

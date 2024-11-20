@@ -101,7 +101,7 @@ new Vue({
           this.goToPage(`storeDetails/menu?storeId=${this.storeId}`);
           break;
         case 2:
-          this.goToPage(`#`);
+          this.goToPage(`storeDetails/pictures?storeId=${this.storeId}`);
           break;
         case 3:
           this.goToPage(`storeDetails/reviews?storeId=${this.storeId}`);

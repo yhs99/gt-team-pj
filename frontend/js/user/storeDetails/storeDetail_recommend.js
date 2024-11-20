@@ -36,6 +36,9 @@ new Vue({
       
     },
     methods: {
+        scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 
         async fetchRestaurantData() {
             try {
                 const response = await axios.get(`/api/stores/store/${this.storeId}`);

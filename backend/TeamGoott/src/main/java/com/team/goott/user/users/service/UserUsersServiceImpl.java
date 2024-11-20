@@ -22,4 +22,9 @@ public class UserUsersServiceImpl implements UserUsersService {
 		return userDTO;
 	}
 
+	@Override
+	public UserDTO loginByKakao(String email) {
+		return usersDao.getUserInfoByKakao(email);
+	}
+
 }

@@ -49,7 +49,6 @@ Vue.component("sidebar-component", {
       axios
         .get("/api/status")
         .then((response) => {
-          console.log(response);
           this.loginType = response.data.data.loginType;
           this.store = response.data.data;
           this.storeName = response.data.data.name;
@@ -178,23 +177,18 @@ Vue.component("navbar-component", {
       const params = { alarmId: alarmId };
       axios
         .put("/api/owner/reserve/notification", null, { params })
-        .then((response) => {
-          console.log(response);
-        });
+        .then((response) => {});
     },
     // 알림 목록 받아오기
     getNotification() {
       axios.get("/api/owner/reserve/notification").then((response) => {
-        console.log(response);
         this.notifications = response.data.data;
       });
     },
     fetchUserData: function () {
       axios
         .get("/api/status")
-        .then((response) => {
-          console.log("owner checked");
-        })
+        .then((response) => {})
         .catch((error) => {
           if (error.status === 401) {
             alert("로그인 정보를 확인할 수 없습니다. 다시 로그인해주세요");
@@ -208,7 +202,6 @@ Vue.component("navbar-component", {
       axios
         .post("/api/logout")
         .then((response) => {
-          console.log(response);
           if (response.status === 200) {
             location.href = "/";
           }

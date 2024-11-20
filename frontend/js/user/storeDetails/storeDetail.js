@@ -19,8 +19,9 @@ new Vue({
         menu: [],
       },
       reviewData: [],
-      recommendData: [],
+      recommendData: {},
       storeReview: {},
+      couponData: [],
       info: {
         dateStr: "",
       },

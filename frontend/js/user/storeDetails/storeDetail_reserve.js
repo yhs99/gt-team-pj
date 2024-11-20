@@ -139,21 +139,32 @@ new Vue({
                 this.goToPage(`/view/user/userLogin`);
             }
         },
-        logCheckedMenus() {      
+        logCheckedMenus() {
+            const queryString = `?reserveTime=${this.selectedSlot}`;
+            const targetUrl = `/view/user/cart${queryString}`;
             // 체크된 메뉴 항목만 필터링
             const checkedMenus = this.menuData.menu.filter(menu => menu.quantity > 0);
             
             // 콘솔에 체크된 메뉴 출력
             if (checkedMenus.length > 0 && this.selectedSlot !== null) {
-                checkedMenus.forEach(menu => {
-                    this.insertMenu(menu.menuId,menu.quantity);
-
+                try {
+                axios.get(`/api/cart`)
+                .then(async response => {
+                    console.log('loaded cart');
+                    if(response.data.data.length > 0) {
+                        await Promise.all(
+                            response.data.data.map(cartItem => axios.delete(`/api/cart/${cartItem.cartId}`))
+                        );
+                    }
+                    console.log('deleted carts');
+                    for(const menu of checkedMenus) {
+                        await this.insertMenu(menu.menuId, menu.quantity);
+                    }
+                    location.href = targetUrl;
                 });
-
-                const queryString = `?reserveTime=${this.selectedSlot}`;
-                const targetUrl = `/view/user/cart${queryString}`;
-    
-                window.location.href = targetUrl;
+                } catch(e) {
+                    
+                }
             } else {
                 alert('메뉴와 시간을 선택해주세요');
             }
@@ -165,19 +176,17 @@ new Vue({
             this.selectedSlot = time;
             this.selectedSlotIndex = index;
         },
-        insertMenu(idMenu,qtyMenu){
+        insertMenu: async function(idMenu,qtyMenu){
             const data = {
                 storeId: this.storeId,
                 menuId: idMenu,
                 stock: qtyMenu  
             };
             try {
-                const response = axios.post(`/api/cart`,data);
-                response.then(res => {
-                }).catch(error => {
-                    console.error('데이터 추가 중 오류 발생:', error);
-                });
-                
+                return axios.post(`/api/cart`, data)
+                .then(response => {
+                    console.log(response.status === 200 ? data : '')
+                })
             } catch (error) {
                 console.error('오류 발생:', error);
             }
@@ -212,7 +221,8 @@ new Vue({
         if (this.storeId) {
             this.fetchRestaurantData(); 
         } else {
-            console.error('storeId가 없습니다. URL을 확인하세요.');
+            console.error('잘못된 매장입니다.');
+            window.history.back();
         }
 
         this.makeACalendar();

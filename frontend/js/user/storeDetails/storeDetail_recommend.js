@@ -213,6 +213,7 @@ new Vue({
 
         if (this.storeId) {
             this.fetchRestaurantData(); 
+            this.fetchRestaurantData();
         } else {
             console.error('storeId가 없습니다. URL을 확인하세요.');
         }

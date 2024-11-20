@@ -28,4 +28,11 @@ public class UserUsersDAOImpl implements UserUsersDAO {
 		return ses.selectOne(NS + "userLoginInfo", map);
 	}
 
+	@Override
+	public UserDTO getUserInfoByKakao(String email) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("email", email);
+		return ses.selectOne(NS + "getUserInfoByKakao", map);
+	}
+
 }

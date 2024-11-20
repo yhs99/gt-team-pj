@@ -53,16 +53,18 @@ public class OwnerStoreController {
 	
 	// 점주 가입
 	@PostMapping("/owner/register")
-	public ResponseEntity<Object> userLoginRequest(OwnerDTO ownerDTO){
+	public ResponseEntity<Object> userLoginRequest(OwnerDTO ownerDTO, HttpSession session){
 		boolean result = false;
 		try {
 			result = ownerStoreService.register(ownerDTO);
+			
 		} catch (DuplicateKeyException | MyBatisSystemException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("중복된 아이디 입니다 ");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("오류 발생 ");
 		}
+		
 		return ResponseEntity.ok(result?"점주 회원가입이 완료되었습니다. ":"실패");
 	}
 	

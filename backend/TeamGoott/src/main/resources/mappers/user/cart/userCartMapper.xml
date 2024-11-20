@@ -46,18 +46,31 @@
 	</select>
 
 	<select id="getUserCartById" resultMap="ExtendedCartMap">
-    select c.cartId, c.userId, c.menuId, c.menuName, c.stock, c.price, c.totalPrice, s.storeName,
-           si.url,cp.couponId, cp.couponName, m.menuImageUrl,s.maxPeoplePerReserve,cp.discount
+   select 
+        c.cartId, 
+        c.userId, 
+        c.menuId, 
+        c.menuName, 
+        c.stock, 
+        c.price, 
+        c.totalPrice, 
+        s.storeName,
+        si.url, 
+        cp.couponId, 
+        cp.couponName, 
+        m.menuImageUrl, 
+        s.maxPeoplePerReserve, 
+        cp.discount
     from cart c
     join menu m on c.menuId = m.menuId
     join store s on m.storeId = s.storeId
     left join storeImages si on m.storeId = si.storeId
-    left join coupon cp on cp.storeId = s.storeId
-    where c.userId = #{userId}
-     and (
-            (cp.start &lt;= CURRENT_DATE and cp.end &gt;= CURRENT_DATE and cp.stock &gt; 0) 
-            or (cp.start is null and cp.end is null and cp.stock &gt; 0)
-        )
+    left join coupon cp on cp.storeId = s.storeId 
+    and (
+        (cp.start &lt;= CURRENT_DATE and cp.end &gt;= CURRENT_DATE and cp.stock &gt; 0)
+        or (cp.start is null and cp.end is null and cp.stock &gt; 0)
+    )
+where c.userId = #{userId}
 </select>
 
 	<select id="getCartStoreList" resultType="int">

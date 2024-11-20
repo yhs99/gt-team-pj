@@ -72,14 +72,11 @@ new Vue({
       const params = { alarmId: alarmId };
       axios
         .put("/api/owner/reserve/notification", null, { params })
-        .then((response) => {
-          console.log(response);
-        });
+        .then((response) => {});
     },
 
     fetchReserves: function () {
       axios.get("/api/owner/reserve").then((response) => {
-        console.log("예약목록 api", response);
         this.reserves = response.data.data.reservations;
         this.reserveByDate = response.data.data.reserveByDate;
       });
@@ -89,7 +86,6 @@ new Vue({
       axios
         .get("/api/owner/review")
         .then((response) => {
-          console.log("리뷰api", response);
           this.reviews = response.data.data.reviews;
           this.reviewByDate = response.data.data.reviewByDate;
           this.getFullCalendar();
@@ -155,7 +151,6 @@ new Vue({
     // 알림 목록 받아오기
     getNotification() {
       axios.get("/api/owner/reserve/notification").then((response) => {
-        console.log("알림 목록 api", response);
         this.notifications = response.data.data;
       });
     },
@@ -163,7 +158,6 @@ new Vue({
     // 결제, 매출 정보
     getSalesInfo() {
       axios.get("/api/owner/sales").then((response) => {
-        console.log("결제 매출 정보 api ", response);
         this.totalSales = response.data.data.totalSales;
         this.totalSalesCount = response.data.data.totalSalesCount;
         this.todayTotalSales = response.data.data.todayTotalSales;
@@ -172,7 +166,6 @@ new Vue({
         this.countMonthlySales = response.data.data.countMonthlySales;
         this.salesByDate = response.data.data.salesByDate;
 
-        console.log("salesBy date 정보11", this.salesByDate);
         this.createChart();
         this.getFullCalendar();
         this.calcuateQuarterSale();
@@ -232,7 +225,6 @@ new Vue({
           borderColor: "#4CAF50",
         });
       });
-      console.log("리뷰 : ", this.reviewByDate);
 
       this.reviewByDate.forEach((review, index) => {
         calendar.addEvent({
@@ -252,7 +244,6 @@ new Vue({
       axios
         .get(`/api/store`) // 가게 데이터 요청
         .then((response) => {
-          console.log(response);
           this.store = response.data.data.store; // 가게 데이터를 저장
         })
         .catch((error) => {
@@ -264,7 +255,6 @@ new Vue({
       axios
         .get("/api/coupon") // 쿠폰 데이터 요청
         .then((response) => {
-          console.log(response);
           this.coupon = response.data.data; // 쿠폰 데이터를 저장
         })
         .catch((error) => {
@@ -278,7 +268,6 @@ new Vue({
       axios
         .post("/api/owner/reserve/" + reserveId, null, { params })
         .then((response) => {
-          console.log("예약상태 업데이트", response);
           if (statusCode == 2) {
             alert(reserveId + "의 예약 승인요청이 완료 되었습니다.");
             location.reload();
@@ -293,7 +282,6 @@ new Vue({
       axios
         .get("/api/status") // 서버에 /api/status 요청
         .then((response) => {
-          console.log("로그인", response);
           if (response.data.data.loginType == "store") {
             this.name = response.data.data.name;
             this.loginYN = true;
@@ -310,7 +298,6 @@ new Vue({
       axios
         .post("/api/logout")
         .then((response) => {
-          console.log(response);
           if (response.status === 200) {
             location.href = "/";
           }
@@ -330,8 +317,8 @@ new Vue({
           }
         })
         .catch((error) => {
-          alert("에러발생");
-          console.log(error);
+          alert("서버 오류로 인한 에러발생");
+          console.error(error);
         });
     },
 

@@ -32,9 +32,7 @@ new Vue({
   methods: {
     fetchMenu: function () {
       axios.get("/api/owner/menu").then((response) => {
-        console.log(response);
         this.allMenu = response.data.data.menu;
-        console.log(this.allMenu);
         this.numOfAllMenu = response.data.data.numOfAllMenu;
         this.numOfSideMenu = response.data.data.numOfSideMenu;
         this.numOfMainMenu = response.data.data.numOfMainMenu;
@@ -46,7 +44,12 @@ new Vue({
       const imgFile = e.target.files[0];
       if (imgFile) {
         const maxSize = 10 * 1024 * 1024;
-        if (imgFile.size > maxSize) {
+        const checkImg = imgFile.type.startsWith("image/");
+        if (!checkImg) {
+          alert("이미지 파일만 업로드 가능합니다.");
+          e.target.value = "";
+          return;
+        } else if (imgFile.size > maxSize) {
           alert("이미지는 10MB이하의 파일만 업로드 가능합니다");
           e.target.value = "";
           return;
@@ -60,7 +63,6 @@ new Vue({
 
     addMenu() {
       const formData = new FormData();
-      console.log(this.newMenu);
       const json = JSON.stringify({
         description: this.newMenu.description,
         menuName: this.newMenu.menuName,
@@ -69,23 +71,21 @@ new Vue({
       });
       const blob = new Blob([json], { type: "application/json" });
       formData.append("menu", blob);
+      console.log(this.file);
 
       if (this.file) {
         formData.append("file", this.file);
       }
-
-      console.log(formData);
-      console.log(this.file);
       axios
         .post("/api/owner/menu", formData)
         .then((response) => {
-          console.log(response);
           this.showAddModal = false;
           alert("메뉴가 성공적으로 추가되었습니다.");
           this.fetchMenu();
+          this.file = null;
         })
         .catch((error) => {
-          console.error(error);
+          alert("서버 오류로 인한 메뉴 추가 실패 : ", error);
         });
     },
     modifyMenu(menuId) {
@@ -103,25 +103,20 @@ new Vue({
         formData.append("file", this.file);
       }
 
-      console.log(this.file);
-
       axios
         .put("/api/owner/menu/" + menuId, formData)
         .then((response) => {
-          console.log(response);
           this.showModifyModal = false;
           alert("메뉴가 성공적으로 수정되었습니다.");
           this.fetchMenu();
+          this.file = null;
         })
         .catch((error) => {
-          console.error(error);
+          alert("서버 오류로 인한 메뉴 수정 실패 : ", error);
         });
     },
     deleteMenu() {
-      console.log(this.deleteMenuId);
-
       axios.delete("/api/owner/menu/" + this.deleteMenuId).then((response) => {
-        console.log(response);
         alert("메뉴가 성공적으로 삭제되었습니다.");
         this.fetchMenu();
         this.showDeleteModal = false;
@@ -138,15 +133,15 @@ new Vue({
       this.filteredMenu = this.allMenu.filter((menu) => !menu.main);
     },
     showAddMenuModal() {
-      console.log("modal");
+      this.showMenuImageInput = false;
       this.showAddModal = true;
       this.clearModalInput();
     },
     showModifyMenuModal(menuId) {
+      this.showMenuImageInput = false;
       this.showModifyModal = true;
       this.modifyMenuId = menuId;
       let menu = this.allMenu.filter((menu) => menu.menuId == menuId);
-      console.log(menu);
       this.modifyMenuList.menuName = menu[0].menuName;
       this.modifyMenuList.price = menu[0].price;
       this.modifyMenuList.description = menu[0].description;

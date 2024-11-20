@@ -40,8 +40,8 @@ new Vue({
         formData.append('password', this.formDatas.password);
         await axios.post('/api/store/owner/register', formData)
         .then(response => {
-          alert('점주 회원가입이 완료되었습니다. 가게 정보를 등록해주세요!');
-          location.href = '/view/owner/registerStore';
+          alert('점주 회원가입이 완료되었습니다. 다시 로그인 해주세요!');
+          location.href = '/view/user/userLogin'
         })
         .catch(error => {
           if(error.status === 400) {

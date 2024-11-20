@@ -6,5 +6,5 @@ public interface UserUsersDAO {
 
 	UserDTO login(String id, String password);
 
-	
+	UserDTO getUserInfoByKakao(String email);
 }

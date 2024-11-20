@@ -373,6 +373,8 @@ a {
 
 .facilities_box {
     display: flex;
+    max-width: 700px;
+    justify-content: space-around;
 }
 
 .facilities_category {
@@ -438,8 +440,8 @@ a {
 }
 
 .review_image_box{
-    width: 170px;
-    height: 170px;
+    width: 195px;
+    height: 180px;
     border-radius: 5px; 
 }
 .review_image_box img{

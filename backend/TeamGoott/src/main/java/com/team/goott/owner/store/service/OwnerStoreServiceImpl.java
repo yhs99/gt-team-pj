@@ -82,6 +82,21 @@ public class OwnerStoreServiceImpl implements OwnerStoreService {
 			List<FacilityDTO> facility, List<MultipartFile> files) throws Exception {
 		validateStoreDTO(store);
 		setSidoCodeId(store);
+		
+		if(schedules.size() < 1) {
+			store.setRotationId(0);
+			throw new Exception("스케쥴은 비어있을 수 없습니다");
+		}
+		
+		if(category.size() < 1) {
+			store.setRotationId(0);
+			throw new Exception("카테고리는 비어있을 수 없습니다");
+		}
+		
+		if(facility.size() < 1) {
+			store.setRotationId(0);
+			throw new Exception("편의시설은 비어있을 수 없습니다");
+		}
 
 		// store테이블에 정보가 insert 되었을 경우 1이 반환되고, storeId를 반환값으로 받음
 		if (ownerStoreDao.createStore(store) <= 0) {

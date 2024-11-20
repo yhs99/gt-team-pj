@@ -375,7 +375,6 @@ new Vue({
       } catch (error) {
         if (error.response && error.response.status === 401) {
           this.isLoggedIn = false;
-          console.log("isLoggedIn", this.isLoggedIn);
         } else {
           console.error("로그인 상태 확인 중 오류 발생:", error);
         }

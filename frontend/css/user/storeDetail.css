@@ -384,6 +384,11 @@ a {
     margin-right: 3px;
 }
 
+.list_none{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
 /* 추천 레스토랑 */
 .restaurants_whole{
     display: flex;
@@ -441,8 +446,8 @@ a {
 }
 
 .review_image_box{
-    width: 195px;
-    height: 180px;
+    width: 170px;
+    height: 170px;
     border-radius: 5px; 
 }
 .review_image_box img{

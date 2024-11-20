@@ -18,21 +18,6 @@
   text-align: left;
 }
 
-.restaurant-header {
-  text-align: center;
-}
-
-.restaurant-image {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-}
-
-.restaurant-name {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 10px 0;
-}
 
 /* full-calendar */
 .fc-day-today {
@@ -40,28 +25,6 @@
   border: none !important;
 }
 
-.stars {
-  margin-right: 5px;
-}
-
-.review-count {
-  font-size: 14px;
-  color: #555;
-}
-
-.location,
-.hours {
-  font-size: 16px;
-  color: #777;
-}
-
-.actions {
-  margin-top: 15px;
-}
-
-.section {
-  margin-top: 20px;
-}
 
 h2 {
   margin-bottom: 6px;
@@ -102,21 +65,6 @@ h2 {
   height: 80px;
 }
 
-/* automaic-carousel */
-
-#carouselExampleIndicators {
-  height: 300px;
-}
-
-.caroPic {
-  height: 300px;
-}
-
-.caroPic img {
-  width: 100%; /* 이미지 너비를 100%로 설정 */
-  height: 100%; /* 이미지 높이를 100%로 설정 */
-  object-fit: cover; /* 이미지 비율 유지하며 중앙에 배치 */
-}
 
 /* 메뉴버튼 */
 .cButton-container {
@@ -231,16 +179,15 @@ a {
   font-weight: bold;
   cursor: pointer;
   text-align: center;
+  letter-spacing: -0.5px;
 }
 
 .available_letters {
   color: tomato;
   font-size: 8px;
+  
 }
 
-.more {
-  background-color: rgb(248, 245, 245);
-}
 
 /* 서식 */
 .my_title {
@@ -252,97 +199,6 @@ a {
   color: #555;
 }
 
-/* 사진 */
-.photo_gallery {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px; /* 이미지 간격 */
-  width: 670px;
-  height: 330px;
-  margin: 0 auto;
-}
-.photo_frame {
-  width: 160px;
-  height: 160px;
-  border-radius: 5px;
-}
-
-.photo_frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 5px;
-}
-/* detail-pictures */
-.photo_column {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px; /* 이미지 간격 */
-  width: 670px;
-  margin: 0 auto;
-}
-
-/* 쿠폰 */
-#coupon {
-  margin: 20px auto;
-}
-/* 리뷰 */
-
-.r_title {
-  padding: 50px 0 0;
-}
-
-/* 상세정보 */
-.info-label {
-  font-weight: bold; /* 라벨 강조 */
-  margin-top: 15px; /* 라벨과 이전 내용 간격 */
-}
-
-.info-content {
-  margin: 5px 0; /* 내용 간격 */
-  color: #333; /* 기본 글자색 */
-}
-
-/* 추천 레스토랑 */
-.restaurants_whole {
-  display: flex;
-}
-
-.restaurant-card {
-  width: 205px;
-  margin-right: 1px; /* 카드 간의 간격 */
-  word-break: keep-all;
-}
-
-.restaurant_image_box {
-  width: 200px;
-  height: 180px;
-  border-radius: 5px; /* 둥근 모서리 */
-}
-.restaurant_image_box img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.restaurant-info {
-  flex-grow: 1; /* 남은 공간 차지 */
-}
-
-.rating {
-  color: gold; /* 평점 색상 */
-  margin-right: 5px; /* 평점과 이름 간격 */
-}
-
-.restaurant-name {
-  font-size: 20px;
-  font-weight: bold; /* 레스토랑 이름 강조 */
-}
-
-.restaurant-details {
-  font-size: 12px; /* 상세 정보 폰트 크기 */
-  color: #777; /* 상세 정보 색상 */
-}
 
 /* reserve */
 
@@ -353,4 +209,13 @@ a {
 
 .gap10 {
   margin-top: 10px;
+}
+
+.disabled .available_letters {
+  color: #d3d3d3; 
+}
+
+.disabled{
+  cursor: not-allowed; 
+  opacity: 0.5;
 }

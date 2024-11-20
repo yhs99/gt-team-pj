@@ -13,11 +13,13 @@
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ae7f9510119596f0c0ff9416ba9caf07"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
     <script src="/js/user/storeDetails/storeDetail_reserve.js" defer></script>
     <script src="https://kit.fontawesome.com/9ebc532cee.js" crossorigin="anonymous"></script>
     <script src="/js/user/component.js"></script>
     <script src="/js/axiosSetting.js"></script>
     <link rel="stylesheet" href="/css/user/storeDetails/storeDetails_reserve.css">
+    <script src="/js/user/component.js"></script>
 </head>
 <body>
     
@@ -33,18 +35,20 @@
             <h2 class="my_title">예약하기</h2>
             
             <div id='calendar'></div>
-            
-           <template>
-            <div class="gap10 slotBtns_sec">
-                <div v-for="(slot, index) in reserveSlots" :key="slot.slotDatetime" 
-                     v-if="slot.reserved !== 1" 
-                   > 
-                    <div class="slot_button"   @click="selectSlot(slot.slotDatetime, index)" 
-                    :class="{ active: selectedSlotIndex === index }">
-                    {{ formatTime(slot.slotDatetime) }} <span class="available_letters">예약가능</span>
+       
+            <template>
+                <div class="gap10 slotBtns_sec">
+                    <div v-for="(slot, index) in reserveSlots" :key="slot.slotDatetime">
+                        <div class="slot_button" 
+                             @click="slot.reserved !== 1 ? selectSlot(slot.slotDatetime, index) : null" 
+                             :class="{ active: slot.reserved != 1 && selectedSlotIndex === index, 'disabled': slot.reserved == 1 }">
+                            {{ formatTime(slot.slotDatetime) }} 
+                            <span class="available_letters">
+                                {{ slot.reserved == 1 ? '예약불가' : '예약가능' }}
+                            </span>
+                        </div>
                     </div>
                 </div>
-            </div>
             </template>
             </div> 
             <div class="square_section">
@@ -89,6 +93,7 @@
                     <button class="reserve"> 예약하기</button></a>
             </div>  
         </div> 
+        <footer-component></footer-component>
     </div>
 </body>
 </html>

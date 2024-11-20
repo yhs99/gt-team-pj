@@ -43,7 +43,13 @@ public class UserReserveServiceImpl implements UserReserveService {
 	    validateReservation(userId, reserveDTO);
 	    
 	    // 예약 등록
-	    userReserveDAO.insertReserve(userId, reserveDTO);
+	    int result = userReserveDAO.insertReserve(userId, reserveDTO);
+	    if(result == 1) {
+	    	int setNotification = setNotificationToOwner(userId,reserveDTO);
+	    	if(setNotification == 1) {
+	    		log.info("신규 예약 등ㄺ 알림 설정 완료");
+	    	}
+	    }
 
 	    double totalAmount = 0;
 

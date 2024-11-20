@@ -18,7 +18,7 @@ new Vue({
           if (response.data.data.loginType == "user") {
             location.href = "/";
           } else {
-            location.href = "/view/owner/index";
+            
           }
         })
         .catch((error) => {

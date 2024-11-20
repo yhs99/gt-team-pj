@@ -30,9 +30,7 @@ public class AdminStoreServiceImpl implements AdminStoreService {
 		searchQuery.put("sidoCodeId", sidoCodeId);
 		searchQuery.put("searchParam", searchParam);
 		searchQuery.put("showBlock", showBlock);
-		log.info("{}",searchQuery.toString());
 		List<StoresVO> stores = dao.getStoresInfo(searchQuery);
-		log.info(stores.toString());
 		return stores;
 	}
 

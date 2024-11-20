@@ -26,7 +26,6 @@ public class ExtendedCartDTO {
 	private double totalPrice;
 	private int maxPeoplePerReserve;
 	private String menuImageUrl;
-	private String description;
 	private String storeName;
 	private List<String> url = new ArrayList<>();
 	private List<CouponVO> availableCoupons = new ArrayList<>();

@@ -14,6 +14,7 @@ new Vue({
     favoriteStoreIds: [],
     loginYN: false,
     isDescriptionVisible: false,
+    showScrollButton: false,
   },
   created() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -43,6 +44,8 @@ new Vue({
       if (scrollTop + clientHeight >= scrollHeight - 10) {
         this.fetchStore();
       }
+
+      this.showScrollButton = scrollTop > 200;
     },
     async fetchFavoriteStores() {
       try {
@@ -50,9 +53,7 @@ new Vue({
         this.favoriteStoreIds = response.data.data.map(
           (item) => item.bookmarkDto.storeId
         );
-        console.log("Fetched favorite store IDs:", this.favoriteStoreIds);
       } catch (error) {
-        console.error("즐겨찾기 목록 가져오기 실패:", error);
         this.favoriteStoreIds = [];
       }
     },
@@ -80,29 +81,36 @@ new Vue({
 
       url += `&showBlock=0`;
 
-      console.log("요청 URL:", url);
-
       try {
         const response = await axios.get(url);
         const storeLists = response.data.data.storeLists;
 
-        if (storeLists.length < this.perPage) {
+        const startIndex = (this.page - 1) * this.perPage;
+        const endIndex = startIndex + this.perPage;
+
+        const paginatedStores = storeLists.slice(startIndex, endIndex);
+
+        if (paginatedStores.length < this.perPage) {
           this.hasMore = false;
         }
 
-        this.stores = [
-          ...this.stores,
-          ...storeLists.map((store) => ({
-            ...store,
-            isFavorite: this.favoriteStoreIds.includes(store.storeId),
-            isDescriptionVisible: false,
-            isExpanded: false,
-          })),
-        ];
+        const uniqueStores = paginatedStores.filter(
+          (store) =>
+            !this.stores.some(
+              (existingStore) => existingStore.storeId === store.storeId
+            )
+        );
+
+        const storesWithFavoriteStatus = uniqueStores.map((store) => ({
+          ...store,
+          isFavorite: this.favoriteStoreIds.includes(store.storeId),
+        }));
+
+        this.stores = [...this.stores, ...storesWithFavoriteStatus];
 
         this.page += 1;
       } catch (error) {
-        console.error("가게 목록 가져오기 실패:", error);
+        console.error("가게 목록을 가져오는 중 에러 발생:", error);
       } finally {
         this.isLoading = false;
       }
@@ -113,7 +121,7 @@ new Vue({
         if (
           confirm("즐겨찾기는 로그인 후에 이용 가능합니다. 로그인하시겠습니까?")
         ) {
-          window.location.href = "/login"; // 로그인 페이지로 이동
+          window.location.href = "/login";
         }
         return;
       }
@@ -121,16 +129,17 @@ new Vue({
       try {
         if (store.isFavorite) {
           await axios.delete(`/api/bookmark/${store.storeId}`);
+          this.favoriteStoreIds = this.favoriteStoreIds.filter(
+            (id) => id !== store.storeId
+          );
           this.updateFavoriteStatus(store.storeId, false);
-          console.log("즐겨찾기에서 제거되었습니다.");
         } else {
           await axios.post(`/api/bookmark/${store.storeId}`);
           this.updateFavoriteStatus(store.storeId, true);
-          console.log("즐겨찾기에 추가되었습니다.");
+          this.favoriteStoreIds.push(store.storeId);
         }
       } catch (error) {
-        console.error("즐겨찾기 처리 중 오류 발생:", error);
-        alert("즐겨찾기 처리에 실패했습니다. 다시 시도해 주세요.");
+        alert("즐겨찾기 처리에 실패했습니다.");
       }
     },
     updateFavoriteStatus(storeId, isFavorite) {
@@ -156,7 +165,6 @@ new Vue({
         }
       } catch (error) {
         this.loginYN = false;
-        console.error("로그인 상태 확인 중 오류 발생:", error);
       }
     },
 
@@ -210,6 +218,9 @@ new Vue({
     },
     goToReviewPage(storeId) {
       window.location.href = `storeDetails/reviews?storeId=${storeId}`;
+    },
+    scrollToTop() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
   },
 });

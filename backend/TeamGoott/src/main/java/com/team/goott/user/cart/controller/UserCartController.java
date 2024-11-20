@@ -35,8 +35,6 @@ public class UserCartController {
 	public ResponseEntity<Object> getUserCartById(HttpSession session) {
 		List<ExtendedCartDTO> cart = null;
 		UserDTO userSession = (UserDTO) session.getAttribute("user");
-		
-
 		try {
 			cart = userCartService.getUserCartById(userSession.getUserId());
 			if (cart == null || cart.isEmpty()) {

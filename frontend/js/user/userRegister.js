@@ -2,6 +2,7 @@ new Vue({
   el: "#app",
   data: {
     submit: false,
+    socialRegister: false,
     formDatas: {
       email: '',
       password: '',
@@ -19,6 +20,7 @@ new Vue({
   },
   created: function () {
     this.checkLogin();
+    this.searchEmail();
   },
   methods: {
     checkLogin: function () {
@@ -143,6 +145,14 @@ new Vue({
         reader.readAsDataURL(file);
       } else {
         alert("이미지 파일을 선택하세요.");
+      }
+    },
+    searchEmail() {
+      const email = new URLSearchParams(document.location.search).get("email");
+      if(email != null) {
+        alert("서비스 이용을 위해 회원가입을 진행해주세요!");
+        this.formDatas.email = email;
+        this.socialRegister = true;
       }
     }
   },

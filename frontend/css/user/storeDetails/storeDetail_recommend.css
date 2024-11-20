@@ -24,7 +24,6 @@
     
 }
 
-
 .restaurant-image {
     width: 100%;
     height: auto;
@@ -86,3 +85,38 @@
     color: #777; 
 }
 
+.icon_header_sec1 {
+    position: relative;
+    padding: 4px 8px 0px 8px;
+    border: none;
+    border-radius: 100%;
+    background-color: lightgray;
+    color: white;
+    text-align: center;
+    margin-bottom: 50px;
+    z-index: 1000;
+    float: right;
+}
+
+
+.bookmarked_icon {
+    color: orangered !important;
+}
+
+.scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: orange;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    /* display: none; 기본적으로 숨김 */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}

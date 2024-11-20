@@ -67,7 +67,12 @@ new Vue({
             .map((store) => store.storeSchedules)
             .flat();
         })
-        .catch((error) => {});
+        .catch((error) => {
+          console.error("데이터 로드 실패:", error);
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
     filterTopReviewStores(stores) {
       this.topReviewStores = stores

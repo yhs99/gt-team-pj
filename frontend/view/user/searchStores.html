@@ -36,6 +36,12 @@
   </head>
   <body>
     <div id="app" class="bg-light">
+      <div
+        id="spinner"
+        class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center"
+      >
+        <div class="spinner-grow text-warning" role="status"></div>
+      </div>
       <header-navbar></header-navbar>
       <div class="container">
         <table class="table">
@@ -134,6 +140,7 @@
       </button>
       <footer-component></footer-component>
     </div>
+    <script src="/js/axiosSetting.js"></script>
     <script src="/js/Footer.js"></script>
     <script src="/js/user/component.js"></script>
     <script src="/js/user/searchStores.js"></script>

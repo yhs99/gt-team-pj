@@ -37,7 +37,6 @@ new Vue({
             })
             .then(response => {
                 this.allReviews = response.data.data; // 모든 리뷰 저장
-                console.log("All Reviews:", this.allReviews);
             })
             .catch(error => {
                 console.error('Error fetching all reviews', error);
@@ -55,13 +54,11 @@ new Vue({
                 }
             })
             .then(response => {
-                console.log("API 응답:", response.data);
                 if (response.data.data.length === 0) {
                     this.hasMoreData = false; // 더 이상 데이터가 없으면 플래그를 false로 변경
                 } else {
                     this.reviewData = this.reviewData.concat(response.data.data); // 기존 데이터와 새 데이터 병합
                 }
-                console.log("reviewData:", this.reviewData);
             })
             .catch(error => {
                 console.error('Error fetching ReviewData', error);

@@ -24,7 +24,6 @@
     
 }
 
-
 .restaurant-image {
     width: 100%;
     height: auto;
@@ -100,7 +99,24 @@
 }
 
 
-
 .bookmarked_icon {
     color: orangered !important;
+}
+
+.scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: orange;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    /* display: none; 기본적으로 숨김 */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
 }

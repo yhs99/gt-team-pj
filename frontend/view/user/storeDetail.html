@@ -77,7 +77,7 @@
                         <span class="review-count">리뷰수( {{ reviewData.length }})</span>
                     </span>
                 </div>
-            <p class="description" v-if="restaurantData && restaurantData.data">
+            <p class="description gap10" v-if="restaurantData && restaurantData.data">
                 {{ restaurantData.data.description}}</p>
             <p class="address" v-if="restaurantData && restaurantData.data">
                 📍{{ restaurantData.data.address}}</p>
@@ -202,13 +202,13 @@
         </div>
         <div class="square_section">
             <h2 class="my_title">상세정보</h2>
-            <p class="info-label">전화번호</p>
+            <p class="info-label">📞전화번호</p>
             <p class="info-content" v-if="restaurantData && restaurantData.data">
-                📞 {{ restaurantData.data.tel }}</p>
-            <p class="info-label">정기 휴무</p>
+                 {{ restaurantData.data.tel }}</p>
+            <p class="info-label">📅정기 휴무</p>
 
             <p class="info-content" v-if="allSchedulesOpen">연중 무휴입니다.</p>
-            <ul>
+            <ul class="list_none">
                 <li v-for="(day, index) in getClosedDays()" :key="index">{{ day }}</li>
             </ul>
           

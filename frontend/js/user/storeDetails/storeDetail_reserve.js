@@ -150,13 +150,11 @@ new Vue({
                 try {
                 axios.get(`/api/cart`)
                 .then(async response => {
-                    console.log('loaded cart');
                     if(response.data.data.length > 0) {
                         await Promise.all(
                             response.data.data.map(cartItem => axios.delete(`/api/cart/${cartItem.cartId}`))
                         );
                     }
-                    console.log('deleted carts');
                     for(const menu of checkedMenus) {
                         await this.insertMenu(menu.menuId, menu.quantity);
                     }
@@ -203,7 +201,6 @@ new Vue({
             } catch (error) {
                 if (error.response && error.response.status === 401) {
                     this.isLoggedIn = false;
-                    console.log("isLoggedIn", this.isLoggedIn);
                 } else {
                     console.error('로그인 상태 확인 중 오류 발생:', error);
                 }

@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Description;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.team.goott.admin.domain.RotationVO;
 import com.team.goott.admin.store.persistence.AdminStoreDAO;
@@ -36,6 +37,7 @@ public class ReserveSlotsScheduler {
 	
 	@Scheduled(cron = "0 0 0 * * ?")
 	@Description("매일 자정마다 schedule 테이블에 저장된 가게의 open, close시간, rotation시간 및 schedule 설정에 따라 예약 테이블을 생성합니다.")
+	@Transactional("slotScheduler")
 	public void reserveSlotsCreateScheduler() {
 			LocalDateTime now = LocalDateTime.now().plusDays(1);
 			log.info("스케쥴러 시작 ::: {} {}", now.toLocalDate().toString(), now.toLocalTime().toString());
@@ -248,18 +250,11 @@ public class ReserveSlotsScheduler {
                 boolean exists = existingSlots.stream()
                         .anyMatch(slot -> slot.getSlotDatetime().toLocalDate().equals(date) &&
                                           slot.getSlotDatetime().toLocalTime().equals(currentTime));
-//                log.info(time + " " +closeTime + " ::" +exists);
-//                log.info("existingSlots :: " + existingSlots.toString());
-                // 슬롯이 존재하지 않을 경우 새로운 슬롯을 생성합니다.
                 if (!exists) {
                     ReserveSlotsDTO newSlot = new ReserveSlotsDTO();
                     newSlot.setStoreId(schedules.getStoreId());
                     newSlot.setSlotDatetime(LocalDateTime.of(date, time)); // LocalDateTime으로 설정
-                    log.info("newSlot :: {} ", newSlot.toString());
-//                        log.info("스케쥴러 newSlot : {} ", newSlot.toString());
                         oDao.UpdateReserveSlot(newSlot);
-                        
-//                            log.info("[{}] 새로운 슬롯 생성 완료: {}", schedule.getStoreId(), newSlot.getSlotDatetime());
                 }
             }
         } catch (Exception e) {

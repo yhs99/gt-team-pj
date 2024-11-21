@@ -149,7 +149,7 @@ public class UserReserveServiceImpl implements UserReserveService {
 			for (MenuDTO storeMenu : storeMenuList) {
 				if (cart.getPrice() == storeMenu.getPrice()) {
 					isValidMenu = true;
-					break; // 일치하는 메뉴를 찾았으니 더 이상 반복할 필요 없음
+					break;
 				}
 			}
 			if (!isValidMenu) {

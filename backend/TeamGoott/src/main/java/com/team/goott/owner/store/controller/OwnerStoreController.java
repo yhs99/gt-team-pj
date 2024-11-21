@@ -201,7 +201,6 @@ public class OwnerStoreController {
                 }
             }
         }
-	    	log.info("Deleted images: {}", deleteImage);
     	
         // 현재 세션에서 ownerId 가져오기
         if (getOwnerIdFromSession(session) == null) {
@@ -224,7 +223,7 @@ public class OwnerStoreController {
         store.setStoreId(storeId);
         
         // 요청 테스트 (로그 확인용)
-        log.info("PUT 테스트 : " + facility.toString());
+//        log.info("PUT 테스트 : " + facility.toString());
 
         // 가게 수정
         try {

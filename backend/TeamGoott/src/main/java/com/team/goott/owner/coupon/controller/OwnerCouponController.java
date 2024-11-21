@@ -46,7 +46,6 @@ public class OwnerCouponController {
 		try {
 			// 쿠폰 목록 조회
 			coupons = ownerCouponService.getCouponsByStoreId(storeId);
-			log.info("쿠폰 목록: {}", coupons);
 		} catch (Exception e) {
 			log.error("서버 오류 발생", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류 발생"); // 예외 발생 시 에러 응답
@@ -60,7 +59,6 @@ public class OwnerCouponController {
 	@OwnerOnly
 	@PostMapping("")
 	public ResponseEntity<Object> createCoupon(HttpSession session, @ModelAttribute CouponDTO newCoupon) {
-		log.info("넘어온 couponDTO 값 : " + newCoupon.toString());	
 		
 		StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
 		
@@ -68,8 +66,6 @@ public class OwnerCouponController {
 
 		newCoupon.setStoreId(storeId);
 		
-		log.info("storeId set 확인 : " + newCoupon);
-
 		try {
 			int result = ownerCouponService.createCoupon(newCoupon);
 			if (result > 0) {
@@ -109,9 +105,6 @@ public class OwnerCouponController {
 	@OwnerOnly
     @PutMapping("/{couponId}")
     public ResponseEntity<Object> updateCoupon(HttpSession session, @PathVariable int couponId, @ModelAttribute CouponDTO coupon) {
-    	log.info("couponId : " + couponId);
-    	log.info("coupon 정보 : " + coupon);
-    	
         StoreDTO storeSession = (StoreDTO) session.getAttribute("store");
         
     	int storeId = storeSession.getStoreId();

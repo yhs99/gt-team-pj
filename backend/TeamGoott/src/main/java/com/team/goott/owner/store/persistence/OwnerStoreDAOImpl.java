@@ -34,7 +34,6 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
 	
 	// store 테이블에 데이터 저장
 	public int createStore(StoreDTO store) throws Exception {
-		log.info(store.getOwnerId()+"");
 		return ses.insert(NS + "createStore", store);
 	}
 	
@@ -201,7 +200,6 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
 
 	@Override
 	public int deleteSlotsByDayCodeId(Map<String, Object> dayCodeMap) {
-		log.info("dao :: {} ", dayCodeMap.toString());
 		return ses.delete(NS + "deleteSlotsByDayCodeId", dayCodeMap);
 	}
 
@@ -223,7 +221,6 @@ public class OwnerStoreDAOImpl implements OwnerStoreDAO {
 
 	@Override
 	public int updateReserveStatus(Map<String, Object> updateSlotMap) {
-		log.info("DAO Imple :: " + updateSlotMap.toString());
 		return ses.update(NS + "updateReserveStatus", updateSlotMap);
 	}
 

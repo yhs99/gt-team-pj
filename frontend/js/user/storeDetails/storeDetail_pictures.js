@@ -42,7 +42,7 @@ new Vue({
   methods: {
     fetchRestaurantData() {
       axios
-        .get(`http://localhost/api/stores/store/${this.storeId}`) // API URL을 입력하세요
+        .get(`/api/stores/store/${this.storeId}`) // API URL을 입력하세요
         .then((response) => {
           this.restaurantData = response.data; // 응답 데이터를 restaurantData에 저장
           this.schedules = this.restaurantData.data.storeSchedules;
@@ -60,10 +60,10 @@ new Vue({
           console.error("Error fetching restaurantData:", error);
         });
     },
-
+ 
     fetchMenuData() {
       axios
-        .get(`http://localhost/api/stores/menu/${this.storeId}`)
+        .get(`/api/stores/menu/${this.storeId}`)
         .then((response) => {
           this.menuData = response.data.data;
         })
@@ -77,7 +77,7 @@ new Vue({
     },
     fetchReviewData() {
       axios
-        .get(`http://localhost/api/review/store/${this.storeId}`)
+        .get(`/api/review/store/${this.storeId}`)
         .then((response) => {
           this.reviewData = response.data.data;
         })

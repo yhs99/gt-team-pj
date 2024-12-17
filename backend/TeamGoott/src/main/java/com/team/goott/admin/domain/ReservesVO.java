@@ -49,6 +49,7 @@ public class ReservesVO {
 		this.totalDiscountPrice = this.payHistories.stream()
 			    .mapToDouble(ph -> ph.getTotalPrice() - ph.getPayAmount())
 			    .sum();
+		
 	}
 	
 	public void setStatusCodeId(int statusCodeId) {

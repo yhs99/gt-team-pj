@@ -121,7 +121,7 @@ new Vue({
         if (
           confirm("즐겨찾기는 로그인 후에 이용 가능합니다. 로그인하시겠습니까?")
         ) {
-          window.location.href = "/login";
+          window.location.href = "/view/user/userLogin";
         }
         return;
       }

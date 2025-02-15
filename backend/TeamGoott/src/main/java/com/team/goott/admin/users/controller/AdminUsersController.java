@@ -31,7 +31,7 @@ public class AdminUsersController {
 	@Autowired
 	private AdminUsersService ads;
 	
-	// 전체 사용자 목록
+	//전체 사용자 목록
 	@AdminOnly
 	@GetMapping("/users")
 	public ResponseEntity<Object> getUsers(HttpSession session
@@ -39,7 +39,7 @@ public class AdminUsersController {
 		return ResponseEntity.ok(ads.getAllUsers(filter));
 	}
 	
-	// 특정 사용자 정보
+	//사용자 정보
 	@AdminOnly
 	@GetMapping("/users/{userId}")
 	public ResponseEntity<Object> getUserByUserId(HttpSession session, @PathVariable int userId) {
@@ -50,7 +50,7 @@ public class AdminUsersController {
 		return ResponseEntity.ok(userInfo);
 	}
 	
-	// 유저 정보 수정
+	//유저 정보 수정
 	@AdminOnly
 	@PatchMapping("/users/{userId}")
 	public ResponseEntity<Object> putUserInfo(HttpSession session

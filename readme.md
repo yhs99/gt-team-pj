@@ -26,7 +26,7 @@
 
 # 4. 🛠️ 기술 스택
 ### Backend
-![image](https://github.com/user-attachments/assets/41e695a6-a9e2-4d0b-8d12-c9b86a688688)
+![image](https://github.com/user-attachments/assets/2cc5cfe2-41fb-4662-8c03-ae2d6dc4a01d)
 ### Frontend
 ![image](https://github.com/user-attachments/assets/dc2255b1-77ee-4adf-a665-fcfef2b5905b)
 ### Infra
